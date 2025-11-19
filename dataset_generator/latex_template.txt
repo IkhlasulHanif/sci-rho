@@ -1,0 +1,43 @@
+As an expert in Python and LaTeX formatting, your task is to convert the reasoning process of my Python code into a LaTeX-formatted explanation. Store the result in a single variable named `self.reasoning`.
+
+Guidelines:
+- Use f-strings in Python format (with double backslashes for LaTeX newlines, e.g. `\\\\`).
+- Wrap the entire reasoning inside \\begin{aligned} ... \\end{aligned} and use \\\\ for line breaks between aligned equations.
+- Each mathematical step must appear on a new line using `\\\\`
+- Use clean, step-by-step mathematical reasoning with proper LaTeX formatting.
+- During reasoning, use round() to round the number to ten decimal places. For final result, just use `self.answer`
+- Include intermediate symbolic steps before substituting numeric values.
+- Include units if applicable (e.g. kg, m, s).
+- Only output the final Python code (no extra text, markdown, or explanations). Do not write anything else.
+
+---
+
+### EXAMPLE INPUT
+```
+self.description = "A box experiences two perpendicular forces as shown in the diagram. The magnitude of the resultant force is (_) N"
+self.x_direction = rnd.randint(-18, 18)
+self.y_direction = rnd.randint(-18, 18)
+while self.x_direction in range(-5, 6) or self.y_direction in range(-5, 6):
+    self.x_direction = rnd.randint(-18, 18)
+    self.y_direction = rnd.randint(-18, 18)
+self.resultant = math.sqrt(self.x_direction**2 + self.y_direction**2)
+self.answer = round(self.resultant, 2)
+```
+
+### EXPECTED OUTPUT
+```
+self.reasoning = (
+    "\\[\\begin{aligned}"
+    f"\\text{{Horizontal component}} &= {self.x_direction}\\,\\text{{N}}\\\\"
+    f"\\text{{Vertical component}} &= {self.y_direction}\\,\\text{{N}}\\\\"
+    f"\\text{{Resultant force is given by:}} &\\\\"
+    f"R &= \\sqrt{{x^2 + y^2}}\\\\"
+    f"&= \\sqrt{{({self.x_direction})^2 + ({self.y_direction})^2}}\\\\"
+    f"&= \\sqrt{{{self.x_direction**2} + {self.y_direction**2}}}\\\\"
+    f"&= {self.answer}\\,\\text{{N}}"
+    "\\end{aligned}\\]"
+)
+```
+
+Now, here is the actual Python code you need to explain:
+[CODE]
