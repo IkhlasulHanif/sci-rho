@@ -60,3 +60,61 @@ class Mat001:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat002:
+    
+    def __init__(self):
+        self.math = rnd.randint(50, 100)
+        self.science = rnd.randint(50, 100)
+        self.english = rnd.randint(50, 100)
+        self.math_science = rnd.randint(20, 40)
+        self.science_english = rnd.randint(20, 40)
+        self.math_english = rnd.randint(20, 40)
+        self.all_subjects = rnd.randint(0, 10)
+        self.neither = rnd.randint(0, 10)
+        self.total = self.math + self.science + self.english + self.math_science + self.science_english + self.math_english + self.all_subjects + self.neither
+        
+        self.answer = self.math + self.math_science + self.math_english + self.all_subjects
+
+        self.description = (
+            f"In a survey of {self.total} students, the following information was gathered regarding their preference for three subjects: Math, Science, and English. The results are shown in the Venn diagram below. How many students like Math?"
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Sets"
+        self.source = "Original" # TODO: REMOVED
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{To find the total number of students who like Math, we sum the distinct regions}&\\\\"
+            "\\text{within the Math circle of the Venn diagram:}&\\\\"
+            f"\\text{{1. Students who like \\textbf{{only}} Math}} &= {self.math}\\\\"
+            f"\\text{{2. Students who like Math and Science (but not English)}} &= {self.math_science}\\\\"
+            f"\\text{{3. Students who like Math and English (but not Science)}} &= {self.math_english}\\\\"
+            f"\\text{{4. Students who like all three subjects}} &= {self.all_subjects}\\\\"
+            "\\text{Total Math} &= \\text{Only Math} + (\\text{Math} \\cap \\text{Science})_{\\text{only}} + (\\text{Math} \\cap \\text{English})_{\\text{only}} + \\text{All three}\\\\"
+            f"&= {self.math} + {self.math_science} + {self.math_english} + {self.all_subjects}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.figure(figsize=(8, 6))
+
+        venn_data = {
+            '100': self.math,               # Only Math
+            '010': self.science,            # Only Science
+            '001': self.english,            # Only English
+            '110': self.math_science,       # Math and Science, not English
+            '011': self.science_english,    # Science and English, not Math
+            '101': self.math_english,       # Math and English, not Science
+            '111': self.all_subjects,       # All three subjects
+        }
+        venn = venn3(subsets=venn_data, set_labels=('Math', 'Science', 'English'))
+        venn_circles = venn3_circles(subsets=venn_data, linestyle='solid', linewidth=1.5, color='black')
+        plt.title("Venn Diagram: Math, Science, and English")
+        plt.figtext(0.5, 0.02, f"Students who like neither Math, Science, nor English: {self.neither}", ha="center", fontsize=12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
