@@ -1,3 +1,4 @@
+import numpy as np
 import random as rnd
 import math
 import os
@@ -114,6 +115,107 @@ class Mat002:
         venn_circles = venn3_circles(subsets=venn_data, linestyle='solid', linewidth=1.5, color='black')
         plt.title("Venn Diagram: Math, Science, and English")
         plt.figtext(0.5, 0.02, f"Students who like neither Math, Science, nor English: {self.neither}", ha="center", fontsize=12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat003:
+    
+    def __init__(self):
+        self.length = round(rnd.uniform(30, 60), 1)
+        self.width = round(rnd.uniform(20, 40), 1)
+        self.height = round(rnd.uniform(10, 20), 1)
+
+        # Round to 1 significant figure
+        rounded_length = int(100 * round(self.length / 100 + 0.0001, 1))
+        rounded_width = int(100 * round(self.width / 100 + 0.0001, 1))
+        rounded_height = int(100 * round(self.height / 100 + 0.0001, 1))
+
+        self.answer = rounded_length * rounded_width * rounded_height
+
+        self.description = (
+            f"By rounding each dimension to 1 significant figure, estimate the volume of the box."
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Estimation"
+        self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original dimensions:}} &\\\\"
+            f"\\text{{Length}} &= {self.length}\\\\"
+            f"\\text{{Width}} &= {self.width}\\\\"
+            f"\\text{{Height}} &= {self.height}\\\\"
+            f"\\text{{Rounding to 1 significant figure:}} &\\\\"
+            f"L &\\approx {rounded_length}\\\\"
+            f"W &\\approx {rounded_width}\\\\"
+            f"H &\\approx {rounded_height}\\\\"
+            f"\\text{{Estimated Volume}} &= L \\times W \\times H\\\\"
+            f"&= {rounded_length} \\times {rounded_width} \\times {rounded_height}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig = plt.figure(figsize=(8, 6))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Define the vertices of the box
+        points = np.array([
+            [0, 0, 0], [self.length, 0, 0], [self.length, self.width, 0], [0, self.width, 0],       # Bottom
+            [0, 0, self.height], [self.length, 0, self.height], [self.length, self.width, self.height], [0, self.width, self.height] # Top
+        ])
+
+        # Define the edges
+        edges = [
+            [0, 1], [1, 2], [2, 3], [3, 0], # Bottom
+            [4, 5], [5, 6], [6, 7], [7, 4], # Top
+            [0, 4], [1, 5], [2, 6], [3, 7]  # Vertical
+        ]
+
+        # Plot the edges
+        for edge in edges:
+            p1, p2 = points[edge[0]], points[edge[1]]
+            ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]], color='b', alpha=0.6)
+
+        # Add Labels with CONSISTENT offsets
+        # Calculate a scaling factor based on the largest dimension
+        max_dim = max(self.length, self.width, self.height)
+        offset = max_dim * 0.15  # 15% buffer relative to the scene size
+
+        # Length Label (along X axis):
+        # Position: Middle of X, offset in negative Y (front of box)
+        ax.text(self.length / 2, -offset, 0, f"Length\n{self.length}", 
+                color='red', ha='center', va='center')
+
+        # Width Label (along Y axis):
+        # Position: Offset in positive X (right of box), Middle of Y
+        ax.text(self.length + offset, self.width / 2, 0, f"Width\n{self.width}", 
+                color='red', ha='center', va='center')
+
+        # Height Label (along Z axis):
+        # Position: Offset in negative X (left of box), Middle of Z
+        ax.text(-offset, 0, self.height / 2, f"Height\n{self.height}", 
+                color='red', ha='center', va='center')
+        
+        # Formatting
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_zticks([])
+        plt.axis('off')
+
+        # Set explicit limits including the offset so labels aren't cut off
+        ax.set_xlim([-offset * 2, self.length + offset * 2])
+        ax.set_ylim([-offset * 2, self.width + offset * 2])
+        ax.set_zlim([0, self.height + offset])
+
+        # Fix aspect ratio
+        ax.set_box_aspect((self.length, self.width, self.height))
+
+        # plt.title("Box Dimensions Representation")
+        plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
