@@ -3,6 +3,7 @@ import random as rnd
 import math
 import os
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
 from mathematics.helper import *
@@ -215,6 +216,79 @@ class Mat003:
         ax.set_box_aspect((self.length, self.width, self.height))
 
         # plt.title("Box Dimensions Representation")
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat004:
+    
+    def __init__(self):
+        self.length = rnd.randint(15, 30)
+        self.width = rnd.randint(10, min(self.length, 20))
+
+        length_upper = self.length + 0.5
+        width_upper = self.width + 0.5
+
+        self.answer = length_upper * width_upper
+
+        self.description = (
+            f"Given a garden below whose measurements are correct to the nearest meter. Calculate the upper bound of the area of the garden."
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Limits of accuracy"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Since measurements are to the nearest meter, the error is }} \\pm 0.5\\,\\text{{m}}.\\\\"
+            f"\\text{{Upper bound of length}} &= {self.length} + 0.5 = {round(self.length + 0.5, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Upper bound of width}} &= {self.width} + 0.5 = {round(self.width + 0.5, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Upper bound of Area}} &= \\text{{Length}}_{{upper}} \\times \\text{{Width}}_{{upper}}\\\\"
+            f"&= {round(self.length + 0.5, 10)} \\times {round(self.width + 0.5, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the figure and axis
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        # Create the Rectangle
+        # (0, 0) is the bottom-left anchor point
+        rect = patches.Rectangle((0, 0), self.length, self.width, 
+                                linewidth=2, 
+                                edgecolor='black', 
+                                facecolor='#e6f2ff') # Light blue fill
+        
+        # Add the rectangle to the plot
+        ax.add_patch(rect)
+
+        # Set the limits of the plot to ensure everything fits
+        # Adding some padding around the shape
+        ax.set_xlim(-2, self.length + 2)
+        ax.set_ylim(-2, self.width + 2)
+
+        # Add Labels
+        # Label for Length (Bottom)
+        ax.text(self.length / 2, -0.8, f'{self.length} m', 
+                ha='center', va='top', fontsize=12, fontweight='bold')
+
+        # Label for Width (Left)
+        ax.text(-0.8, self.width / 2, f'{self.width} m', 
+                ha='right', va='center', rotation='vertical', fontsize=12, fontweight='bold')
+
+        # Add the Caption
+        # Using figtext to place it at the bottom center of the figure, independent of axis coordinates
+        plt.figtext(0.5, 0.01, "Measurements are correct to the nearest meter.", 
+                    ha='center', fontsize=10, style='italic', 
+                    bbox={"facecolor":"orange", "alpha":0.2, "pad":5})
+
+        # Formatting
+        ax.set_aspect('equal') # Ensure 1m x 1m looks square
+        ax.axis('off')         # Turn off the X/Y axis grid and numbers
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
