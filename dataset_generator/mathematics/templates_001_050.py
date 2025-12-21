@@ -294,3 +294,94 @@ class Mat004:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat005:
+    
+    def __init__(self):
+        self.vol_a = 100 * rnd.randint(2, 8) # In ml
+        self.price_a = round(rnd.uniform(1, 2), 2) # In dollars
+        
+        self.vol_b = rnd.randint(12, 18) / 10 # In liters
+        self.price_b = round(rnd.uniform(2, 3), 2) # In dollars
+
+        value_a = self.vol_a / self.price_a
+        value_b = (self.vol_b * 1000) / self.price_b # Convert liters to ml
+
+        self.answer = 'A'
+
+        if value_b > value_a:
+            self.answer = 'B'
+
+        self.description = (
+            f"Which bottle offers the better value for money? Show how you decided."
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Ratio and proportion"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{To determine the better value, we calculate the unit rate (ml per dollar) for each bottle.}} &\\\\"
+            f"\\text{{For Bottle A:}} &\\\\"
+            f"\\text{{Value}}_A &= \\frac{{\\text{{Volume}}}}{{\\text{{Price}}}} \\\\"
+            f"&= \\frac{{{self.vol_a}\\,\\text{{ml}}}}{{\\${self.price_a}}} \\\\"
+            f"&= {round(self.vol_a / self.price_a, 10)}\\,\\text{{ml/\\$}}\\\\[10pt]"
+            f"\\text{{For Bottle B:}} &\\\\"
+            f"\\text{{First, convert liters to ml:}} &\\\\"
+            f"{self.vol_b}\\,\\text{{L}} &= {self.vol_b} \\times 1000 = {round(self.vol_b * 1000, 10)}\\,\\text{{ml}}\\\\"
+            f"\\text{{Value}}_B &= \\frac{{{round(self.vol_b * 1000, 10)}\\,\\text{{ml}}}}{{\\${self.price_b}}} \\\\"
+            f"&= {round((self.vol_b * 1000) / self.price_b, 10)}\\,\\text{{ml/\\$}}\\\\[10pt]"
+            f"\\text{{Conclusion:}} &\\\\"
+            f"\\text{{Since }} {round((self.vol_b * 1000) / self.price_b, 10)} \\{' > ' if ((self.vol_b * 1000) / self.price_b) > (self.vol_a / self.price_a) else ' < '} {round(self.vol_a / self.price_a, 10)}, \\text{{ Bottle {self.answer} offers better value.}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # 1. Setup the figure and axis
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        # Hide axes for a cleaner "figure" look
+        ax.axis('off')
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+
+        label_text_a = f"Bottle A\n{self.vol_a} ml\n${self.price_a:.2f}"
+        label_text_b = f"Bottle B\n{self.vol_b} liters\n${self.price_b:.2f}"
+
+        # ---------------------------------------------------------
+        # DRAWING BOTTLE A (Short and Wide)
+        # ---------------------------------------------------------
+        # Body: width=3, height=4
+        body_a = patches.Rectangle((1, 1), 3, 4, linewidth=2, edgecolor='black', facecolor='#aaddff')
+        # Neck: narrower, on top
+        neck_a = patches.Rectangle((2, 5), 1, 1, linewidth=2, edgecolor='black', facecolor='#aaddff')
+        
+        ax.add_patch(body_a)
+        ax.add_patch(neck_a)
+        
+        # Label for A
+        ax.text(2.5, 3, label_text_a, ha='center', va='center', fontsize=12, 
+                bbox=dict(facecolor='white', alpha=0.8, boxstyle='round,pad=0.5'))
+        
+        # ---------------------------------------------------------
+        # DRAWING BOTTLE B (Tall and Thin)
+        # ---------------------------------------------------------
+        # Body: width=1.5, height=7
+        body_b = patches.Rectangle((6, 1), 2, 7, linewidth=2, edgecolor='black', facecolor='#ffddaa')
+        # Neck: narrower, on top
+        neck_b = patches.Rectangle((6.5, 8), 1, 1, linewidth=2, edgecolor='black', facecolor='#ffddaa')
+
+        ax.add_patch(body_b)
+        ax.add_patch(neck_b)
+
+        # Label for B
+        ax.text(7, 4.5, label_text_b, ha='center', va='center', fontsize=12,
+                bbox=dict(facecolor='white', alpha=0.8, boxstyle='round,pad=0.5'))
+        
+        # Title
+        plt.title("Bottle Description", fontsize=16)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
