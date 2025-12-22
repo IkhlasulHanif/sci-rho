@@ -535,3 +535,107 @@ class Mat007:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat008:
+    
+    def __init__(self):
+        self.start_hour = rnd.randint(8, 11)
+        self.start_minute = rnd.choice([0, 15, 30, 45])
+
+        self.finish_hour = rnd.randint(self.start_hour + 1, 14)
+        self.finish_minute = rnd.choice([0, 15, 30, 45])
+
+        minute_result = (self.finish_minute - self.start_minute) % 60
+        hour_result = self.finish_hour - self.start_hour - (self.start_minute > self.finish_minute)
+
+        self.answer = f"{hour_result} {'hours' if hour_result != 1 else 'hour'} {minute_result} minutes"
+
+        self.description = (
+            f"The clocks show the start and finish times of a mathematics examination. Calculate the total length of the examination in hours and minutes."
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Time"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Start Time}} &= {self.start_hour}:{self.start_minute:02d}\\\\"
+            f"\\text{{Finish Time}} &= {self.finish_hour}:{self.finish_minute:02d}\\\\"
+            f"\\text{{Duration}} &= \\text{{Finish Time}} - \\text{{Start Time}}\\\\"
+            + (
+                f"&= {self.finish_hour}:{self.finish_minute:02d} - {self.start_hour}:{self.start_minute:02d}\\\\"
+                f"&= ({self.finish_hour - 1}:{self.finish_minute + 60}) - {self.start_hour}:{self.start_minute:02d} \\quad \\text{{(Borrow 60 min)}}\\\\"
+                f"&= ({self.finish_hour - 1} - {self.start_hour})\\,\\text{{hours}} \\; ({self.finish_minute + 60} - {self.start_minute})\\,\\text{{minutes}}\\\\"
+                if self.finish_minute < self.start_minute else
+                f"&= {self.finish_hour}:{self.finish_minute:02d} - {self.start_hour}:{self.start_minute:02d}\\\\"
+                f"&= ({self.finish_hour} - {self.start_hour})\\,\\text{{hours}} \\; ({self.finish_minute} - {self.start_minute})\\,\\text{{minutes}}\\\\"
+            )
+            + f"&= \\text{{{self.answer}}}"
+            + "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Figure
+        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+
+        # Draw Clocks
+        self.draw_clock(axs[0], self.start_hour, self.start_minute, "Clock A (Start)")
+        self.draw_clock(axs[1], self.finish_hour, self.finish_minute, "Clock B (Finish)")
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+    def draw_clock(self, ax, hour, minute, title):
+        """
+        Draws an analog clock on the given Matplotlib axis.
+        """
+        # Draw the Clock Face
+        # Circle
+        circle = plt.Circle((0, 0), 1, color='white', ec='black', lw=3)
+        ax.add_artist(circle)
+        
+        # Draw Hour Numbers (1-12)
+        # 0 degrees is usually East in plotting, but 12 o'clock is North (90 degrees).
+        # We use sin/cos swapped to map 0 to North.
+        for i in range(1, 13):
+            angle_rad = np.radians(i * 30)  # 360 / 12 = 30 degrees per hour
+            x = 0.85 * np.sin(angle_rad)
+            y = 0.85 * np.cos(angle_rad)
+            ax.text(x, y, str(i), ha='center', va='center', fontsize=12, fontweight='bold')
+
+        # Calculate Hand Angles
+        # Minute hand: 360 degrees / 60 minutes = 6 degrees per minute
+        minute_angle = np.radians(minute * 6)
+        
+        # Hour hand: 360 degrees / 12 hours = 30 degrees per hour
+        # PLUS the fractional movement based on minutes
+        hour_display = hour % 12  # Convert 13/14 to 1/2 for display
+        hour_angle = np.radians((hour_display * 30) + (minute * 0.5))
+
+        # Draw Hands
+        # Plotting (0,0) to (x,y). 
+        # Using (sin, cos) so that 0 radians is North (12 o'clock)
+        
+        # Hour Hand (Shorter and Thicker)
+        hx = 0.5 * np.sin(hour_angle)
+        hy = 0.5 * np.cos(hour_angle)
+        ax.plot([0, hx], [0, hy], color='black', lw=6, solid_capstyle='round')
+        
+        # Minute Hand (Longer and Thinner)
+        mx = 0.8 * np.sin(minute_angle)
+        my = 0.8 * np.cos(minute_angle)
+        ax.plot([0, mx], [0, my], color='black', lw=3, solid_capstyle='round')
+
+        # Center Point
+        ax.add_artist(plt.Circle((0, 0), 0.05, color='black'))
+
+        # Formatting
+        ax.set_xlim(-1.2, 1.2)
+        ax.set_ylim(-1.2, 1.2)
+        ax.set_aspect('equal')
+        ax.axis('off')
+        ax.set_title(f"{title}", y=-0.1, fontsize=12)
