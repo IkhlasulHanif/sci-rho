@@ -385,3 +385,74 @@ class Mat005:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat006:
+    
+    def __init__(self):
+        self.eur_rate = rnd.randint(80, 110) / 100 # 1 USD = eur_rate EUR
+        self.jpy_rate = rnd.randint(100, 160) # 1 USD = jpy_rate JPY
+        self.total_eur = 100 * rnd.randint(2, 20) # Total Euros to convert to JPY
+
+        usd_from_eur = self.total_eur / self.eur_rate # Convert from EUR to USD
+        jpy_from_usd = usd_from_eur * self.jpy_rate # Convert from USD to JPY
+
+        self.answer = round(jpy_from_usd, 2) # Round the result to two decimal places
+
+        self.description = (
+            f"A tourist wants to exchange {self.total_eur} Euros (EUR) into Japanese Yen (JPY) using the rates shown on the board. How much Yen will they receive? Round the result to two decimal places."
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Rates"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given amount}} &= {self.total_eur}\\,\\text{{EUR}}\\\\"
+            f"\\text{{Exchange rates:}} &\\\\"
+            f"1\\,\\text{{USD}} &= {self.eur_rate}\\,\\text{{EUR}}\\\\"
+            f"1\\,\\text{{USD}} &= {self.jpy_rate}\\,\\text{{JPY}}\\\\"
+            f"\\text{{First, convert EUR to USD:}} &\\\\"
+            f"\\text{{USD}} &= \\frac{{\\text{{EUR}}}}{{\\text{{Rate}}_{{\\text{{EUR}}}}}}\\\\"
+            f"&= \\frac{{{self.total_eur}}}{{{self.eur_rate}}}\\\\"
+            f"&= {round(self.total_eur / self.eur_rate, 10)}\\,\\text{{USD}}\\\\"
+            f"\\text{{Next, convert USD to JPY:}} &\\\\"
+            f"\\text{{JPY}} &= \\text{{USD}} \\times \\text{{Rate}}_{{\\text{{JPY}}}}\\\\"
+            f"&= {round(self.total_eur / self.eur_rate, 10)} \\times {self.jpy_rate}\\\\"
+            f"&= {self.answer}\\,\\text{{JPY}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        header_text = "Today's Exchange Rates"
+        row1_text = f"1 USD = {self.eur_rate:.2f} EUR"  # .2f ensures 2 decimal places
+        row2_text = f"1 USD = {self.jpy_rate} JPY"
+
+        # figsize is (width, height) in inches
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        ax.axis('off')
+
+        # Parameters: (x, y, string, alignment settings...)
+        # Coordinates (0.5, 0.8) means centered horizontally, near the top vertically
+        ax.text(0.5, 0.8, header_text, 
+                fontsize=16, 
+                weight='bold', 
+                ha='center', 
+                va='center')
+
+        ax.text(0.5, 0.6, row1_text, 
+                fontsize=12, 
+                ha='center', 
+                va='center')
+
+        ax.text(0.5, 0.45, row2_text, 
+                fontsize=12, 
+                ha='center', 
+                va='center')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
