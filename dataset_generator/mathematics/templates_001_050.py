@@ -3,6 +3,7 @@ import random as rnd
 import math
 import os
 import matplotlib.pyplot as plt
+from matplotlib import colors
 import matplotlib.patches as patches
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
@@ -451,6 +452,84 @@ class Mat006:
                 ha='center', 
                 va='center')
 
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat007:
+    
+    def __init__(self):
+        self.width = rnd.randint(4, 8) # Width (columns)
+        self.height = rnd.randint(3, 6) # Height (rows)
+        self.total_squares = self.width * self.height
+        self.shaded = rnd.randint(0, self.total_squares) # Number of shaded squares
+
+        self.answer = round((self.shaded / self.total_squares) * 100, 2)
+
+        self.description = (
+            f"Calculate what percentage of the grid is shaded. Round the result to two decimal places."
+        )
+
+        self.topic = "Number"
+        self.subtopic = "Percentages"
+        self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total squares}} &= \\text{{width}} \\times \\text{{height}}\\\\"
+            f"&= {self.width} \\times {self.height}\\\\"
+            f"&= {self.total_squares}\\\\"
+            f"\\text{{Shaded squares}} &= {self.shaded}\\\\"
+            f"\\text{{Percentage}} &= \\frac{{\\text{{Shaded squares}}}}{{\\text{{Total squares}}}} \\times 100\\%\\\\"
+            f"&= \\frac{{{self.shaded}}}{{{self.total_squares}}} \\times 100\\%\\\\"
+            f"&= {self.answer}\\%"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create a flat array of Zeros (White)
+        data = np.zeros(self.total_squares)
+        
+        # Set the first 'shaded' elements to One (Grey)
+        data[:self.shaded] = 1
+        
+        # Shuffle the array to randomize which specific squares are shaded
+        # (Comment this line out if you want the shaded squares to be contiguous)
+        np.random.shuffle(data)
+        
+        # Reshape into a 2D grid (Height x Width)
+        grid_matrix = data.reshape((self.height, self.width))
+
+        # Determine figure size based on grid dimensions to keep squares square
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        # Define colors: 0 -> White, 1 -> Grey
+        cmap = colors.ListedColormap(['white', 'gray'])
+        
+        # Display the matrix
+        # extent=[0, width, 0, height] maps the pixels to integer coordinates
+        ax.imshow(grid_matrix, cmap=cmap, origin='upper', extent=[0, self.width, 0, self.height])
+
+        # Set ticks at integer intervals
+        ax.set_xticks(np.arange(0, self.width + 1, 1))
+        ax.set_yticks(np.arange(0, self.height + 1, 1))
+        
+        # Enable grid on those ticks
+        ax.grid(which='major', color='black', linestyle='-', linewidth=1)
+        
+        # Hide the tick labels (numbers) for a cleaner look
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        
+        # Remove axis ticks (the small protruding lines) but keep the grid
+        ax.tick_params(axis='both', which='both', length=0)
+
+        # Add Title
+        plt.title(f"{self.width} x {self.height} Grid")
+        
+        # Tight layout to remove excess whitespace
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
