@@ -639,3 +639,480 @@ class Mat008:
         ax.set_aspect('equal')
         ax.axis('off')
         ax.set_title(f"{title}", y=-0.1, fontsize=12)
+        
+class Mat009:
+    
+    def __init__(self):
+        # Town positions (distance from Town A in km) - tighter, variable ranges
+        self.min_distance = 10
+        self.max_distance = 25
+        self.town_a_pos = 0
+        self.town_b_pos = self.town_a_pos + rnd.randint(self.min_distance, self.max_distance)
+        self.town_c_pos = self.town_b_pos + rnd.randint(self.min_distance, self.max_distance)
+        self.town_d_pos = self.town_c_pos + rnd.randint(self.min_distance, self.max_distance)
+
+        self.departure_time = rnd.randint(0, 8)
+
+        # Use a 12-minute base unit (0.2 hours).
+        unit = 0.2
+        self.min_travel_time = 0.2 # hours
+        self.max_travel_time = 3.0
+        self.min_rest_time = 0.0 # hours
+        self.max_rest_time = self.max_travel_time
+        
+        self.time_at_b = round(self.departure_time + self.randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
+        self.time_leave_b = round(self.time_at_b + self.randrange_float(self.min_rest_time, self.max_rest_time + unit, unit), 2)
+
+        self.time_at_c = round(self.time_leave_b + self.randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
+        self.time_leave_c = round(self.time_at_c + self.randrange_float(self.min_rest_time, self.max_rest_time + unit, unit), 2)
+        
+        self.time_at_d = round(self.time_leave_c + self.randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
+        self.arrival_time = self.time_at_d
+
+        dist_ab = round(self.town_b_pos - self.town_a_pos, 10)
+        time_ab = round(self.time_at_b - self.departure_time, 10)
+        speed_ab = round(dist_ab / time_ab, 10)
+        dist_cd = round(self.town_d_pos - self.town_c_pos, 10)
+        time_cd = round(self.time_at_d - self.time_leave_c, 10)
+        speed_cd = round(dist_cd / time_cd, 10)
+
+        self.answer = round(abs(speed_ab - speed_cd), 10)
+        
+        self.description = (
+            f"Jason leaves Town A at {self.departure_time}.00 and cycles to Town D, The travel graph shows Jason’s journey. Find the difference of Jason's Average Speed from A to B and C to D."
+        )
+        self.topic = "Algebra and Graphs"
+        self.subtopic = "Graphs in practical situations"
+        self.source = "Adopted from 2025-specimen-paper-3"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Average Speed from A to B:}} & \\\\"
+            f"v_{{AB}} &= \\frac{{\\text{{Distance}}}}{{\\text{{Time}}}} \\\\"
+            f"&= \\frac{{{self.town_b_pos} - {self.town_a_pos}}}{{{self.time_at_b} - {self.departure_time}}} \\\\"
+            f"&= \\frac{{{dist_ab}}}{{{time_ab}}} \\\\"
+            f"&= {speed_ab}\\,\\text{{km/h}} \\\\"
+            f"\\text{{2. Average Speed from C to D:}} & \\\\"
+            f"v_{{CD}} &= \\frac{{\\text{{Distance}}}}{{\\text{{Time}}}} \\\\"
+            f"&= \\frac{{{self.town_d_pos} - {self.town_c_pos}}}{{{self.time_at_d} - {self.time_leave_c}}} \\\\"
+            f"&= \\frac{{{dist_cd}}}{{{time_cd}}} \\\\"
+            f"&= {speed_cd}\\,\\text{{km/h}} \\\\"
+            f"\\text{{3. Difference in Speeds:}} & \\\\"
+            f"\\text{{Difference}} &= |v_{{AB}} - v_{{CD}}| \\\\"
+            f"&= |{speed_ab} - {speed_cd}| \\\\"
+            f"&= {self.answer}\\,\\text{{km/h}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def randrange_float(self, start, stop, step):
+        """
+        Generates a random float number N such that start <= N < stop, 
+        with a specific step size.
+        """
+        num_steps = int((stop - start) / step)
+        random_step = rnd.randint(0, num_steps)
+        return start + random_step * step
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        # Build time and distance sequences including resting periods and final arrival at D
+        times = [
+            self.departure_time,                      # depart A
+            self.time_at_b,                           # arrive B
+            self.time_leave_b,  # leave B
+            self.time_at_c,                           # arrive C
+            self.time_leave_c,  # leave C
+            self.time_at_d                            # arrive D
+        ]
+
+        distances = [
+            self.town_a_pos,
+            self.town_b_pos,
+            self.town_b_pos,
+            self.town_c_pos,
+            self.town_c_pos,
+            self.town_d_pos,
+        ]
+
+        # Plot the piecewise journey (lines between the points)
+        ax.plot(times, distances, color='black', linewidth=2)
+
+        # Configure grid and tick locators: x-major=1 hour, x-minor=5 minutes; y-major=5 units, y-minor=1
+        from matplotlib.ticker import MultipleLocator, FuncFormatter
+        ax.set_axisbelow(True)
+        x_major = MultipleLocator(1.0)
+        # Minor ticks: 5 minor divisions per hour -> 12 minutes each -> 12/60 = 0.2 hours
+        x_minor = MultipleLocator(12.0 / 60.0)
+        # Y axis: major every 10 km, minor every 1 km
+        y_major = MultipleLocator(10)
+        y_minor = MultipleLocator(1)
+
+        ax.xaxis.set_major_locator(x_major)
+        ax.xaxis.set_minor_locator(x_minor)
+        ax.yaxis.set_major_locator(y_major)
+        ax.yaxis.set_minor_locator(y_minor)
+
+        ax.grid(which='major', linestyle='-', linewidth=0.6, color='gray', alpha=0.8)
+        ax.grid(which='minor', linestyle='-', linewidth=0.25, color='gray', alpha=0.5)
+
+        # Format x-axis ticks as HH:MM
+        def fmt_time(x, pos=None):
+            total_minutes = int(round(x * 60))
+            hh = (total_minutes // 60) % 24
+            mm = total_minutes % 60
+            return f"{hh:02d}:{mm:02d}"
+
+        ax.xaxis.set_major_formatter(FuncFormatter(fmt_time))
+
+        # Set axis limits with small padding
+        xmin = min(times)
+        xmax = max(times) + 0.25
+        ymin = 0
+        ymax = max(distances) + 5
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, ymax)
+
+        # Town labels placed in left margin using blended transform so they don't overlap ticks
+        from matplotlib.transforms import blended_transform_factory
+        trans = blended_transform_factory(ax.transAxes, ax.transData)
+
+        towns = [
+            ('Town A', self.town_a_pos),
+            ('Town B', self.town_b_pos),
+            ('Town C', self.town_c_pos),
+            ('Town D', self.town_d_pos),
+        ]
+
+        for name, pos in towns:
+            ax.text(-0.06, pos, f"{name} →", transform=trans,
+                    fontsize=11, ha='right', va='center')
+
+        # Axis labels
+        ax.set_xlabel('Time', fontsize=12)
+        ax.set_ylabel('Distance from\nTown A (km)', fontsize=12, rotation=90, va='center', labelpad=60)
+
+        # Tweak tick label padding
+        ax.tick_params(axis='y', which='major', pad=6)
+
+        # Draw arrowheads at the ends of axes
+        ax.annotate('', xy=(xmax, 0), xytext=(xmax - 0.001, 0), arrowprops=dict(arrowstyle='->', lw=1.2))
+        ax.annotate('', xy=(xmin, ymax), xytext=(xmin, ymax - 0.001), arrowprops=dict(arrowstyle='->', lw=1.2))
+
+        # Make room on the left for town labels
+        plt.subplots_adjust(left=0.22, bottom=0.12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        
+# class Mat010:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Graphs in practical situations"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat011:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Graphs in practical situations"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat012:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Graphs of functions"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat0013:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Graphs of functions"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat014:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Graphs of functions"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat015:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = " "
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat016:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Sketching curves"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat017:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Sketching curves"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat018:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Differentiation"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+
+# class Mat019:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Differentiation"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat020:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Differentiation"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat021:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Functions"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat022:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Functions"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
+# class Mat023:
+    
+#     def __init__(self):
+        
+#         self.answer = 
+
+#         self.description = (
+#         )
+#         self.topic = "Algebra and Graphs"
+#         self.subtopic = "Functions"
+#         self.source = " "
+#         self.curriculum = "IGCSE"
+#         self.reasoning = (
+#             "\\[\\begin{aligned}"
+            
+#             "\\end{aligned}\\]"
+#         )
+        
+#     def generate(self, num):
+        
+#         plt.close()
+        
