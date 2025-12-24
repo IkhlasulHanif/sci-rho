@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from matplotlib.transforms import blended_transform_factory
+from matplotlib.ticker import MultipleLocator, FuncFormatter
 import matplotlib.patches as patches
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
@@ -684,7 +685,7 @@ class Mat009:
         )
         self.topic = "Algebra and Graphs"
         self.subtopic = "Graphs in practical situations"
-        self.source = "Adopted from 2025-specimen-paper-3"
+        self.source = "Adapted from 2025-specimen-paper-3"
         self.curriculum = "IGCSE"
         
         self.reasoning = (
@@ -827,7 +828,7 @@ class Mat010:
 
         self.topic = "Algebra and Graphs"
         self.subtopic = "Graphs in practical situations"
-        self.source = "Adapted from specimen-style question"
+        self.source = "Adapted from 2025-specimen-paper-4"
         self.curriculum = "IGCSE"
 
         self.reasoning = (
@@ -884,4 +885,135 @@ class Mat010:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
         plt.close()
+
+class Mat011:
+    
+    def __init__(self):
         
+        self.distance_meeting = int(rnd.randint(4, 14))  # km
+        
+        self.leave_office_hour = rnd.randint(4, 9)
+        self.leave_office_minute = rnd.choice([0, 10, 20, 30, 40, 50])
+        
+        self.travel_time_hour = rnd.randint(1, 2)
+        self.travel_time_minute = rnd.choice([0, 10, 20, 30, 40, 50])
+        
+        self.arrive_meeting_hour = self.leave_office_hour + self.travel_time_hour
+        self.arrive_meeting_minute = self.leave_office_minute + self.travel_time_minute
+        if self.arrive_meeting_minute >= 60:
+            self.arrive_meeting_hour += 1
+            self.arrive_meeting_minute -= 60
+
+        self.meeting_duration_hour = rnd.randint(1, 2)
+        self.meeting_duration_minute = rnd.choice([0, 10, 20, 30, 40, 50])
+        
+        self.leave_meeting_hour = self.arrive_meeting_hour + self.meeting_duration_hour
+        self.leave_meeting_minute = self.arrive_meeting_minute + self.meeting_duration_minute
+        if self.leave_meeting_minute >= 60:
+            self.leave_meeting_hour += 1
+            self.leave_meeting_minute -= 60
+            
+        self.arrive_office_hour = self.leave_meeting_hour + self.travel_time_hour
+        self.arrive_office_minute = self.leave_meeting_minute + self.travel_time_minute
+        if self.arrive_office_minute >= 60:
+            self.arrive_office_hour += 1
+            self.arrive_office_minute -= 60            
+        
+        self.speed = round(self.distance_meeting / (self.travel_time_hour + self.travel_time_minute / 60.0), 10)  # km/h
+                
+        self.answer = f"{self.leave_office_hour}:{self.leave_office_minute:02d}"
+
+        self.description = (
+            f"Ky cycles from his office to a meeting and back again. The travel graph shows his time at the meeting and his journey back. Ky cycles from his office to the meeting at a constant speed of {self.speed} km/h. What time does Ky leave his office?"
+        )
+
+        self.topic = "Algebra and Graphs"
+        self.subtopic = "Graphs in practical situations"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 11"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{1. Identify meeting arrival time from the graph:} &\\\\"
+            f"\\text{{Arrival at meeting}} &= {self.arrive_meeting_hour:02d}:{self.arrive_meeting_minute:02d}\\\\"
+            f"\\text{{Distance from office to meeting}} &= {self.distance_meeting}\\,\\text{{km}}\\\\"
+            "\\text{2. Calculate travel time to the meeting:} &\\\\"
+            "\\text{Time} &= \\frac{\\text{Distance}}{\\text{Speed}}\\\\"
+            f"&= \\frac{{{self.distance_meeting}\\,\\text{{km}}}}{{{round(self.speed, 10)}\\,\\text{{km/h}}}}\\\\"
+            f"&= {round(self.travel_time_hour + self.travel_time_minute / 60.0, 10)}\\,\\text{{hours}}\\\\"
+            "\\text{Convert decimal hours to hours and minutes:} &\\\\"
+            f"\\text{{Hours}} &= \\lfloor{round(self.travel_time_hour + self.travel_time_minute / 60.0, 10)}\\rfloor = {self.travel_time_hour}\\,\\text{{h}}\\\\"
+            f"\\text{{Minutes}} &= ({round(self.travel_time_hour + self.travel_time_minute / 60.0, 10)} - {self.travel_time_hour}) \\times 60 = {self.travel_time_minute}\\,\\text{{min}}\\\\"
+            f"\\text{{Total Travel Time}} &= {self.travel_time_hour}\\,\\text{{h}} \\, {self.travel_time_minute}\\,\\text{{min}}\\\\"
+            "\\text{3. Calculate departure time from office:} &\\\\"
+            "\\text{Departure Time} &= \\text{Arrival Time} - \\text{Travel Time}\\\\"
+            f"&= {self.arrive_meeting_hour:02d}:{self.arrive_meeting_minute:02d} - {self.travel_time_hour}\\,\\text{{h}} \\, {self.travel_time_minute}\\,\\text{{min}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        plt.close()
+
+        # Compute key times in decimal hours
+        depart_time = self.leave_office_hour + self.leave_office_minute / 60.0
+        arrive_time = self.arrive_meeting_hour + self.arrive_meeting_minute / 60.0
+        leave_time = self.leave_meeting_hour + self.leave_meeting_minute / 60.0
+
+        # Travel back takes same duration as travel there (constant speed)
+        travel_minutes = int(round((arrive_time - depart_time) * 60))
+        back_time = leave_time + travel_minutes / 60.0
+
+        times = [arrive_time, leave_time, back_time]
+        distances = [self.distance_meeting, self.distance_meeting, 0]
+
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        # Plot path
+        ax.plot(times, distances, color='black', linewidth=2)
+
+        # Grid: major = 1 hour, minor = 10 minutes
+        ax.set_axisbelow(True)
+        x_major = MultipleLocator(1.0)
+        x_minor = MultipleLocator(10.0 / 60.0)
+        y_major = MultipleLocator(1)
+        y_minor = MultipleLocator(1)
+
+        ax.xaxis.set_major_locator(x_major)
+        ax.xaxis.set_minor_locator(x_minor)
+        ax.yaxis.set_major_locator(y_major)
+        ax.yaxis.set_minor_locator(y_minor)
+
+        ax.grid(which='major', linestyle='-', linewidth=0.6, color='gray', alpha=0.9)
+        ax.grid(which='minor', linestyle=':', linewidth=0.6, color='gray', alpha=0.9)
+
+        def fmt_time(x, pos=None):
+            total_minutes = int(round(x * 60))
+            hh = (total_minutes // 60) % 24
+            mm = total_minutes % 60
+            return f"{hh:02d}:{mm:02d}"
+
+        ax.xaxis.set_major_formatter(FuncFormatter(fmt_time))
+
+        xmin = self.leave_office_hour - 1.0
+        xmax = self.arrive_office_hour + 1.0
+        ymin = 0
+        ymax = self.distance_meeting + 2
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, ymax)
+
+        # Left label (Distance from office)
+        trans = blended_transform_factory(ax.transAxes, ax.transData)
+        ax.text(-0.06, ymax / 2, 'Distance from\noffice (km)', transform=trans,
+                fontsize=11, ha='right', va='center')
+
+        # Office label and axis arrows
+        ax.text(0.02, -0.06, 'Office →', transform=ax.transAxes, ha='left', va='top', fontsize=11)
+        ax.annotate('', xy=(xmax, 0), xytext=(xmax - 0.001, 0), arrowprops=dict(arrowstyle='->', lw=1.2))
+        ax.annotate('', xy=(xmin, ymax), xytext=(xmin, ymax - 0.001), arrowprops=dict(arrowstyle='->', lw=1.2))
+
+        plt.subplots_adjust(left=0.18, bottom=0.12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
