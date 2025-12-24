@@ -215,3 +215,93 @@ class Mat055:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat056:
+    
+    def __init__(self):
+        # We ensure bottom_b is significantly larger than top_a for a clear shape
+        self.top_a = rnd.randint(4, 10)       # Top parallel side (e.g., 4 to 9 cm)
+        self.bottom_b = self.top_a + rnd.randint(4, 10) # Bottom side (ensures it's wider)
+        self.height_h = rnd.randint(4, 10)    # Vertical height
+        
+        # Randomize the "skew" (how far left/right the top is shifted)
+        # 0.5 centers it perfectly (Isosceles). 
+        # slightly randomizing this makes it look more distinct.
+        self.skew_factor = rnd.uniform(0.3, 0.7) 
+        self.x_offset = (self.bottom_b - self.top_a) * self.skew_factor
+
+        self.answer = 0.5 * (self.top_a + self.bottom_b) * self.height_h # in cm^2
+
+        self.description = (
+            f"Calculate the area of the trapezium."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Area and perimeter"
+        self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Top side }} (a) &= {self.top_a}\\,\\text{{cm}}\\\\"
+            f"\\text{{Bottom side }} (b) &= {self.bottom_b}\\,\\text{{cm}}\\\\"
+            f"\\text{{Height }} (h) &= {self.height_h}\\,\\text{{cm}}\\\\"
+            f"\\text{{Area}} &= \\frac{{1}}{{2}}(a + b)h\\\\"
+            f"&= \\frac{{1}}{{2}}({self.top_a} + {self.bottom_b}) \\times {self.height_h}\\\\"
+            f"&= 0.5 \\times ({self.top_a + self.bottom_b}) \\times {self.height_h}\\\\"
+            f"&= {round(0.5 * (self.top_a + self.bottom_b), 10)} \\times {self.height_h}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Vertices (Counter-clockwise from bottom-left)
+        # (0,0) -> (b, 0) -> (x_offset + a, h) -> (x_offset, h)
+        vertices = np.array([
+            [0, 0],
+            [self.bottom_b, 0],
+            [self.x_offset + self.top_a, self.height_h],
+            [self.x_offset, self.height_h]
+        ])
+
+        # Create Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Draw the Trapezium
+        trapezium = patches.Polygon(vertices, closed=True, 
+                                    edgecolor='black', facecolor='#e6f2ff', 
+                                    linewidth=2)
+        ax.add_patch(trapezium)
+
+        # Annotations
+        
+        # Label: Bottom side (b)
+        ax.text(self.bottom_b / 2, -0.05 * self.height_h, f"{self.bottom_b} cm", 
+                ha='center', va='top', fontsize=12, fontweight='bold')
+
+        # Label: Top side (a)
+        ax.text(self.x_offset + self.top_a / 2, self.height_h + 0.05 * self.height_h, f"{self.top_a} cm", 
+                ha='center', va='bottom', fontsize=12, fontweight='bold')
+
+        # Draw Height Indicator (Dashed Line)
+        # We drop a line from the top-left vertex (index 3) straight down
+        height_x = self.x_offset
+        ax.plot([height_x, height_x], [0, self.height_h], color='red', linestyle='--', linewidth=1.5)
+        
+        # Label: Height (h) - placed slightly to the left of the dashed line
+        ax.text(height_x - 0.2, self.height_h / 2, f"{self.height_h} cm", 
+                ha='right', va='center', color='red', fontsize=12, fontweight='bold')
+
+        # Add a small right-angle symbol at the base of the height line
+        rect_size = min(self.bottom_b, self.height_h) * 0.05
+        rect = patches.Rectangle((height_x, 0), rect_size, rect_size, 
+                                linewidth=1, edgecolor='red', facecolor='none')
+        ax.add_patch(rect)
+
+        # Styling
+        ax.set_aspect('equal')
+        ax.axis('off') # Turn off X/Y axis for clean look
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
