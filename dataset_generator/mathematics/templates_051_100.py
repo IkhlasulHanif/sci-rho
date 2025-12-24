@@ -305,3 +305,120 @@ class Mat056:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat057:
+    
+    def __init__(self):
+        # Inner rectangle (Lawn) dimensions
+        self.inner_length = rnd.randint(5, 12)
+        self.inner_width = rnd.randint(3, 8)
+        
+        # Path width (uniform around the lawn)
+        self.path_width = round(rnd.uniform(0.5, 2.0), 1)
+        
+        # Calculate outer dimensions
+        self.outer_length = self.inner_length + 2 * self.path_width
+        self.outer_width = self.inner_width + 2 * self.path_width
+
+        self.answer = round(
+            self.outer_length * self.outer_width -\
+            self.inner_length * self.inner_width,
+            2
+        )
+
+        self.description = (
+            f"Calculate the area of the path."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Area and perimeter"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inner Area}} &= {self.inner_length} \\times {self.inner_width} = {round(self.inner_length * self.inner_width, 10)}\\\\"
+            f"\\text{{Outer Length}} &= {self.inner_length} + 2({self.path_width}) = {round(self.outer_length, 10)}\\\\"
+            f"\\text{{Outer Width}} &= {self.inner_width} + 2({self.path_width}) = {round(self.outer_width, 10)}\\\\"
+            f"\\text{{Outer Area}} &= {round(self.outer_length, 10)} \\times {round(self.outer_width, 10)} = {round(self.outer_length * self.outer_width, 10)}\\\\"
+            f"\\text{{Path Area}} &= \\text{{Outer Area}} - \\text{{Inner Area}}\\\\"
+            f"&= {round(self.outer_length * self.outer_width, 10)} - {round(self.inner_length * self.inner_width, 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create figure and axes
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Define colors
+        lawn_color = '#90EE90'  # LightGreen
+        path_color = '#D3D3D3'  # LightGray
+        
+        # Center coordinates
+        center_x, center_y = 0, 0
+        
+        # Draw Outer Rectangle (Path base)
+        outer_rect = patches.Rectangle(
+            (center_x - self.outer_length/2, center_y - self.outer_width/2),
+            self.outer_length, self.outer_width,
+            edgecolor='black',
+            facecolor=path_color,
+            linewidth=2
+        )
+        ax.add_patch(outer_rect)
+        
+        # Draw Inner Rectangle (Lawn) on top
+        inner_rect = patches.Rectangle(
+            (center_x - self.inner_length/2, center_y - self.inner_width/2),
+            self.inner_length, self.inner_width,
+            edgecolor='black',
+            facecolor=lawn_color,
+            linewidth=2
+        )
+        ax.add_patch(inner_rect)
+        
+        # Add Text Labels
+        ax.text(center_x, center_y, 'Lawn\n(Inner)', 
+                ha='center', va='center', fontsize=12, fontweight='bold', color='darkgreen')
+        
+        ax.text(center_x, center_y + self.inner_width/2 + self.path_width/2, 'Path', 
+                ha='center', va='center', fontsize=12, fontweight='bold', color='black')
+
+        # Add Dimension Annotations
+        
+        # Outer Length (Bottom)
+        ax.annotate('', xy=(-self.outer_length/2, -self.outer_width/2 - 0.5), 
+                    xytext=(self.outer_length/2, -self.outer_width/2 - 0.5),
+                    arrowprops=dict(arrowstyle='<->', color='black'))
+        ax.text(center_x, -self.outer_width/2 - 1.2, f'Outer Length = {self.outer_length:.1f}', 
+                ha='center', va='center')
+
+        # Outer Width (Left)
+        ax.annotate('', xy=(-self.outer_length/2 - 0.5, -self.outer_width/2), 
+                    xytext=(-self.outer_length/2 - 0.5, self.outer_width/2),
+                    arrowprops=dict(arrowstyle='<->', color='black'))
+        ax.text(-self.outer_length/2 - 1.2, center_y, f'Outer Width = {self.outer_width:.1f}', 
+                ha='center', va='center', rotation=90)
+        
+        # Inner Dimensions (Inside)
+        ax.text(center_x, center_y - self.inner_width/4, f'{self.inner_length} x {self.inner_width}', 
+                ha='center', va='center', fontsize=10, color='darkgreen')
+
+        # Path Width indicator (Right side)
+        # Draw a line spanning the path width
+        ax.annotate('', xy=(self.inner_length/2, 0), xytext=(self.outer_length/2, 0),
+                    arrowprops=dict(arrowstyle='<->', color='blue', linewidth=1.5))
+        ax.text((self.inner_length/2 + self.outer_length/2)/2, 0.8, f'Path Width\n{self.path_width}', 
+                ha='center', va='bottom', color='blue', fontsize=9)
+        
+        # Set plot limits with margin
+        margin = 3
+        ax.set_xlim(-self.outer_length/2 - margin, self.outer_length/2 + margin)
+        ax.set_ylim(-self.outer_width/2 - margin, self.outer_width/2 + margin)
+        ax.set_aspect('equal')
+        ax.axis('off') # Turn off standard axes
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
