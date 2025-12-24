@@ -806,3 +806,82 @@ class Mat009:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+class Mat010:
+    
+    def __init__(self):
+        
+        self.v0 = rnd.randint(2,20)       # m/s (horizontal portion)
+        self.t_flat = rnd.randint(2,20) # seconds (time at constant speed)
+        self.t_decel = rnd.randint(2,20) # seconds (time to come to rest)
+        self.t_end = self.t_flat + self.t_decel
+
+        # Distances: rectangle + triangle
+        self.distance_flat = self.v0 * self.t_flat
+        self.distance_decel = 0.5 * self.v0 * self.t_decel
+        self.answer = round(self.distance_flat + self.distance_decel, 10)
+
+        self.description = (
+            f"The diagram shows the speed–time graph of part of a car journey. Calculate the total distance travelled during the {self.t_end} seconds."
+        )
+
+        self.topic = "Algebra and Graphs"
+        self.subtopic = "Graphs in practical situations"
+        self.source = "Adapted from specimen-style question"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Total Distance} &= \\text{Area under the speed-time graph} \\\\"
+            "&= \\text{Area of Rectangle (constant speed)} + \\text{Area of Triangle (deceleration)} \\\\"
+            "\\text{Area of Rectangle} &= \\text{speed} \\times \\text{time} \\\\"
+            f"&= {round(self.v0, 10)}\\,\\text{{m/s}} \\times {round(self.t_flat, 10)}\\,\\text{{s}} \\\\"
+            f"&= {round(self.distance_flat, 10)}\\,\\text{{m}} \\\\"
+            "\\text{Area of Triangle} &= \\frac{1}{2} \\times \\text{base} \\times \\text{height} \\\\"
+            f"&= \\frac{{1}}{{2}} \\times {round(self.t_decel, 10)}\\,\\text{{s}} \\times {round(self.v0, 10)}\\,\\text{{m/s}} \\\\"
+            f"&= {round(self.distance_decel, 10)}\\,\\text{{m}} \\\\"
+            "\\text{Total Distance} &= \\text{Area of Rectangle} + \\text{Area of Triangle} \\\\"
+            f"&= {round(self.distance_flat, 10)}\\,\\text{{m}} + {round(self.distance_decel, 10)}\\,\\text{{m}} \\\\"
+            f"&= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Draw the speed-time graph
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        # Plot the piecewise graph
+        ax.plot([0, self.t_flat], [self.v0, self.v0], color='black', lw=2)
+        ax.plot([self.t_flat, self.t_end], [self.v0, 0], color='black', lw=2)
+
+        # Dashed vertical at t_flat as in the original diagram
+        ax.vlines(self.t_flat, 0, self.v0, linestyles='dashed', colors='black', lw=1)
+
+        # Labels and axis limits
+        ax.set_xlabel('Time (seconds)')
+        ax.set_ylabel('Speed (m/s)')
+
+        ax.set_xlim(0, max(self.t_end + 0.5, 13))
+        ax.set_ylim(0, max(self.v0 * 1.2, 10))
+
+        ax.set_xticks([0, self.t_flat, self.t_end])
+        ax.set_xticklabels([f'0', f'{self.t_flat} s', f'{self.t_end} s'])
+
+        ax.set_yticks([0, self.v0])
+        ax.set_yticklabels([f'0', f'{self.v0} m/s'])
+
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        xmin, xmax = ax.get_xlim()
+        ymin, ymax = ax.get_ylim()
+        
+        ax.annotate('', xy=(xmax, 0), xytext=(xmax - 0.001 * (xmax - xmin + 1), 0), arrowprops=dict(arrowstyle='->', lw=1.2))
+        ax.annotate('', xy=(0, ymax), xytext=(0, ymax - 0.001 * (ymax - ymin + 1)), arrowprops=dict(arrowstyle='->', lw=1.2))
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150)
+        plt.close()
+        
