@@ -117,3 +117,101 @@ class Mat054:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat055:
+    
+    def __init__(self):
+        # Randomized Variables
+        # We use Pythagorean triples (a, b, c) to ensure the 'slant' and 'height'
+        # create a nice integer geometry, making the numbers cleaner for students.
+        # Triple format: (x_offset, height, slant_side)
+        self.triples = [
+            (3, 4, 5),
+            (5, 12, 13),
+            (6, 8, 10),
+            (7, 24, 25),
+            (8, 15, 17),
+            (9, 40, 41),
+        ]
+        
+        # Pick a random triple
+        self.x_offset, self.h, self.s = rnd.choice(self.triples)
+        
+        # Randomize base (b)
+        # Ensure base is larger than the offset to maintain standard shape
+        self.b = rnd.randint(self.x_offset + 6, self.x_offset + 16)
+
+        self.answer = self.b * self.h
+
+        self.description = (
+            f"Calculate the area of the parallelogram."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Area and perimeter"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Base }} (b) &= {self.b} \\\\"
+            f"\\text{{Height }} (h) &= {self.h} \\\\"
+            f"\\text{{Area}} &= b \\times h \\\\"
+            f"&= {self.b} \\times {self.h} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Vertices for Plotting
+        # Coordinates: (x, y)
+        vertices = np.array([
+            [0, 0],                                 # Bottom-left
+            [self.b, 0],                            # Bottom-right
+            [self.b + self.x_offset, self.h],       # Top-right
+            [self.x_offset, self.h]                 # Top-left
+        ])
+        
+        # Create Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Draw the main Parallelogram shape
+        polygon = patches.Polygon(vertices, closed=True, 
+                                facecolor='#E0F7FA', edgecolor='black', linewidth=2)
+        ax.add_patch(polygon)
+        
+        # Draw Perpendicular Height (Dotted Line)
+        # Dropping from Top-Left vertex (x_offset, h) straight down to (x_offset, 0)
+        ax.plot([self.x_offset, self.x_offset], [0, self.h], color='red', linestyle='--', linewidth=1.5)
+        
+        # Add Right Angle Marker
+        rect_size = min(self.b, self.h) * 0.05
+        rect = patches.Rectangle((self.x_offset, 0), rect_size, rect_size, 
+                                linewidth=1, edgecolor='red', facecolor='none')
+        ax.add_patch(rect)
+        
+        # Add Labels
+        
+        # Label Base
+        ax.text(self.b / 2, -self.h * 0.15, f"Base = {self.b}", 
+                ha='center', va='top', fontsize=12, fontweight='bold')
+        
+        # Label Slant Side
+        # Place label near the midpoint of the left slant edge
+        ax.text(self.x_offset / 2 - 0.5, self.h / 2, f"Slant = {self.s}", 
+                ha='right', va='center', fontsize=12)
+        
+        # Label Height
+        ax.text(self.x_offset + 0.2, self.h / 2, f"h = {self.h}", 
+                ha='left', va='center', color='red', fontsize=12)
+        
+        # Formatting the canvas
+        ax.set_xlim(-2, self.b + self.x_offset + 2)
+        ax.set_ylim(-1, self.h + 2)
+        ax.set_aspect('equal')
+        ax.axis('off')  # Hide standard axes
+        # plt.title("Example 2: Parallelogram (Area vs Perimeter)", fontsize=14)
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
