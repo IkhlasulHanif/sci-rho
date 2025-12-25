@@ -1356,3 +1356,96 @@ class Mat066:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat067:
+    
+    def __init__(self):
+        # Radius between 3 and 10
+        self.radius = rnd.randint(3, 10)
+        
+        # Constants
+        pi_approx = 3.14
+        
+        # Calculate Total Surface Area (TSA)
+        # TSA = Curved Surface Area (2*pi*r^2) + Base Area (pi*r^2) = 3*pi*r^2
+        tsa = 3 * pi_approx * (self.radius ** 2)
+
+        self.answer = round(tsa, 2)
+
+        self.description = (
+            f"Calculate the total surface area of the solid hemisphere. Use π = 3.14. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given radius (r)}} &= {self.radius} \\\\"
+            f"\\text{{Total Surface Area of a solid hemisphere}} &= 3\\pi r^2 \\\\"
+            f"&= 3 \\times 3.14 \\times ({self.radius})^2 \\\\"
+            f"&= 3 \\times 3.14 \\times {self.radius**2} \\\\"
+            f"&= {round(3 * 3.14 * self.radius**2, 10)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Figure
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # -- A. Create the hemisphere (Curved Surface) --
+        # Phi goes from 0 (top) to pi/2 (equator)
+        phi = np.linspace(0, np.pi/2, 30) 
+        theta = np.linspace(0, 2 * np.pi, 60)
+        phi_grid, theta_grid = np.meshgrid(phi, theta)
+        
+        x_dome = self.radius * np.sin(phi_grid) * np.cos(theta_grid)
+        y_dome = self.radius * np.sin(phi_grid) * np.sin(theta_grid)
+        z_dome = self.radius * np.cos(phi_grid)
+        
+        # Plot the curved surface
+        ax.plot_surface(x_dome, y_dome, z_dome, color='skyblue', alpha=0.5, 
+                        rstride=1, cstride=1, edgecolor='none', shade=True)
+        
+        # -- B. Create the base (Flat Circular Disk) --
+        # r goes from 0 to radius
+        r_base = np.linspace(0, self.radius, 20)
+        theta_base = np.linspace(0, 2*np.pi, 60)
+        r_grid, theta_grid_base = np.meshgrid(r_base, theta_base)
+        
+        x_base = r_grid * np.cos(theta_grid_base)
+        y_base = r_grid * np.sin(theta_grid_base)
+        z_base = np.zeros_like(x_base) # Base is at z=0
+        
+        # Plot the flat base
+        ax.plot_surface(x_base, y_base, z_base, color='royalblue', alpha=0.5, edgecolor='none')
+        
+        # -- C. Visual Enhancements --
+        # Draw a dark circle at the boundary to distinguish the "solid" edge
+        theta_edge = np.linspace(0, 2*np.pi, 100)
+        x_edge = self.radius * np.cos(theta_edge)
+        y_edge = self.radius * np.sin(theta_edge)
+        z_edge = np.zeros_like(x_edge)
+        ax.plot(x_edge, y_edge, z_edge, color='darkblue', linewidth=2)
+
+        # Draw the radius line
+        # From center (0,0,0) to a point on the edge (radius, 0, 0)
+        ax.plot([0, self.radius], [0, 0], [0, 0], 'r-', linewidth=3)
+        ax.text(self.radius/2, 0, self.radius*0.1, f'r = {self.radius}', color='red', 
+                fontsize=14, fontweight='bold', ha='center')
+        
+        # Mark the center
+        ax.scatter([0], [0], [0], color='black', s=50)
+
+        # Set aspect ratio to be accurate
+        ax.set_box_aspect([1,1,0.5]) 
+        ax.set_axis_off()
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
