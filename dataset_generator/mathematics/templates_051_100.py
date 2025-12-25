@@ -1027,3 +1027,99 @@ class Mat063:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat064:
+    
+    def __init__(self):
+        # Radius between 2 and 6 (so Diameter is 4 to 12)
+        self.radius = rnd.randint(2, 6)
+        self.diameter = self.radius * 2
+        
+        # Cylinder height usually larger than radius for a silo look
+        self.cyl_height = rnd.randint(self.radius + 2, self.radius + 10)
+
+        vol_cyl = self.radius**2 * self.cyl_height
+        vol_hemi = (2 / 3) * self.radius**3
+
+        self.answer = round(vol_cyl + vol_hemi, 2) # In terms of π m³
+
+        self.description = (
+            f"Calculate the total volume of the silo. Give your answer in terms of π. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Radius }} (r) &= {self.radius}\\\\"
+            f"\\text{{Height }} (h) &= {self.cyl_height}\\\\"
+            f"\\text{{Volume of Cylinder}} &= \\pi r^2 h\\\\"
+            f"&= \\pi ({self.radius})^2 ({self.cyl_height})\\\\"
+            f"&= {round(self.radius**2 * self.cyl_height, 10)}\\pi\\\\"
+            f"\\text{{Volume of Hemisphere}} &= \\frac{{2}}{{3}} \\pi r^3\\\\"
+            f"&= \\frac{{2}}{{3}} \\pi ({self.radius})^3\\\\"
+            f"&= {round((2/3) * self.radius**3, 10)}\\pi\\\\"
+            f"\\text{{Total Volume}} &= V_{{cyl}} + V_{{hemi}}\\\\"
+            f"&= {round(self.radius**2 * self.cyl_height, 10)}\\pi + {round((2/3) * self.radius**3, 10)}\\pi\\\\"
+            f"&= {self.answer}\\pi\\,\\text{{m}}^3"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Plot
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # --- Generate Cylinder Data ---
+        # Angle (theta) and Height (z)
+        theta = np.linspace(0, 2 * np.pi, 50)
+        z_cyl = np.linspace(0, self.cyl_height, 20)
+        theta_grid, z_grid = np.meshgrid(theta, z_cyl)
+        
+        x_cyl = self.radius * np.cos(theta_grid)
+        y_cyl = self.radius * np.sin(theta_grid)
+        
+        # --- Generate Hemisphere Data ---
+        # Phi (elevation) from 0 to pi/2 (top half), Theta (azimuth) 0 to 2pi
+        phi = np.linspace(0, np.pi / 2, 20)
+        phi_grid, theta_grid_sphere = np.meshgrid(phi, theta)
+        
+        x_sphere = self.radius * np.sin(phi_grid) * np.cos(theta_grid_sphere)
+        y_sphere = self.radius * np.sin(phi_grid) * np.sin(theta_grid_sphere)
+        z_sphere = self.radius * np.cos(phi_grid) + self.cyl_height # Shift up by cylinder height
+        
+        # --- Plotting ---
+        # Plot Cylinder
+        ax.plot_surface(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.25, edgecolor='k', linewidth=0.2)
+        
+        # Plot Hemisphere
+        ax.plot_surface(x_sphere, y_sphere, z_sphere, color='orange', alpha=0.25, edgecolor='k', linewidth=0.2)
+        
+        # Plot Bottom Circle (to close the silo)
+        r_bottom = np.linspace(0, self.radius, 10)
+        r_grid, theta_grid_bottom = np.meshgrid(r_bottom, theta)
+        x_bottom = r_grid * np.cos(theta_grid_bottom)
+        y_bottom = r_grid * np.sin(theta_grid_bottom)
+        z_bottom = np.zeros_like(x_bottom)
+        ax.plot_surface(x_bottom, y_bottom, z_bottom, color='cyan', alpha=0.6)
+
+        # --- Annotations ---
+        # Draw a line indicating Height
+        ax.plot([self.radius * 1.5, self.radius * 1.5], [0, 0], [0, self.cyl_height], color='black', linestyle='--')
+        ax.text(self.radius * 1.6, 0, self.cyl_height / 2, f'h = {self.cyl_height}m', color='black', fontsize=12)
+        
+        # Draw a line indicating Diameter
+        # We draw it at the bottom or top of the cylinder
+        ax.plot([-self.radius, self.radius], [0, 0], [0, 0], color='red', linestyle='-', linewidth=2)
+        ax.text(0, 0, -1, f'd = {self.diameter}m', color='red', fontsize=12)
+
+        # Formatting the Plot
+        ax.set_box_aspect((self.diameter, self.diameter, self.cyl_height + self.radius))  # Aspect ratio to look realistic
+        ax.set_axis_off() # Turn off the grid box for a cleaner "diagram" look
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
