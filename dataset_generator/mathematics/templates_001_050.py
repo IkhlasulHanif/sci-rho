@@ -1006,7 +1006,8 @@ class Mat011:
         
 class Mat012:
     def __init__(self):
-        # This ensures the roots are integers, making them "snap" to the grid perfectly.
+        # Parameter Selection with Perfect Square Discriminant
+        # This ensures roots snap perfectly to the grid.
         while True:
             r1 = rnd.randint(-3, 1)
             r2 = rnd.randint(r1 + 1, 3)
@@ -1014,22 +1015,18 @@ class Mat012:
             self.b = -(r1 + r2)
             self.c = r1 * r2
             
-            # The gap between the original integer roots r1 and r2
             gap = abs(r1 - r2)
             gap_sq = gap**2
             
-            # We want b^2 - 4(c - d) = k^2. 
-            # Since b^2 - 4c = gap_sq, we need gap_sq + 4d = k^2.
-            # This requires k to have the same parity as the gap (both even or both odd).
+            # Logic: gap_sq + 4d = k^2 to ensure integer roots for the intersection
             valid_ds = []
             for k in range(gap + 2, gap + 10, 2):
                 d_val = (k**2 - gap_sq) // 4
-                if 1 <= d_val <= 6: # Ensure d is a visible positive integer
+                if 1 <= d_val <= 6: 
                     valid_ds.append(d_val)
             
             if valid_ds:
                 self.d = rnd.choice(valid_ds)
-                # Calculate exact roots for the chosen intersection line y = d
                 discriminant = self.b**2 - 4 * (self.c - self.d)
                 k_val = int(np.round(np.sqrt(discriminant)))
                 
@@ -1040,11 +1037,23 @@ class Mat012:
 
         self.answer = f"x = {self.roots[0]} or x = {self.roots[1]}"
         
-        graph_eq = f"y = x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c, '')}"
-        c_minus_d = self.c - self.d
-        target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(c_minus_d, '')} = 0"
+        # Polynomial formatting helper
+        def fmt_poly(coeff, var):
+            if coeff == 0: return ""
+            sign = "+" if coeff > 0 else "-"
+            val = abs(coeff)
+            val_str = "" if (val == 1 and var != "") else str(val)
+            return f" {sign} {val_str}{var}"
+
+        # Equations for reasoning
+        graph_eq_y = f"y = x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c, '')}"
+        target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c - self.d, '')} = 0"
         
-        self.description = f"The graph of ${graph_eq}$ is shown on the grid. Use the graph to solve the equation ${target_eq}$."
+        self.description = (
+            f"The graph of a quadratic function is shown on the grid. "
+            f"By first determining the equation of the graph, use it to solve ${target_eq}$."
+        )
+        
         self.topic = "Algebra and Graphs"
         self.subtopic = "Graphs of functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 12"
@@ -1052,39 +1061,42 @@ class Mat012:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{The given equation to solve is:}} & {target_eq} \\\\"
-            f"\\text{{Identify the function shown on the graph:}} & y = x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c, '')} \\\\"
-            "\\text{Rearrange the given equation to isolate the graph function:} & \\\\"
-            f"x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c, '')} - {self.d} &= 0 \\\\"
+            "\\text{1. Determine the equation of the graph:} & \\\\"
+            f"\\text{{Identify intercepts: }} & x_1 = {r1}, \\, x_2 = {r2}, \\, y\\text{{-intercept}} = {self.c} \\\\"
+            "\\text{Function form: } y &= (x - r_1)(x - r_2) \\\\"
+            f"y &= (x - ({r1}))(x - ({r2})) \\\\"
+            f"{graph_eq_y} & \\\\"
+            "\\text{2. Solve the target equation using the graph:} & \\\\"
+            f"\\text{{Target: }} x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c - self.d, '')} &= 0 \\\\"
+            "\\text{Rearrange to match the graph function: } & \\\\"
             f"x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c, '')} &= {self.d} \\\\"
-            f"\\text{{This corresponds to the intersection of the curve and the line }} y &= {self.d} \\\\"
-            "\\text{Identify the x-coordinates of these intersections from the graph:} & \\\\"
-            f"x_1 &= {self.roots[0]} \\\\"
-            f"x_2 &= {self.roots[1]} \\\\"
-            f"\\text{{The roots are: }} x &= {self.roots[0]} \\text{{ or }} x = {self.roots[1]}"
+            f"\\text{{Find intersections of the curve and line }} y &= {self.d} \\\\"
+            f"\\text{{From the graph, at }} y = {self.d}, \\text{{ we find:}} & \\\\"
+            f"x_1 &= {self.roots[0]}, \\quad x_2 = {self.roots[1]} \\\\"
+            f"\\text{{Final Result: }} & x_1 = {self.roots[0]} \\text{{ or }} x_2 = {self.roots[1]}"
             "\\end{aligned}\\]"
         )
         
+        print(self.reasoning)
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 8))
 
         x = np.linspace(-5, 5, 400)
         y = self.a * x**2 + self.b * x + self.c
 
-        # Draw axes
         ax.axhline(0, color='black', linewidth=1.2)
         ax.axvline(0, color='black', linewidth=1.2)
+        ax.plot(x, y, color='black', linewidth=1.8)
 
-        # Plot curve
-        ax.plot(x, y, color='black', linewidth=1.5)
+        # Draw the intersection line y=d as a faint guide
+        ax.axhline(self.d, color='gray', linestyle='--', linewidth=0.8, alpha=0.5)
 
-        # Grid and Ticks
+        # Configuration for IGCSE dense grid
         ax.set_xlim(-4, 4)
         ax.set_ylim(-7, 7)
         ax.set_xticks(np.arange(-4, 5, 1))
         ax.set_yticks(np.arange(-7, 8, 1))
-        
-        # Explicitly snap minor grid to 0.1 increments
         ax.minorticks_on()
         ax.xaxis.set_minor_locator(MultipleLocator(0.1))
         ax.yaxis.set_minor_locator(MultipleLocator(0.1))
@@ -1095,8 +1107,16 @@ class Mat012:
         ax.set_xlabel('x', loc='right')
         ax.set_ylabel('y', loc='top', rotation=0)
 
+        # Annotate intercepts to help candidates determine the equation
+        # x-intercepts
+        ax.plot([-(self.b/2 - np.sqrt(self.b**2 - 4*self.c)/2), -(self.b/2 + np.sqrt(self.b**2 - 4*self.c)/2)], 
+                [0, 0], 'ko', markersize=4)
+        # y-intercept
+        ax.plot(0, self.c, 'ko', markersize=4)
+
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.savefig(dest_image_path, dpi=200, bbox_inches='tight')
         plt.close(fig)
         
 class Mat032:
