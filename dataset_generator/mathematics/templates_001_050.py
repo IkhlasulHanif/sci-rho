@@ -663,13 +663,13 @@ class Mat009:
         self.min_rest_time = 0.0 # hours
         self.max_rest_time = self.max_travel_time
         
-        self.time_at_b = round(self.departure_time + self.randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
-        self.time_leave_b = round(self.time_at_b + self.randrange_float(self.min_rest_time, self.max_rest_time + unit, unit), 2)
+        self.time_at_b = round(self.departure_time + randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
+        self.time_leave_b = round(self.time_at_b + randrange_float(self.min_rest_time, self.max_rest_time + unit, unit), 2)
 
-        self.time_at_c = round(self.time_leave_b + self.randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
-        self.time_leave_c = round(self.time_at_c + self.randrange_float(self.min_rest_time, self.max_rest_time + unit, unit), 2)
+        self.time_at_c = round(self.time_leave_b + randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
+        self.time_leave_c = round(self.time_at_c + randrange_float(self.min_rest_time, self.max_rest_time + unit, unit), 2)
         
-        self.time_at_d = round(self.time_leave_c + self.randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
+        self.time_at_d = round(self.time_leave_c + randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
         self.arrival_time = self.time_at_d
 
         dist_ab = round(self.town_b_pos - self.town_a_pos, 10)
@@ -707,15 +707,6 @@ class Mat009:
             f"&= {self.answer}\\,\\text{{km/h}}"
             "\\end{aligned}\\]"
         )
-        
-    def randrange_float(self, start, stop, step):
-        """
-        Generates a random float number N such that start <= N < stop, 
-        with a specific step size.
-        """
-        num_steps = int((stop - start) / step)
-        random_step = rnd.randint(0, num_steps)
-        return start + random_step * step
         
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 8))
@@ -988,12 +979,6 @@ class Mat011:
         ax.grid(which='major', linestyle='-', linewidth=0.6, color='gray', alpha=0.9)
         ax.grid(which='minor', linestyle=':', linewidth=0.6, color='gray', alpha=0.9)
 
-        def fmt_time(x, pos=None):
-            total_minutes = int(round(x * 60))
-            hh = (total_minutes // 60) % 24
-            mm = total_minutes % 60
-            return f"{hh:02d}:{mm:02d}"
-
         ax.xaxis.set_major_formatter(FuncFormatter(fmt_time))
 
         xmin = self.leave_office_hour - 1.0
@@ -1021,92 +1006,95 @@ class Mat011:
         
 class Mat012:
     def __init__(self):
-        # Randomized intercepts (ensuring non-zero to avoid vertical/horizontal lines)
-        self.x_int = rnd.choice([i for i in range(-6, 7) if i != 0])
-        self.y_int = rnd.choice([i for i in range(-6, 7) if i != 0])
-        
-        a = self.x_int
-        b = self.y_int
-        
-        self.m = Fraction(-b, a)
-        self.c = b
-        
-        # Formatting the equation string
-        m_num, m_den = self.m.numerator, self.m.denominator
-        if m_den == 1:
-            m_str = f"{m_num}" if m_num != 1 else ""
-            m_str = f"-{abs(m_num)}" if m_num == -1 else m_str
-        else:
-            m_str = f"{m_num}/{m_den}"
+        # This ensures the roots are integers, making them "snap" to the grid perfectly.
+        while True:
+            r1 = rnd.randint(-3, 1)
+            r2 = rnd.randint(r1 + 1, 3)
+            self.a = 1
+            self.b = -(r1 + r2)
+            self.c = r1 * r2
             
-        sign = "+" if self.c > 0 else "-"
-        self.answer = f"y = {m_str}x {sign} {abs(self.c)}"
+            # The gap between the original integer roots r1 and r2
+            gap = abs(r1 - r2)
+            gap_sq = gap**2
+            
+            # We want b^2 - 4(c - d) = k^2. 
+            # Since b^2 - 4c = gap_sq, we need gap_sq + 4d = k^2.
+            # This requires k to have the same parity as the gap (both even or both odd).
+            valid_ds = []
+            for k in range(gap + 2, gap + 10, 2):
+                d_val = (k**2 - gap_sq) // 4
+                if 1 <= d_val <= 6: # Ensure d is a visible positive integer
+                    valid_ds.append(d_val)
+            
+            if valid_ds:
+                self.d = rnd.choice(valid_ds)
+                # Calculate exact roots for the chosen intersection line y = d
+                discriminant = self.b**2 - 4 * (self.c - self.d)
+                k_val = int(np.round(np.sqrt(discriminant)))
+                
+                r1_f = (-self.b - k_val) / 2
+                r2_f = (-self.b + k_val) / 2
+                self.roots = sorted([int(r1_f), int(r2_f)])
+                break
+
+        self.answer = f"x = {self.roots[0]} or x = {self.roots[1]}"
         
-        self.description = f"The line L is shown on the grid. Find the equation of line L in the form y = mx + c."
+        graph_eq = f"y = x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c, '')}"
+        c_minus_d = self.c - self.d
+        target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(c_minus_d, '')} = 0"
+        
+        self.description = f"The graph of ${graph_eq}$ is shown on the grid. Use the graph to solve the equation ${target_eq}$."
         self.topic = "Algebra and Graphs"
         self.subtopic = "Graphs of functions"
-        self.source = "Adapted from 2025-specimen-paper-1"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 12"
         self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Identify the intercepts from the graph:}} &\\\\"
-            f"\\text{{x-intercept}} &= ({self.x_int}, 0)\\\\"
-            f"\\text{{y-intercept}} &= (0, {self.y_int})\\\\"
-            "\\text{The gradient } m \\text{ is given by:} &\\\\"
-            "m &= \\frac{y_2 - y_1}{x_2 - x_1}\\\\"
-            f"&= \\frac{{{self.y_int} - 0}}{{0 - ({self.x_int})}}\\\\"
-            f"&= {m_str}\\\\"
-            "\\text{The y-intercept } c \\text{ is the value where the line crosses the y-axis:} &\\\\"
-            f"c &= {self.y_int}\\\\"
-            "\\text{Substitute } m \\text{ and } c \\text{ into the equation } y = mx + c: &\\\\"
-            f"{self.answer}"
+            f"\\text{{The given equation to solve is:}} & {target_eq} \\\\"
+            f"\\text{{Identify the function shown on the graph:}} & y = x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c, '')} \\\\"
+            "\\text{Rearrange the given equation to isolate the graph function:} & \\\\"
+            f"x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c, '')} - {self.d} &= 0 \\\\"
+            f"x^2 {fmt_poly(self.b, 'x')} {fmt_poly(self.c, '')} &= {self.d} \\\\"
+            f"\\text{{This corresponds to the intersection of the curve and the line }} y &= {self.d} \\\\"
+            "\\text{Identify the x-coordinates of these intersections from the graph:} & \\\\"
+            f"x_1 &= {self.roots[0]} \\\\"
+            f"x_2 &= {self.roots[1]} \\\\"
+            f"\\text{{The roots are: }} x &= {self.roots[0]} \\text{{ or }} x = {self.roots[1]}"
             "\\end{aligned}\\]"
         )
         
-        print(self.reasoning)
-
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 6))
+        fig, ax = plt.subplots(figsize=(8, 8))
 
-        # Intercepts and line parameters
-        a = float(self.x_int)
-        b = float(self.y_int)
-        m = float(self.m)
-        c = float(self.c)
+        x = np.linspace(-5, 5, 400)
+        y = self.a * x**2 + self.b * x + self.c
 
-        xmin, xmax = -7, 7
+        # Draw axes
+        ax.axhline(0, color='black', linewidth=1.2)
+        ax.axvline(0, color='black', linewidth=1.2)
 
-        # Draw axes (x and y) through origin
-        ax.axhline(0, color='black', linewidth=1)
-        ax.axvline(0, color='black', linewidth=1)
+        # Plot curve
+        ax.plot(x, y, color='black', linewidth=1.5)
 
-        # Annotate intercepts (offset so text doesn't overlap points)
-        ax.annotate(f'({int(a) if a.is_integer() else a}, 0)', xy=(a, 0), xytext=(6, -12),
-                    textcoords='offset points', fontsize=10)
-        ax.annotate(f'(0, {int(b) if b.is_integer() else b})', xy=(0, b), xytext=(6, 6),
-                    textcoords='offset points', fontsize=10)
-
-        # Configure ticks and limits so intercepts are clearly visible
-        ax.set_xticks(list(range(-7, 8)))
-        ax.set_yticks(list(range(-7, 8)))
-        ax.set_xlim(xmin - 0.5, xmax + 0.5)
-        ax.set_ylim(-7.5, 7.5)
-
-        ax.set_xlabel('x')
-        ax.set_ylabel('y')
+        # Grid and Ticks
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(-7, 7)
+        ax.set_xticks(np.arange(-4, 5, 1))
+        ax.set_yticks(np.arange(-7, 8, 1))
         
-        # Draw the line
-        x0, x1 = ax.get_xlim()
-        ax.plot([x0, x1], [m*x0 + c, m*x1 + c], color='black', linewidth=1)
+        # Explicitly snap minor grid to 0.1 increments
+        ax.minorticks_on()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.1))
         
-        # Mark intercept points clearly
-        ax.plot([a], [0], marker='o', color='red')
-        ax.plot([0], [b], marker='o', color='red')
+        ax.grid(which='major', linestyle='-', linewidth=0.8, color='gray', alpha=0.5)
+        ax.grid(which='minor', linestyle=':', linewidth=0.4, color='gray', alpha=0.3)
 
-        ax.grid(which='major', linestyle=':', linewidth=0.5)
+        ax.set_xlabel('x', loc='right')
+        ax.set_ylabel('y', loc='top', rotation=0)
 
-        # Save image
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close(fig)
