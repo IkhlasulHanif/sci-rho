@@ -1076,8 +1076,6 @@ class Mat012:
             f"\\text{{Final Result: }} & x_1 = {self.roots[0]} \\text{{ or }} x_2 = {self.roots[1]}"
             "\\end{aligned}\\]"
         )
-        
-        print(self.reasoning)
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 8))
@@ -1117,6 +1115,133 @@ class Mat012:
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=200, bbox_inches='tight')
+        plt.close(fig)
+        
+class Mat013:
+    def __init__(self):
+        # Define roots for the graphed cubic function
+        # Selecting roots within a range that keeps the graph visible and centered
+        g_r = rnd.sample([-2, -1, 0, 1, 2, 3, 4], 3)
+        g_r.sort()
+        self.graph_roots = g_r
+        
+        # Leading coefficient
+        self.a = rnd.choice([1, -1])
+        
+        # Calculate coefficients for Graph: y = a(x - r1)(x - r2)(x - r3)
+        # Expanded: y = a*x^3 + b*x^2 + c*x + d
+        sum_g = sum(self.graph_roots)
+        sum_prod_g = (g_r[0]*g_r[1] + g_r[0]*g_r[2] + g_r[1]*g_r[2])
+        prod_g = (g_r[0]*g_r[1]*g_r[2])
+        
+        self.b = int(-self.a * sum_g)
+        self.c = int(self.a * sum_prod_g)
+        self.d = int(-self.a * prod_g)
+
+        # Define TARGET roots (the solution to the equation)
+        # To ensure the student draws a STRAIGHT LINE, the x^2 coefficient of the target equation must equal 'self.b'.
+        # Since b = -a * (sum of roots), the target roots must have the same sum.
+        while True:
+            t_r = rnd.sample([-3, -2, -1, 0, 1, 2, 3, 4, 5], 3)
+            if sum(t_r) == sum_g and sorted(t_r) != self.graph_roots:
+                t_r.sort()
+                self.target_roots = t_r
+                break
+        
+        # Multiplier forced to 1 as requested
+        self.e = 1
+        
+        # Target Equation coefficients (e=1, so T_A=a, T_B=b)
+        t_sum_prod = (self.target_roots[0]*self.target_roots[1] + 
+                      self.target_roots[0]*self.target_roots[2] + 
+                      self.target_roots[1]*self.target_roots[2])
+        t_prod = (self.target_roots[0]*self.target_roots[1]*self.target_roots[2])
+        
+        T_A = self.a
+        T_B = self.b # Guaranteed by sum(target_roots) == sum_g
+        T_C = int(self.a * t_sum_prod)
+        T_D = int(-self.a * t_prod)
+
+        # Calculate the line y = mx + k
+        # Target Equation: ax^3 + bx^2 + T_C*x + T_D = 0
+        # Graph Equation:  y = ax^3 + bx^2 + cx + d
+        # Subtracting:     y - (cx + d) = -(T_C*x + T_D)
+        # Resulting Line:  y = (c - T_C)x + (d - T_D)
+        self.m = int(self.c - T_C)
+        self.k = int(self.d - T_D)
+
+        # LaTeX strings for equations
+        graph_eq_str = f"y = {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')}"
+        target_eq_str = f"{fmt_poly(T_A, 'x^3', True)}{fmt_poly(T_B, 'x^2')}{fmt_poly(T_C, 'x')}{fmt_poly(T_D, '')} = 0"
+        
+        self.answer = " or ".join([f"x = {r}" for r in self.target_roots])
+        
+        self.description = f"By drawing a suitable straight line on the grid, solve the equation ${target_eq_str}$."
+        self.topic = "Algebra and Graphs"
+        self.subtopic = "Graphs of functions"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 41"
+        self.curriculum = "IGCSE"
+        
+        # Revised Reasoning
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{1. Determine the cubic equation from the x-intercepts on the graph:} & \\\\"
+            f"\\text{{Roots from grid: }} x_1 &= {round(float(self.graph_roots[0]), 10)}, \\, x_2 = {round(float(self.graph_roots[1]), 10)}, \\, x_3 = {round(float(self.graph_roots[2]), 10)} \\\\"
+            "\\text{The equation is in the form: } y &= a(x - x_1)(x - x_2)(x - x_3) \\\\"
+            f"y &= {self.a}(x - ({round(float(self.graph_roots[0]), 10)}))(x - ({round(float(self.graph_roots[1]), 10)}))(x - ({round(float(self.graph_roots[2]), 10)})) \\\\"
+            f"\\text{{Expanded function: }} y &= {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')} \\\\"
+            "\\text{2. Rearrange the target equation to involve the graph function:} & \\\\"
+            f"\\text{{Target: }} {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(int(self.c - self.m), 'x')}{fmt_poly(int(self.d - self.k), '')} &= 0 \\\\"
+            "\\text{Observe that the cubic and quadratic terms already match the graph's coefficients:} & \\\\"
+            f"{fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')} &= -({round(float(self.c - self.m), 10)})x - ({round(float(self.d - self.k), 10)}) \\\\"
+            "\\text{3. Add } cx + d \\text{ to both sides to form the full graph function } y: & \\\\"
+            f"{fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')} &= ({round(float(self.c), 10)})x + ({round(float(self.d), 10)}) - ({round(float(self.c - self.m), 10)})x - ({round(float(self.d - self.k), 10)}) \\\\"
+            f"y &= ({round(float(self.c), 10)} - {round(float(self.c - self.m), 10)})x + ({round(float(self.d), 10)} - {round(float(self.d - self.k), 10)}) \\\\"
+            f"y &= {fmt_poly(self.m, 'x', True)}{fmt_poly(self.k, '')} \\\\"
+            f"\\text{{The solutions are the x-coordinates where the curve and the line }} y &= {fmt_poly(self.m, 'x', True)}{fmt_poly(self.k, '')} \\text{{ intersect.}} \\\\"
+            "\\text{4. Identify the x-coordinates of these intersection points from the grid:} & \\\\"
+            f"x_1 &= {round(float(self.target_roots[0]), 10)}, \\, x_2 = {round(float(self.target_roots[1]), 10)}, \\, x_3 = {round(float(self.target_roots[2]), 10)} \\\\"
+            f"\\text{{Final Result: }} & {self.answer}"
+            "\\end{aligned}\\]"
+        )
+                        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        x_plot = np.linspace(-3.5, 5.5, 500)
+        y_cubic = self.a * x_plot**3 + self.b * x_plot**2 + self.c * x_plot + self.d
+
+        # Axis information and major/minor lines
+        ax.axhline(0, color='black', linewidth=2)
+        ax.axvline(0, color='black', linewidth=2)
+        ax.plot(x_plot, y_cubic, color='black', linewidth=1)
+
+        for root in self.graph_roots:
+            ax.plot(root, 0, 'ko', markersize=5)  # Plot a black dot at the root
+            ax.annotate(f'({root}, 0)', 
+                        xy=(root, 0), 
+                        xytext=(0, 10), 
+                        textcoords='offset points', 
+                        ha='center', 
+                        fontsize=10, 
+                        fontweight='bold')
+
+        # Ensure axis markings are clear for candidates to identify roots
+        ax.set_xticks(np.arange(-3, 6, 1))
+        ax.set_yticks(np.arange(-30, 51, 10))
+        ax.set_xlim(-3, 5.5)
+        ax.set_ylim(-30, 50)
+        
+        ax.minorticks_on()
+        ax.grid(which='major', linestyle='-', linewidth=1, color='black', alpha=0.3)
+        ax.grid(which='minor', linestyle=':', linewidth=0.5, color='gray', alpha=0.2)
+
+        ax.set_xlabel('x', loc='right', fontweight='bold')
+        ax.set_ylabel('y', loc='top', rotation=0, fontweight='bold')
+
+        if not os.path.exists(DESTINATION_FOLDER):
+            os.makedirs(DESTINATION_FOLDER)
+
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
         
 class Mat032:
@@ -1163,7 +1288,7 @@ class Mat032:
             f"{self.answer}"
             "\\end{aligned}\\]"
         )
-
+        
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(6, 6))
 
