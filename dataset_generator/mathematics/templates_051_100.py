@@ -721,3 +721,89 @@ class Mat060:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat061:
+    
+    def __init__(self):
+        self.width = rnd.randint(4, 12) # In cm
+        self.height = rnd.randint(4, 10) # In cm
+        
+        self.radius = self.width / 2 # In cm
+
+        self.answer = round(self.width + (2 * self.height) + (0.5 * math.pi * self.width), 2) # In cm
+
+        self.description = (
+            f"Calculate the total perimeter of the window frame. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Circles, arcs and sectors"
+        self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Width }} (w) &= {self.width}\\,\\text{{cm}} \\\\"
+            f"\\text{{Height }} (h) &= {self.height}\\,\\text{{cm}} \\\\"
+            f"\\text{{Perimeter}} &= w + 2h + \\frac{{1}}{{2}}\\pi w \\\\"
+            f"&= {self.width} + 2({self.height}) + 0.5 \\pi ({self.width}) \\\\"
+            f"&= {self.width} + {2 * self.height} + {round(0.5 * math.pi * self.width, 10)} \\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(6, 8))
+        
+        # Create Shapes
+        # Rectangle: Origin at (0,0)
+        rect = patches.Rectangle(
+            (0, 0), self.width, self.height, 
+            linewidth=2, edgecolor='black', facecolor='#d9ebf9'
+        )
+        
+        # Semicircle: Center at (width/2, height), Radius = width/2
+        # Theta from 0 to 180 degrees
+        semicircle = patches.Wedge(
+            (self.radius, self.height), self.radius, 0, 180, 
+            linewidth=2, edgecolor='black', facecolor='#d9ebf9'
+        )
+        
+        # Add patches to the axes
+        ax.add_patch(rect)
+        ax.add_patch(semicircle)
+        
+        # Add Dimension Annotations (Arrows and Text)
+        
+        # Width Annotation (Bottom)
+        ax.annotate(
+            text='', 
+            xy=(0, -0.5), xytext=(self.width, -0.5),
+            arrowprops=dict(arrowstyle='<->', lw=1.5),
+            ha='center', va='center', fontsize=12,
+            xycoords='data', textcoords='data'
+        )
+        # Label position correction (centering text on the arrow)
+        ax.text(self.width/2, -1.0, f'Width = {self.width} cm', ha='center', va='center', fontsize=12)
+
+        # Height Annotation (Right Side)
+        ax.annotate(
+            text='', 
+            xy=(self.width + 0.5, 0), xytext=(self.width + 0.5, self.height),
+            arrowprops=dict(arrowstyle='<->', lw=1.5),
+            xycoords='data', textcoords='data'
+        )
+        ax.text(self.width + 1.0, self.height/2, f'Height = {self.height} cm', ha='left', va='center', rotation=270, fontsize=12)
+
+        # Set Limits and Hide Axes
+        # Add some padding to the limits so annotations fit
+        ax.set_xlim(-1, self.width + 2) 
+        ax.set_ylim(-2, self.height + self.radius + 1)
+        ax.set_aspect('equal')
+        ax.axis('off') # Turn off the X and Y axis grid/numbers
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
