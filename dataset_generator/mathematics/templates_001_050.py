@@ -803,7 +803,6 @@ class Mat009:
 class Mat010:
     
     def __init__(self):
-        
         self.v0 = rnd.randint(2,20)       # m/s (horizontal portion)
         self.t_flat = rnd.randint(2,20) # seconds (time at constant speed)
         self.t_decel = rnd.randint(2,20) # seconds (time to come to rest)
@@ -881,7 +880,6 @@ class Mat010:
 class Mat011:
     
     def __init__(self):
-        
         self.distance_meeting = int(rnd.randint(4, 14))  # km
         
         self.leave_office_hour = rnd.randint(4, 9)
@@ -945,8 +943,6 @@ class Mat011:
         )
 
     def generate(self, num):
-        plt.close()
-
         # Compute key times in decimal hours
         depart_time = self.leave_office_hour + self.leave_office_minute / 60.0
         arrive_time = self.arrive_meeting_hour + self.arrive_meeting_minute / 60.0
@@ -1005,6 +1001,7 @@ class Mat011:
         plt.close()
         
 class Mat012:
+    
     def __init__(self):
         # Parameter Selection with Perfect Square Discriminant
         # This ensures roots snap perfectly to the grid.
@@ -1118,6 +1115,7 @@ class Mat012:
         plt.close(fig)
         
 class Mat013:
+    
     def __init__(self):
         # Define roots for the graphed cubic function
         # Selecting roots within a range that keeps the graph visible and centered
@@ -1242,6 +1240,7 @@ class Mat013:
         plt.close(fig)
         
 class Mat014:
+    
     def __init__(self):
         # Randomized Parameters
         self.a = rnd.randint(5, 50)  # Random initial population
@@ -1293,7 +1292,6 @@ class Mat014:
         )
         
     def generate(self, num):
-        plt.switch_backend('Agg')
         fig, ax = plt.subplots(figsize=(10, 8))
         
         t_plot = np.linspace(0, 5, 500)
@@ -1344,6 +1342,7 @@ class Mat014:
         plt.close(fig)
         
 class Mat015:
+    
     def __init__(self):
         # Randomized Parameters for Decay
         # Initial value 'a' is set higher to allow for visible decay over time
@@ -1396,7 +1395,6 @@ class Mat015:
         )
         
     def generate(self, num):
-        plt.switch_backend('Agg')
         fig, ax = plt.subplots(figsize=(10, 8))
         
         t_plot = np.linspace(0, 5, 500)
@@ -1437,6 +1435,7 @@ class Mat015:
         
         
 class Mat032:
+    
     def __init__(self):
         # Randomized intercepts (ensuring non-zero to avoid vertical/horizontal lines)
         self.x_int = rnd.choice([i for i in range(-6, 7) if i != 0])
@@ -1527,6 +1526,7 @@ class Mat032:
         plt.close(fig)
         
 class Mat042:
+    
     def __init__(self):
         # Property: In a rhombus, adjacent angles sum to 180 degrees.
         # We define angles as k1*a and k2*a such that (k1 + k2) * a = 180.
@@ -1633,6 +1633,102 @@ class Mat042:
         # Dynamic axis limits
         ax.set_xlim(min(pts[:,0]) - 2, max(pts[:,0]) + 4)
         ax.set_ylim(min(pts[:,1]) - 2, max(pts[:,1]) + 2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)
+        
+class Mat043:
+    
+    def __init__(self):
+        # Base angles of isosceles triangle ABC
+        # AB = AC implies base angles ABC and ACB are equal
+        self.angle_B = randrange_float(40.0, 70.0, 0.01)
+        self.angle_C = self.angle_B
+        
+        # Calculate max bound for ADC to maintain DAC > 5 degrees
+        # Sum of angles in triangle ADC: DAC + ADC + ACD = 180
+        max_ADC = 175.0 - self.angle_C
+        self.angle_ADC = randrange_float(self.angle_C + 5.0, max_ADC, 0.01)
+        
+        # Calculate target angle DAC using triangle sum property
+        target_raw = 180.0 - self.angle_ADC - self.angle_C
+        self.target_angle = round(target_raw, 2)
+        
+        self.answer = int(self.target_angle) if self.target_angle.is_integer() else self.target_angle
+
+        self.description = (
+            f"$BDC$ is a straight line, $AB = AC$, angle $ABD = {round(self.angle_B, 2)}^\\circ$ "
+            f"and angle $ADC = {round(self.angle_ADC, 2)}^\\circ$. \\\\ Work out angle $DAC$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Angles"
+        self.source = "Adapted from 2025-specimen-paper-2"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given that }} AB = AC, \\text{{ triangle }} ABC \\text{{ is an isosceles triangle.}} &\\\\"
+            f"\\text{{The base angles of an isosceles triangle are equal:}} &\\\\"
+            f"\\angle ACB &= \\angle ABC\\\\"
+            f"&= {round(self.angle_B, 10)}^\\circ\\\\"
+            f"\\text{{Since }} BDC \\text{{ is a straight line, }} \\angle ACD = \\angle ACB. &\\\\"
+            f"\\text{{In triangle }} ADC, \\text{{ the sum of interior angles is }} 180^\\circ: &\\\\"
+            f"\\angle DAC + \\angle ADC + \\angle ACD &= 180^\\circ\\\\"
+            f"\\angle DAC + {round(self.angle_ADC, 10)}^\\circ + {round(self.angle_C, 10)}^\\circ &= 180^\\circ\\\\"
+            f"\\angle DAC + {round(self.angle_ADC + self.angle_C, 10)}^\\circ &= 180^\\circ\\\\"
+            f"\\angle DAC &= 180^\\circ - {round(self.angle_ADC + self.angle_C, 10)}^\\circ\\\\"
+            f"\\angle DAC &= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        base_w = 10
+        B = np.array([0, 0])
+        C = np.array([base_w, 0])
+        
+        # Geometric construction of the isosceles triangle
+        rad_B = np.radians(self.angle_B)
+        h = (base_w / 2) * np.tan(rad_B)
+        A = np.array([base_w / 2, h])
+        
+        # Position D on BC segment via Sine Rule in triangle ADC
+        AC_len = np.linalg.norm(A - C)
+        DC_len = (AC_len * np.sin(np.radians(self.target_angle))) / np.sin(np.radians(self.angle_ADC))
+        D = np.array([base_w - DC_len, 0])
+        
+        # Drawing segments
+        lines = [[A, B], [B, C], [C, A], [A, D]]
+        for line in lines:
+            ax.plot([line[0][0], line[1][0]], [line[0][1], line[1][1]], color='black', lw=1)
+            
+        # Labeling vertices
+        ax.text(A[0], A[1] + 0.3, "A", fontsize=14, ha='center')
+        ax.text(B[0] - 0.3, B[1] - 0.5, "B", fontsize=14, ha='center')
+        ax.text(C[0] + 0.3, C[1] - 0.5, "C", fontsize=14, ha='center')
+        ax.text(D[0], D[1] - 0.5, "D", fontsize=14, ha='center')
+        
+        # Marks for equal side lengths
+        add_marking(ax, A, B)
+        add_marking(ax, A, C)
+        
+        # Use raw f-strings (rf) to fix SyntaxWarning with LaTeX backslashes
+        arc_B = patches.Arc(B, 2, 2, theta1=0, theta2=self.angle_B, color='black')
+        ax.add_patch(arc_B)
+        ax.text(B[0] + 1.2, B[1] + 0.4, rf"{round(self.angle_B, 2)}$^\circ$", fontsize=12)
+        
+        arc_D = patches.Arc(D, 1.5, 1.5, theta1=0, theta2=self.angle_ADC, color='black')
+        ax.add_patch(arc_D)
+        ax.text(D[0] + 0.4, D[1] + 0.7, rf"{round(self.angle_ADC, 2)}$^\circ$", fontsize=12)
+        
+        ax.text(base_w + 1, h / 2, "NOT TO\nSCALE", fontsize=10, ha='center')
+        ax.set_aspect('equal')
+        ax.axis('off')
+        ax.set_xlim(-1, base_w + 3)
+        ax.set_ylim(-1, h + 1)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
