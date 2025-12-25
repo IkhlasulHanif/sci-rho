@@ -1241,6 +1241,108 @@ class Mat013:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
         
+class Mat014:
+    def __init__(self):
+        # Randomized Parameters
+        self.a = rnd.randint(5, 50)  # Random initial population
+        # Random growth factor between 1.1 and 2.5
+        self.b = round(rnd.uniform(1.1, 2.5), 1)
+            
+        # Select t_sol (0.5 increments) to ensure clean grid identification
+        self.t_sol = rnd.choice([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
+        self.k = round(self.a * (self.b ** self.t_sol), 2)
+        
+        self.answer = self.t_sol
+        
+        self.description = (
+            f"The population of a bacterial culture, $P$, increases exponentially over time $t$ hours.\n"
+            f"The graph of this growth is shown on the grid.\n"
+            f"Use the graph to find how many hours it takes for the number of bacteria to reach {round(float(self.k), 10)}."
+        )
+        
+        self.topic = "Algebra and Graphs"
+        self.subtopic = "Graphs of functions"
+        self.source = "Original" # Comply to syllabus"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{1. Determine the initial population } a \\text{ from the graph at } t = 0: &\\\\"
+            "P(t) &= a \\times b^t \\\\"
+            "P(0) &= a \\times b^0 = a \\\\"
+            f"a &= {round(float(self.a), 10)} \\\\"
+            "\\text{2. Identify the growth factor } b \\text{ using the point at } t = 1: &\\\\"
+            "P(1) &= a \\times b^1 \\\\"
+            f"{round(float(self.a * self.b), 10)} &= {round(float(self.a), 10)} \\times b \\\\"
+            f"b &= \\frac{{{round(float(self.a * self.b), 10)}}}{{{round(float(self.a), 10)}}} \\\\"
+            f"b &= {round(float(self.b), 10)} \\\\"
+            "\\text{3. Form the exponential growth equation:} &\\\\"
+            f"P &= {round(float(self.a), 10)} \\times ({round(float(self.b), 10)})^t \\\\"
+            f"\\text{{4. Solve for time }} t \\text{{ when the population reaches }} {round(float(self.k), 10)}: &\\\\"
+            "a \\times b^t &= P \\\\"
+            f"{round(float(self.a), 10)} \\times ({round(float(self.b), 10)})^t &= {round(float(self.k), 10)} \\\\"
+            f"({round(float(self.b), 10)})^t &= \\frac{{{round(float(self.k), 10)}}}{{{round(float(self.a), 10)}}} \\\\"
+            f"({round(float(self.b), 10)})^t &= {round(float(self.k / self.a), 10)} \\\\"
+            "\\text{Apply natural logarithms to both sides to isolate } t: &\\\\"
+            f"\\ln(({round(float(self.b), 10)})^t) &= \\ln({round(float(self.k / self.a), 10)}) \\\\"
+            f"t \\ln({round(float(self.b), 10)}) &= \\ln({round(float(self.k / self.a), 10)}) \\\\"
+            f"t &= \\frac{{\\ln({round(float(self.k / self.a), 10)})}}{{\\ln({round(float(self.b), 10)})}} \\\\"
+            f"t &= {round(float(self.t_sol), 10)} \\\\"
+            f"\\text{{Final Result: }} & t = {self.answer}\\,\\text{{hours}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.switch_backend('Agg')
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        t_plot = np.linspace(0, 5, 500)
+        p_plot = self.a * (self.b ** t_plot)
+        p_max = max(p_plot)
+
+        # Dynamic Grid Logic for Big P
+        if p_max > 500:
+            tick_spacing = 100
+        elif p_max > 200:
+            tick_spacing = 50
+        elif p_max > 100:
+            tick_spacing = 20
+        else:
+            tick_spacing = 10
+            
+        y_limit = (int(p_max / tick_spacing) + 1) * tick_spacing
+
+        # Plotting the curve and key identification points
+        ax.plot(t_plot, p_plot, color='black', linewidth=1.5)
+        
+        # Point (0, a) and (1, a*b)
+        for t_pt in [0, 1]:
+            p_pt = round(self.a * (self.b ** t_pt), 2)
+            ax.plot(t_pt, p_pt, 'ko', markersize=5)
+            ax.annotate(f'({t_pt}, {p_pt})', xy=(t_pt, p_pt), xytext=(10, -10), 
+                        textcoords='offset points', fontsize=10, fontweight='bold')
+
+        # IGCSE style axes and grid
+        ax.axhline(0, color='black', linewidth=2)
+        ax.axvline(0, color='black', linewidth=2)
+        
+        ax.set_xticks(np.arange(0, 6, 1))
+        ax.set_yticks(np.arange(0, y_limit + 1, tick_spacing))
+            
+        ax.set_xlim(-0.5, 5.5)
+        ax.set_ylim(-y_limit * 0.05, y_limit)
+        
+        ax.minorticks_on()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+        ax.grid(which='major', linestyle='-', linewidth=0.8, color='black', alpha=0.3)
+        ax.grid(which='minor', linestyle=':', linewidth=0.4, color='gray', alpha=0.2)
+
+        ax.set_xlabel('t (hours)', loc='right', fontweight='bold')
+        ax.set_ylabel('P (population)', loc='top', rotation=0, fontweight='bold')
+
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
+        plt.close(fig)
+        
 class Mat032:
     def __init__(self):
         # Randomized intercepts (ensuring non-zero to avoid vertical/horizontal lines)
