@@ -664,3 +664,60 @@ class Mat059:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat060:
+    
+    def __init__(self):
+        # We choose multiples of 7 for the diameter to make the math (22/7) cleaner for students
+        self.diameter = 7 * rnd.randint(1, 6)
+        self.radius = self.diameter / 2
+
+        self.answer = self.diameter * 22 // 7 // 2 # Half arc in terms of m
+
+        self.description = (
+            f"Calculate the length of the curved arc. Use $\\pi = \\frac{{22}}{{7}}$."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Circles, arcs and sectors"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Diameter }} (d) &= {self.diameter}\\,\\text{{m}} \\\\"
+            f"\\text{{Circumference }} (C) &= \\pi d \\\\"
+            f"&= \\frac{{22}}{{7}} \\times {self.diameter} \\\\"
+            f"&= {self.diameter * 22 // 7}\\,\\text{{m}} \\\\"
+            f"\\text{{Length of curved arc (semicircle)}} &= \\frac{{1}}{{2}} \\times C \\\\"
+            f"&= \\frac{{1}}{{2}} \\times {self.diameter * 22 // 7} \\\\"
+            f"&= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.set_aspect('equal')
+        ax.axis('off')  # Hide axes for a clean geometry diagram look
+
+        # Draw the Semi-Circle (The "Track")
+        # Generate angles from 0 to 180 degrees (0 to pi radians)
+        theta = np.linspace(0, np.pi, 100)
+        x_arc = self.radius * np.cos(theta)
+        y_arc = self.radius * np.sin(theta)
+        
+        # Plot the curved arc
+        ax.plot(x_arc, y_arc, color='black', linewidth=2.5, label='Track')
+
+        # Draw the Dashed Diameter Line
+        ax.plot([-self.radius, self.radius], [0, 0], color='black', linestyle='--', linewidth=1.5)
+
+        # Add Labels
+        # Label the diameter
+        ax.text(0, -0.15 * self.radius, f"{self.diameter} m", ha='center', va='top', fontsize=14, fontweight='bold')
+
+        plt.tight_layout(rect=[0, 0.1, 1, 1]) # Adjust layout to make room for text
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
