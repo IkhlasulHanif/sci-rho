@@ -1435,6 +1435,7 @@ class Mat015:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
         
+        
 class Mat032:
     def __init__(self):
         # Randomized intercepts (ensuring non-zero to avoid vertical/horizontal lines)
@@ -1521,6 +1522,118 @@ class Mat032:
         ax.grid(which='major', linestyle=':', linewidth=0.5)
 
         # Save image
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)
+        
+class Mat042:
+    def __init__(self):
+        # Property: In a rhombus, adjacent angles sum to 180 degrees.
+        # We define angles as k1*a and k2*a such that (k1 + k2) * a = 180.
+        
+        # Randomize coefficients to vary the angles
+        # Allowing k1 and k2 to vary freely allows the shape to lean left or right.
+        self.k1 = rnd.randint(1, 5)
+        self.k2 = rnd.randint(1, 5)
+        total_k = self.k1 + self.k2
+        
+        # alpha = 180 / total_k. Result can be non-integer.
+        self.alpha = 180 / total_k
+
+        # Randomize side length to vary the base and overall size
+        self.side_length = rnd.uniform(4.5, 7.5)
+
+        # Calculate actual angles for drawing geometry
+        self.angle_a_deg = self.k1 * self.alpha
+        self.angle_2a_deg = self.k2 * self.alpha
+        
+        # Formatting labels for the diagram
+        self.label1 = f"{self.k1}a" if self.k1 > 1 else "a"
+        self.label2 = f"{self.k2}a" if self.k2 > 1 else "a"
+        
+        # Final answer rounded for display
+        self.answer = f"{round(self.alpha, 2) if not self.alpha.is_integer() else int(self.alpha)}"
+        
+        self.description = f"The diagram shows a quadrilateral with sides of equal length. Work out the value of $a$."
+        self.topic = "Geometry"
+        self.subtopic = "Angles"
+        self.source = "Adapted from IGCSE March 2025 Question Paper 13"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The quadrilateral has four equal sides, identifying it as a rhombus.}} &\\\\"
+            f"\\text{{In a rhombus, adjacent angles are supplementary (sum to }} 180^\\circ\\text{{).}} &\\\\"
+            f"\\text{{Setting up the equation for the sum of adjacent angles:}} &\\\\"
+            f"\\text{{Angle 1}} + \\text{{Angle 2}} &= 180^\\circ \\\\"
+            f"{self.label1}^\\circ + {self.label2}^\\circ &= 180^\\circ \\\\"
+            f"{self.k1}a + {self.k2}a &= 180 \\\\"
+            f"({self.k1} + {self.k2})a &= 180 \\\\"
+            f"{self.k1 + self.k2}a &= 180 \\\\"
+            f"a &= \\frac{{180}}{{{self.k1 + self.k2}}} \\\\"
+            f"a &= {round(self.alpha, 10)} \\\\"
+            f"a &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+                
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        angle_rad = np.radians(self.angle_a_deg)
+        L = self.side_length
+        
+        # Vertices of the rhombus
+        # p1 (origin), p2 (base), p3 (top right), p4 (top left)
+        p1 = np.array([0, 0])
+        p2 = np.array([L, 0])
+        p3 = np.array([L + L * np.cos(angle_rad), L * np.sin(angle_rad)])
+        p4 = np.array([L * np.cos(angle_rad), L * np.sin(angle_rad)])
+        
+        pts = np.array([p1, p2, p3, p4])
+        rhombus = patches.Polygon(pts, closed=True, fill=None, edgecolor='black', linewidth=2)
+        ax.add_patch(rhombus)
+        
+        # Add equal length markings on each side using helper
+        for i in range(4):
+            add_marking(ax, pts[i], pts[(i+1)%4])
+        
+        # Angle arcs and Dynamic Labels
+        # arc_radius scales with side length
+        arc_radius = L * 0.3
+        
+        # Vertex p1 Arc
+        arc1 = patches.Arc(p1, arc_radius, arc_radius, theta1=0, theta2=self.angle_a_deg, color='black', lw=1.5)
+        ax.add_patch(arc1)
+        
+        # Vertex p2 Arc (interior angle is 180 - angle_a_deg)
+        arc2 = patches.Arc(p2, arc_radius, arc_radius, theta1=180 - self.angle_2a_deg, theta2=180, color='black', lw=1.5)
+        ax.add_patch(arc2)
+
+        # Dynamic Bisector Positioning for Labels
+        # offset_dist also scales with side length
+        offset_dist = L * 0.25
+        
+        # Label at p1 (Bisects angle_a)
+        bisect1 = np.radians(self.angle_a_deg / 2)
+        ax.text(offset_dist * np.cos(bisect1), offset_dist * np.sin(bisect1), 
+                f"${self.label1}^\\circ$", fontsize=16, ha='center', va='center')
+        
+        # Label at p2 (Bisects angle_2a)
+        bisect2 = np.radians((180 - self.angle_2a_deg / 2))
+        ax.text(L + offset_dist * np.cos(bisect2), offset_dist * np.sin(np.pi - bisect2), 
+                f"${self.label2}^\\circ$", fontsize=16, ha='center', va='center')
+        
+        # Placing "NOT TO SCALE" outside the rhombus
+        # Positions it to the right of the furthest x-coordinate
+        ax.text(max(pts[:,0]) + 1.2, max(pts[:,1]) / 2, "NOT TO\nSCALE", fontsize=12, ha='left', va='center')
+
+        ax.set_aspect('equal')
+        ax.axis('off')
+        
+        # Dynamic axis limits
+        ax.set_xlim(min(pts[:,0]) - 2, max(pts[:,0]) + 4)
+        ax.set_ylim(min(pts[:,1]) - 2, max(pts[:,1]) + 2)
+
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close(fig)

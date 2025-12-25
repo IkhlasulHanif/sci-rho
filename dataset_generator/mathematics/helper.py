@@ -1,4 +1,5 @@
 import random as rnd
+import numpy as np
 
 # write helper functions here
 def randrange_float(start, stop, step):
@@ -25,3 +26,26 @@ def fmt_poly(coeff, var, is_leading=False):
     if is_leading:
         return f"{'' if coeff > 0 else '-'}{str_val}{var}"
     return f" {sign} {str_val}{var}"
+
+def add_marking(ax, start, end):
+    """
+    Adds a single slash marking to the midpoint of a line segment 
+    to indicate equal length sides in a geometric diagram.
+    """
+    # Calculate the midpoint of the segment
+    mid = (start + end) / 2
+    
+    # Calculate the direction vector of the side
+    vec = end - start
+    
+    # Calculate the unit vector for the side
+    unit_vec = vec / np.linalg.norm(vec)
+    
+    # Calculate the perpendicular vector for the slash marking.
+    # The multiplier 0.15 ensures the mark is short.
+    perp = np.array([-unit_vec[1], unit_vec[0]]) * 0.15 
+    
+    # Plot the slash mark across the midpoint
+    ax.plot([mid[0] - perp[0], mid[0] + perp[0]], 
+            [mid[1] - perp[1], mid[1] + perp[1]], 
+            color='black', lw=2)
