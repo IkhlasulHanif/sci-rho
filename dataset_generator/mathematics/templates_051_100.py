@@ -8,6 +8,7 @@ import matplotlib.patches as patches
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
 from mathematics.helper import *
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 # target folder : "root/dataset/mathematics/image"
 DESTINATION_FOLDER = os.path.join(
@@ -1118,6 +1119,120 @@ class Mat064:
         # Formatting the Plot
         ax.set_box_aspect((self.diameter, self.diameter, self.cyl_height + self.radius))  # Aspect ratio to look realistic
         ax.set_axis_off() # Turn off the grid box for a cleaner "diagram" look
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat065:
+    
+    def __init__(self):
+        self.length = round(rnd.uniform(15.0, 25.0), 1)   # Length: 15m - 25m
+        self.width = round(rnd.uniform(6.0, 10.0), 1)     # Width: 6m - 10m
+        
+        # Ensure deep end is actually deeper than shallow end
+        self.shallow_depth = round(rnd.uniform(0.8, 1.2), 1) 
+        self.deep_depth = round(rnd.uniform(1.8, 2.5), 1)
+
+        cross_section_area = ((self.shallow_depth + self.deep_depth) / 2) * self.length
+        volume = cross_section_area * self.width
+
+        self.answer = round(volume, 2)
+
+        self.description = (
+            f"Calculate the capacity of the pool in cubic meters. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Cross-Section Area}} &= \\left( \\frac{{{self.shallow_depth} + {self.deep_depth}}}{{2}} \\right) \\times {self.length}\\\\"
+            f"&= {round(((self.shallow_depth + self.deep_depth) / 2) * self.length, 10)}\\,\\text{{m}}^2\\\\"
+            f"\\text{{Volume}} &= \\text{{Cross-Section Area}} \\times \\text{{Width}}\\\\"
+            f"&= {round(((self.shallow_depth + self.deep_depth) / 2) * self.length, 10)} \\times {self.width}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}^3"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Vertices (x, y, z)
+        # Coordinate system: x=Length, y=Width, z=Depth (negative)
+        # Surface is at z=0
+        
+        # Top Surface (Water Level)
+        p0 = [0, 0, 0]          # Shallow, Front-Left
+        p1 = [self.length, 0, 0]     # Deep, Front-Right
+        p2 = [self.length, self.width, 0] # Deep, Back-Right
+        p3 = [0, self.width, 0]      # Shallow, Back-Left
+
+        # Bottom Surface (Floor)
+        p4 = [0, 0, -self.shallow_depth]          # Shallow Bottom, Front-Left
+        p5 = [self.length, 0, -self.deep_depth]        # Deep Bottom, Front-Right
+        p6 = [self.length, self.width, -self.deep_depth]    # Deep Bottom, Back-Right
+        p7 = [0, self.width, -self.shallow_depth]      # Shallow Bottom, Back-Left
+
+        vertices = np.array([p0, p1, p2, p3, p4, p5, p6, p7])
+
+        # Define Faces (Polygons)
+        # Each face is a list of vertices
+        faces = [
+            [p0, p1, p2, p3], # Top (Surface)
+            [p4, p5, p6, p7], # Bottom (Sloped Floor)
+            [p0, p1, p5, p4], # Front Side (Trapezium cross-section)
+            [p2, p3, p7, p6], # Back Side (Trapezium cross-section)
+            [p0, p3, p7, p4], # Left Side (Shallow End Wall)
+            [p1, p2, p6, p5]  # Right Side (Deep End Wall)
+        ]
+
+        # Plotting
+        fig = plt.figure(figsize=(10, 6))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Create the 3D polygon object
+        pool_poly = Poly3DCollection(faces, alpha=0.3, linewidths=1, edgecolors='k')
+        pool_poly.set_facecolor('cyan')
+        ax.add_collection3d(pool_poly)
+
+        # Labeling Dimensions
+        # Offset text slightly for readability
+        
+        # Length Label
+        ax.text(self.length / 2, -self.width * 0.2, 0, f"Length: {self.length}m", color='red', fontsize=10, fontweight='bold')
+        
+        # Width Label
+        ax.text(self.length * 1.05, self.width / 2, 0, f"Width: {self.width}m", color='red', fontsize=10, fontweight='bold')
+        
+        # Shallow Depth Label
+        ax.text(0, -self.width * 0.1, -self.shallow_depth/2, f"{self.shallow_depth}m", color='blue')
+        ax.plot([0, 0], [0, 0], [0, -self.shallow_depth], color='blue', linestyle='--') # Indicator line
+
+        # Deep Depth Label
+        ax.text(self.length, -self.width * 0.1, -self.deep_depth/2, f"{self.deep_depth}m", color='blue')
+        ax.plot([self.length, self.length], [0, 0], [0, -self.deep_depth], color='blue', linestyle='--') # Indicator line
+
+        # Formatting the Plot
+        # Auto-scale limits
+        ax.set_xlim(-2, self.length + 2)
+        ax.set_ylim(-2, self.width + 2)
+        ax.set_zlim(-self.deep_depth - 1, 1)
+        
+        ax.set_xlabel('Length (x)')
+        ax.set_ylabel('Width (y)')
+        ax.set_zlabel('Depth (z)')
+        
+        # Set view angle to emphasize the Trapezoidal Cross-Section (Front view-ish)
+        ax.view_init(elev=15, azim=-110)
+        
+        # Remove pane backgrounds for a cleaner "textbook" look
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        ax.grid(False)
+
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
