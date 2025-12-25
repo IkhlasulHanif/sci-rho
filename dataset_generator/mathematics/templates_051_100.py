@@ -1238,3 +1238,121 @@ class Mat065:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat066:
+    
+    def __init__(self):
+        self.radius = rnd.randint(3, 8)       # Random radius between 3 cm and 8 cm
+        self.height = rnd.randint(5, 12)      # Random height between 5 cm and 12 cm
+
+        slant_height = np.sqrt(self.radius**2 + self.height**2)
+        pi_val = 3.142
+        curved_area = pi_val * self.radius * slant_height
+        base_area = pi_val * self.radius**2
+        total_area = curved_area + base_area
+
+        self.answer = round(total_area, 2)
+
+        self.description = (
+            f"Calculate the total surface area of the cone. Use π = 3.142. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}}, \\text{{ Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
+            f"\\text{{Slant Height }} (l) &= \\sqrt{{r^2 + h^2}}\\\\"
+            f"&= \\sqrt{{{self.radius}^2 + {self.height}^2}}\\\\"
+            f"&= \\sqrt{{{self.radius**2} + {self.height**2}}}\\\\"
+            f"&= \\sqrt{{{self.radius**2 + self.height**2}}}\\\\"
+            f"&= {round(slant_height, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Base Area }} (A_{{base}}) &= \\pi r^2\\\\"
+            f"&= {pi_val} \\times {self.radius}^2\\\\"
+            f"&= {round(base_area, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Curved Surface Area }} (A_{{curved}}) &= \\pi r l\\\\"
+            f"&= {pi_val} \\times {self.radius} \\times {round(slant_height, 10)}\\\\"
+            f"&= {round(curved_area, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Total Surface Area}} &= A_{{base}} + A_{{curved}}\\\\"
+            f"&= {round(base_area, 10)} + {round(curved_area, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the 3D Figure
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # Create the Cone Surface Data
+        # Resolution of the mesh
+        n_theta = 50
+        n_z = 20
+        
+        theta = np.linspace(0, 2 * np.pi, n_theta)
+        v = np.linspace(0, 1, n_z) # v goes from 0 (base) to 1 (tip)
+        
+        Theta, V = np.meshgrid(theta, v)
+        
+        # Parametric equations for the cone surface
+        # x = r * (1-v) * cos(theta)
+        # y = r * (1-v) * sin(theta)
+        # z = h * v
+        X = self.radius * (1 - V) * np.cos(Theta)
+        Y = self.radius * (1 - V) * np.sin(Theta)
+        Z = self.height * V
+        
+        # Plot the curved surface
+        ax.plot_surface(X, Y, Z, color='cyan', alpha=0.3, edgecolor='none')
+        
+        # Create the Base (Circle) Data
+        # Z = 0 for the base
+        r_base = np.linspace(0, self.radius, 10)
+        theta_base = np.linspace(0, 2 * np.pi, 50)
+        R_base, Theta_base = np.meshgrid(r_base, theta_base)
+        
+        X_base = R_base * np.cos(Theta_base)
+        Y_base = R_base * np.sin(Theta_base)
+        Z_base = np.zeros_like(X_base)
+        
+        # Plot the base
+        ax.plot_surface(X_base, Y_base, Z_base, color='blue', alpha=0.5)
+        
+        # Add Annotations (The "Figure" logic)
+        
+        # Draw the Height (h) line: from (0,0,0) to (0,0,h)
+        ax.plot([0, 0], [0, 0], [0, self.height], color='red', linewidth=2, linestyle='--', label=f'Height (h) = {self.height} cm')
+        
+        # Draw the Radius (r) line: from (0,0,0) to (r,0,0)
+        # We choose a specific angle (theta=0) for clarity
+        ax.plot([0, self.radius], [0, 0], [0, 0], color='black', linewidth=2, label=f'Radius (r) = {self.radius} cm')
+        
+        # Formatting the plot
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
+        plt.tight_layout()
+        
+        # Hide grid and panes for a cleaner "textbook" look
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        ax.grid(False)
+        
+        # Equal aspect ratio hack for 3D
+        # (Matplotlib 3D doesn't strictly support "axis equal" easily, so we set limits)
+        max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max() / 2.0
+        mid_x = (X.max()+X.min()) * 0.5
+        mid_y = (Y.max()+Y.min()) * 0.5
+        mid_z = (Z.max()+Z.min()) * 0.5
+        ax.set_xlim(mid_x - max_range, mid_x + max_range)
+        ax.set_ylim(mid_y - max_range, mid_y + max_range)
+        ax.set_zlim(0, self.height + 1) # Start Z at 0
+
+        ax.legend()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
