@@ -422,3 +422,136 @@ class Mat057:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat058:
+    
+    def __init__(self):
+        # Constraints are applied to ensure the shape looks proportional
+        self.bottom_edge = rnd.randint(12, 20)  # Total Width
+        self.height = rnd.randint(10, 15)       # Left/Right Height
+        
+        # Inner width (notch width) must be less than bottom_edge
+        self.inner_width = rnd.randint(4, self.bottom_edge - 4)
+        
+        # Depth of U must be less than height
+        self.depth = rnd.randint(3, self.height - 3)
+        
+        # Calculate widths of the top "legs"
+        self.remaining_width = self.bottom_edge - self.inner_width
+        self.left_leg_width = rnd.randint(2, self.remaining_width - 2)
+        self.right_leg_width = self.remaining_width - self.left_leg_width
+
+        self.answer = 2 * (self.bottom_edge + self.height + self.depth)
+
+        self.description = (
+            f"Calculate the perimeter of the shape."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Area and perimeter"
+        self.source = "Common style in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Perimeter}} &= 2 \\times (\\text{{Width}} + \\text{{Height}} + \\text{{Depth}}) \\\\"
+            f"&= 2 \\times ({self.bottom_edge} + {self.height} + {self.depth}) \\\\"
+            f"&= 2 \\times ({self.bottom_edge + self.height + self.depth}) \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Vertices (Rectilinear Shape)
+        # Starting from bottom-left (0,0) and going counter-clockwise
+        vertices = [
+            (0, 0),                                     # Bottom-Left
+            (self.bottom_edge, 0),                           # Bottom-Right
+            (self.bottom_edge, self.height),                      # Top-Right Outer
+            (self.bottom_edge - self.right_leg_width, self.height),    # Top-Right Inner Start
+            (self.bottom_edge - self.right_leg_width, self.height - self.depth), # Inner Bottom-Right
+            (self.left_leg_width, self.height - self.depth),           # Inner Bottom-Left
+            (self.left_leg_width, self.height),                   # Top-Left Inner Start
+            (0, self.height),                                # Top-Left Outer
+            (0, 0)                                      # Close Polygon
+        ]
+        
+        # Plotting
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Draw the shape
+        poly = patches.Polygon(vertices, closed=True, edgecolor='black', 
+                            facecolor='#AEC6CF', linewidth=2)
+        ax.add_patch(poly)
+        
+        # Configure plot limits and remove axes
+        ax.set_xlim(-3, self.bottom_edge + 3)
+        ax.set_ylim(-3, self.height + 3)
+        ax.set_aspect('equal')
+        ax.axis('off')
+        
+        # Helper function to add dimension lines
+        def add_dimension(x1, y1, x2, y2, text, offset=1.0, color='black'):
+            # Midpoint for text
+            mid_x = (x1 + x2) / 2
+            mid_y = (y1 + y2) / 2
+            
+            # Calculate arrow positions based on offset
+            if y1 == y2: # Horizontal dimension
+                axy = (0, offset) # Offset direction
+                text_y = y1 - offset - 0.5 if offset > 0 else y1 - offset + 0.5
+                text_x = mid_x
+                va = 'top' if offset > 0 else 'bottom'
+                ha = 'center'
+                
+                # Draw annotation line
+                ax.annotate('', xy=(x1, y1 - offset), xytext=(x2, y2 - offset),
+                            arrowprops=dict(arrowstyle='<->', color=color))
+                # Draw extension lines (dotted)
+                ax.plot([x1, x1], [y1, y1 - offset], color=color, linestyle='--', linewidth=0.5)
+                ax.plot([x2, x2], [y2, y2 - offset], color=color, linestyle='--', linewidth=0.5)
+                # Add text
+                ax.text(text_x, text_y, text, ha=ha, va=va, fontsize=12, fontweight='bold', color=color)
+                
+            elif x1 == x2: # Vertical dimension
+                text_y = mid_y
+                text_x = x1 - offset - 0.5 if offset > 0 else x1 - offset + 0.5
+                va = 'center'
+                ha = 'right' if offset > 0 else 'left'
+                
+                # Draw annotation line
+                ax.annotate('', xy=(x1 - offset, y1), xytext=(x2 - offset, y2),
+                            arrowprops=dict(arrowstyle='<->', color=color))
+                # Draw extension lines (dotted)
+                ax.plot([x1 - offset, x1], [y1, y1], color=color, linestyle='--', linewidth=0.5)
+                ax.plot([x2 - offset, x2], [y2, y2], color=color, linestyle='--', linewidth=0.5)
+                # Add text
+                ax.text(text_x, text_y, text, ha=ha, va=va, fontsize=12, fontweight='bold', color=color)
+
+        # Add Labels
+        
+        # Bottom Edge
+        add_dimension(0, 0, self.bottom_edge, 0, str(self.bottom_edge), offset=1.5)
+        
+        # Left Vertical Edge
+        add_dimension(0, self.height, 0, 0, str(self.height), offset=1.5)
+        
+        # Right Vertical Edge
+        add_dimension(self.bottom_edge, 0, self.bottom_edge, self.height, str(self.height), offset=-1.5)
+        
+        # Top Inner Width
+        # Located at the bottom of the "U" notch
+        inner_start_x = self.left_leg_width
+        inner_end_x = self.bottom_edge - self.right_leg_width
+        inner_y = self.height - self.depth
+        add_dimension(inner_start_x, inner_y, inner_end_x, inner_y, str(self.inner_width), offset=1.0, color='blue')
+        
+        # Depth of the 'U'
+        # Located inside the notch on the left side
+        add_dimension(self.left_leg_width, self.height, self.left_leg_width, self.height - self.depth, str(self.depth), offset=-0.5, color='red')
+        
+        # plt.title("Example 5: The 'Compound Perimeter' (Missing Sides)", fontsize=14)
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
