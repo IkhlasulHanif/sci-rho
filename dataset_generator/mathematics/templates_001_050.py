@@ -1002,13 +1002,13 @@ class Mat011:
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
 
-        # Left label (Distance from office)
         trans = blended_transform_factory(ax.transAxes, ax.transData)
         ax.text(-0.06, ymax / 2, 'Distance from\noffice (km)', transform=trans,
                 fontsize=11, ha='right', va='center')
 
         # Office label and axis arrows
-        ax.text(0.02, -0.06, 'Office →', transform=ax.transAxes, ha='left', va='top', fontsize=11)
+        label_x = -0.03
+        ax.text(label_x, 0, 'Office →', transform=trans, ha='right', va='center', fontsize=11)
         ax.annotate('', xy=(xmax, 0), xytext=(xmax - 0.001, 0), arrowprops=dict(arrowstyle='->', lw=1.2))
         ax.annotate('', xy=(xmin, ymax), xytext=(xmin, ymax - 0.001), arrowprops=dict(arrowstyle='->', lw=1.2))
 
