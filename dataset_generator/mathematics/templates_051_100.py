@@ -890,3 +890,140 @@ class Mat062:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat063:
+    
+    def __init__(self):
+        # Total length (radius of the outer edge)
+        self.total_length = rnd.randint(40, 60)  # cm
+        
+        # Length of the rubber blade (the outer cleaning part)
+        # Ensure it's substantial but less than total length
+        self.blade_length = rnd.randint(20, self.total_length - 10) 
+        
+        # Inner length (the metal arm part that doesn't clean)
+        self.inner_length = self.total_length - self.blade_length
+        
+        # Angle swept
+        self.angle_deg = rnd.choice([90, 100, 110, 120, 135])
+        
+        area_outer = self.angle_deg / 360 * self.total_length**2
+        area_inner = self.angle_deg / 360 * self.inner_length**2
+
+        self.answer = round(area_outer - area_inner, 2) # In terms of π cm^2
+
+        self.description = (
+            f"Calculate the area of the windshield cleaned by the blade. Give your answer in terms of π. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Circles, arcs and sectors"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Outer radius }} (R) &= {self.total_length}\\,\\text{{cm}}\\\\"
+            f"\\text{{Inner radius }} (r) &= {self.total_length} - {self.blade_length} = {self.inner_length}\\,\\text{{cm}}\\\\"
+            f"\\text{{Angle }} (\\theta) &= {self.angle_deg}^\\circ\\\\"
+            f"\\text{{Area cleaned}} &= \\frac{{\\theta}}{{360}} \\pi (R^2 - r^2)\\\\"
+            f"&= \\frac{{{self.angle_deg}}}{{360}} \\pi (({self.total_length})^2 - ({self.inner_length})^2)\\\\"
+            f"&= {round(self.angle_deg / 360, 10)} \\pi ({self.total_length**2} - {self.inner_length**2})\\\\"
+            f"&= {round(self.angle_deg / 360, 10)} \\pi ({self.total_length**2 - self.inner_length**2})\\\\"
+            f"&= {self.answer}\\pi\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Center the wiper vertically (pointing up)
+        start_angle = (180 - self.angle_deg) / 2
+        end_angle = start_angle + self.angle_deg
+        
+        # Draw the Geometry
+        
+        # The "Cleaned Area" (The Blade)
+        # We use a Wedge with a 'width' parameter to create the ring sector directly
+        cleaned_area = patches.Wedge(
+            center=(0, 0), 
+            r=self.total_length, 
+            theta1=start_angle, 
+            theta2=end_angle, 
+            width=self.blade_length, # This makes it a ring (annulus)
+            color='skyblue', 
+            alpha=0.6,
+            label='Cleaned Area'
+        )
+        ax.add_patch(cleaned_area)
+        
+        # The "Metal Arm" (Inner part)
+        # Draw a line from pivot to the start of the blade to represent the arm
+        # We draw it at the bisector angle for clarity
+        mid_angle_rad = np.radians(90)
+        
+        # Pivot point
+        ax.plot(0, 0, 'ko', markersize=8, label='Pivot')
+        
+        # Draw the arm lines (left and right limits) to show the sweep
+        # Inner boundaries
+        x_inner_start = self.inner_length * np.cos(np.radians(start_angle))
+        y_inner_start = self.inner_length * np.sin(np.radians(start_angle))
+        x_inner_end = self.inner_length * np.cos(np.radians(end_angle))
+        y_inner_end = self.inner_length * np.sin(np.radians(end_angle))
+        
+        # Outer boundaries
+        x_outer_start = self.total_length * np.cos(np.radians(start_angle))
+        y_outer_start = self.total_length * np.sin(np.radians(start_angle))
+        x_outer_end = self.total_length * np.cos(np.radians(end_angle))
+        y_outer_end = self.total_length * np.sin(np.radians(end_angle))
+        
+        # Dash lines for the full sweep boundaries
+        ax.plot([0, x_outer_start], [0, y_outer_start], 'k--', alpha=0.3)
+        ax.plot([0, x_outer_end], [0, y_outer_end], 'k--', alpha=0.3)
+
+        # Annotations
+        
+        # Annotate Angle
+        # Draw a small arc for the angle
+        arc_radius = self.inner_length * 0.4
+        angle_arc = patches.Arc((0, 0), arc_radius*2, arc_radius*2, 
+                                theta1=start_angle, theta2=end_angle, 
+                                color='black', linewidth=1.5)
+        ax.add_patch(angle_arc)
+        ax.text(0, arc_radius + 2, f"{self.angle_deg}°", ha='center', fontsize=12, fontweight='bold')
+
+        # Annotate Total Length
+        # We'll put this on the right side boundary
+        ax.annotate(
+            '', xy=(x_outer_start, y_outer_start), xytext=(0, 0),
+            arrowprops=dict(arrowstyle='<->', color='blue', lw=1.5)
+        )
+        # Label position for total length (midpoint of the arrow)
+        mid_x_total = x_outer_start / 2
+        mid_y_total = y_outer_start / 2
+        ax.text(mid_x_total - 2, mid_y_total + 2, f"Total: {self.total_length} cm", 
+                color='blue', rotation=start_angle, ha='right', fontweight='bold')
+
+        # Annotate Blade Length (The cleaning part)
+        # We'll put this on the left side boundary
+        ax.annotate(
+            '', xy=(x_outer_end, y_outer_end), xytext=(x_inner_end, y_inner_end),
+            arrowprops=dict(arrowstyle='<->', color='red', lw=1.5)
+        )
+        # Label position
+        mid_x_blade = (x_outer_end + x_inner_end) / 2
+        mid_y_blade = (y_outer_end + y_inner_end) / 2
+        ax.text(mid_x_blade + 2, mid_y_blade + 2, f"Blade: {self.blade_length} cm", 
+                color='red', rotation=end_angle-180, ha='left', fontweight='bold')
+
+        # Final Formatting
+        ax.set_aspect('equal')
+        ax.set_xlim(-self.total_length - 5, self.total_length + 5)
+        ax.set_ylim(-5, self.total_length + 10)
+        ax.axis('off') # Turn off axis numbers/frame for a cleaner diagram look
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
