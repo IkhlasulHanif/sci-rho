@@ -1201,7 +1201,7 @@ class Mat013:
             f"\\text{{The solutions are the x-coordinates where the curve and the line }} y &= {fmt_poly(self.m, 'x', True)}{fmt_poly(self.k, '')} \\text{{ intersect.}} \\\\"
             "\\text{4. Identify the x-coordinates of these intersection points from the grid:} & \\\\"
             f"x_1 &= {round(float(self.target_roots[0]), 10)}, \\, x_2 = {round(float(self.target_roots[1]), 10)}, \\, x_3 = {round(float(self.target_roots[2]), 10)} \\\\"
-            f"\\text{{Final Result: }} & {self.answer}"
+            f"\\text{{Final Result: }} & x = {round(float(self.target_roots[0]), 10)} \\text{{ or }} x = {round(float(self.target_roots[1]), 10)} \\text{{ or }} x = {round(float(self.target_roots[2]), 10)}"
             "\\end{aligned}\\]"
         )
                         
@@ -1237,9 +1237,6 @@ class Mat013:
 
         ax.set_xlabel('x', loc='right', fontweight='bold')
         ax.set_ylabel('y', loc='top', rotation=0, fontweight='bold')
-
-        if not os.path.exists(DESTINATION_FOLDER):
-            os.makedirs(DESTINATION_FOLDER)
 
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
