@@ -1343,6 +1343,98 @@ class Mat014:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
         
+class Mat015:
+    def __init__(self):
+        # Randomized Parameters for Decay
+        # Initial value 'a' is set higher to allow for visible decay over time
+        self.a = rnd.randint(50, 200) 
+        # Decay factor 'b' must be between 0 and 1 (e.g., 0.5 to 0.9)
+        self.b = round(rnd.uniform(0.5, 0.9), 1)
+            
+        # Select t_sol to ensure it lands on visible grid increments
+        self.t_sol = rnd.choice([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
+        self.k = round(self.a * (self.b ** self.t_sol), 2)
+        
+        self.answer = self.t_sol
+        
+        self.description = (
+            f"The mass, $M$ grams, of a radioactive substance decreases exponentially over time $t$ years.\n"
+            f"The graph of this decay is shown on the grid.\n"
+            f"Use the graph to find how many years it takes for the mass to reach {round(float(self.k), 10)} grams."
+        )
+        
+        self.topic = "Algebra and Graphs"
+        self.subtopic = "Graphs of functions"
+        self.source = "Original" # Comply to syllabus"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{1. Determine the initial mass } a \\text{ from the graph at } t = 0: &\\\\"
+            "M(t) &= a \\times b^t \\\\"
+            "M(0) &= a \\times b^0 = a \\\\"
+            f"a &= {round(float(self.a), 10)} \\\\"
+            "\\text{2. Identify the decay factor } b \\text{ using the point at } t = 1: &\\\\"
+            "M(1) &= a \\times b^1 \\\\"
+            f"{round(float(self.a * self.b), 10)} &= {round(float(self.a), 10)} \\times b \\\\"
+            f"b &= \\frac{{{round(float(self.a * self.b), 10)}}}{{{round(float(self.a), 10)}}} \\\\"
+            f"b &= {round(float(self.b), 10)} \\\\"
+            "\\text{3. Form the exponential decay equation:} &\\\\"
+            f"M &= {round(float(self.a), 10)} \\times ({round(float(self.b), 10)})^t \\\\"
+            f"\\text{{4. Solve for time }} t \\text{{ when the mass reaches }} {round(float(self.k), 10)} \\text{{ g:}} &\\\\"
+            "a \\times b^t &= M \\\\"
+            f"{round(float(self.a), 10)} \\times ({round(float(self.b), 10)})^t &= {round(float(self.k), 10)} \\\\"
+            f"({round(float(self.b), 10)})^t &= \\frac{{{round(float(self.k), 10)}}}{{{round(float(self.a), 10)}}} \\\\"
+            f"({round(float(self.b), 10)})^t &= {round(float(self.k / self.a), 10)} \\\\"
+            "\\text{Apply natural logarithms to both sides to isolate } t: &\\\\"
+            f"\\ln(({round(float(self.b), 10)})^t) &= \\ln({round(float(self.k / self.a), 10)}) \\\\"
+            f"t \\ln({round(float(self.b), 10)}) &= \\ln({round(float(self.k / self.a), 10)}) \\\\"
+            f"t &= \\frac{{\\ln({round(float(self.k / self.a), 10)})}}{{\\ln({round(float(self.b), 10)})}} \\\\"
+            f"t &= {round(float(self.t_sol), 10)} \\\\"
+            f"\\text{{Final Result: }} & t = {self.answer}\\,\\text{{years}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.switch_backend('Agg')
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        t_plot = np.linspace(0, 5, 500)
+        m_plot = self.a * (self.b ** t_plot)
+        
+        # Decay plot
+        ax.plot(t_plot, m_plot, color='black', linewidth=1.5)
+        
+        # Identification points (0, a) and (1, ab)
+        for t_pt in [0, 1]:
+            m_pt = round(self.a * (self.b ** t_pt), 2)
+            ax.plot(t_pt, m_pt, 'ko', markersize=5)
+            ax.annotate(f'({t_pt}, {m_pt})', xy=(t_pt, m_pt), xytext=(10, 5), 
+                        textcoords='offset points', fontsize=10, fontweight='bold')
+
+        # Axis and Grid logic
+        y_limit = (int(self.a / 20) + 1) * 20
+        tick_spacing = 20 if y_limit > 100 else 10
+        
+        ax.axhline(0, color='black', linewidth=2)
+        ax.axvline(0, color='black', linewidth=2)
+        ax.set_xticks(np.arange(0, 6, 1))
+        ax.set_yticks(np.arange(0, y_limit + 1, tick_spacing))
+            
+        ax.set_xlim(-0.5, 5.5)
+        ax.set_ylim(-y_limit * 0.05, y_limit)
+        
+        ax.minorticks_on()
+        ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+        ax.grid(which='major', linestyle='-', linewidth=0.8, color='black', alpha=0.3)
+        ax.grid(which='minor', linestyle=':', linewidth=0.4, color='gray', alpha=0.2)
+
+        ax.set_xlabel('t (years)', loc='right', fontweight='bold')
+        ax.set_ylabel('M (grams)', loc='top', rotation=0, fontweight='bold')
+
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
+        plt.close(fig)
+        
 class Mat032:
     def __init__(self):
         # Randomized intercepts (ensuring non-zero to avoid vertical/horizontal lines)
