@@ -555,3 +555,112 @@ class Mat058:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat059:
+    
+    def __init__(self):
+        self.radius = rnd.randint(4, 12)  # Radius between 4 and 12 cm
+        self.gap_angle = rnd.randint(30, 90) # The 'mouth' angle between 30 and 90 degrees
+        self.major_angle = 360 - self.gap_angle
+
+        self.answer = round((self.major_angle / 360) * (self.radius**2), 2) # In terms of π cm²
+
+        self.description = (
+            f"Calculate the area of the shaded major sector. Give your answer in terms of π. Round the result to two decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Circles, arcs and sectors"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Radius }} (r) &= {self.radius} \\,\\text{{cm}} \\\\"
+            f"\\text{{Angle of gap}} &= {self.gap_angle}^\\circ \\\\"
+            f"\\text{{Angle of major sector }} (\\theta) &= 360^\\circ - {self.gap_angle}^\\circ \\\\"
+            f"&= {self.major_angle}^\\circ \\\\"
+            f"\\text{{Area of sector}} &= \\frac{{\\theta}}{{360}} \\times \\pi r^2 \\\\"
+            f"&= \\frac{{{self.major_angle}}}{{360}} \\times \\pi \\times ({self.radius})^2 \\\\"
+            f"&= {round(self.major_angle / 360, 10)} \\times \\pi \\times {self.radius**2} \\\\"
+            f"&= {self.answer}\\pi \\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.set_aspect('equal')
+        ax.axis('off') # Hide axes for a clean geometric figure
+        
+        # Define the center
+        center = (0, 0)
+        
+        # Draw the Major Sector (The Pac-Man)
+        # We center the gap at angle 0 for the classic "eating right" look.
+        # So the sector starts at gap_angle/2 and goes to 360 - gap_angle/2
+        theta1 = self.gap_angle / 2
+        theta2 = 360 - (self.gap_angle / 2)
+        
+        pacman = patches.Wedge(
+            center, 
+            self.radius, 
+            theta1, 
+            theta2, 
+            color='#4CAF50', # A nice green
+            alpha=0.3,       # Transparency
+            ec='black',      # Edge color
+            lw=2             # Line width
+        )
+        ax.add_patch(pacman)
+
+        # Draw the dashed lines for the "missing" wedge (to visualize the gap angle)
+        # We draw lines from center to the start and end of the wedge
+        x_gap_top = center[0] + self.radius * np.cos(np.radians(theta1))
+        y_gap_top = center[1] + self.radius * np.sin(np.radians(theta1))
+        
+        x_gap_bot = center[0] + self.radius * np.cos(np.radians(theta2))
+        y_gap_bot = center[1] + self.radius * np.sin(np.radians(theta2))
+        
+        # Draw dashed radii for the gap
+        ax.plot([center[0], x_gap_top], [center[1], y_gap_top], 'k--', alpha=0.5)
+        ax.plot([center[0], x_gap_bot], [center[1], y_gap_bot], 'k--', alpha=0.5)
+
+        # Annotations
+        
+        # Label Radius
+        # Place label halfway along the top radius edge of the Pac-Man
+        label_r_x = center[0] + (self.radius * 0.6) * np.cos(np.radians(theta1))
+        label_r_y = center[1] + (self.radius * 0.6) * np.sin(np.radians(theta1))
+        
+        # Rotate text to align with the radius line
+        ax.text(label_r_x, label_r_y + 0.5, f"r = {self.radius} cm", 
+                ha='center', va='bottom', rotation=theta1, fontsize=12, fontweight='bold')
+
+        # Label the small angle (the gap)
+        # Draw a small arc for the gap angle
+        gap_arc = patches.Arc(center, self.radius*0.3, self.radius*0.3, angle=0, theta1=theta2-360, theta2=theta1, color='red')
+        ax.add_patch(gap_arc)
+        ax.text(self.radius * 0.25, 0, f"{self.gap_angle}°", color='red', va='center', ha='left', fontsize=10)
+
+        # Label the Reflex Angle (The Major Sector)
+        # Draw a larger arc for the reflex angle
+        major_arc = patches.Arc(center, self.radius*0.5, self.radius*0.5, angle=0, theta1=theta1, theta2=theta2, color='blue', linestyle=':')
+        ax.add_patch(major_arc)
+        
+        # Position the reflex angle label in the "back" of the Pac-Man
+        # Angle 180 is directly left
+        lbl_x = center[0] + (self.radius * 0.35) * np.cos(np.radians(180))
+        lbl_y = center[1] + (self.radius * 0.35) * np.sin(np.radians(180))
+        ax.text(lbl_x, lbl_y, f"{self.major_angle}°", color='blue', ha='center', va='center', fontweight='bold')
+
+        # Set Limits to ensure everything fits
+        limit_buffer = 1
+        ax.set_xlim(-self.radius - limit_buffer, self.radius + limit_buffer)
+        ax.set_ylim(-self.radius - limit_buffer, self.radius + limit_buffer)
+        
+        # plt.title(f"Find the Area of the Shaded Major Sector\n(Answer in terms of $\pi$)", fontsize=14)
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
