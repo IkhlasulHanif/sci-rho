@@ -1098,3 +1098,93 @@ class Mat012:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close(fig)
+        
+class Mat032:
+    def __init__(self):
+        # Randomized intercepts (ensuring non-zero to avoid vertical/horizontal lines)
+        self.x_int = rnd.choice([i for i in range(-6, 7) if i != 0])
+        self.y_int = rnd.choice([i for i in range(-6, 7) if i != 0])
+        
+        a = self.x_int
+        b = self.y_int
+        
+        self.m = Fraction(-b, a)
+        self.c = b
+        
+        # Formatting the equation string
+        m_num, m_den = self.m.numerator, self.m.denominator
+        if m_den == 1:
+            m_str = f"{m_num}" if m_num != 1 else ""
+            m_str = f"-{abs(m_num)}" if m_num == -1 else m_str
+        else:
+            m_str = f"{m_num}/{m_den}"
+            
+        sign = "+" if self.c > 0 else "-"
+        self.answer = f"y = {m_str}x {sign} {abs(self.c)}"
+        
+        self.description = f"The line L is shown on the grid. Find the equation of line L in the form y = mx + c."
+        self.topic = "Coordinate geometry"
+        self.subtopic = "Equations of linear graphs"
+        self.source = "Adapted from 2025-specimen-paper-1"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the intercepts from the graph:}} &\\\\"
+            f"\\text{{x-intercept}} &= ({self.x_int}, 0)\\\\"
+            f"\\text{{y-intercept}} &= (0, {self.y_int})\\\\"
+            "\\text{The gradient } m \\text{ is given by:} &\\\\"
+            "m &= \\frac{y_2 - y_1}{x_2 - x_1}\\\\"
+            f"&= \\frac{{{self.y_int} - 0}}{{0 - ({self.x_int})}}\\\\"
+            f"&= {m_str}\\\\"
+            "\\text{The y-intercept } c \\text{ is the value where the line crosses the y-axis:} &\\\\"
+            f"c &= {self.y_int}\\\\"
+            "\\text{Substitute } m \\text{ and } c \\text{ into the equation } y = mx + c: &\\\\"
+            f"{self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+
+        # Intercepts and line parameters
+        a = float(self.x_int)
+        b = float(self.y_int)
+        m = float(self.m)
+        c = float(self.c)
+
+        xmin, xmax = -7, 7
+
+        # Draw axes (x and y) through origin
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+
+        # Annotate intercepts (offset so text doesn't overlap points)
+        ax.annotate(f'({int(a) if a.is_integer() else a}, 0)', xy=(a, 0), xytext=(6, -12),
+                    textcoords='offset points', fontsize=10)
+        ax.annotate(f'(0, {int(b) if b.is_integer() else b})', xy=(0, b), xytext=(6, 6),
+                    textcoords='offset points', fontsize=10)
+
+        # Configure ticks and limits so intercepts are clearly visible
+        ax.set_xticks(list(range(-7, 8)))
+        ax.set_yticks(list(range(-7, 8)))
+        ax.set_xlim(xmin - 0.5, xmax + 0.5)
+        ax.set_ylim(-7.5, 7.5)
+
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        
+        # Draw the line
+        x0, x1 = ax.get_xlim()
+        ax.plot([x0, x1], [m*x0 + c, m*x1 + c], color='black', linewidth=1)
+        
+        # Mark intercept points clearly
+        ax.plot([a], [0], marker='o', color='red')
+        ax.plot([0], [b], marker='o', color='red')
+
+        ax.grid(which='major', linestyle=':', linewidth=0.5)
+
+        # Save image
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)
