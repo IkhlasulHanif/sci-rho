@@ -807,3 +807,86 @@ class Mat061:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat062:
+    
+    def __init__(self):
+        # Random Outer Radius (R) between 6 and 15
+        self.R = rnd.randint(6, 15)
+        # Random Inner Radius (r) between 2 and R-3 (ensures distinct gap)
+        self.r = rnd.randint(2, self.R - 3)
+
+        area_outer = self.R**2
+        area_inner = self.r**2
+        self.answer = area_outer - area_inner # In terms of π
+
+        self.description = (
+            f"Calculate the area of the shaded region. Leave your answer in terms of π."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Circles, arcs and sectors"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Outer radius }} (R) &= {self.R} \\\\"
+            f"\\text{{Inner radius }} (r) &= {self.r} \\\\"
+            "\\text{Area of the shaded region} &= \\text{Area of outer circle} - \\text{Area of inner circle} \\\\"
+            "A &= \\pi R^2 - \\pi r^2 \\\\"
+            "&= \\pi (R^2 - r^2) \\\\"
+            f"&= \\pi ({self.R}^2 - {self.r}^2) \\\\"
+            f"&= \\pi ({self.R**2} - {self.r**2}) \\\\"
+            f"&= {self.answer}\\pi"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # 2. Setup the Plot
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # 3. Create Shapes
+        # Outer Circle (The "Shaded" part)
+        # We color this one. When we place the white one on top, it creates the ring.
+        outer_circle = patches.Circle((0, 0), radius=self.R, facecolor='skyblue', 
+                                    edgecolor='black', linewidth=2, label='Outer')
+        
+        # Inner Circle (The "Hole")
+        # Facecolor matches background (white) to look like a hole
+        inner_circle = patches.Circle((0, 0), radius=self.r, facecolor='white', 
+                                    edgecolor='black', linewidth=2, label='Inner')
+
+        # Add patches to the plot
+        ax.add_patch(outer_circle)
+        ax.add_patch(inner_circle)
+
+        # 4. Add Visual Annotations (Radii lines)
+        
+        # Line for Outer Radius (R) - Drawn horizontally
+        ax.plot([0, self.R], [0, 0], color='black', linestyle='-', linewidth=1.5)
+        ax.text(self.R / 2, 0.5, f'$R={self.R}$', ha='center', fontsize=12, fontweight='bold')
+
+        # Line for Inner Radius (r) - Drawn at 45 degrees to avoid clutter
+        angle = np.pi / 4  # 45 degrees
+        r_x = self.r * np.cos(angle)
+        r_y = self.r * np.sin(angle)
+        ax.plot([0, r_x], [0, r_y], color='black', linestyle='-', linewidth=1.5)
+        
+        # Label for r (slightly offset so it doesn't overlap the line)
+        ax.text(r_x / 2 - 0.5, r_y / 2 + 1, f'$r={self.r}$', ha='center', fontsize=12, fontweight='bold')
+
+        # Center point dot
+        ax.plot(0, 0, 'ko', markersize=5)
+
+        # 5. Plot Formatting
+        limit = self.R + 1
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal') # Crucial so circles don't look like ovals
+        ax.axis('off') # Hide the XY axes for a clean geometry look
+        plt.title(f"R={self.R}, r={self.r}")
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
