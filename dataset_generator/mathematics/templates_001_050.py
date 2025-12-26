@@ -1804,9 +1804,7 @@ class Mat044:
         FEA = get_angle(E, F)
         BEF = 180 - GEA - FEA
         FEG = 180 - BEF - GEA
-        DCG = 180 - GEA
         EIC = 180 - FEA
-        ICE = 180 - EIC - FEG
 
         # Draw Parallel Lines
         ax.plot([B[0], A[0]], [B[1], A[1]], 'black', lw=1) # Line AB
@@ -1820,15 +1818,18 @@ class Mat044:
         label_offset = 0.4
         ax.text(A[0], A[1] - label_offset, 'A', fontsize=12)
         ax.text(B[0], B[1] + label_offset, 'B', fontsize=12)
-        ax.text(C[0], C[1] - label_offset, 'C', fontsize=12, ha='center')
-        ax.text(D[0], D[1] + label_offset, 'D', fontsize=12)
+        ax.text(C[0] + label_offset, C[1], 'C', fontsize=12, ha='center')
+        ax.text(D[0], D[1] + label_offset - label_offset, 'D', fontsize=12)
         ax.text(E[0] - label_offset, E[1] - label_offset, 'E', fontsize=12)
         ax.text(F[0], F[1] + label_offset, 'F', fontsize=12)
         ax.text(G[0] + label_offset, G[1], 'G', fontsize=12)
 
         # Parallel markings (Arrows)
-        ax.annotate('', xy=B + (A-B)*0.2, xytext=B + (A-B)*0.15, arrowprops=dict(arrowstyle='->', lw=1.5))
-        ax.annotate('', xy=D + (G_end-D)*0.4, xytext=D + (G_end-D)*0.35, arrowprops=dict(arrowstyle='->', lw=1.5))
+        ax.annotate('', xy=A - np.array([1.0, 0]), xytext=A - np.array([1.6, 0]), 
+                    arrowprops=dict(arrowstyle='->', lw=1))
+        
+        ax.annotate('', xy=G_end - np.array([1.0, 0]), xytext=G_end - np.array([1.6, 0]), 
+                    arrowprops=dict(arrowstyle='->', lw=1))
 
         # Add Angle Arcs and Labels
         r_label = 1  # Distance to push text away from vertex
@@ -1837,35 +1838,35 @@ class Mat044:
         t1, t2 = FEG+180, 360+BEA
         mid = np.radians((t1+t2) / 2)
         ax.add_patch(patches.Arc(I, 1.2, 1.2, theta1=t1, theta2=t2, color='black'))
-        ax.text(I[0] + r_label*np.cos(mid), I[1] + r_label*np.sin(mid), 
+        ax.text(I[0] + r_label * 1.2 * np.cos(mid), I[1] + r_label * 0.8 * np.sin(mid), 
                 f'{self.angle_top:.2f}°', fontsize=10, ha='center', va='center')
 
         # Known angle at E
         t1, t2 = BEA, GEA
         mid = np.radians((t1 + t2) / 2)
         ax.add_patch(patches.Arc(E, 1.2, 1.2, theta1=t1, theta2=t2, color='black'))
-        ax.text(E[0] + r_label*np.cos(mid), E[1] + r_label*np.sin(mid), 
+        ax.text(E[0] + r_label * 1.2* np.cos(mid), E[1] + r_label * 0.8 *np.sin(mid), 
                 f'{self.angle_ext:.2f}°', fontsize=10, ha='center', va='center')
         
         # Angle a at C
         t1, t2 = 180+BEA, 180+GEA
         mid = np.radians((t1 + t2) / 2)
         ax.add_patch(patches.Arc(C, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
-        ax.text(C[0] + r_label*np.cos(mid), C[1] + r_label*np.sin(mid), 
+        ax.text(C[0] + r_label * 0.8 * np.cos(mid), C[1] + r_label * 0.8 * np.sin(mid), 
                 '$a°$', fontsize=11, ha='center', va='center')
         
         # Angle b at C
         t1, t2 = GEA, 180+DIC
         mid = np.radians((t1 + t2) / 2)
         ax.add_patch(patches.Arc(C, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
-        ax.text(C[0] + r_label*np.cos(mid), C[1] + r_label*np.sin(mid), 
+        ax.text(C[0] + r_label * 0.8 * np.cos(mid), C[1] + r_label * 0.8 * np.sin(mid), 
                 '$b°$', fontsize=11, ha='center', va='center')
         
         # Angle c at E
         t1, t2 = GEA, FEA
         mid = np.radians((t1 + t2) / 2)
         ax.add_patch(patches.Arc(E, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
-        ax.text(E[0] + r_label*np.cos(mid), E[1] + r_label*np.sin(mid), 
+        ax.text(E[0] + r_label * 0.8 * np.cos(mid), E[1] + r_label * 0.8 *np.sin(mid), 
                 '$c°$', fontsize=11, ha='center', va='center')
 
         # NOT TO SCALE label
