@@ -2111,7 +2111,7 @@ class Mat047:
         self.description = (
             f"The diagram shows a circle, centre $O$. $P$ and $S$ are points on the circle. "
             f"$POR$ is a straight line. $QRST$ is a tangent to the circle at $S$. "
-            f"Angle $OPS = {int(self.angle_ops)}^\\circ$. "
+            f"Angle $OPS = {self.angle_ops}^\\circ$. "
             f"Find the value of $y$."
         )
         
@@ -2235,6 +2235,150 @@ class Mat047:
         ax.text(lx_y+0.1, ly_y, "$y^\\circ$", fontsize=14, ha='center')
 
         # "Not to Scale" - Anchored to Top Right of the axes
+        ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='right', va='top')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat048:
+    def __init__(self):
+        self.angle_aco = randrange_float(25, 60, 0.01)
+        self.angle_bco = randrange_float(25, 60, 0.01)
+        
+        # This is derived from tangent properties or isosceles triangle sums (detailed in reasoning)
+        self.answer = 90 - self.angle_aco
+
+        self.description = (
+            f"The diagram shows a circle, centre $O$. $A$, $B$ and $C$ are three points on the circle. "
+            f"$DE$ is a tangent to the circle at $A$. "
+            f"Angle $ACO = {self.angle_aco}^\\circ$ and angle $BCO = {self.angle_bco}^\\circ$. "
+            f"Find angle $ABC$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems I"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 21"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{In }} \\triangle AOC, OA &= OC \\text{{ (radii of the circle)}}\\\\"
+            f"\\text{{Since two sides are equal, }} \\triangle AOC &\\text{{ is an isosceles triangle}}\\\\"
+            f"\\angle OAC &= \\angle ACO\\\\"
+            f"\\angle OAC &= {round(self.angle_aco, 10)}^\\circ\\\\"
+            f"\\text{{The tangent }} DE \\text{{ is perpendicular to the}} &\\text{{ radius }} OA \\text{{ at point }} A\\\\"
+            f"\\angle OAD &= 90^\\circ\\\\"
+            f"\\text{{The angle between tangent }} AD \\text{{ and chord }} AC &\\text{{ is:}}\\\\"
+            f"\\angle DAC &= \\angle OAD - \\angle OAC\\\\"
+            f"&= 90^\\circ - {round(self.angle_aco, 10)}^\\circ\\\\"
+            f"&= {round(90 - self.angle_aco, 10)}^\\circ\\\\"
+            f"\\text{{According to the Alternate Segment Theorem, the angle}} &\\\\"
+            f"\\text{{between a tangent and a chord is equal to the angle}} &\\\\"
+            f"\\text{{in the alternate segment:}} &\\\\"
+            f"\\angle ABC &= \\angle DAC\\\\"
+            f"\\angle ABC &= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+    
+        limit = 1.6
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Geometry Setup
+        r = 1.0
+        O = np.array([0, 0])
+        
+        # Introduce a global rotation to vary the position of point A
+        global_rotation = randrange_float(-20, 20, 1)
+        
+        # Point A: Primary point of tangency
+        theta_a_deg = 90 + global_rotation
+        rad_a = np.radians(theta_a_deg)
+        A = np.array([r * np.cos(rad_a), r * np.sin(rad_a)])
+        
+        # Point C calculation (dependent on angle_aco)
+        # Position relative to A based on the isosceles triangle AOC center angle
+        theta_c_deg = theta_a_deg + 180 - (2 * self.angle_aco)
+        rad_c = np.radians(theta_c_deg)
+        C = np.array([r * np.cos(rad_c), r * np.sin(rad_c)])
+        
+        # Point B calculation (dependent on angle_bco)
+        # Position relative to C based on the isosceles triangle BOC center angle
+        theta_b_deg = theta_c_deg + 180 - (2 * self.angle_bco)
+        rad_b = np.radians(theta_b_deg)
+        B = np.array([r * np.cos(rad_b), r * np.sin(rad_b)])
+
+        # Tangent Line D-E (perpendicular to OA)
+        # Direction vector of tangent is (-sin(theta), cos(theta))
+        tangent_dir = np.array([-np.sin(rad_a), np.cos(rad_a)])
+        D = A + 1.3 * tangent_dir
+        E = A - 1.3 * tangent_dir
+
+        # Draw Elements
+        circle = plt.Circle((0, 0), r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+        
+        # Triangle ABC
+        ax.plot([A[0], B[0]], [A[1], B[1]], 'k-', lw=1)
+        ax.plot([B[0], C[0]], [B[1], C[1]], 'k-', lw=1)
+        ax.plot([C[0], A[0]], [C[1], A[1]], 'k-', lw=1)
+        
+        # Radii lines
+        ax.plot([O[0], A[0]], [O[1], A[1]], 'k-', lw=1)
+        ax.plot([O[0], C[0]], [O[1], C[1]], 'k-', lw=1)
+        
+        # Tangent line DE
+        ax.plot([D[0], E[0]], [D[1], E[1]], 'k-', lw=1)
+        
+        # Labels
+        # Using a helper to place labels at a distance of 1.15r from the center
+        def get_label_pos(angle_deg, dist=1.15):
+            rad = np.radians(angle_deg)
+            return np.array([dist * np.cos(rad), dist * np.sin(rad)])
+
+        ax.text(O[0] + 0.05, O[1] - 0.05, 'O', fontsize=14, ha='left', va='top', fontweight='bold')
+        
+        pos_a = get_label_pos(theta_a_deg)
+        ax.text(pos_a[0], pos_a[1], 'A', fontsize=14, ha='center', va='bottom', fontweight='bold')
+        
+        pos_c = get_label_pos(theta_c_deg)
+        ax.text(pos_c[0], pos_c[1], 'C', fontsize=14, ha='right', va='center', fontweight='bold')
+        
+        pos_b = get_label_pos(theta_b_deg)
+        ax.text(pos_b[0], pos_b[1], 'B', fontsize=14, ha='left', va='top', fontweight='bold')
+        
+        ax.text(D[0], D[1], 'D', fontsize=14, ha='right', va='bottom', fontweight='bold')
+        ax.text(E[0], E[1], 'E', fontsize=14, ha='left', va='bottom', fontweight='bold')
+
+        ax.plot(O[0], O[1], 'k.', markersize=5)
+
+        # Angle Markings
+        # Angle ACO
+        angle_start_aco = get_angle(C, O)
+        angle_end_aco = get_angle(C, A)
+        if angle_end_aco < angle_start_aco: angle_end_aco += 360
+        arc_aco = patches.Arc(C, 0.4, 0.4, theta1=angle_start_aco, theta2=angle_end_aco, color='black')
+        ax.add_patch(arc_aco)
+        
+        mid_aco = np.radians((angle_start_aco + angle_end_aco) / 2)
+        ax.text(C[0] + 0.4 * np.cos(mid_aco), C[1] + 0.4 * np.sin(mid_aco), f"{round(self.angle_aco, 2)}°", fontsize=10, ha='center')
+
+        # Angle BCO
+        angle_start_bco = get_angle(C, B)
+        angle_end_bco = get_angle(C, O)
+        if angle_end_bco < angle_start_bco: angle_end_bco += 360
+        arc_bco = patches.Arc(C, 0.5, 0.5, theta1=angle_start_bco, theta2=angle_end_bco, color='black')
+        ax.add_patch(arc_bco)
+        
+        mid_bco = np.radians((angle_start_bco + angle_end_bco) / 2)
+        ax.text(C[0] + 0.4 * np.cos(mid_bco), C[1] + 0.4 * np.sin(mid_bco), f"{round(self.angle_bco, 2)}°", fontsize=10, ha='center')
+
+        # NOT TO SCALE
         ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='right', va='top')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
