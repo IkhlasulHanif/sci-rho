@@ -8,6 +8,7 @@ import matplotlib.patches as patches
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
 from mathematics.helper import *
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 # target folder : "root/dataset/mathematics/image"
 DESTINATION_FOLDER = os.path.join(
@@ -885,6 +886,564 @@ class Mat062:
         ax.set_aspect('equal') # Crucial so circles don't look like ovals
         ax.axis('off') # Hide the XY axes for a clean geometry look
         plt.title(f"R={self.R}, r={self.r}")
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat063:
+    
+    def __init__(self):
+        # Total length (radius of the outer edge)
+        self.total_length = rnd.randint(40, 60)  # cm
+        
+        # Length of the rubber blade (the outer cleaning part)
+        # Ensure it's substantial but less than total length
+        self.blade_length = rnd.randint(20, self.total_length - 10) 
+        
+        # Inner length (the metal arm part that doesn't clean)
+        self.inner_length = self.total_length - self.blade_length
+        
+        # Angle swept
+        self.angle_deg = rnd.choice([90, 100, 110, 120, 135])
+        
+        area_outer = self.angle_deg / 360 * self.total_length**2
+        area_inner = self.angle_deg / 360 * self.inner_length**2
+
+        self.answer = round(area_outer - area_inner, 2) # In terms of π cm^2
+
+        self.description = (
+            f"Calculate the area of the windshield cleaned by the blade. Give your answer in terms of π. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Circles, arcs and sectors"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Outer radius }} (R) &= {self.total_length}\\,\\text{{cm}}\\\\"
+            f"\\text{{Inner radius }} (r) &= {self.total_length} - {self.blade_length} = {self.inner_length}\\,\\text{{cm}}\\\\"
+            f"\\text{{Angle }} (\\theta) &= {self.angle_deg}^\\circ\\\\"
+            f"\\text{{Area cleaned}} &= \\frac{{\\theta}}{{360}} \\pi (R^2 - r^2)\\\\"
+            f"&= \\frac{{{self.angle_deg}}}{{360}} \\pi (({self.total_length})^2 - ({self.inner_length})^2)\\\\"
+            f"&= {round(self.angle_deg / 360, 10)} \\pi ({self.total_length**2} - {self.inner_length**2})\\\\"
+            f"&= {round(self.angle_deg / 360, 10)} \\pi ({self.total_length**2 - self.inner_length**2})\\\\"
+            f"&= {self.answer}\\pi\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Center the wiper vertically (pointing up)
+        start_angle = (180 - self.angle_deg) / 2
+        end_angle = start_angle + self.angle_deg
+        
+        # Draw the Geometry
+        
+        # The "Cleaned Area" (The Blade)
+        # We use a Wedge with a 'width' parameter to create the ring sector directly
+        cleaned_area = patches.Wedge(
+            center=(0, 0), 
+            r=self.total_length, 
+            theta1=start_angle, 
+            theta2=end_angle, 
+            width=self.blade_length, # This makes it a ring (annulus)
+            color='skyblue', 
+            alpha=0.6,
+            label='Cleaned Area'
+        )
+        ax.add_patch(cleaned_area)
+        
+        # The "Metal Arm" (Inner part)
+        # Draw a line from pivot to the start of the blade to represent the arm
+        # We draw it at the bisector angle for clarity
+        mid_angle_rad = np.radians(90)
+        
+        # Pivot point
+        ax.plot(0, 0, 'ko', markersize=8, label='Pivot')
+        
+        # Draw the arm lines (left and right limits) to show the sweep
+        # Inner boundaries
+        x_inner_start = self.inner_length * np.cos(np.radians(start_angle))
+        y_inner_start = self.inner_length * np.sin(np.radians(start_angle))
+        x_inner_end = self.inner_length * np.cos(np.radians(end_angle))
+        y_inner_end = self.inner_length * np.sin(np.radians(end_angle))
+        
+        # Outer boundaries
+        x_outer_start = self.total_length * np.cos(np.radians(start_angle))
+        y_outer_start = self.total_length * np.sin(np.radians(start_angle))
+        x_outer_end = self.total_length * np.cos(np.radians(end_angle))
+        y_outer_end = self.total_length * np.sin(np.radians(end_angle))
+        
+        # Dash lines for the full sweep boundaries
+        ax.plot([0, x_outer_start], [0, y_outer_start], 'k--', alpha=0.3)
+        ax.plot([0, x_outer_end], [0, y_outer_end], 'k--', alpha=0.3)
+
+        # Annotations
+        
+        # Annotate Angle
+        # Draw a small arc for the angle
+        arc_radius = self.inner_length * 0.4
+        angle_arc = patches.Arc((0, 0), arc_radius*2, arc_radius*2, 
+                                theta1=start_angle, theta2=end_angle, 
+                                color='black', linewidth=1.5)
+        ax.add_patch(angle_arc)
+        ax.text(0, arc_radius + 2, f"{self.angle_deg}°", ha='center', fontsize=12, fontweight='bold')
+
+        # Annotate Total Length
+        # We'll put this on the right side boundary
+        ax.annotate(
+            '', xy=(x_outer_start, y_outer_start), xytext=(0, 0),
+            arrowprops=dict(arrowstyle='<->', color='blue', lw=1.5)
+        )
+        # Label position for total length (midpoint of the arrow)
+        mid_x_total = x_outer_start / 2
+        mid_y_total = y_outer_start / 2
+        ax.text(mid_x_total - 2, mid_y_total + 2, f"Total: {self.total_length} cm", 
+                color='blue', rotation=start_angle, ha='right', fontweight='bold')
+
+        # Annotate Blade Length (The cleaning part)
+        # We'll put this on the left side boundary
+        ax.annotate(
+            '', xy=(x_outer_end, y_outer_end), xytext=(x_inner_end, y_inner_end),
+            arrowprops=dict(arrowstyle='<->', color='red', lw=1.5)
+        )
+        # Label position
+        mid_x_blade = (x_outer_end + x_inner_end) / 2
+        mid_y_blade = (y_outer_end + y_inner_end) / 2
+        ax.text(mid_x_blade + 2, mid_y_blade + 2, f"Blade: {self.blade_length} cm", 
+                color='red', rotation=end_angle-180, ha='left', fontweight='bold')
+
+        # Final Formatting
+        ax.set_aspect('equal')
+        ax.set_xlim(-self.total_length - 5, self.total_length + 5)
+        ax.set_ylim(-5, self.total_length + 10)
+        ax.axis('off') # Turn off axis numbers/frame for a cleaner diagram look
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat064:
+    
+    def __init__(self):
+        # Radius between 2 and 6 (so Diameter is 4 to 12)
+        self.radius = rnd.randint(2, 6)
+        self.diameter = self.radius * 2
+        
+        # Cylinder height usually larger than radius for a silo look
+        self.cyl_height = rnd.randint(self.radius + 2, self.radius + 10)
+
+        vol_cyl = self.radius**2 * self.cyl_height
+        vol_hemi = (2 / 3) * self.radius**3
+
+        self.answer = round(vol_cyl + vol_hemi, 2) # In terms of π m³
+
+        self.description = (
+            f"Calculate the total volume of the silo. Give your answer in terms of π. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Radius }} (r) &= {self.radius}\\\\"
+            f"\\text{{Height }} (h) &= {self.cyl_height}\\\\"
+            f"\\text{{Volume of Cylinder}} &= \\pi r^2 h\\\\"
+            f"&= \\pi ({self.radius})^2 ({self.cyl_height})\\\\"
+            f"&= {round(self.radius**2 * self.cyl_height, 10)}\\pi\\\\"
+            f"\\text{{Volume of Hemisphere}} &= \\frac{{2}}{{3}} \\pi r^3\\\\"
+            f"&= \\frac{{2}}{{3}} \\pi ({self.radius})^3\\\\"
+            f"&= {round((2/3) * self.radius**3, 10)}\\pi\\\\"
+            f"\\text{{Total Volume}} &= V_{{cyl}} + V_{{hemi}}\\\\"
+            f"&= {round(self.radius**2 * self.cyl_height, 10)}\\pi + {round((2/3) * self.radius**3, 10)}\\pi\\\\"
+            f"&= {self.answer}\\pi\\,\\text{{m}}^3"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Plot
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # --- Generate Cylinder Data ---
+        # Angle (theta) and Height (z)
+        theta = np.linspace(0, 2 * np.pi, 50)
+        z_cyl = np.linspace(0, self.cyl_height, 20)
+        theta_grid, z_grid = np.meshgrid(theta, z_cyl)
+        
+        x_cyl = self.radius * np.cos(theta_grid)
+        y_cyl = self.radius * np.sin(theta_grid)
+        
+        # --- Generate Hemisphere Data ---
+        # Phi (elevation) from 0 to pi/2 (top half), Theta (azimuth) 0 to 2pi
+        phi = np.linspace(0, np.pi / 2, 20)
+        phi_grid, theta_grid_sphere = np.meshgrid(phi, theta)
+        
+        x_sphere = self.radius * np.sin(phi_grid) * np.cos(theta_grid_sphere)
+        y_sphere = self.radius * np.sin(phi_grid) * np.sin(theta_grid_sphere)
+        z_sphere = self.radius * np.cos(phi_grid) + self.cyl_height # Shift up by cylinder height
+        
+        # --- Plotting ---
+        # Plot Cylinder
+        ax.plot_surface(x_cyl, y_cyl, z_grid, color='cyan', alpha=0.25, edgecolor='k', linewidth=0.2)
+        
+        # Plot Hemisphere
+        ax.plot_surface(x_sphere, y_sphere, z_sphere, color='orange', alpha=0.25, edgecolor='k', linewidth=0.2)
+        
+        # Plot Bottom Circle (to close the silo)
+        r_bottom = np.linspace(0, self.radius, 10)
+        r_grid, theta_grid_bottom = np.meshgrid(r_bottom, theta)
+        x_bottom = r_grid * np.cos(theta_grid_bottom)
+        y_bottom = r_grid * np.sin(theta_grid_bottom)
+        z_bottom = np.zeros_like(x_bottom)
+        ax.plot_surface(x_bottom, y_bottom, z_bottom, color='cyan', alpha=0.6)
+
+        # --- Annotations ---
+        # Draw a line indicating Height
+        ax.plot([self.radius * 1.5, self.radius * 1.5], [0, 0], [0, self.cyl_height], color='black', linestyle='--')
+        ax.text(self.radius * 1.6, 0, self.cyl_height / 2, f'h = {self.cyl_height}m', color='black', fontsize=12)
+        
+        # Draw a line indicating Diameter
+        # We draw it at the bottom or top of the cylinder
+        ax.plot([-self.radius, self.radius], [0, 0], [0, 0], color='red', linestyle='-', linewidth=2)
+        ax.text(0, 0, -1, f'd = {self.diameter}m', color='red', fontsize=12)
+
+        # Formatting the Plot
+        ax.set_box_aspect((self.diameter, self.diameter, self.cyl_height + self.radius))  # Aspect ratio to look realistic
+        ax.set_axis_off() # Turn off the grid box for a cleaner "diagram" look
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat065:
+    
+    def __init__(self):
+        self.length = round(rnd.uniform(15.0, 25.0), 1)   # Length: 15m - 25m
+        self.width = round(rnd.uniform(6.0, 10.0), 1)     # Width: 6m - 10m
+        
+        # Ensure deep end is actually deeper than shallow end
+        self.shallow_depth = round(rnd.uniform(0.8, 1.2), 1) 
+        self.deep_depth = round(rnd.uniform(1.8, 2.5), 1)
+
+        cross_section_area = ((self.shallow_depth + self.deep_depth) / 2) * self.length
+        volume = cross_section_area * self.width
+
+        self.answer = round(volume, 2)
+
+        self.description = (
+            f"Calculate the capacity of the pool in cubic meters. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Cross-Section Area}} &= \\left( \\frac{{{self.shallow_depth} + {self.deep_depth}}}{{2}} \\right) \\times {self.length}\\\\"
+            f"&= {round(((self.shallow_depth + self.deep_depth) / 2) * self.length, 10)}\\,\\text{{m}}^2\\\\"
+            f"\\text{{Volume}} &= \\text{{Cross-Section Area}} \\times \\text{{Width}}\\\\"
+            f"&= {round(((self.shallow_depth + self.deep_depth) / 2) * self.length, 10)} \\times {self.width}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}^3"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Vertices (x, y, z)
+        # Coordinate system: x=Length, y=Width, z=Depth (negative)
+        # Surface is at z=0
+        
+        # Top Surface (Water Level)
+        p0 = [0, 0, 0]          # Shallow, Front-Left
+        p1 = [self.length, 0, 0]     # Deep, Front-Right
+        p2 = [self.length, self.width, 0] # Deep, Back-Right
+        p3 = [0, self.width, 0]      # Shallow, Back-Left
+
+        # Bottom Surface (Floor)
+        p4 = [0, 0, -self.shallow_depth]          # Shallow Bottom, Front-Left
+        p5 = [self.length, 0, -self.deep_depth]        # Deep Bottom, Front-Right
+        p6 = [self.length, self.width, -self.deep_depth]    # Deep Bottom, Back-Right
+        p7 = [0, self.width, -self.shallow_depth]      # Shallow Bottom, Back-Left
+
+        vertices = np.array([p0, p1, p2, p3, p4, p5, p6, p7])
+
+        # Define Faces (Polygons)
+        # Each face is a list of vertices
+        faces = [
+            [p0, p1, p2, p3], # Top (Surface)
+            [p4, p5, p6, p7], # Bottom (Sloped Floor)
+            [p0, p1, p5, p4], # Front Side (Trapezium cross-section)
+            [p2, p3, p7, p6], # Back Side (Trapezium cross-section)
+            [p0, p3, p7, p4], # Left Side (Shallow End Wall)
+            [p1, p2, p6, p5]  # Right Side (Deep End Wall)
+        ]
+
+        # Plotting
+        fig = plt.figure(figsize=(10, 6))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Create the 3D polygon object
+        pool_poly = Poly3DCollection(faces, alpha=0.3, linewidths=1, edgecolors='k')
+        pool_poly.set_facecolor('cyan')
+        ax.add_collection3d(pool_poly)
+
+        # Labeling Dimensions
+        # Offset text slightly for readability
+        
+        # Length Label
+        ax.text(self.length / 2, -self.width * 0.2, 0, f"Length: {self.length}m", color='red', fontsize=10, fontweight='bold')
+        
+        # Width Label
+        ax.text(self.length * 1.05, self.width / 2, 0, f"Width: {self.width}m", color='red', fontsize=10, fontweight='bold')
+        
+        # Shallow Depth Label
+        ax.text(0, -self.width * 0.1, -self.shallow_depth/2, f"{self.shallow_depth}m", color='blue')
+        ax.plot([0, 0], [0, 0], [0, -self.shallow_depth], color='blue', linestyle='--') # Indicator line
+
+        # Deep Depth Label
+        ax.text(self.length, -self.width * 0.1, -self.deep_depth/2, f"{self.deep_depth}m", color='blue')
+        ax.plot([self.length, self.length], [0, 0], [0, -self.deep_depth], color='blue', linestyle='--') # Indicator line
+
+        # Formatting the Plot
+        # Auto-scale limits
+        ax.set_xlim(-2, self.length + 2)
+        ax.set_ylim(-2, self.width + 2)
+        ax.set_zlim(-self.deep_depth - 1, 1)
+        
+        ax.set_xlabel('Length (x)')
+        ax.set_ylabel('Width (y)')
+        ax.set_zlabel('Depth (z)')
+        
+        # Set view angle to emphasize the Trapezoidal Cross-Section (Front view-ish)
+        ax.view_init(elev=15, azim=-110)
+        
+        # Remove pane backgrounds for a cleaner "textbook" look
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        ax.grid(False)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat066:
+    
+    def __init__(self):
+        self.radius = rnd.randint(3, 8)       # Random radius between 3 cm and 8 cm
+        self.height = rnd.randint(5, 12)      # Random height between 5 cm and 12 cm
+
+        slant_height = np.sqrt(self.radius**2 + self.height**2)
+        pi_val = 3.142
+        curved_area = pi_val * self.radius * slant_height
+        base_area = pi_val * self.radius**2
+        total_area = curved_area + base_area
+
+        self.answer = round(total_area, 2)
+
+        self.description = (
+            f"Calculate the total surface area of the cone. Use π = 3.142. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}}, \\text{{ Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
+            f"\\text{{Slant Height }} (l) &= \\sqrt{{r^2 + h^2}}\\\\"
+            f"&= \\sqrt{{{self.radius}^2 + {self.height}^2}}\\\\"
+            f"&= \\sqrt{{{self.radius**2} + {self.height**2}}}\\\\"
+            f"&= \\sqrt{{{self.radius**2 + self.height**2}}}\\\\"
+            f"&= {round(slant_height, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Base Area }} (A_{{base}}) &= \\pi r^2\\\\"
+            f"&= {pi_val} \\times {self.radius}^2\\\\"
+            f"&= {round(base_area, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Curved Surface Area }} (A_{{curved}}) &= \\pi r l\\\\"
+            f"&= {pi_val} \\times {self.radius} \\times {round(slant_height, 10)}\\\\"
+            f"&= {round(curved_area, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Total Surface Area}} &= A_{{base}} + A_{{curved}}\\\\"
+            f"&= {round(base_area, 10)} + {round(curved_area, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the 3D Figure
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # Create the Cone Surface Data
+        # Resolution of the mesh
+        n_theta = 50
+        n_z = 20
+        
+        theta = np.linspace(0, 2 * np.pi, n_theta)
+        v = np.linspace(0, 1, n_z) # v goes from 0 (base) to 1 (tip)
+        
+        Theta, V = np.meshgrid(theta, v)
+        
+        # Parametric equations for the cone surface
+        # x = r * (1-v) * cos(theta)
+        # y = r * (1-v) * sin(theta)
+        # z = h * v
+        X = self.radius * (1 - V) * np.cos(Theta)
+        Y = self.radius * (1 - V) * np.sin(Theta)
+        Z = self.height * V
+        
+        # Plot the curved surface
+        ax.plot_surface(X, Y, Z, color='cyan', alpha=0.3, edgecolor='none')
+        
+        # Create the Base (Circle) Data
+        # Z = 0 for the base
+        r_base = np.linspace(0, self.radius, 10)
+        theta_base = np.linspace(0, 2 * np.pi, 50)
+        R_base, Theta_base = np.meshgrid(r_base, theta_base)
+        
+        X_base = R_base * np.cos(Theta_base)
+        Y_base = R_base * np.sin(Theta_base)
+        Z_base = np.zeros_like(X_base)
+        
+        # Plot the base
+        ax.plot_surface(X_base, Y_base, Z_base, color='blue', alpha=0.5)
+        
+        # Add Annotations (The "Figure" logic)
+        
+        # Draw the Height (h) line: from (0,0,0) to (0,0,h)
+        ax.plot([0, 0], [0, 0], [0, self.height], color='red', linewidth=2, linestyle='--', label=f'Height (h) = {self.height} cm')
+        
+        # Draw the Radius (r) line: from (0,0,0) to (r,0,0)
+        # We choose a specific angle (theta=0) for clarity
+        ax.plot([0, self.radius], [0, 0], [0, 0], color='black', linewidth=2, label=f'Radius (r) = {self.radius} cm')
+        
+        # Formatting the plot
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
+        plt.tight_layout()
+        
+        # Hide grid and panes for a cleaner "textbook" look
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        ax.grid(False)
+        
+        # Equal aspect ratio hack for 3D
+        # (Matplotlib 3D doesn't strictly support "axis equal" easily, so we set limits)
+        max_range = np.array([X.max()-X.min(), Y.max()-Y.min(), Z.max()-Z.min()]).max() / 2.0
+        mid_x = (X.max()+X.min()) * 0.5
+        mid_y = (Y.max()+Y.min()) * 0.5
+        mid_z = (Z.max()+Z.min()) * 0.5
+        ax.set_xlim(mid_x - max_range, mid_x + max_range)
+        ax.set_ylim(mid_y - max_range, mid_y + max_range)
+        ax.set_zlim(0, self.height + 1) # Start Z at 0
+
+        ax.legend()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat067:
+    
+    def __init__(self):
+        # Radius between 3 and 10
+        self.radius = rnd.randint(3, 10)
+        
+        # Constants
+        pi_approx = 3.14
+        
+        # Calculate Total Surface Area (TSA)
+        # TSA = Curved Surface Area (2*pi*r^2) + Base Area (pi*r^2) = 3*pi*r^2
+        tsa = 3 * pi_approx * (self.radius ** 2)
+
+        self.answer = round(tsa, 2)
+
+        self.description = (
+            f"Calculate the total surface area of the solid hemisphere. Use π = 3.14. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given radius (r)}} &= {self.radius} \\\\"
+            f"\\text{{Total Surface Area of a solid hemisphere}} &= 3\\pi r^2 \\\\"
+            f"&= 3 \\times 3.14 \\times ({self.radius})^2 \\\\"
+            f"&= 3 \\times 3.14 \\times {self.radius**2} \\\\"
+            f"&= {round(3 * 3.14 * self.radius**2, 10)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Figure
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # -- A. Create the hemisphere (Curved Surface) --
+        # Phi goes from 0 (top) to pi/2 (equator)
+        phi = np.linspace(0, np.pi/2, 30) 
+        theta = np.linspace(0, 2 * np.pi, 60)
+        phi_grid, theta_grid = np.meshgrid(phi, theta)
+        
+        x_dome = self.radius * np.sin(phi_grid) * np.cos(theta_grid)
+        y_dome = self.radius * np.sin(phi_grid) * np.sin(theta_grid)
+        z_dome = self.radius * np.cos(phi_grid)
+        
+        # Plot the curved surface
+        ax.plot_surface(x_dome, y_dome, z_dome, color='skyblue', alpha=0.5, 
+                        rstride=1, cstride=1, edgecolor='none', shade=True)
+        
+        # -- B. Create the base (Flat Circular Disk) --
+        # r goes from 0 to radius
+        r_base = np.linspace(0, self.radius, 20)
+        theta_base = np.linspace(0, 2*np.pi, 60)
+        r_grid, theta_grid_base = np.meshgrid(r_base, theta_base)
+        
+        x_base = r_grid * np.cos(theta_grid_base)
+        y_base = r_grid * np.sin(theta_grid_base)
+        z_base = np.zeros_like(x_base) # Base is at z=0
+        
+        # Plot the flat base
+        ax.plot_surface(x_base, y_base, z_base, color='royalblue', alpha=0.5, edgecolor='none')
+        
+        # -- C. Visual Enhancements --
+        # Draw a dark circle at the boundary to distinguish the "solid" edge
+        theta_edge = np.linspace(0, 2*np.pi, 100)
+        x_edge = self.radius * np.cos(theta_edge)
+        y_edge = self.radius * np.sin(theta_edge)
+        z_edge = np.zeros_like(x_edge)
+        ax.plot(x_edge, y_edge, z_edge, color='darkblue', linewidth=2)
+
+        # Draw the radius line
+        # From center (0,0,0) to a point on the edge (radius, 0, 0)
+        ax.plot([0, self.radius], [0, 0], [0, 0], 'r-', linewidth=3)
+        ax.text(self.radius/2, 0, self.radius*0.1, f'r = {self.radius}', color='red', 
+                fontsize=14, fontweight='bold', ha='center')
+        
+        # Mark the center
+        ax.scatter([0], [0], [0], color='black', s=50)
+
+        # Set aspect ratio to be accurate
+        ax.set_box_aspect([1,1,0.5]) 
+        ax.set_axis_off()
+        
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
