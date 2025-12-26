@@ -49,3 +49,10 @@ def add_marking(ax, start, end):
     ax.plot([mid[0] - perp[0], mid[0] + perp[0]], 
             [mid[1] - perp[1], mid[1] + perp[1]], 
             color='black', lw=2)
+    
+def get_angle(p1, p2):
+    # Returns angle in degrees (0 to 360)
+    dy = p2[1] - p1[1]
+    dx = p2[0] - p1[0]
+    angle = np.degrees(np.arctan2(dy, dx))
+    return angle if angle >= 0 else angle + 360

@@ -1733,3 +1733,144 @@ class Mat043:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close(fig)
+
+class Mat044:
+
+    def __init__(self):
+        self.angle_top = randrange_float(40.0, 80.0, 0.01)
+        self.angle_ext = randrange_float(min(self.angle_top, 100-self.angle_top), max(self.angle_top, 100-self.angle_top), 0.01)
+        
+        self.answer = round(self.angle_ext, 10)
+
+        self.description = (
+            f"Lines $AB$ and $CD$ are parallel. $EF$ and $EG$ are straight lines. "
+            f"The angle formed at the intersection of $EF$ and $CD$ is {self.angle_top:.2f}°. "
+            f"Find the value of $a$."
+        )
+        self.topic = "Geometry"
+        self.subtopic = "Angles"
+        self.source = "Adapted from 2025-specimen-paper-1"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify that lines }} AB \\text{{ and }} CD \\text{{ are parallel, and }} EG \\text{{ is a transversal line.}} \\\\"
+            f"\\text{{According to the Alternate Interior Angles Theorem, alternate interior angles are equal.}} \\\\"
+            f"\\text{{The angle }} a \\text{{ and the given angle at }} E \\text{{ (}} \\angle GEA \\text{{) are alternate interior angles.}} \\\\"
+            f"a &= \\angle GEA \\\\"
+            f"a &= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Parallel lines distance
+        dist = 4.0
+        
+        # Line AB (bottom parallel) at y = 0
+        # Line CD (top parallel) at y = dist
+        y_ab = 0
+        y_cd = dist
+        
+        # Define intersection E on line AB
+        E = np.array([2.0, y_ab])
+        
+        # Calculate intersection I on line CD for EF
+        theta_ef = np.radians(180-self.angle_top) 
+        x_i = E[0] + dist / np.tan(theta_ef)
+        I = np.array([x_i, y_cd])
+        
+        # Calculate intersection C on line CD for EG
+        C = np.array([I[0] + 5.0, y_cd])
+        
+        # Define endpoints for all lines
+        A = np.array([C[0] + 3, y_ab])
+        B = np.array([E[0] - 4, y_ab])
+        D = np.array([I[0] - 4, y_cd])
+        G_end = np.array([C[0], y_cd]) # End of line CD
+        
+        # Transversal EF
+        F = I + (I - E) * 0.5
+        
+        # Transversal EG
+        G = E + (C - E) * 1.3
+        
+        BEA = get_angle(E, A)
+        DIC = BEA
+        GEA = get_angle(E, G)
+        FEA = get_angle(E, F)
+        BEF = 180 - GEA - FEA
+        FEG = 180 - BEF - GEA
+        DCG = 180 - GEA
+        EIC = 180 - FEA
+        ICE = 180 - EIC - FEG
+
+        # Draw Parallel Lines
+        ax.plot([B[0], A[0]], [B[1], A[1]], 'black', lw=1) # Line AB
+        ax.plot([D[0], G_end[0]], [D[1], G_end[1]], 'black', lw=1) # Line CD
+
+        # Draw Transversals
+        ax.plot([E[0], F[0]], [E[1], F[1]], 'black', lw=1) # Line EF
+        ax.plot([E[0], G[0]], [E[1], G[1]], 'black', lw=1) # Line EG
+
+        # Add Labels
+        label_offset = 0.4
+        ax.text(A[0], A[1] - label_offset, 'A', fontsize=12)
+        ax.text(B[0], B[1] + label_offset, 'B', fontsize=12)
+        ax.text(C[0], C[1] - label_offset, 'C', fontsize=12, ha='center')
+        ax.text(D[0], D[1] + label_offset, 'D', fontsize=12)
+        ax.text(E[0] - label_offset, E[1] - label_offset, 'E', fontsize=12)
+        ax.text(F[0], F[1] + label_offset, 'F', fontsize=12)
+        ax.text(G[0] + label_offset, G[1], 'G', fontsize=12)
+
+        # Parallel markings (Arrows)
+        ax.annotate('', xy=B + (A-B)*0.2, xytext=B + (A-B)*0.15, arrowprops=dict(arrowstyle='->', lw=1.5))
+        ax.annotate('', xy=D + (G_end-D)*0.4, xytext=D + (G_end-D)*0.35, arrowprops=dict(arrowstyle='->', lw=1.5))
+
+        # Add Angle Arcs and Labels
+        r_label = 1  # Distance to push text away from vertex
+        
+        # Known angle at I
+        t1, t2 = FEG+180, 360+BEA
+        mid = np.radians((t1+t2) / 2)
+        ax.add_patch(patches.Arc(I, 1.2, 1.2, theta1=t1, theta2=t2, color='black'))
+        ax.text(I[0] + r_label*np.cos(mid), I[1] + r_label*np.sin(mid), 
+                f'{self.angle_top:.2f}°', fontsize=10, ha='center', va='center')
+
+        # Known angle at E
+        t1, t2 = BEA, GEA
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(E, 1.2, 1.2, theta1=t1, theta2=t2, color='black'))
+        ax.text(E[0] + r_label*np.cos(mid), E[1] + r_label*np.sin(mid), 
+                f'{self.angle_ext:.2f}°', fontsize=10, ha='center', va='center')
+        
+        # Angle a at C
+        t1, t2 = 180+BEA, 180+GEA
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(C, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
+        ax.text(C[0] + r_label*np.cos(mid), C[1] + r_label*np.sin(mid), 
+                '$a°$', fontsize=11, ha='center', va='center')
+        
+        # Angle b at C
+        t1, t2 = GEA, 180+DIC
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(C, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
+        ax.text(C[0] + r_label*np.cos(mid), C[1] + r_label*np.sin(mid), 
+                '$b°$', fontsize=11, ha='center', va='center')
+        
+        # Angle c at E
+        t1, t2 = GEA, FEA
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(E, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
+        ax.text(E[0] + r_label*np.cos(mid), E[1] + r_label*np.sin(mid), 
+                '$c°$', fontsize=11, ha='center', va='center')
+
+        # NOT TO SCALE label
+        ax.text(0.95, 0.9, 'NOT TO\nSCALE', transform=ax.transAxes, ha='center', fontsize=10)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)
