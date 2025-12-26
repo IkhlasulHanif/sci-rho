@@ -1552,7 +1552,7 @@ class Mat042:
         self.label2 = f"{self.k2}a" if self.k2 > 1 else "a"
         
         # Final answer rounded for display
-        self.answer = f"{round(self.alpha, 2) if not self.alpha.is_integer() else int(self.alpha)}"
+        self.answer = self.alpha
         
         self.description = f"The diagram shows a quadrilateral with sides of equal length. Work out the value of $a$."
         self.topic = "Geometry"
@@ -1575,7 +1575,7 @@ class Mat042:
             f"a &= {self.answer}"
             "\\end{aligned}\\]"
         )
-                
+        
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 8))
         
@@ -1655,8 +1655,7 @@ class Mat043:
         target_raw = 180.0 - self.angle_ADC - self.angle_C
         self.target_angle = round(target_raw, 2)
         
-        self.answer = int(self.target_angle) if self.target_angle.is_integer() else self.target_angle
-
+        self.answer = self.target_angle
         self.description = (
             f"$BDC$ is a straight line, $AB = AC$, angle $ABD = {round(self.angle_B, 2)}^\\circ$ "
             f"and angle $ADC = {round(self.angle_ADC, 2)}^\\circ$. \\\\ Work out angle $DAC$."
@@ -1871,6 +1870,147 @@ class Mat044:
 
         # NOT TO SCALE label
         ax.text(0.95, 0.9, 'NOT TO\nSCALE', transform=ax.transAxes, ha='center', fontsize=10)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)
+
+class Mat045:
+
+    def __init__(self):
+        self.angle_ext = randrange_float(100.0, 140.0, 0.01)
+        self.angle_int = randrange_float(30.0, self.angle_ext - 30.0, 0.01)
+        
+        self.answer = self.angle_ext - self.angle_int
+
+        self.description = (
+            f"The diagram shows two straight lines intersecting two parallel lines. "
+            f"Find the value of $z$."
+        )
+        self.topic = "Geometry"
+        self.subtopic = "Angles"
+        self.source = "Adapted from IGCSE Mathematics"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Let the interior angle at the bottom-left intersection be }} \\alpha. & \\\\"
+            f"\\text{{Since the angles on a straight line sum to 180}}^\\circ\\text{{:}} & \\\\"
+            f"\\alpha &= 180^\\circ - \\text{{exterior angle}} \\\\"
+            f"&= 180^\\circ - {round(self.angle_ext, 10)}^\\circ \\\\"
+            f"&= {round(180 - self.angle_ext, 10)}^\\circ \\\\"
+            f"\\text{{Let the interior angle at the bottom-right intersection be }} \\beta. & \\\\"
+            f"\\beta &= \\text{{interior angle}} = {round(self.angle_int, 10)}^\\circ \\\\"
+            f"\\text{{The two transversals and the bottom parallel line form a triangle.}} & \\\\"
+            f"\\text{{The angle }} z \\text{{ is vertically opposite to the top angle of this triangle.}} & \\\\"
+            f"\\text{{By the triangle angle sum property:}} & \\\\"
+            f"z &= 180^\\circ - (\\alpha + \\beta) \\\\"
+            f"&= 180^\\circ - ({round(180 - self.angle_ext, 10)}^\\circ + {round(self.angle_int, 10)}^\\circ) \\\\"
+            f"&= {round(self.angle_ext - self.angle_int, 10)}^\\circ \\\\"
+            f"z &= {(self.answer)}^\\circ"
+            "\\end{aligned}\\]"
+        )
+                
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Parallel lines settings
+        y_bot = 0
+        y_top = 4
+        x_min, x_max = -2, 12
+        
+        # Intersection point of the two transversals (Vertex C)
+        C = np.array([5.0, 2.0])
+        
+        # Calculate slopes based on angles
+        theta1 = np.radians(180 - self.angle_ext)
+        slope1 = np.tan(theta1)
+        
+        theta2 = np.radians(180 - self.angle_int)
+        slope2 = np.tan(theta2)
+        
+        # Calculate intersection points on parallel lines
+        x_A = C[0] + (y_bot - C[1]) / slope1
+        x_Top1 = C[0] + (y_top - C[1]) / slope1
+        
+        # Line 2 (through C)
+        x_B = C[0] + (y_bot - C[1]) / slope2
+        x_Top2 = C[0] + (y_top - C[1]) / slope2
+        
+        # Points
+        A = np.array([x_A, y_bot])      # Bottom-Left Intersection
+        B = np.array([x_B, y_bot])      # Bottom-Right Intersection
+        Top1 = np.array([x_Top1, y_top]) # Top Intersection for Line 1
+        Top2 = np.array([x_Top2, y_top]) # Top Intersection for Line 2 (where x, y are)
+        
+        # Extend lines for visual appeal
+        L1_start = A - (Top1 - A) * 0.2
+        L1_end = Top1 + (Top1 - A) * 0.2
+        
+        L2_start = B - (Top2 - B) * 0.2
+        L2_end = Top2 + (Top2 - B) * 0.2
+        
+        # Draw Parallel Lines
+        ax.plot([x_min, x_max], [y_bot, y_bot], 'black', lw=1)
+        ax.plot([x_min, x_max], [y_top, y_top], 'black', lw=1)
+        
+        # Draw Parallel Markers (Arrows)
+        ax.annotate('', xy=(x_max-1, y_bot), xytext=(x_max-1.5, y_bot), arrowprops=dict(arrowstyle='->', lw=1))
+        ax.annotate('', xy=(x_max-1, y_top), xytext=(x_max-1.5, y_top), arrowprops=dict(arrowstyle='->', lw=1))
+        
+        # Draw Transversals
+        ax.plot([L1_start[0], L1_end[0]], [L1_start[1], L1_end[1]], 'black', lw=1)
+        ax.plot([L2_start[0], L2_end[0]], [L2_start[1], L2_end[1]], 'black', lw=1)
+        
+        # --- Angles ---
+        r_arc = 1
+        
+        arc_ext = patches.Arc(A, r_arc*1.2, r_arc*1.2, theta1=np.degrees(theta1), theta2=180, color='black')
+        ax.add_patch(arc_ext)
+        # Label position
+        mid_angle_ext = np.radians((np.degrees(theta1) + 180) / 2)
+        ax.text(A[0] + r_arc * 1.2 * np.cos(mid_angle_ext), 
+                A[1] + r_arc * 0.8 * np.sin(mid_angle_ext), 
+                f"{self.angle_ext}°", ha='center', va='bottom', fontsize=12)
+        
+        # Interior Angle (Right Bottom) - angle_int
+        arc_int = patches.Arc(B, r_arc*1.2, r_arc*1.2, theta1=180-self.angle_int, theta2=180, color='black')
+        ax.add_patch(arc_int)
+        # Label
+        mid_angle_int = np.radians((180 - self.angle_int + 180) / 2)
+        ax.text(B[0] + r_arc * 1.2 * np.cos(mid_angle_int), 
+                B[1] + r_arc * 0.8 * np.sin(mid_angle_int), 
+                f"{self.angle_int}°", ha='center', va='bottom', fontsize=12)
+        
+        # 3. Angle z (Intersection Top V)
+        arc_z = patches.Arc(C, r_arc, r_arc, theta1=np.degrees(theta1), theta2=180-self.angle_int, color='black')
+        ax.add_patch(arc_z)
+        # Label z
+        mid_angle_z = np.radians((np.degrees(theta1) + (180 - self.angle_int)) / 2)
+        ax.text(C[0] + r_arc * 0.8 * np.cos(mid_angle_z), 
+                C[1] + r_arc * 0.8 * np.sin(mid_angle_z), 
+                "$z^\\circ$", ha='center', va='bottom', fontsize=12)
+        
+        # Angles x and y (Top intersection of Line 1)
+        arc_x = patches.Arc(Top1, r_arc, r_arc, theta1=180, theta2=180+np.degrees(theta1), color='black')
+        ax.add_patch(arc_x)
+        mid_x = np.radians((180 + 180 + np.degrees(theta1))/2)
+        ax.text(Top1[0] + r_arc * 0.8 * np.cos(mid_x), 
+                Top1[1] + r_arc * 0.8 * np.sin(mid_x), 
+                "$x^\\circ$", ha='center', va='top', fontsize=11)
+        
+        # Arc for y (Obtuse, right of Line 1 at Top1)
+        arc_y = patches.Arc(Top1, r_arc, r_arc, theta1=180+np.degrees(theta1), theta2=360, color='black')
+        ax.add_patch(arc_y)
+        mid_y = np.radians((180 + np.degrees(theta1) + 360)/2)
+        ax.text(Top1[0] + r_arc * 0.8 * np.cos(mid_y), 
+                Top1[1] + r_arc * 0.8 * np.sin(mid_y), 
+                "$y^\\circ$", ha='center', va='top', fontsize=11)
+
+        # NOT TO SCALE label
+        ax.text(1, 0.2, 'NOT TO\nSCALE', transform=ax.transAxes, ha='center', fontsize=10)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
