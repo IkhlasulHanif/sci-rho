@@ -1552,7 +1552,7 @@ class Mat042:
         self.label2 = f"{self.k2}a" if self.k2 > 1 else "a"
         
         # Final answer rounded for display
-        self.answer = f"{round(self.alpha, 2) if not self.alpha.is_integer() else int(self.alpha)}"
+        self.answer = self.alpha
         
         self.description = f"The diagram shows a quadrilateral with sides of equal length. Work out the value of $a$."
         self.topic = "Geometry"
@@ -1575,7 +1575,7 @@ class Mat042:
             f"a &= {self.answer}"
             "\\end{aligned}\\]"
         )
-                
+        
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 8))
         
@@ -1655,8 +1655,7 @@ class Mat043:
         target_raw = 180.0 - self.angle_ADC - self.angle_C
         self.target_angle = round(target_raw, 2)
         
-        self.answer = int(self.target_angle) if self.target_angle.is_integer() else self.target_angle
-
+        self.answer = self.target_angle
         self.description = (
             f"$BDC$ is a straight line, $AB = AC$, angle $ABD = {round(self.angle_B, 2)}^\\circ$ "
             f"and angle $ADC = {round(self.angle_ADC, 2)}^\\circ$. \\\\ Work out angle $DAC$."
@@ -1733,3 +1732,511 @@ class Mat043:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close(fig)
+
+class Mat044:
+
+    def __init__(self):
+        self.angle_top = randrange_float(40.0, 80.0, 0.01)
+        self.angle_ext = randrange_float(min(self.angle_top, 100-self.angle_top), max(self.angle_top, 100-self.angle_top), 0.01)
+        
+        self.answer = round(self.angle_ext, 10)
+
+        self.description = (
+            f"Lines $AB$ and $CD$ are parallel. $EF$ and $EG$ are straight lines. "
+            f"The angle formed at the intersection of $EF$ and $CD$ is {self.angle_top:.2f}°. "
+            f"Find the value of $a$."
+        )
+        self.topic = "Geometry"
+        self.subtopic = "Angles"
+        self.source = "Adapted from 2025-specimen-paper-1"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify that lines }} AB \\text{{ and }} CD \\text{{ are parallel, and }} EG \\text{{ is a transversal line.}} \\\\"
+            f"\\text{{According to the Alternate Interior Angles Theorem, alternate interior angles are equal.}} \\\\"
+            f"\\text{{The angle }} a \\text{{ and the given angle at }} E \\text{{ (}} \\angle GEA \\text{{) are alternate interior angles.}} \\\\"
+            f"a &= \\angle GEA \\\\"
+            f"a &= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Parallel lines distance
+        dist = 4.0
+        
+        # Line AB (bottom parallel) at y = 0
+        # Line CD (top parallel) at y = dist
+        y_ab = 0
+        y_cd = dist
+        
+        # Define intersection E on line AB
+        E = np.array([2.0, y_ab])
+        
+        # Calculate intersection I on line CD for EF
+        theta_ef = np.radians(180-self.angle_top) 
+        x_i = E[0] + dist / np.tan(theta_ef)
+        I = np.array([x_i, y_cd])
+        
+        # Calculate intersection C on line CD for EG
+        C = np.array([I[0] + 5.0, y_cd])
+        
+        # Define endpoints for all lines
+        A = np.array([C[0] + 3, y_ab])
+        B = np.array([E[0] - 4, y_ab])
+        D = np.array([I[0] - 4, y_cd])
+        G_end = np.array([C[0], y_cd]) # End of line CD
+        
+        # Transversal EF
+        F = I + (I - E) * 0.5
+        
+        # Transversal EG
+        G = E + (C - E) * 1.3
+        
+        BEA = get_angle(E, A)
+        DIC = BEA
+        GEA = get_angle(E, G)
+        FEA = get_angle(E, F)
+        BEF = 180 - GEA - FEA
+        FEG = 180 - BEF - GEA
+        EIC = 180 - FEA
+
+        # Draw Parallel Lines
+        ax.plot([B[0], A[0]], [B[1], A[1]], 'black', lw=1) # Line AB
+        ax.plot([D[0], G_end[0]], [D[1], G_end[1]], 'black', lw=1) # Line CD
+
+        # Draw Transversals
+        ax.plot([E[0], F[0]], [E[1], F[1]], 'black', lw=1) # Line EF
+        ax.plot([E[0], G[0]], [E[1], G[1]], 'black', lw=1) # Line EG
+
+        # Add Labels
+        label_offset = 0.4
+        ax.text(A[0], A[1] - label_offset, 'A', fontsize=12)
+        ax.text(B[0], B[1] + label_offset, 'B', fontsize=12)
+        ax.text(C[0] + label_offset, C[1], 'C', fontsize=12, ha='center')
+        ax.text(D[0], D[1] + label_offset - label_offset, 'D', fontsize=12)
+        ax.text(E[0] - label_offset, E[1] - label_offset, 'E', fontsize=12)
+        ax.text(F[0], F[1] + label_offset, 'F', fontsize=12)
+        ax.text(G[0] + label_offset, G[1], 'G', fontsize=12)
+
+        # Parallel markings (Arrows)
+        ax.annotate('', xy=A - np.array([1.0, 0]), xytext=A - np.array([1.6, 0]), 
+                    arrowprops=dict(arrowstyle='->', lw=1))
+        
+        ax.annotate('', xy=G_end - np.array([1.0, 0]), xytext=G_end - np.array([1.6, 0]), 
+                    arrowprops=dict(arrowstyle='->', lw=1))
+
+        # Add Angle Arcs and Labels
+        r_label = 1  # Distance to push text away from vertex
+        
+        # Known angle at I
+        t1, t2 = FEG+180, 360+BEA
+        mid = np.radians((t1+t2) / 2)
+        ax.add_patch(patches.Arc(I, 1.2, 1.2, theta1=t1, theta2=t2, color='black'))
+        ax.text(I[0] + r_label * 1.2 * np.cos(mid), I[1] + r_label * 0.8 * np.sin(mid), 
+                f'{self.angle_top:.2f}°', fontsize=10, ha='center', va='center')
+
+        # Known angle at E
+        t1, t2 = BEA, GEA
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(E, 1.2, 1.2, theta1=t1, theta2=t2, color='black'))
+        ax.text(E[0] + r_label * 1.2* np.cos(mid), E[1] + r_label * 0.8 *np.sin(mid), 
+                f'{self.angle_ext:.2f}°', fontsize=10, ha='center', va='center')
+        
+        # Angle a at C
+        t1, t2 = 180+BEA, 180+GEA
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(C, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
+        ax.text(C[0] + r_label * 0.8 * np.cos(mid), C[1] + r_label * 0.8 * np.sin(mid), 
+                '$a°$', fontsize=11, ha='center', va='center')
+        
+        # Angle b at C
+        t1, t2 = GEA, 180+DIC
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(C, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
+        ax.text(C[0] + r_label * 0.8 * np.cos(mid), C[1] + r_label * 0.8 * np.sin(mid), 
+                '$b°$', fontsize=11, ha='center', va='center')
+        
+        # Angle c at E
+        t1, t2 = GEA, FEA
+        mid = np.radians((t1 + t2) / 2)
+        ax.add_patch(patches.Arc(E, 1.0, 1.0, theta1=t1, theta2=t2, color='black'))
+        ax.text(E[0] + r_label * 0.8 * np.cos(mid), E[1] + r_label * 0.8 *np.sin(mid), 
+                '$c°$', fontsize=11, ha='center', va='center')
+
+        # NOT TO SCALE label
+        ax.text(0.95, 0.9, 'NOT TO\nSCALE', transform=ax.transAxes, ha='center', fontsize=10)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)
+
+class Mat045:
+    def __init__(self):
+        # Generalize to n sides (3 to 9)
+        self.n = rnd.randint(3, 9)
+        total_sum = (self.n - 2) * 180
+        
+        # Target can be non-integer (stepping by 0.5)
+        self.x_val = rnd.randint(20, 80) / 2.0 
+        
+        # Increase coeff range (1, 10)
+        self.coeffs = [rnd.randint(1, 10) for _ in range(self.n)]
+        sum_a = sum(self.coeffs)
+        
+        # Calculate sum_b to satisfy: sum_a * x + sum_b = total_sum
+        sum_b = total_sum - (sum_a * self.x_val)
+        
+        # Distribute sum_b into n parts
+        self.consts = [0] * self.n
+        current_sum_b = 0
+        for i in range(self.n - 1):
+            val = rnd.randint(-20, 40)
+            self.consts[i] = val
+            current_sum_b += val
+        self.consts[self.n - 1] = int(sum_b - current_sum_b)
+        
+        self.answer = self.x_val
+        
+        name_map = {3: "triangle", 4: "quadrilateral", 5: "pentagon", 
+                    6: "hexagon", 7: "heptagon", 8: "octagon", 9: "nonagon"}
+        shape_name = name_map[self.n]
+        
+        self.description = (
+            f"The diagram shows the interior angles of a {shape_name}, written in terms of $x$. "
+            f"Find the value of $x$."
+        )
+        self.topic = "Geometry"
+        self.subtopic = "Angles"
+        self.source = "Adapted from IGCSE March 2025 Question Paper 32"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            fr"\text{{The sum of the interior angles of an }} n\text{{-sided polygon is given by:}} \\"
+            fr"S &= (n - 2) \times 180^\circ \\"
+            fr"\text{{For a {shape_name} where }} n = {self.n}\text{{:}} \\"
+            fr"S &= ({self.n} - 2) \times 180^\circ \\"
+            fr"&= {round((self.n - 2) * 180, 10)}^\circ \\"
+            fr"\text{{The sum of the given interior angles in terms of }} x \text{{ is:}} \\"
+            fr"\sum \text{{Angles}} &= {' + '.join(['(' + fmt_poly(c, 'x', True) + fmt_poly(b, '') + ')' for c, b in zip(self.coeffs, self.consts)])} \\"
+            fr"&= ({' + '.join(map(str, self.coeffs))})x + ({' + '.join([str(b) if b >= 0 else f'({b})' for b in self.consts])}) \\"
+            fr"&= {round(sum(self.coeffs), 10)}x {'+' if sum(self.consts) >= 0 else '-'} {abs(round(sum(self.consts), 10))} \\"
+            fr"\text{{Equating the sum to }} {round((self.n - 2) * 180, 10)}^\circ\text{{:}} \\"
+            fr"{round(sum(self.coeffs), 10)}x {'+' if sum(self.consts) >= 0 else '-'} {abs(round(sum(self.consts), 10))} &= {round((self.n - 2) * 180, 10)} \\"
+            fr"{round(sum(self.coeffs), 10)}x &= {round((self.n - 2) * 180, 10)} - ({round(sum(self.consts), 10)}) \\"
+            fr"{round(sum(self.coeffs), 10)}x &= {round((self.n - 2) * 180 - sum(self.consts), 10)} \\"
+            fr"x &= \frac{{{round((self.n - 2) * 180 - sum(self.consts), 10)}}}{{{round(sum(self.coeffs), 10)}}} \\"
+            fr"x &= {self.answer}"
+            r"\end{aligned}\]"
+        )
+        
+    def generate(self, num):
+        # Generate random n-polygon
+        # Divide the circle into n equal sectors and pick a random point in each
+        # This guarantees a minimum angular distance between points
+        r = 3
+        sector_width = (2 * math.pi) / self.n
+        buffer = sector_width * 0.2
+        
+        angles = []
+        for i in range(self.n):
+            start = i * sector_width + buffer
+            end = (i + 1) * sector_width - buffer
+            angles.append(rnd.uniform(start, end))
+            
+        pts = np.array([[r * math.cos(a), r * math.sin(a)] for a in angles])
+        
+        fig, ax = plt.subplots(figsize=(8, 8))
+        polygon = patches.Polygon(pts, closed=True, fill=None, edgecolor='black', linewidth=2)
+        ax.add_patch(polygon)
+        
+        for i in range(self.n):
+            p_prev = pts[i-1]
+            p_curr = pts[i]
+            p_next = pts[(i+1) % self.n]
+            
+            # Label Placement using Vector Bisector
+            v1 = (p_prev - p_curr) / np.linalg.norm(p_prev - p_curr)
+            v2 = (p_next - p_curr) / np.linalg.norm(p_next - p_curr)
+            
+            # Use unit vectors to find the interior bisector
+            bisector = v1 + v2
+            bisector_unit = bisector / np.linalg.norm(bisector)
+            
+            # Position labels inside the polygon
+            text_pos = p_curr + bisector_unit * 0.8
+            
+            # Angle Arcs
+            ang_start = get_angle(p_curr, p_next)
+            ang_end = get_angle(p_curr, p_prev)
+            
+            # Ensure the arc draws the interior angle
+            if (ang_end - ang_start) % 360 > 180:
+                ang_start, ang_end = ang_end, ang_start
+                
+            arc = patches.Arc(p_curr, 0.6, 0.6, theta1=ang_start, theta2=ang_end, color='black')
+            ax.add_patch(arc)
+            
+            # Using Raw f-string (fr"") to prevent SyntaxWarning for LaTeX
+            # Reusing fmt_poly from your helper
+            label_str = f"{fmt_poly(self.coeffs[i], 'x', True)}{fmt_poly(self.consts[i], '')}"
+            ax.text(text_pos[0], text_pos[1], fr"${label_str}^\circ$", 
+                    fontsize=10, ha='center', va='center')
+
+        # Formatting
+        limit = r + 1.5
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.axis('off')
+        ax.set_aspect('equal')
+        
+        plt.text(limit-0.5, -limit+0.5, "NOT TO\nSCALE", fontsize=10, ha='center', fontweight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=150)
+        plt.close()
+        
+class Mat046:
+    def __init__(self):
+        self.angle_bad = randrange_float(60, 90, 0.01)
+        self.angle_bca = randrange_float(30, 45, 0.01)
+        
+        self.answer = (180 - self.angle_bad) - self.angle_bca
+
+        self.description = (
+            f"The diagram shows a cyclic quadrilateral $ABCD$. The diagonals $BD$ and $AC$ intersect. "
+            f"Angle $BAD = {self.angle_bad}^\\circ$ and angle $BCA = {self.angle_bca}^\\circ$. "
+            f"Find the value of angle $ABD$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems I"
+        self.source = "Adapted from 2025-specimen-paper-2"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            f"\\[\\begin{{aligned}} "
+            f"\\text{{Since }} ABCD \\text{{ is a cyclic quadrilateral, opposite angles sum to }} 180^\\circ: & \\\\"
+            f"\\angle BCD &= 180^\\circ - \\angle BAD \\\\"
+            f"&= 180^\\circ - {round(self.angle_bad, 10)}^\\circ \\\\"
+            f"&= {round(180 - self.angle_bad, 10)}^\\circ \\\\"
+            f"\\text{{The angle }} \\angle BCD \\text{{ is composed of }} \\angle BCA \\text{{ and }} \\angle ACD: & \\\\"
+            f"\\angle ACD &= \\angle BCD - \\angle BCA \\\\"
+            f"&= {round(180 - self.angle_bad, 10)}^\\circ - {round(self.angle_bca, 10)}^\\circ \\\\"
+            f"&= {self.answer}^\\circ \\\\"
+            f"\\text{{By the circle theorem, angles subtended by the same arc }} AD \\text{{ are equal:}} & \\\\"
+            f"\\angle ABD &= \\angle ACD \\\\"
+            f"&= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ax.set_xlim(-1.3, 1.3)
+        ax.set_ylim(-1.3, 1.3)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        r = 1.0
+        circle = plt.Circle((0, 0), r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Define vertex angles in degrees (Counter-Clockwise order: A < B < C < D)
+        ang_a = randrange_float(210, 240, 0.01)
+        ang_b = ang_a + randrange_float(40, 70, 0.01)
+        ang_c = ang_b + randrange_float(60, 90, 0.01)
+        ang_d = ang_c + randrange_float(60, 90, 0.01)
+        
+        # Coordinate calculation (Direct logic)
+        pts = {
+            'A': np.array([r * np.cos(np.radians(ang_a)), r * np.sin(np.radians(ang_a))]),
+            'B': np.array([r * np.cos(np.radians(ang_b)), r * np.sin(np.radians(ang_b))]),
+            'C': np.array([r * np.cos(np.radians(ang_c)), r * np.sin(np.radians(ang_c))]),
+            'D': np.array([r * np.cos(np.radians(ang_d)), r * np.sin(np.radians(ang_d))])
+        }
+
+        # Draw Geometry
+        poly = plt.Polygon([pts['A'], pts['B'], pts['C'], pts['D']], fill=False, lw=1, edgecolor='black')
+        ax.add_patch(poly)
+
+        # Diagonals
+        ax.plot([pts['A'][0], pts['C'][0]], [pts['A'][1], pts['C'][1]], color='black', lw=1)
+        ax.plot([pts['B'][0], pts['D'][0]], [pts['B'][1], pts['D'][1]], color='black', lw=1)
+
+        # Labels
+        label_r = 1.12
+        for label, angle in zip(['A', 'B', 'C', 'D'], [ang_a, ang_b, ang_c, ang_d]):
+            lx = label_r * np.cos(np.radians(angle))
+            ly = label_r * np.sin(np.radians(angle))
+            ax.text(lx, ly, label, fontsize=20, ha='center', va='center', fontweight='bold')
+
+        # Markings
+        # Angle BAD marking
+        ang_start_bad = get_angle(pts['A'], pts['B'])
+        ang_end_bad = get_angle(pts['A'], pts['D'])
+        arc_bad = patches.Arc(pts['A'], 0.4, 0.4, theta1=ang_start_bad, theta2=ang_end_bad, color='black', lw=1)
+        ax.add_patch(arc_bad)
+        
+        mid_bad = 180 + (ang_start_bad + ang_end_bad) / 2
+        tx_bad = pts['A'][0] + 0.4 * np.cos(np.radians(mid_bad))
+        ty_bad = pts['A'][1] + 0.4 * np.sin(np.radians(mid_bad))
+        ax.text(tx_bad, ty_bad, f"{self.angle_bad}°", fontsize=14, ha='center')
+
+        # Angle BCA marking
+        ang_start_bca = get_angle(pts['C'], pts['A'])
+        ang_end_bca = get_angle(pts['C'], pts['B'])
+        arc_bca = patches.Arc(pts['C'], 0.5, 0.5, theta1=ang_start_bca, theta2=ang_end_bca, color='black', lw=1)
+        ax.add_patch(arc_bca)
+        
+        mid_bca = (ang_start_bca + ang_end_bca) / 2
+        tx_bca = pts['C'][0] + 0.4 * np.cos(np.radians(mid_bca))
+        ty_bca = pts['C'][1] + 0.4 * np.sin(np.radians(mid_bca))
+        ax.text(tx_bca, ty_bca, f"{self.angle_bca}°", fontsize=14, ha='center')
+
+        plt.text(1.1, 1.1, "NOT TO\nSCALE", fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat047:
+    def __init__(self):
+        self.angle_ops = randrange_float(20, 35, 0.01)
+        
+        self.answer = 90 + (2 * self.angle_ops)
+
+        self.description = (
+            f"The diagram shows a circle, centre $O$. $P$ and $S$ are points on the circle. "
+            f"$POR$ is a straight line. $QRST$ is a tangent to the circle at $S$. "
+            f"Angle $OPS = {int(self.angle_ops)}^\\circ$. "
+            f"Find the value of $y$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems I"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 13"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{In }}\\triangle OPS, OP = OS \\text{{ (radii), so the triangle is isosceles:}} &\\\\"
+            f"\\angle OSP &= \\angle OPS = {round(self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{The sum of angles in }}\\triangle OPS\\text{{ is }} 180^\\circ: &\\\\"
+            f"\\angle POS &= 180^\\circ - (\\angle OPS + \\angle OSP)\\\\"
+            f"&= 180^\\circ - (2 \\times {round(self.angle_ops, 10)}^\\circ) = {round(180 - 2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{Angles on the straight line }} POR \\text{{ sum to }} 180^\\circ: &\\\\"
+            f"\\angle SOR &= 180^\\circ - \\angle POS\\\\"
+            f"&= 180^\\circ - {round(180 - 2 * self.angle_ops, 10)}^\\circ = {round(2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{Since }} ST \\text{{ is a tangent at }} S, \\text{{the radius}} OS \\perp ST: &\\\\"
+            f"\\angle OSR &= 90^\\circ\\\\"
+            f"\\text{{In }}\\triangle OSR, \\text{{ the interior angle }} \\angle ORS \\text{{ is:}} &\\\\"
+            f"\\angle ORS &= 180^\\circ - (\\angle OSR + \\angle SOR)\\\\"
+            f"&= 180^\\circ - (90^\\circ + {round(2 * self.angle_ops, 10)}^\\circ) = {round(90 - 2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{Finally, }} y \\text{{ and }} \\angle ORS \\text{{ are supplementary on the straight line }} QR: &\\\\"
+            f"y &= 180^\\circ - \\angle ORS\\\\"
+            f"&= 180^\\circ - {round(90 - 2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"&= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        r = 1.0
+        O = np.array([0, 0])
+        S = np.array([0, -r]) # Fixed at bottom
+
+        # Calculate P based on angle_ops
+        angle_p_deg = 90 - 2 * self.angle_ops
+        angle_p_rad = np.radians(angle_p_deg)
+        P = np.array([r * np.cos(angle_p_rad), r * np.sin(angle_p_rad)])
+
+        # Calculate R
+        x_r = -1.0 / np.tan(angle_p_rad)
+        R = np.array([x_r, -1.0])
+
+        # Define Tangent Line Endpoints (Q and T)
+        Q = np.array([x_r - 1.2, -1.0]) 
+        T = np.array([1.2, -1.0])       
+
+        # Dynamic Plot Limits (Zoom Logic)
+        all_x = [Q[0], T[0], P[0], R[0], -1.0, 1.0] # Include circle width
+        all_y = [S[1], P[1], 1.0, -1.0]             # Include circle height
+        
+        min_x, max_x = min(all_x), max(all_x)
+        min_y, max_y = min(all_y), max(all_y)
+        
+        padding_x = 0.5
+        padding_y = 0.5
+        
+        ax.set_xlim(min_x - padding_x, max_x + padding_x)
+        ax.set_ylim(min_y - padding_y, max_y + padding_y)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Drawing Elements
+        # Circle
+        circle = plt.Circle((0, 0), r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Lines
+        ax.plot([Q[0], T[0]], [Q[1], T[1]], 'k-', lw=1.5) # Tangent
+        ax.plot([P[0], R[0]], [P[1], R[1]], 'k-', lw=1) # Secant
+        ax.plot([O[0], S[0]], [O[1], S[1]], 'k-', lw=1) # Radius
+        ax.plot([P[0], S[0]], [P[1], S[1]], 'k-', lw=1) # Chord
+
+        # Labels
+        text_offset = 0.15 * (r) # Scale offset relative to radius
+        ax.text(O[0], O[1] + text_offset, 'O', fontsize=16, ha='right', va='bottom', fontweight='bold')
+        ax.text(P[0] + text_offset, P[1], 'P', fontsize=16, ha='left', va='center', fontweight='bold')
+        ax.text(S[0], S[1] - 0.2, 'S', fontsize=16, ha='center', va='top', fontweight='bold')
+        ax.text(R[0], R[1] - 0.2, 'R', fontsize=16, ha='center', va='top', fontweight='bold')
+        ax.text(Q[0], Q[1] - 0.2, 'Q', fontsize=16, ha='center', va='top', fontweight='bold')
+        ax.text(T[0], T[1] - 0.2, 'T', fontsize=16, ha='center', va='top', fontweight='bold')
+
+        # Angle Markings
+        
+        # OPS
+        angle_start = get_angle(P, O)
+        angle_end = get_angle(P, S)
+        if angle_end < angle_start: angle_end += 360
+        
+        arc_ops = patches.Arc(P, 0.5, 0.5, theta1=angle_start, theta2=angle_end, color='black')
+        ax.add_patch(arc_ops)
+        
+        mid_angle = np.radians((angle_start + angle_end) / 2)
+        # Position label slightly inward
+        lx = P[0] + 0.5 * np.cos(mid_angle)
+        ly = P[1] + 0.5 * np.sin(mid_angle) 
+        ax.text(lx - 0.1, ly, f"{self.angle_ops}°", fontsize=12)
+
+        # OSP (x)
+        angle_start_x = get_angle(S, P)
+        angle_end_x = get_angle(S, O)
+        arc_osp = patches.Arc(S, 0.5, 0.5, theta1=angle_start_x, theta2=angle_end_x, color='black')
+        ax.add_patch(arc_osp)
+        
+        mid_angle_x = np.radians((angle_start_x + angle_end_x) / 2)
+        lx_x = S[0] + 0.45 * np.cos(mid_angle_x)
+        ly_x = S[1] + 0.45 * np.sin(mid_angle_x)
+        ax.text(lx_x, ly_x, "$x^\\circ$", fontsize=14, ha='center')
+
+        # Exterior Angle y
+        angle_rq = 180 # Left direction
+        angle_rp = get_angle(R, P)
+        arc_y = patches.Arc(R, 0.6, 0.6, theta1=angle_rp, theta2=angle_rq, color='black')
+        ax.add_patch(arc_y)
+        
+        mid_angle_y = np.radians((angle_rp + angle_rq) / 2)
+        lx_y = R[0] + 0.45 * np.cos(mid_angle_y)
+        ly_y = R[1] + 0.45 * np.sin(mid_angle_y)
+        ax.text(lx_y+0.1, ly_y, "$y^\\circ$", fontsize=14, ha='center')
+
+        # "Not to Scale" - Anchored to Top Right of the axes
+        ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='right', va='top')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
