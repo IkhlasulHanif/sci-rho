@@ -1889,7 +1889,7 @@ class Mat045:
         )
         self.topic = "Geometry"
         self.subtopic = "Angles"
-        self.source = "Adapted from IGCSE Mathematics"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 11"
         self.curriculum = "IGCSE"
         
         self.reasoning = (
