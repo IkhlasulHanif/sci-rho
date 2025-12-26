@@ -1912,7 +1912,7 @@ class Mat045:
         )
         self.topic = "Geometry"
         self.subtopic = "Angles"
-        self.source = "Adapted from 2025-specimen-paper-1"
+        self.source = "Adapted from IGCSE March 2025 Question Paper 32"
         self.curriculum = "IGCSE"
         self.reasoning = (
             r"\[\begin{aligned}"
