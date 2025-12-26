@@ -1999,3 +1999,105 @@ class Mat045:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=150)
         plt.close()
+        
+class Mat046:
+    def __init__(self):
+        self.angle_bad = randrange_float(60, 90, 0.01)
+        self.angle_bca = randrange_float(30, 45, 0.01)
+        
+        self.answer = (180 - self.angle_bad) - self.angle_bca
+
+        self.description = (
+            f"The diagram shows a cyclic quadrilateral $ABCD$. The diagonals $BD$ and $AC$ intersect. "
+            f"Angle $BAD = {self.angle_bad}^\\circ$ and angle $BCA = {self.angle_bca}^\\circ$. "
+            f"Find the value of angle $ABD$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems I"
+        self.source = "Adapted from 2025-specimen-paper-2"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            f"\\[\\begin{{aligned}} "
+            f"\\text{{Since }} ABCD \\text{{ is a cyclic quadrilateral, opposite angles sum to }} 180^\\circ: & \\\\"
+            f"\\angle BCD &= 180^\\circ - \\angle BAD \\\\"
+            f"&= 180^\\circ - {round(self.angle_bad, 10)}^\\circ \\\\"
+            f"&= {round(180 - self.angle_bad, 10)}^\\circ \\\\"
+            f"\\text{{The angle }} \\angle BCD \\text{{ is composed of }} \\angle BCA \\text{{ and }} \\angle ACD: & \\\\"
+            f"\\angle ACD &= \\angle BCD - \\angle BCA \\\\"
+            f"&= {round(180 - self.angle_bad, 10)}^\\circ - {round(self.angle_bca, 10)}^\\circ \\\\"
+            f"&= {self.answer}^\\circ \\\\"
+            f"\\text{{By the circle theorem, angles subtended by the same arc }} AD \\text{{ are equal:}} & \\\\"
+            f"\\angle ABD &= \\angle ACD \\\\"
+            f"&= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ax.set_xlim(-1.3, 1.3)
+        ax.set_ylim(-1.3, 1.3)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        r = 1.0
+        circle = plt.Circle((0, 0), r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Define vertex angles in degrees (Counter-Clockwise order: A < B < C < D)
+        ang_a = randrange_float(210, 240, 0.01)
+        ang_b = ang_a + randrange_float(40, 70, 0.01)
+        ang_c = ang_b + randrange_float(60, 90, 0.01)
+        ang_d = ang_c + randrange_float(60, 90, 0.01)
+        
+        # Coordinate calculation (Direct logic)
+        pts = {
+            'A': np.array([r * np.cos(np.radians(ang_a)), r * np.sin(np.radians(ang_a))]),
+            'B': np.array([r * np.cos(np.radians(ang_b)), r * np.sin(np.radians(ang_b))]),
+            'C': np.array([r * np.cos(np.radians(ang_c)), r * np.sin(np.radians(ang_c))]),
+            'D': np.array([r * np.cos(np.radians(ang_d)), r * np.sin(np.radians(ang_d))])
+        }
+
+        # Draw Geometry
+        poly = plt.Polygon([pts['A'], pts['B'], pts['C'], pts['D']], fill=False, lw=1, edgecolor='black')
+        ax.add_patch(poly)
+
+        # Diagonals
+        ax.plot([pts['A'][0], pts['C'][0]], [pts['A'][1], pts['C'][1]], color='black', lw=1)
+        ax.plot([pts['B'][0], pts['D'][0]], [pts['B'][1], pts['D'][1]], color='black', lw=1)
+
+        # Labels
+        label_r = 1.12
+        for label, angle in zip(['A', 'B', 'C', 'D'], [ang_a, ang_b, ang_c, ang_d]):
+            lx = label_r * np.cos(np.radians(angle))
+            ly = label_r * np.sin(np.radians(angle))
+            ax.text(lx, ly, label, fontsize=20, ha='center', va='center', fontweight='bold')
+
+        # Markings
+        # Angle BAD marking
+        ang_start_bad = get_angle(pts['A'], pts['B'])
+        ang_end_bad = get_angle(pts['A'], pts['D'])
+        arc_bad = patches.Arc(pts['A'], 0.4, 0.4, theta1=ang_start_bad, theta2=ang_end_bad, color='black', lw=1)
+        ax.add_patch(arc_bad)
+        
+        mid_bad = 180 + (ang_start_bad + ang_end_bad) / 2
+        tx_bad = pts['A'][0] + 0.4 * np.cos(np.radians(mid_bad))
+        ty_bad = pts['A'][1] + 0.4 * np.sin(np.radians(mid_bad))
+        ax.text(tx_bad, ty_bad, f"{self.angle_bad}°", fontsize=14, ha='center')
+
+        # Angle BCA marking
+        ang_start_bca = get_angle(pts['C'], pts['A'])
+        ang_end_bca = get_angle(pts['C'], pts['B'])
+        arc_bca = patches.Arc(pts['C'], 0.5, 0.5, theta1=ang_start_bca, theta2=ang_end_bca, color='black', lw=1)
+        ax.add_patch(arc_bca)
+        
+        mid_bca = (ang_start_bca + ang_end_bca) / 2
+        tx_bca = pts['C'][0] + 0.4 * np.cos(np.radians(mid_bca))
+        ty_bca = pts['C'][1] + 0.4 * np.sin(np.radians(mid_bca))
+        ax.text(tx_bca, ty_bca, f"{self.angle_bca}°", fontsize=14, ha='center')
+
+        plt.text(1.1, 1.1, "NOT TO\nSCALE", fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
