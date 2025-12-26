@@ -1876,142 +1876,126 @@ class Mat044:
         plt.close(fig)
 
 class Mat045:
-
     def __init__(self):
-        self.angle_ext = randrange_float(100.0, 140.0, 0.01)
-        self.angle_int = randrange_float(30.0, self.angle_ext - 30.0, 0.01)
+        # Generalize to n sides (3 to 9)
+        self.n = rnd.randint(3, 9)
+        total_sum = (self.n - 2) * 180
         
-        self.answer = self.angle_ext - self.angle_int
-
+        # Target can be non-integer (stepping by 0.5)
+        self.x_val = rnd.randint(20, 80) / 2.0 
+        
+        # Increase coeff range (1, 10)
+        self.coeffs = [rnd.randint(1, 10) for _ in range(self.n)]
+        sum_a = sum(self.coeffs)
+        
+        # Calculate sum_b to satisfy: sum_a * x + sum_b = total_sum
+        sum_b = total_sum - (sum_a * self.x_val)
+        
+        # Distribute sum_b into n parts
+        self.consts = [0] * self.n
+        current_sum_b = 0
+        for i in range(self.n - 1):
+            val = rnd.randint(-20, 40)
+            self.consts[i] = val
+            current_sum_b += val
+        self.consts[self.n - 1] = int(sum_b - current_sum_b)
+        
+        self.answer = self.x_val
+        
+        name_map = {3: "triangle", 4: "quadrilateral", 5: "pentagon", 
+                    6: "hexagon", 7: "heptagon", 8: "octagon", 9: "nonagon"}
+        shape_name = name_map[self.n]
+        
         self.description = (
-            f"The diagram shows two straight lines intersecting two parallel lines. "
-            f"Find the value of $z$."
+            f"The diagram shows the interior angles of a {shape_name}, written in terms of $x$. "
+            f"Find the value of $x$."
         )
         self.topic = "Geometry"
         self.subtopic = "Angles"
-        self.source = "Adapted from IGCSE June 2025 Question Paper 11"
+        self.source = "Adapted from 2025-specimen-paper-1"
         self.curriculum = "IGCSE"
-        
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Let the interior angle at the bottom-left intersection be }} \\alpha. & \\\\"
-            f"\\text{{Since the angles on a straight line sum to 180}}^\\circ\\text{{:}} & \\\\"
-            f"\\alpha &= 180^\\circ - \\text{{exterior angle}} \\\\"
-            f"&= 180^\\circ - {round(self.angle_ext, 10)}^\\circ \\\\"
-            f"&= {round(180 - self.angle_ext, 10)}^\\circ \\\\"
-            f"\\text{{Let the interior angle at the bottom-right intersection be }} \\beta. & \\\\"
-            f"\\beta &= \\text{{interior angle}} = {round(self.angle_int, 10)}^\\circ \\\\"
-            f"\\text{{The two transversals and the bottom parallel line form a triangle.}} & \\\\"
-            f"\\text{{The angle }} z \\text{{ is vertically opposite to the top angle of this triangle.}} & \\\\"
-            f"\\text{{By the triangle angle sum property:}} & \\\\"
-            f"z &= 180^\\circ - (\\alpha + \\beta) \\\\"
-            f"&= 180^\\circ - ({round(180 - self.angle_ext, 10)}^\\circ + {round(self.angle_int, 10)}^\\circ) \\\\"
-            f"&= {round(self.angle_ext - self.angle_int, 10)}^\\circ \\\\"
-            f"z &= {(self.answer)}^\\circ"
-            "\\end{aligned}\\]"
+            r"\[\begin{aligned}"
+            fr"\text{{The sum of the interior angles of an }} n\text{{-sided polygon is given by:}} \\"
+            fr"S &= (n - 2) \times 180^\circ \\"
+            fr"\text{{For a {shape_name} where }} n = {self.n}\text{{:}} \\"
+            fr"S &= ({self.n} - 2) \times 180^\circ \\"
+            fr"&= {round((self.n - 2) * 180, 10)}^\circ \\"
+            fr"\text{{The sum of the given interior angles in terms of }} x \text{{ is:}} \\"
+            fr"\sum \text{{Angles}} &= {' + '.join(['(' + fmt_poly(c, 'x', True) + fmt_poly(b, '') + ')' for c, b in zip(self.coeffs, self.consts)])} \\"
+            fr"&= ({' + '.join(map(str, self.coeffs))})x + ({' + '.join([str(b) if b >= 0 else f'({b})' for b in self.consts])}) \\"
+            fr"&= {round(sum(self.coeffs), 10)}x {'+' if sum(self.consts) >= 0 else '-'} {abs(round(sum(self.consts), 10))} \\"
+            fr"\text{{Equating the sum to }} {round((self.n - 2) * 180, 10)}^\circ\text{{:}} \\"
+            fr"{round(sum(self.coeffs), 10)}x {'+' if sum(self.consts) >= 0 else '-'} {abs(round(sum(self.consts), 10))} &= {round((self.n - 2) * 180, 10)} \\"
+            fr"{round(sum(self.coeffs), 10)}x &= {round((self.n - 2) * 180, 10)} - ({round(sum(self.consts), 10)}) \\"
+            fr"{round(sum(self.coeffs), 10)}x &= {round((self.n - 2) * 180 - sum(self.consts), 10)} \\"
+            fr"x &= \frac{{{round((self.n - 2) * 180 - sum(self.consts), 10)}}}{{{round(sum(self.coeffs), 10)}}} \\"
+            fr"x &= {self.answer}"
+            r"\end{aligned}\]"
         )
-                
+        
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.set_aspect('equal')
+        # Generate random n-polygon
+        # Divide the circle into n equal sectors and pick a random point in each
+        # This guarantees a minimum angular distance between points
+        r = 3
+        sector_width = (2 * math.pi) / self.n
+        buffer = sector_width * 0.2
+        
+        angles = []
+        for i in range(self.n):
+            start = i * sector_width + buffer
+            end = (i + 1) * sector_width - buffer
+            angles.append(rnd.uniform(start, end))
+            
+        pts = np.array([[r * math.cos(a), r * math.sin(a)] for a in angles])
+        
+        fig, ax = plt.subplots(figsize=(8, 8))
+        polygon = patches.Polygon(pts, closed=True, fill=None, edgecolor='black', linewidth=2)
+        ax.add_patch(polygon)
+        
+        for i in range(self.n):
+            p_prev = pts[i-1]
+            p_curr = pts[i]
+            p_next = pts[(i+1) % self.n]
+            
+            # Label Placement using Vector Bisector
+            v1 = (p_prev - p_curr) / np.linalg.norm(p_prev - p_curr)
+            v2 = (p_next - p_curr) / np.linalg.norm(p_next - p_curr)
+            
+            # Use unit vectors to find the interior bisector
+            bisector = v1 + v2
+            bisector_unit = bisector / np.linalg.norm(bisector)
+            
+            # Position labels inside the polygon
+            text_pos = p_curr + bisector_unit * 0.8
+            
+            # Angle Arcs
+            ang_start = get_angle(p_curr, p_next)
+            ang_end = get_angle(p_curr, p_prev)
+            
+            # Ensure the arc draws the interior angle
+            if (ang_end - ang_start) % 360 > 180:
+                ang_start, ang_end = ang_end, ang_start
+                
+            arc = patches.Arc(p_curr, 0.6, 0.6, theta1=ang_start, theta2=ang_end, color='black')
+            ax.add_patch(arc)
+            
+            # Using Raw f-string (fr"") to prevent SyntaxWarning for LaTeX
+            # Reusing fmt_poly from your helper
+            label_str = f"{fmt_poly(self.coeffs[i], 'x', True)}{fmt_poly(self.consts[i], '')}"
+            ax.text(text_pos[0], text_pos[1], fr"${label_str}^\circ$", 
+                    fontsize=10, ha='center', va='center')
+
+        # Formatting
+        limit = r + 1.5
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
         ax.axis('off')
-
-        # Parallel lines settings
-        y_bot = 0
-        y_top = 4
-        x_min, x_max = -2, 12
+        ax.set_aspect('equal')
         
-        # Intersection point of the two transversals (Vertex C)
-        C = np.array([5.0, 2.0])
-        
-        # Calculate slopes based on angles
-        theta1 = np.radians(180 - self.angle_ext)
-        slope1 = np.tan(theta1)
-        
-        theta2 = np.radians(180 - self.angle_int)
-        slope2 = np.tan(theta2)
-        
-        # Calculate intersection points on parallel lines
-        x_A = C[0] + (y_bot - C[1]) / slope1
-        x_Top1 = C[0] + (y_top - C[1]) / slope1
-        
-        # Line 2 (through C)
-        x_B = C[0] + (y_bot - C[1]) / slope2
-        x_Top2 = C[0] + (y_top - C[1]) / slope2
-        
-        # Points
-        A = np.array([x_A, y_bot])      # Bottom-Left Intersection
-        B = np.array([x_B, y_bot])      # Bottom-Right Intersection
-        Top1 = np.array([x_Top1, y_top]) # Top Intersection for Line 1
-        Top2 = np.array([x_Top2, y_top]) # Top Intersection for Line 2 (where x, y are)
-        
-        # Extend lines for visual appeal
-        L1_start = A - (Top1 - A) * 0.2
-        L1_end = Top1 + (Top1 - A) * 0.2
-        
-        L2_start = B - (Top2 - B) * 0.2
-        L2_end = Top2 + (Top2 - B) * 0.2
-        
-        # Draw Parallel Lines
-        ax.plot([x_min, x_max], [y_bot, y_bot], 'black', lw=1)
-        ax.plot([x_min, x_max], [y_top, y_top], 'black', lw=1)
-        
-        # Draw Parallel Markers (Arrows)
-        ax.annotate('', xy=(x_max-1, y_bot), xytext=(x_max-1.5, y_bot), arrowprops=dict(arrowstyle='->', lw=1))
-        ax.annotate('', xy=(x_max-1, y_top), xytext=(x_max-1.5, y_top), arrowprops=dict(arrowstyle='->', lw=1))
-        
-        # Draw Transversals
-        ax.plot([L1_start[0], L1_end[0]], [L1_start[1], L1_end[1]], 'black', lw=1)
-        ax.plot([L2_start[0], L2_end[0]], [L2_start[1], L2_end[1]], 'black', lw=1)
-        
-        # --- Angles ---
-        r_arc = 1
-        
-        arc_ext = patches.Arc(A, r_arc*1.2, r_arc*1.2, theta1=np.degrees(theta1), theta2=180, color='black')
-        ax.add_patch(arc_ext)
-        # Label position
-        mid_angle_ext = np.radians((np.degrees(theta1) + 180) / 2)
-        ax.text(A[0] + r_arc * 1.2 * np.cos(mid_angle_ext), 
-                A[1] + r_arc * 0.8 * np.sin(mid_angle_ext), 
-                f"{self.angle_ext}°", ha='center', va='bottom', fontsize=12)
-        
-        # Interior Angle (Right Bottom) - angle_int
-        arc_int = patches.Arc(B, r_arc*1.2, r_arc*1.2, theta1=180-self.angle_int, theta2=180, color='black')
-        ax.add_patch(arc_int)
-        # Label
-        mid_angle_int = np.radians((180 - self.angle_int + 180) / 2)
-        ax.text(B[0] + r_arc * 1.2 * np.cos(mid_angle_int), 
-                B[1] + r_arc * 0.8 * np.sin(mid_angle_int), 
-                f"{self.angle_int}°", ha='center', va='bottom', fontsize=12)
-        
-        # 3. Angle z (Intersection Top V)
-        arc_z = patches.Arc(C, r_arc, r_arc, theta1=np.degrees(theta1), theta2=180-self.angle_int, color='black')
-        ax.add_patch(arc_z)
-        # Label z
-        mid_angle_z = np.radians((np.degrees(theta1) + (180 - self.angle_int)) / 2)
-        ax.text(C[0] + r_arc * 0.8 * np.cos(mid_angle_z), 
-                C[1] + r_arc * 0.8 * np.sin(mid_angle_z), 
-                "$z^\\circ$", ha='center', va='bottom', fontsize=12)
-        
-        # Angles x and y (Top intersection of Line 1)
-        arc_x = patches.Arc(Top1, r_arc, r_arc, theta1=180, theta2=180+np.degrees(theta1), color='black')
-        ax.add_patch(arc_x)
-        mid_x = np.radians((180 + 180 + np.degrees(theta1))/2)
-        ax.text(Top1[0] + r_arc * 0.8 * np.cos(mid_x), 
-                Top1[1] + r_arc * 0.8 * np.sin(mid_x), 
-                "$x^\\circ$", ha='center', va='top', fontsize=11)
-        
-        # Arc for y (Obtuse, right of Line 1 at Top1)
-        arc_y = patches.Arc(Top1, r_arc, r_arc, theta1=180+np.degrees(theta1), theta2=360, color='black')
-        ax.add_patch(arc_y)
-        mid_y = np.radians((180 + np.degrees(theta1) + 360)/2)
-        ax.text(Top1[0] + r_arc * 0.8 * np.cos(mid_y), 
-                Top1[1] + r_arc * 0.8 * np.sin(mid_y), 
-                "$y^\\circ$", ha='center', va='top', fontsize=11)
-
-        # NOT TO SCALE label
-        ax.text(1, 0.2, 'NOT TO\nSCALE', transform=ax.transAxes, ha='center', fontsize=10)
+        plt.text(limit-0.5, -limit+0.5, "NOT TO\nSCALE", fontsize=10, ha='center', fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
-        plt.close(fig)
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=150)
+        plt.close()
