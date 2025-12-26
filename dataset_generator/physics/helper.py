@@ -29,16 +29,22 @@ def draw_axis(ax, pivot_point, min_point, max_point, value_min, value_max, tick_
             elif direction == "h":
                 ax.vlines(x=point_coords, ymin=pivot_point-10, ymax=pivot_point+10, colors="black", linewidth=1)
 
-def draw_cartesian(ax, xmin=-20, xmax=20, ymin=-20, ymax=20, tickrange=1, xlabel="X", ylabel="Y"):
+def draw_cartesian(ax, xmin=-20, xmax=20, ymin=-20, ymax=20, tickrange=1, xlabel="X", ylabel="Y", xtickrange=None, ytickrange=None):
     """Draw Cartesian axes with ticks and labels."""
     ax.axhline(0, color="black", linewidth=1)
     ax.axvline(0, color="black", linewidth=1)
 
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
-
-    ax.set_xticks(range(xmin, xmax+1, tickrange))
-    ax.set_yticks(range(ymin, ymax+1, tickrange))
+    
+    if xtickrange is None:
+        ax.set_xticks(range(xmin, xmax+1, tickrange))
+    else:
+        ax.set_xticks(range(xmin, xmax+1, xtickrange))
+    if ytickrange is None:
+        ax.set_yticks(range(ymin, ymax+1, tickrange))
+    else:
+        ax.set_yticks(range(ymin, ymax+1, ytickrange))
     ax.grid(True, linestyle="--", alpha=0.5)
 
     ax.set_xlabel(xlabel)

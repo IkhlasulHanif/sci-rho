@@ -826,3 +826,339 @@ class Phy018:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
         plt.close()
+
+class Phy019:
+
+    def __init__(self):
+        self.depth_change = rnd.randint(30, 100)
+        self.depth_change_in_meters = self.depth_change / 100
+        self.water_density = 1000 # assume water density is 1000kg/m³
+        self.delta_pressure = self.depth_change_in_meters * self.water_density * 10 # assume g = 10 m/s² 
+        self.answer = round(self.delta_pressure, 2)
+        
+        self.description = (
+            "A fish in an aquarium moves downward, as shown in the picture. "
+            "Assuming g = 10 m/s² and ρ = 1000 kg/m³, the fish experiences a change in pressure of ... Pa."
+        )
+        self.topic = "Motion, forces and energy"
+        self.subtopic = "Pressure"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Depth change}} &= {self.depth_change}\\,\\text{{cm}} = {self.depth_change_in_meters}\\,\\text{{m}}\\\\"
+            f"\\text{{Water density}} &= {self.water_density}\\,\\text{{kg/m}}^3\\\\"
+            f"\\text{{Gravitational acceleration}} &= 10\\,\\text{{m/s}}^2\\\\"
+            f"\\text{{Change in pressure is given by:}} &\\\\"
+            f"\\Delta P &= \\rho g h\\\\"
+            f"&= ({self.water_density}) \\cdot (10) \\cdot ({self.depth_change_in_meters})\\\\"
+            f"&= {round(self.delta_pressure, 10)}\\,\\text{{Pa}}\\\\"
+            f"&= {self.answer}\\,\\text{{Pa}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy019temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(1377, 642, f"{self.depth_change} cm", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy020:
+
+    def __init__(self):
+        self.k = rnd.randint(2, 12)
+        self.v_reference = rnd.choice([2, 4, 5, 8, 10])
+        self.answer = round(self.k / self.v_reference, 2)
+
+        self.description = f"A fixed mass of gas is maintained at constant temperature. Its pressure-volume (P-V) relationship is shown in the graph below. What is the pressure of the gas when the volume is V={self.v_reference}?"
+        self.topic = "Thermal physics"
+        self.subtopic = "Kinetic particle model of matter"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{At constant temperature, for a fixed mass of gas:}} &\\\\"
+            f"P V &= k \\quad \\text{{(Boyle's Law)}}\\\\"
+            f"\\text{{Given constant }} k &= {self.k}\\\\"
+            f"\\text{{Given volume }} V &= {self.v_reference}\\\\"
+            f"\\text{{Solve for pressure:}} &\\\\"
+            f"P &= \\frac{{k}}{{V}}\\\\"
+            f"&= \\frac{{{self.k}}}{{{self.v_reference}}}\\\\"
+            f"&= {round(self.k / self.v_reference, 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        draw_cartesian(ax, xmin=0, ymin=0, xmax=12, ymax=2*self.k, tickrange=1, xlabel="Volume (m³)", ylabel="Pressure (Pa)")
+        V = np.linspace(0.5, 12, 400)
+        P = self.k / V
+        ax.plot(V, P)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy021:
+
+    def __init__(self):
+        self.k = rnd.randint(4, 12)
+        self.p_reference = rnd.choice([2, 4, 5, 8, 10, 12])
+        self.answer = round(self.k / self.p_reference, 2)
+
+        self.description = f"A fixed mass of gas is maintained at constant temperature. Its pressure-volume (P-V) relationship is shown in the graph below. What is the volume of the gas when the pressure is P={self.p_reference}?"
+        self.topic = "Thermal physics"
+        self.subtopic = "Kinetic particle model of matter"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{At constant temperature, for a fixed mass of gas:}} &\\\\"
+            f"P V &= k \\quad \\text{{(Boyle's Law)}}\\\\"
+            f"\\text{{Given constant }} k &= {self.k}\\\\"
+            f"\\text{{Given pressure }} P &= {self.p_reference}\\\\"
+            f"\\text{{Solve for volume:}} &\\\\"
+            f"V &= \\frac{{k}}{{P}}\\\\"
+            f"&= \\frac{{{self.k}}}{{{self.p_reference}}}\\\\"
+            f"&= {round(self.k / self.p_reference, 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        draw_cartesian(ax, xmin=0, ymin=0, xmax=12, ymax=2*self.k, tickrange=1, xlabel="Volume (m³)", ylabel="Pressure (Pa)")
+        V = np.linspace(0.5, 12, 400)
+        P = self.k / V
+        ax.plot(V, P)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy022:
+
+    def __init__(self):
+        self.mass = rnd.randint(1, 5) # in kg
+        self.specific_heat_capacity = rnd.randint(1, 5) * 1000 # in J/(kg °C)
+        self.initial_temperature = rnd.randint(1, 3) * 10
+        self.final_temperature = rnd.randint(7, 9) * 10
+        self.delta = self.final_temperature - self.initial_temperature
+        self.energy_in_kJ = self.mass * self.specific_heat_capacity * self.delta / 1000
+        self.answer = round(self.energy_in_kJ, 2)
+
+        self.description = (
+            f"The graph shows the thermal energy transferred to an object as its temperature increases. "
+            f"The thermal energy received by the object as it is heated from {self.initial_temperature} °C "
+            f"to {self.final_temperature} °C is ... kJ."
+        )
+        self.topic = "Thermal physics"
+        self.subtopic = "Thermal properties and temperature"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the heat vs. temperature graph:}} &\\\\"
+            f"\\text{{slope}} &= {self.mass * self.specific_heat_capacity}\\,\\text{{J/°C}} \\\\"
+            f"\\Delta T &= {self.final_temperature} - {self.initial_temperature} = {self.delta}^\\circ\\text{{C}} \\\\"
+            f"Q &= \\text{{slope}} \\times \\Delta T = {round(self.mass * self.specific_heat_capacity * self.delta, 10)}\\,\\text{{J}} \\\\"
+            f"&= {self.answer}\\,\\text{{kJ}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ymax = int(self.energy_in_kJ*1.2)
+        if ymax <= 300:
+            ytickrange=10
+        else:
+            ytickrange=100
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=0,
+            xmax=100,
+            ymax=ymax,
+            xtickrange=10,
+            ytickrange=ytickrange,
+            xlabel="Temperature (°C)",
+            ylabel="Energy gained (kJ)"
+        )
+        T = np.linspace(self.initial_temperature, int(self.final_temperature*1.2), 400)
+        E = self.mass * self.specific_heat_capacity * (T - self.initial_temperature) / 1000
+        ax.plot(T, E)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy023:
+
+    def __init__(self):
+        self.mass = rnd.randint(1, 5) # in kg
+        self.specific_heat_capacity = rnd.randint(1, 5) * 1000 # in J/(kg °C)
+        self.initial_temperature = rnd.randint(1, 3) * 10
+        self.final_temperature = rnd.randint(7, 9) * 10
+        self.delta = self.final_temperature - self.initial_temperature
+        self.energy_in_kJ = self.mass * self.specific_heat_capacity * self.delta / 1000
+        self.answer = round(self.specific_heat_capacity, 2)
+
+        self.description = (
+            f"The graph shows the thermal energy transferred to an object as its temperature increases from {self.initial_temperature} °C. "
+            f"If the mass of the object is {self.mass} kg, its specific heat capacity is ... J/(kg °C)"
+        )
+        self.topic = "Thermal physics"
+        self.subtopic = "Thermal properties and temperature"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The graph of thermal energy vs. temperature is linear.}} &\\\\"
+            f"\\text{{From the data, slope}} &= {self.mass * self.specific_heat_capacity}\\,\\text{{J/°C}} \\\\"
+            f"\\text{{Thus, the specific heat capacity is:}} &\\\\"
+            f"c &= \\frac{{\\text{{slope}}}}{{m}} = \\frac{{{self.mass * self.specific_heat_capacity}}}{{{self.mass}}} \\\\"
+            f"&= {self.answer}\\,\\text{{J/(kg}} \\cdot \\,^\\circ\\text{{C)}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ymax = int(self.energy_in_kJ*1.2)
+        if ymax <= 300:
+            ytickrange=10
+        else:
+            ytickrange=100
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=0,
+            xmax=100,
+            ymax=ymax,
+            xtickrange=10,
+            ytickrange=ytickrange,
+            xlabel="Temperature (°C)",
+            ylabel="Energy gained (kJ)"
+        )
+        T = np.linspace(self.initial_temperature, int(self.final_temperature*1.2), 400)
+        E = self.mass * self.specific_heat_capacity * (T - self.initial_temperature) / 1000
+        ax.plot(T, E)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy024:
+
+    def __init__(self):
+        self.mass = rnd.randint(1, 5) # in kg
+        self.specific_heat_capacity = rnd.randint(1, 5) * 1000 # in J/(kg °C)
+        self.initial_temperature = rnd.randint(1, 3) * 10
+        self.final_temperature = rnd.randint(7, 9) * 10
+        self.delta = self.final_temperature - self.initial_temperature
+        self.energy_in_kJ = self.mass * self.specific_heat_capacity * self.delta / 1000
+        self.answer = round(self.mass, 2)
+
+        self.description = (
+            f"The graph shows the thermal energy transferred to an object as its temperature increases from {self.initial_temperature} °C. "
+            f"If the specific heat capacity of the object is {self.specific_heat_capacity} J/(kg °C), its mass is ... kg"
+        )
+        self.topic = "Thermal physics"
+        self.subtopic = "Thermal properties and temperature"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The graph of thermal energy vs. temperature is linear.}} &\\\\"
+            f"\\text{{From the data, slope}} &= {self.mass * self.specific_heat_capacity}\\,\\text{{J/°C}} \\\\"
+            f"\\text{{Thus, the mass is:}} &\\\\"
+            f"m &= \\frac{{\\text{{slope}}}}{{c}} = \\frac{{{self.mass * self.specific_heat_capacity}}}{{{self.specific_heat_capacity}}} \\\\"
+            f"&= {self.answer}\\,\\text{{kg}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ymax = int(self.energy_in_kJ*1.2)
+        if ymax <= 300:
+            ytickrange=10
+        else:
+            ytickrange=100
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=0,
+            xmax=100,
+            ymax=ymax,
+            xtickrange=10,
+            ytickrange=ytickrange,
+            xlabel="Temperature (°C)",
+            ylabel="Energy gained (kJ)"
+        )
+        T = np.linspace(self.initial_temperature, int(self.final_temperature*1.2), 400)
+        E = self.mass * self.specific_heat_capacity * (T - self.initial_temperature) / 1000
+        ax.plot(T, E)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy025:
+
+    def __init__(self):
+        self.mass = rnd.randint(1, 5) # in kg
+        self.specific_heat_capacity = rnd.randint(1, 5) * 1000 # in J/(kg °C)
+        self.initial_temperature = rnd.randint(1, 3) * 10
+        self.final_temperature = rnd.randint(7, 9) * 10
+        self.delta = self.final_temperature - self.initial_temperature
+        self.energy_in_kJ = self.mass * self.specific_heat_capacity * self.delta / 1000
+        self.answer = round(self.final_temperature, 2)
+
+        self.description = (
+            f"The graph shows the thermal energy transferred to an object as its temperature increases from {self.initial_temperature} °C. "
+            f"When the energy received by the object is Q = {self.energy_in_kJ} kJ, its temperature is ... °C."
+        )
+        self.topic = "Thermal physics"
+        self.subtopic = "Thermal properties and temperature"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the thermal energy vs. temperature graph:}} &\\\\"
+            f"\\text{{slope}} &= \\frac{{\\Delta Q}}{{\\Delta T}} = {round((self.mass * self.specific_heat_capacity) / 1000, 10)}\\,\\text{{kJ/}}^\\circ\\text{{C}}\\\\"
+            f"\\text{{When }} Q &= {self.energy_in_kJ}\\,\\text{{kJ:}} &\\\\"
+            f"\\Delta T &= \\frac{{Q}}{{\\text{{slope}}}} \\\\"
+            f"T &= {self.initial_temperature} + \\frac{{{self.energy_in_kJ}}}{{\\text{{slope}}}} = {self.answer}\\,^\\circ\\text{{C}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ymax = int(self.energy_in_kJ*1.2)
+        if ymax <= 300:
+            ytickrange=10
+        else:
+            ytickrange=100
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=0,
+            xmax=100,
+            ymax=ymax,
+            xtickrange=10,
+            ytickrange=ytickrange,
+            xlabel="Temperature (°C)",
+            ylabel="Energy gained (kJ)"
+        )
+        T = np.linspace(self.initial_temperature, int(self.final_temperature*1.2), 400)
+        E = self.mass * self.specific_heat_capacity * (T - self.initial_temperature) / 1000
+        ax.plot(T, E)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
