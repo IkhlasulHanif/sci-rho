@@ -2101,3 +2101,142 @@ class Mat046:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat047:
+    def __init__(self):
+        self.angle_ops = randrange_float(20, 35, 0.01)
+        
+        self.answer = 90 + (2 * self.angle_ops)
+
+        self.description = (
+            f"The diagram shows a circle, centre $O$. $P$ and $S$ are points on the circle. "
+            f"$POR$ is a straight line. $QRST$ is a tangent to the circle at $S$. "
+            f"Angle $OPS = {int(self.angle_ops)}^\\circ$. "
+            f"Find the value of $y$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems I"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 13"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{In }}\\triangle OPS, OP = OS \\text{{ (radii), so the triangle is isosceles:}} &\\\\"
+            f"\\angle OSP &= \\angle OPS = {round(self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{The sum of angles in }}\\triangle OPS\\text{{ is }} 180^\\circ: &\\\\"
+            f"\\angle POS &= 180^\\circ - (\\angle OPS + \\angle OSP)\\\\"
+            f"&= 180^\\circ - (2 \\times {round(self.angle_ops, 10)}^\\circ) = {round(180 - 2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{Angles on the straight line }} POR \\text{{ sum to }} 180^\\circ: &\\\\"
+            f"\\angle SOR &= 180^\\circ - \\angle POS\\\\"
+            f"&= 180^\\circ - {round(180 - 2 * self.angle_ops, 10)}^\\circ = {round(2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{Since }} ST \\text{{ is a tangent at }} S, \\text{{the radius}} OS \\perp ST: &\\\\"
+            f"\\angle OSR &= 90^\\circ\\\\"
+            f"\\text{{In }}\\triangle OSR, \\text{{ the interior angle }} \\angle ORS \\text{{ is:}} &\\\\"
+            f"\\angle ORS &= 180^\\circ - (\\angle OSR + \\angle SOR)\\\\"
+            f"&= 180^\\circ - (90^\\circ + {round(2 * self.angle_ops, 10)}^\\circ) = {round(90 - 2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"\\text{{Finally, }} y \\text{{ and }} \\angle ORS \\text{{ are supplementary on the straight line }} QR: &\\\\"
+            f"y &= 180^\\circ - \\angle ORS\\\\"
+            f"&= 180^\\circ - {round(90 - 2 * self.angle_ops, 10)}^\\circ\\\\"
+            f"&= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        r = 1.0
+        O = np.array([0, 0])
+        S = np.array([0, -r]) # Fixed at bottom
+
+        # Calculate P based on angle_ops
+        angle_p_deg = 90 - 2 * self.angle_ops
+        angle_p_rad = np.radians(angle_p_deg)
+        P = np.array([r * np.cos(angle_p_rad), r * np.sin(angle_p_rad)])
+
+        # Calculate R
+        x_r = -1.0 / np.tan(angle_p_rad)
+        R = np.array([x_r, -1.0])
+
+        # Define Tangent Line Endpoints (Q and T)
+        Q = np.array([x_r - 1.2, -1.0]) 
+        T = np.array([1.2, -1.0])       
+
+        # Dynamic Plot Limits (Zoom Logic)
+        all_x = [Q[0], T[0], P[0], R[0], -1.0, 1.0] # Include circle width
+        all_y = [S[1], P[1], 1.0, -1.0]             # Include circle height
+        
+        min_x, max_x = min(all_x), max(all_x)
+        min_y, max_y = min(all_y), max(all_y)
+        
+        padding_x = 0.5
+        padding_y = 0.5
+        
+        ax.set_xlim(min_x - padding_x, max_x + padding_x)
+        ax.set_ylim(min_y - padding_y, max_y + padding_y)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Drawing Elements
+        # Circle
+        circle = plt.Circle((0, 0), r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Lines
+        ax.plot([Q[0], T[0]], [Q[1], T[1]], 'k-', lw=1.5) # Tangent
+        ax.plot([P[0], R[0]], [P[1], R[1]], 'k-', lw=1) # Secant
+        ax.plot([O[0], S[0]], [O[1], S[1]], 'k-', lw=1) # Radius
+        ax.plot([P[0], S[0]], [P[1], S[1]], 'k-', lw=1) # Chord
+
+        # Labels
+        text_offset = 0.15 * (r) # Scale offset relative to radius
+        ax.text(O[0], O[1] + text_offset, 'O', fontsize=16, ha='right', va='bottom', fontweight='bold')
+        ax.text(P[0] + text_offset, P[1], 'P', fontsize=16, ha='left', va='center', fontweight='bold')
+        ax.text(S[0], S[1] - 0.2, 'S', fontsize=16, ha='center', va='top', fontweight='bold')
+        ax.text(R[0], R[1] - 0.2, 'R', fontsize=16, ha='center', va='top', fontweight='bold')
+        ax.text(Q[0], Q[1] - 0.2, 'Q', fontsize=16, ha='center', va='top', fontweight='bold')
+        ax.text(T[0], T[1] - 0.2, 'T', fontsize=16, ha='center', va='top', fontweight='bold')
+
+        # Angle Markings
+        
+        # OPS
+        angle_start = get_angle(P, O)
+        angle_end = get_angle(P, S)
+        if angle_end < angle_start: angle_end += 360
+        
+        arc_ops = patches.Arc(P, 0.5, 0.5, theta1=angle_start, theta2=angle_end, color='black')
+        ax.add_patch(arc_ops)
+        
+        mid_angle = np.radians((angle_start + angle_end) / 2)
+        # Position label slightly inward
+        lx = P[0] + 0.5 * np.cos(mid_angle)
+        ly = P[1] + 0.5 * np.sin(mid_angle) 
+        ax.text(lx - 0.1, ly, f"{self.angle_ops}°", fontsize=12)
+
+        # OSP (x)
+        angle_start_x = get_angle(S, P)
+        angle_end_x = get_angle(S, O)
+        arc_osp = patches.Arc(S, 0.5, 0.5, theta1=angle_start_x, theta2=angle_end_x, color='black')
+        ax.add_patch(arc_osp)
+        
+        mid_angle_x = np.radians((angle_start_x + angle_end_x) / 2)
+        lx_x = S[0] + 0.45 * np.cos(mid_angle_x)
+        ly_x = S[1] + 0.45 * np.sin(mid_angle_x)
+        ax.text(lx_x, ly_x, "$x^\\circ$", fontsize=14, ha='center')
+
+        # Exterior Angle y
+        angle_rq = 180 # Left direction
+        angle_rp = get_angle(R, P)
+        arc_y = patches.Arc(R, 0.6, 0.6, theta1=angle_rp, theta2=angle_rq, color='black')
+        ax.add_patch(arc_y)
+        
+        mid_angle_y = np.radians((angle_rp + angle_rq) / 2)
+        lx_y = R[0] + 0.45 * np.cos(mid_angle_y)
+        ly_y = R[1] + 0.45 * np.sin(mid_angle_y)
+        ax.text(lx_y+0.1, ly_y, "$y^\\circ$", fontsize=14, ha='center')
+
+        # "Not to Scale" - Anchored to Top Right of the axes
+        ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='right', va='top')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
