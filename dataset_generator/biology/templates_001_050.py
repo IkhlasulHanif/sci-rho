@@ -319,7 +319,7 @@ class Bio006:
         self.trophics_names = [self.maize, self.locust, self.lizard, self.snake]
         self.maize_energy = rnd.randrange(7000, 10000, 250)
         self.locust_energy = (rnd.randint(8, 12) / 100) * self.maize_energy
-        self.lizard_energy = (rnd.randint(8, 12) / 100) * self.locust_energy
+        self.lizard_energy = round((rnd.randint(8, 12) / 100) * self.locust_energy, 2)
         self.snake_energy = round((rnd.randint(8, 12) / 100) * self.lizard_energy, 2)
         self.trophics_energy = [self.maize_energy, self.locust_energy, self.lizard_energy, self.snake_energy]
 
@@ -783,8 +783,8 @@ class Bio014:
         self.quadrat_3 = rnd.randint(2, 6)
         self.field_length = rnd.randint(80, 100)
         self.field_width = rnd.randint(50, 70)
-        self.quadrat_length = 25
-        self.quadrat_width = 25
+        self.quadrat_length = rnd.randint(20, 25)
+        self.quadrat_width = self.quadrat_length
         self.quadrat_area = self.quadrat_width * self.quadrat_length
         self.field_area = self.field_length * self.field_width
         self.quadrat_mean_org = (self.quadrat_1 + self.quadrat_2 + self.quadrat_3) / 3
@@ -818,7 +818,7 @@ class Bio014:
         img = Image.open('biology/temp_image/Bio014temp.png')
         fig, ax = plt.subplots()
         ax.imshow(img)
-        ax.text(22, 545, f"{self.field_length} cm", fontsize=8)
+        ax.text(18, 545, f"{self.field_length} cm", fontsize=8)
         ax.text(405, 988, f"{self.field_width} cm", fontsize=8)
         ax.text(1520, 784, f"{self.quadrat_length} cm", fontsize=8)
         ax.text(1783, 558, f"{self.quadrat_width} cm", fontsize=8)
