@@ -828,9 +828,9 @@ class Bio014:
         quadrat2_box = (1088, 1376, 393, 682)
         quadrat3_box = (1424, 1712, 393, 682)
         
-        draw_non_overlapping_circles(ax, quadrat1_box, self.quadrat_1, radius=12)
-        draw_non_overlapping_circles(ax, quadrat2_box, self.quadrat_2, radius=12)
-        draw_non_overlapping_circles(ax, quadrat3_box, self.quadrat_3, radius=12)
+        draw_non_overlapping_circles(ax, quadrat1_box, n_type1=self.quadrat_1, radius=12, facecolor1="#ff66b2")
+        draw_non_overlapping_circles(ax, quadrat2_box, n_type1=self.quadrat_2, radius=12, facecolor1="#ff66b2")
+        draw_non_overlapping_circles(ax, quadrat3_box, n_type1=self.quadrat_3, radius=12, facecolor1="#ff66b2")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
@@ -1390,6 +1390,60 @@ class Bio022:
 
         plt.text(0.5, 0.92, f"Parent 2: {self.parent2}", ha="center", fontsize=14, weight="bold")
         plt.text(0.02, 0.5, f"Parent 1: {self.parent1}", va="center", rotation=90, fontsize=14, weight="bold")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Bio023:
+
+    def __init__(self):
+        self.grid_length_mm = round(rnd.uniform(0.2, 0.5), 1)
+        self.grid_width_mm = self.grid_length_mm
+        self.depth_mm = 0.2
+        self.stained_cells = rnd.randint(12, 25)
+        self.unstained_cells = round(0.2 * self.stained_cells)
+        self.volume_mm3 = round(self.grid_length_mm * self.grid_width_mm * self.depth_mm, 3)
+        self.cells_per_mm3 = self.stained_cells / self.volume_mm3
+        self.cells_per_cm3 = self.cells_per_mm3 * 1000
+        self.answer = round(self.cells_per_cm3)
+
+        self.description = f"A haemocytometer is used to estimate the population of live yeast in a sample of undiluted cider. The stain methylene blue is added to the sample. Only live yeast cells will take up this stain. This image shows the haemocytometer chamber containing the cider sample when viewed under a light microscope. The depth of the haemocytometer chamber is {self.depth_mm} mm. Calculate the number of live yeast cells in 1 cm³ of the cider sample. Assume that there are no boundary rules, and round the answer to a whole number."
+        self.topic = "Cell structure"
+        self.subtopic = "The microscope in cell studies"
+        self.source = "OCR H422/03 2016"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Grid Length}} &= {self.grid_length_mm}\\,\\text{{mm}}\\\\"
+            f"\\text{{Grid Width}} &= {self.grid_width_mm}\\,\\text{{mm}}\\\\"
+            f"\\text{{Chamber Depth}} &= {self.depth_mm}\\,\\text{{mm}}\\\\"
+            f"\\text{{Count of Stained (Live) Cells}} &= {self.stained_cells}\\\\"
+            f"\\text{{Volume of counted area (V)}} &= \\text{{length}} \\times \\text{{width}} \\times \\text{{depth}}\\\\"
+            f"&= {self.grid_length_mm} \\times {self.grid_width_mm} \\times {self.depth_mm}\\\\"
+            f"&= {round(self.volume_mm3, 10)}\\,\\text{{mm}}^3\\\\"
+            f"\\text{{Cells per mm}}^3 &= \\frac{{\\text{{Number of stained cells}}}}{{V}}\\\\"
+            f"&= \\frac{{{self.stained_cells}}}{{{round(self.volume_mm3, 10)}}}\\\\"
+            f"&= {round(self.cells_per_mm3, 10)}\\,\\text{{cells/mm}}^3\\\\"
+            f"\\text{{Convert to cells per cm}}^3\\text{{ (1 cm}}^3 = 1000\\,\\text{{mm}}^3\\text{{):}} &\\\\"
+            f"\\text{{Cells per cm}}^3 &= \\text{{Cells per mm}}^3 \\times 1000\\\\"
+            f"&= {round(self.cells_per_mm3, 10)} \\times 1000\\\\"
+            f"&= {round(self.cells_per_cm3, 10)}\\\\"
+            f"\\text{{Final Answer (rounded)}} &= {self.answer}\\,\\text{{cells/cm}}^3"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('biology/temp_image/Bio023temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(1518, 536, f"{self.grid_length_mm} mm", fontsize=8)
+        ax.text(928, 1005, f"{self.grid_width_mm} mm", fontsize=8)
+        plt.axis("off")
+
+        grid_box = (540, 1387, 155, 877)
+        
+        draw_non_overlapping_circles(ax, grid_box, self.stained_cells, self.unstained_cells, radius=14, facecolor1="#444bd9", facecolor2="#ffffff")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")

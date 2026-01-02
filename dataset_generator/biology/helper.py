@@ -40,7 +40,7 @@ def make_curve_pchip(x_knots, y_knots, x_dense):
     y = f(x_dense)
     return y
 
-def draw_non_overlapping_circles(ax, box, n, radius=12, max_tries=3000, facecolor="#ff66b2", edgecolor="black", linewidth=0.8):
+def draw_non_overlapping_circles(ax, box, n_type1, n_type2=0, radius=12, max_tries=3000, facecolor1=None, facecolor2=None, edgecolor="black", linewidth=0.8):
     """
     Draw n circles inside a rectangle box = (x_min, x_max, y_min, y_max)
     in image pixel coordinates, avoiding overlaps as much as possible.
@@ -50,10 +50,11 @@ def draw_non_overlapping_circles(ax, box, n, radius=12, max_tries=3000, facecolo
     x_min2, x_max2 = x_min + radius, x_max - radius
     y_min2, y_max2 = y_min + radius, y_max - radius
 
+    total = n_type1 + n_type2
     centers = []
     tries = 0
 
-    while len(centers) < n and tries < max_tries:
+    while len(centers) < total and tries < max_tries:
         tries += 1
         x = rnd.uniform(x_min2, x_max2)
         y = rnd.uniform(y_min2, y_max2)
@@ -70,8 +71,13 @@ def draw_non_overlapping_circles(ax, box, n, radius=12, max_tries=3000, facecolo
         if ok:
             centers.append((x, y))
 
-    for (x, y) in centers:
-        ax.add_patch(Circle((x, y), radius=radius, facecolor=facecolor, edgecolor=edgecolor, linewidth=linewidth))
+    for i, (x, y) in enumerate(centers):
+        fc = facecolor1 if i < n_type1 else facecolor2
+
+        ax.add_patch(Circle((x, y), radius=radius, facecolor=fc, edgecolor=edgecolor, linewidth=linewidth))
+
+    # for (x, y) in centers:
+    #     ax.add_patch(Circle((x, y), radius=radius, facecolor=facecolor, edgecolor=edgecolor, linewidth=linewidth))
 
 def draw_stage(ax, x0, x1, y, n_divs_drawn=12, tick_h=0.35, lw=4):
     """
