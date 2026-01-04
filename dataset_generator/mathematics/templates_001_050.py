@@ -2577,3 +2577,125 @@ class Mat048:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat049:
+    def __init__(self):
+        self.angle_adb = randrange_float(15, 25, 0.01)
+        self.angle_bec = randrange_float(40, 50, 0.01)
+        self.angle_dab = randrange_float(100, 120, 0.01)
+        
+        self.answer = self.angle_dab - self.angle_bec
+
+        self.description = (
+            "The points $A, B, C, D$ and $E$ lie on a circle. "
+            "$FG$ is a tangent to the circle at $C$. "
+            "Using the information provided in the diagram, find the value of angle $DCG$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems I"
+        self.source = "Adapted from IGCSE March 2025 Question Paper 22"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{1. Angles in the same segment subtended by the same arc } BC \\text{ are equal:} &\\\\"
+            f"\\angle BAC &= \\angle BEC \\\\"
+            f"&= {round(self.angle_bec, 10)}^\\circ \\\\"
+            "\\text{2. Using the given value for } \\angle DAB \\text{, we calculate } \\angle DAC: &\\\\"
+            f"\\angle DAC &= \\angle DAB - \\angle BAC \\\\"
+            f"&= {round(self.angle_dab, 10)}^\\circ - {round(self.angle_bec, 10)}^\\circ \\\\"
+            f"&= {round(self.angle_dab - self.angle_bec, 10)}^\\circ \\\\"
+            "\\text{3. Angles in the same segment subtended by arc } DC \\text{ are equal:} &\\\\"
+            f"\\angle DBC &= \\angle DAC \\\\"
+            f"&= {round(self.angle_dab - self.angle_bec, 10)}^\\circ \\\\"
+            "\\text{4. By the Alternate Segment Theorem, the angle between the tangent } FG \\text{ and chord } CD \\text{ is equal to } \\angle DBC: &\\\\"
+            f"\\angle DCG &= \\angle DBC \\\\"
+            f"&= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        r = 1.0
+        circle = plt.Circle((0, 0), r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Global rotation to vary the entire figure's orientation
+        base_rot = rnd.uniform(0, 360)
+        
+        # Define vertex angles with jitter while maintaining relative order
+        # Angles roughly correspond to: A(Left), B(Bottom), C(Bottom-Right), D(Top), E(Top-Left)
+        ang_a = (190 + randrange_float(-12, 12, 0.1) + base_rot) % 360
+        ang_b = (265 + randrange_float(-12, 12, 0.1) + base_rot) % 360
+        ang_c = (335 + randrange_float(-12, 12, 0.1) + base_rot) % 360
+        ang_d = (85 + randrange_float(-12, 12, 0.1) + base_rot) % 360
+        ang_e = (140 + randrange_float(-10, 10, 0.1) + base_rot) % 360
+        
+        pts = {
+            'A': np.array([r * np.cos(np.radians(ang_a)), r * np.sin(np.radians(ang_a))]),
+            'B': np.array([r * np.cos(np.radians(ang_b)), r * np.sin(np.radians(ang_b))]),
+            'C': np.array([r * np.cos(np.radians(ang_c)), r * np.sin(np.radians(ang_c))]),
+            'D': np.array([r * np.cos(np.radians(ang_d)), r * np.sin(np.radians(ang_d))]),
+            'E': np.array([r * np.cos(np.radians(ang_e)), r * np.sin(np.radians(ang_e))])
+        }
+
+        # Chords: Segments ED and AE are removed as requested
+        chords = [('A','B'), ('B','C'), ('C','D'), ('B','D'), ('A','D'), ('E','B'), ('E','C')]
+        for p1, p2 in chords:
+            ax.plot([pts[p1][0], pts[p2][0]], [pts[p1][1], pts[p2][1]], color='black', lw=1)
+
+        # Tangent FG at C (perpendicular to radius OC)
+        tangent_angle = ang_c + 90
+        # Dynamic placement of F and G
+        f_pt = pts['C'] + np.array([0.8 * np.cos(np.radians(tangent_angle + 180)), 0.8 * np.sin(np.radians(tangent_angle + 180))])
+        g_pt = pts['C'] + np.array([0.8 * np.cos(np.radians(tangent_angle)), 0.8 * np.sin(np.radians(tangent_angle))])
+        ax.plot([f_pt[0], g_pt[0]], [f_pt[1], g_pt[1]], color='black', lw=1.5)
+
+        # Dynamic Point Labels (placed radially outward from center)
+        for label, pt in pts.items():
+            rad_angle = np.arctan2(pt[1], pt[0])
+            lx, ly = pt[0] + 0.15 * np.cos(rad_angle), pt[1] + 0.15 * np.sin(rad_angle)
+            ax.text(lx, ly, label, fontsize=20, ha='center', va='center', style='italic')
+        
+        # Tangent Labels (F and G)
+        ax.text(f_pt[0] + 0.1 * np.cos(np.radians(tangent_angle + 180)), 
+                f_pt[1] + 0.1 * np.sin(np.radians(tangent_angle + 180)), 'F', fontsize=18, ha='center')
+        ax.text(g_pt[0] + 0.1 * np.cos(np.radians(tangent_angle)), 
+                g_pt[1] + 0.1 * np.sin(np.radians(tangent_angle)), 'G', fontsize=18, ha='center')
+
+        # Angle Markings (Removed int() casting to show decimals)
+        # ADB Angle Marking (angle at vertex D)
+        self._draw_angle(ax, pts['D'], pts['B'], pts['A'], f"{self.angle_adb}°", radius=0.25)
+        # BEC Angle Marking (angle at vertex E)
+        self._draw_angle(ax, pts['E'], pts['C'], pts['B'], f"{self.angle_bec}°", radius=0.25)
+        # DAB Angle Marking (angle at vertex A)
+        self._draw_angle(ax, pts['A'], pts['B'], pts['D'], f"{self.angle_dab}°", radius=0.3)
+
+        # "Not to Scale" note positioned relative to the plot area
+        plt.text(1.2, 1.3, "NOT TO\nSCALE", fontsize=12, ha='center', fontweight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+    def _draw_angle(self, ax, p_vertex, p1, p2, text, radius=0.3):
+        ang1 = get_angle(p_vertex, p1)
+        ang2 = get_angle(p_vertex, p2)
+        
+        if abs(ang1 - ang2) > 180:
+            if ang1 > ang2: ang2 += 360
+            else: ang1 += 360
+        
+        theta1, theta2 = min(ang1, ang2), max(ang1, ang2)
+        arc = patches.Arc(p_vertex, radius*2, radius*2, theta1=theta1, theta2=theta2, color='black', lw=1)
+        ax.add_patch(arc)
+        
+        mid_ang = np.radians((theta1 + theta2) / 2)
+        tx = p_vertex[0] + (radius + 0.15) * np.cos(mid_ang)
+        ty = p_vertex[1] + (radius + 0.15) * np.sin(mid_ang)
+        ax.text(tx, ty, text, fontsize=14, ha='center', va='center')
