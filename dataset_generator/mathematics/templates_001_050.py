@@ -1563,8 +1563,6 @@ class Mat039:
             "\\end{aligned}\\]"
         )
         
-        print(self.reasoning)
-
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 5))
         ax.set_xlim(0, 12)
@@ -1593,6 +1591,221 @@ class Mat039:
         ax.text(8 + rect_b_w/2, 1.1, "Rectangle $B$", ha='center', fontsize=14)
 
         ax.text(11, 5, "NOT TO\nSCALE", ha='center', fontsize=12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat040:
+    def __init__(self):
+        # Linear scale factor k
+        self.k = randrange_float(1.5, 8.5, 0.5) 
+        self.height_a = rnd.randint(3, 60)
+        self.height_b = round(self.height_a * self.k, 4)
+        
+        # Area scale factor is k^2
+        self.area_a = rnd.randint(5, 1000)
+        self.area_b = round(self.area_a * (self.k ** 2), 4)
+        
+        # Shape type is now selected in generate() to ensure variation
+
+        self.answer = self.height_b
+
+        self.description = (
+            f"Solid $A$ is mathematically similar to solid $B$. "
+            f"The height of solid $A$ is ${self.height_a}$ cm and its surface area is ${self.area_a}$ cm$^2$. "
+            f"The surface area of solid $B$ is ${self.area_b}$ cm$^2$. "
+            f"Calculate the height, $H$, of solid $B$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Similarity"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 23"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Let }} k \\text{{ be the linear scale factor between Solid }} A \\text{{ and Solid }} B: & \\\\"
+            f"\\text{{The relationship between surface areas is given by:}} & \\\\"
+            f"\\frac{{\\text{{Area}}_B}}{{\\text{{Area}}_A}} &= k^2 \\\\"
+            f"k^2 &= \\frac{{{self.area_b}}}{{{self.area_a}}} \\\\"
+            f"k &= \\sqrt{{\\frac{{{self.area_b}}}{{{self.area_a}}}}} \\\\"
+            f"k &= \\sqrt{{{round(self.area_b / self.area_a, 10)}}} \\\\"
+            f"k &= {round(self.k, 10)} \\\\"
+            f"\\text{{The relationship between heights is given by:}} & \\\\"
+            f"\\frac{{H}}{{\\text{{height}}_A}} &= k \\\\"
+            f"H &= \\text{{height}}_A \\times k \\\\"
+            f"H &= {self.height_a} \\times {round(self.k, 10)} \\\\"
+            f"H &= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Randomly select shape type here for variation in each generation
+        shape_type = rnd.choice(['prism', 'pyramid', 'cylinder', 'cone'])
+
+        # Set canvas size and limits to accommodate both solids
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_xlim(0, 16)
+        ax.set_ylim(0, 12)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        def draw_solid(x_offset, y_offset, scale, label_h, val_h):
+            lw_visible = 1.5
+            lw_hidden = 1.0
+            color = 'black'
+            
+            # Variables for height dimension line placement
+            dim_x = x_offset
+            h_top = 0
+            h_bottom = 0
+            label_y_pos = 0
+
+            if shape_type == 'prism':
+                p1 = np.array([0, 0]) * scale + [x_offset, y_offset]
+                p2 = np.array([1.5, 0.5]) * scale + [x_offset, y_offset]
+                p3 = np.array([1.5, 2.5]) * scale + [x_offset, y_offset]
+                p4 = np.array([0, 3.5]) * scale + [x_offset, y_offset]
+                
+                shift = np.array([1.2, 0.8]) * scale
+                b1 = p1 + shift
+                b2 = p2 + shift
+                b3 = p3 + shift
+                b4 = p4 + shift
+
+                # Hidden edges
+                ax.plot([b1[0], b2[0]], [b1[1], b2[1]], 'k--', lw=lw_hidden)
+                ax.plot([b1[0], b4[0]], [b1[1], b4[1]], 'k--', lw=lw_hidden)
+                ax.plot([p1[0], b1[0]], [p1[1], b1[1]], 'k--', lw=lw_hidden)
+
+                # Visible edges
+                ax.plot([p1[0], p2[0]], [p1[1], p2[1]], 'k-', lw=lw_visible)
+                ax.plot([p2[0], p3[0]], [p2[1], p3[1]], 'k-', lw=lw_visible)
+                ax.plot([p3[0], p4[0]], [p3[1], p4[1]], 'k-', lw=lw_visible)
+                ax.plot([p4[0], p1[0]], [p4[1], p1[1]], 'k-', lw=lw_visible)
+                
+                ax.plot([p2[0], b2[0]], [p2[1], b2[1]], 'k-', lw=lw_visible)
+                ax.plot([p3[0], b3[0]], [p3[1], b3[1]], 'k-', lw=lw_visible)
+                ax.plot([p4[0], b4[0]], [p4[1], b4[1]], 'k-', lw=lw_visible)
+                ax.plot([b2[0], b3[0]], [b2[1], b3[1]], 'k-', lw=lw_visible)
+                ax.plot([b3[0], b4[0]], [b3[1], b4[1]], 'k-', lw=lw_visible)
+
+                dim_x = x_offset - 0.8 * scale
+                h_top = p4[1]
+                h_bottom = p1[1]
+                label_y_pos = y_offset - 0.5 * scale
+
+            elif shape_type == 'pyramid':
+                base_w = 3.0 * scale
+                base_h = 1.5 * scale
+                h_pyramid = 4.0 * scale
+
+                # Base center on x-y plane
+                center_base_x = x_offset + base_w/2
+                center_base_y = y_offset + base_h/2
+
+                v1 = np.array([-base_w/2, -base_h/2]) + [center_base_x, center_base_y]
+                v2 = np.array([base_w/2, -base_h/2]) + [center_base_x, center_base_y]
+                v3 = np.array([base_w/2, base_h/2]) + [center_base_x, center_base_y]
+                v4 = np.array([-base_w/2, base_h/2]) + [center_base_x, center_base_y]
+                
+                apex = np.array([0, h_pyramid]) + [center_base_x, center_base_y]
+                center_base = np.array([0, 0]) + [center_base_x, center_base_y]
+
+                ax.plot([v1[0], v2[0]], [v1[1], v2[1]], 'k-', lw=lw_visible)
+                ax.plot([v2[0], v3[0]], [v2[1], v3[1]], 'k-', lw=lw_visible)
+                ax.plot([v3[0], v4[0]], [v3[1], v4[1]], 'k--', lw=lw_hidden)
+                ax.plot([v4[0], v1[0]], [v4[1], v1[1]], 'k--', lw=lw_hidden)
+
+                ax.plot([v1[0], apex[0]], [v1[1], apex[1]], 'k-', lw=lw_visible)
+                ax.plot([v2[0], apex[0]], [v2[1], apex[1]], 'k-', lw=lw_visible)
+                ax.plot([v3[0], apex[0]], [v3[1], apex[1]], 'k-', lw=lw_visible)
+                ax.plot([v4[0], apex[0]], [v4[1], apex[1]], 'k--', lw=lw_hidden)
+                
+                # Internal height line
+                ax.plot([center_base[0], apex[0]], [center_base[1], apex[1]], 'k--', lw=1, alpha=0.5)
+
+                dim_x = v1[0] - 0.5 * scale
+                h_top = apex[1]
+                h_bottom = center_base[1]
+                label_y_pos = y_offset - 0.2 * scale
+
+            elif shape_type == 'cylinder':
+                r = 1.5 * scale
+                h_cyl = 4.0 * scale
+                ellipse_h = 0.8 * scale
+
+                center_bottom = np.array([x_offset + r, y_offset + ellipse_h/2])
+                center_top = center_bottom + np.array([0, h_cyl])
+
+                ellipse_top = patches.Ellipse(center_top, 2*r, ellipse_h, edgecolor=color, facecolor='none', lw=lw_visible)
+                ax.add_patch(ellipse_top)
+
+                arc_bottom_front = patches.Arc(center_bottom, 2*r, ellipse_h, theta1=180, theta2=360, edgecolor=color, lw=lw_visible)
+                ax.add_patch(arc_bottom_front)
+                arc_bottom_back = patches.Arc(center_bottom, 2*r, ellipse_h, theta1=0, theta2=180, edgecolor=color, ls='--', lw=lw_hidden)
+                ax.add_patch(arc_bottom_back)
+
+                ax.plot([center_bottom[0]-r, center_top[0]-r], [center_bottom[1], center_top[1]], 'k-', lw=lw_visible)
+                ax.plot([center_bottom[0]+r, center_top[0]+r], [center_bottom[1], center_top[1]], 'k-', lw=lw_visible)
+
+                dim_x = center_bottom[0] - r - 0.5 * scale
+                h_top = center_top[1]
+                h_bottom = center_bottom[1]
+                label_y_pos = y_offset - 0.2 * scale
+
+            elif shape_type == 'cone':
+                r = 1.5 * scale
+                h_cone = 4.0 * scale
+                ellipse_h = 0.8 * scale
+
+                center_bottom = np.array([x_offset + r, y_offset + ellipse_h/2])
+                apex = center_bottom + np.array([0, h_cone])
+
+                arc_bottom_front = patches.Arc(center_bottom, 2*r, ellipse_h, theta1=180, theta2=360, edgecolor=color, lw=lw_visible)
+                ax.add_patch(arc_bottom_front)
+                arc_bottom_back = patches.Arc(center_bottom, 2*r, ellipse_h, theta1=0, theta2=180, edgecolor=color, ls='--', lw=lw_hidden)
+                ax.add_patch(arc_bottom_back)
+
+                ax.plot([center_bottom[0]-r, apex[0]], [center_bottom[1], apex[1]], 'k-', lw=lw_visible)
+                ax.plot([center_bottom[0]+r, apex[0]], [center_bottom[1], apex[1]], 'k-', lw=lw_visible)
+
+                # Internal height line
+                ax.plot([center_bottom[0], apex[0]], [center_bottom[1], apex[1]], 'k--', lw=1, alpha=0.5)
+
+                dim_x = center_bottom[0] - r - 0.5 * scale
+                h_top = apex[1]
+                h_bottom = center_bottom[1]
+                label_y_pos = y_offset - 0.2 * scale
+
+            # Draw Height Dimension Arrow and Label
+            ax.annotate('', xy=(dim_x, h_top), xytext=(dim_x, h_bottom),
+                        arrowprops=dict(arrowstyle='<->', color='black', lw=1))
+            ax.text(dim_x - 0.2 * scale, (h_top + h_bottom)/2, f"{val_h}", ha='right', va='center', fontsize=12)
+            
+            return label_y_pos
+
+        # Use fixed visual scales to ensure they fit the canvas, relying on "NOT TO SCALE"
+        visual_scale_a = 0.8
+        visual_scale_b = 2.2
+
+        # Draw Solid A (Small)
+        offset_a_x, offset_a_y = 2, 2
+        label_y_a = draw_solid(offset_a_x, offset_a_y, visual_scale_a, "h_a", f"{self.height_a} cm")
+        # Calculate rough center x for label based on shape width
+        width_a = 3.0 * visual_scale_a # Approx width
+        label_a_x = offset_a_x + width_a / 2
+        ax.text(label_a_x, label_y_a, "Solid $A$", ha='center', fontsize=14, fontweight='bold')
+
+        # Draw Solid B (Large)
+        offset_b_x = 9 # Fixed offset to ensure spacing
+        offset_b_y = 1
+        label_y_b = draw_solid(offset_b_x, offset_b_y, visual_scale_b, "H", "$H$ cm")
+        width_b = 3.0 * visual_scale_b # Approx width
+        label_b_x = offset_b_x + width_b / 2
+        ax.text(label_b_x, label_y_b, "Solid $B$", ha='center', fontsize=14, fontweight='bold')
+
+        plt.text(14, 10.5, "NOT TO\nSCALE", fontsize=10, ha='center', bbox=dict(facecolor='white', alpha=0.5, edgecolor='none'))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
