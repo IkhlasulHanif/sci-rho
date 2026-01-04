@@ -1628,8 +1628,6 @@ class Mat040:
             f"H &= {self.answer}\\,\\text{{cm}}"
             "\\end{aligned}\\]"
         )
-        
-        print(self.reasoning)
 
     def generate(self, num):
         shape_type = rnd.choice(['prism', 'pyramid', 'cylinder', 'cone'])
@@ -1658,6 +1656,72 @@ class Mat040:
         ax.text(label_x_b, label_y_b, "Solid $B$", ha='center', fontsize=14, fontweight='bold')
         # Place Surface Area label below "Solid B"
         ax.text(label_x_b, label_y_b - 0.7, f"$S_B = {self.area_b}$ cm$^2$", ha='center', fontsize=12)
+
+        plt.text(14, 10.5, "NOT TO\nSCALE", fontsize=10, ha='center')
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat041:
+    def __init__(self):
+        self.k = randrange_float(1.5, 5.5, 0.5) 
+        self.height_a = rnd.randint(5, 40)
+        self.height_b = round(self.height_a * self.k, 4)
+        self.volume_a = rnd.randint(10, 500)
+        self.volume_b = round(self.volume_a * (self.k ** 3), 4)
+        self.answer = self.volume_b
+
+        self.description = (
+            f"Solid $A$ and solid $B$ are mathematically similar. "
+            f"The diagram shows the heights and volumes ($V_A$ and $V_B$) for both solids. "
+            f"Calculate the volume, $V_B$, of solid $B$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Similarity"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 23"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Let }} k \\text{{ be the linear scale factor:}} & \\\\"
+            f"k &= \\frac{{\\text{{height}}_B}}{{\\text{{height}}_A}} \\\\"
+            f"&= \\frac{{{self.height_b}}}{{{self.height_a}}} \\\\"
+            f"&= {round(self.k, 10)} \\\\"
+            f"\\text{{The relationship between volumes is given by:}} & \\\\"
+            f"\\frac{{V_B}}{{V_A}} &= k^3 \\\\"
+            f"V_B &= V_A \\times k^3 \\\\"
+            f"&= {self.volume_a} \\times ({round(self.k, 10)})^3 \\\\"
+            f"&= {self.volume_a} \\times {round(self.k**3, 10)} \\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^3"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        shape_type = rnd.choice(['prism', 'pyramid', 'cylinder', 'cone'])
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_xlim(0, 16)
+        ax.set_ylim(0, 12)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        visual_scale_a = 0.8
+        visual_scale_b = 2.2
+
+        # Draw Solid A
+        offset_a_x, offset_a_y = 2, 2
+        label_y_a = draw_solid(ax, offset_a_x, offset_a_y, visual_scale_a, f"{self.height_a} cm", shape_type)
+        label_x_a = offset_a_x + 1.5 * visual_scale_a
+        ax.text(label_x_a, label_y_a, "Solid $A$", ha='center', fontsize=14, fontweight='bold')
+        # Place Volume label below "Solid A"
+        ax.text(label_x_a, label_y_a - 0.7, f"$V_A = {self.volume_a}$ cm$^3$", ha='center', fontsize=12)
+
+        # Draw Solid B
+        offset_b_x = 9
+        offset_b_y = 1
+        label_y_b = draw_solid(ax, offset_b_x, offset_b_y, visual_scale_b, f"{self.height_b} cm", shape_type)
+        label_x_b = offset_b_x + 1.5 * visual_scale_b
+        ax.text(label_x_b, label_y_b, "Solid $B$", ha='center', fontsize=14, fontweight='bold')
+        # Place Volume label below "Solid B"
+        ax.text(label_x_b, label_y_b - 0.7, f"$V_B = ?$ cm$^3$", ha='center', fontsize=12)
 
         plt.text(14, 10.5, "NOT TO\nSCALE", fontsize=10, ha='center')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), bbox_inches='tight', dpi=100)
