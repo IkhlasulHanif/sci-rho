@@ -2448,14 +2448,12 @@ class Mat048:
         self.angle_aco = randrange_float(25, 60, 0.01)
         self.angle_bco = randrange_float(25, 60, 0.01)
         
-        # This is derived from tangent properties or isosceles triangle sums (detailed in reasoning)
         self.answer = 90 - self.angle_aco
 
         self.description = (
             f"The diagram shows a circle, centre $O$. $A$, $B$ and $C$ are three points on the circle. "
-            f"$DE$ is a tangent to the circle at $A$. "
             f"Angle $ACO = {self.angle_aco}^\\circ$ and angle $BCO = {self.angle_bco}^\\circ$. "
-            f"Find angle $ABC$."
+            f"Find the value of angle $ABC$."
         )
         
         self.topic = "Geometry"
@@ -2465,23 +2463,22 @@ class Mat048:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{In }} \\triangle AOC, OA &= OC \\text{{ (radii of the circle)}}\\\\"
-            f"\\text{{Since two sides are equal, }} \\triangle AOC &\\text{{ is an isosceles triangle}}\\\\"
-            f"\\angle OAC &= \\angle ACO\\\\"
-            f"\\angle OAC &= {round(self.angle_aco, 10)}^\\circ\\\\"
-            f"\\text{{The tangent }} DE \\text{{ is perpendicular to the}} &\\text{{ radius }} OA \\text{{ at point }} A\\\\"
-            f"\\angle OAD &= 90^\\circ\\\\"
-            f"\\text{{The angle between tangent }} AD \\text{{ and chord }} AC &\\text{{ is:}}\\\\"
-            f"\\angle DAC &= \\angle OAD - \\angle OAC\\\\"
-            f"&= 90^\\circ - {round(self.angle_aco, 10)}^\\circ\\\\"
-            f"&= {round(90 - self.angle_aco, 10)}^\\circ\\\\"
-            f"\\text{{According to the Alternate Segment Theorem, the angle}} &\\\\"
-            f"\\text{{between a tangent and a chord is equal to the angle}} &\\\\"
-            f"\\text{{in the alternate segment:}} &\\\\"
-            f"\\angle ABC &= \\angle DAC\\\\"
-            f"\\angle ABC &= {self.answer}^\\circ"
+            f"\\text{{Since }} OA = OC, \\triangle AOC &\\text{{ is an isosceles triangle.}}\\\\"
+            f"\\text{{Therefore, the base angles are equal:}} &\\\\"
+            f"\\angle OAC &= \\angle ACO = {round(self.angle_aco, 10)}^\\circ\\\\"
+            f"\\text{{The angle at the centre, }} \\angle AOC, \\text{{ is:}} &\\\\"
+            f"\\angle AOC &= 180^\\circ - (\\angle OAC + \\angle ACO)\\\\"
+            f"&= 180^\\circ - (2 \\times {round(self.angle_aco, 10)}^\\circ)\\\\"
+            f"&= {round(180 - 2 * self.angle_aco, 10)}^\\circ\\\\"
+            f"\\text{{The angle at the centre is twice the angle at the}} &\\\\"
+            f"\\text{{circumference subtended by the same arc (arc }} AC\\text{{):}} &\\\\"
+            f"\\angle AOC &= 2 \\times \\angle ABC\\\\"
+            f"\\angle ABC &= \\frac{1}{2} \\angle AOC\\\\"
+            f"&= \\frac{{ {round(180 - 2 * self.angle_aco, 10)}^\\circ }}{{2}}\\\\"
+            f"&= {self.answer}^\\circ"
             "\\end{aligned}\\]"
         )
-
+        
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 10))
     
@@ -2534,9 +2531,6 @@ class Mat048:
         ax.plot([O[0], A[0]], [O[1], A[1]], 'k-', lw=1)
         ax.plot([O[0], C[0]], [O[1], C[1]], 'k-', lw=1)
         
-        # Tangent line DE
-        ax.plot([D[0], E[0]], [D[1], E[1]], 'k-', lw=1)
-        
         # Labels
         # Using a helper to place labels at a distance of 1.15r from the center
         def get_label_pos(angle_deg, dist=1.15):
@@ -2553,9 +2547,6 @@ class Mat048:
         
         pos_b = get_label_pos(theta_b_deg)
         ax.text(pos_b[0], pos_b[1], 'B', fontsize=14, ha='left', va='top', fontweight='bold')
-        
-        ax.text(D[0], D[1], 'D', fontsize=14, ha='right', va='bottom', fontweight='bold')
-        ax.text(E[0], E[1], 'E', fontsize=14, ha='left', va='bottom', fontweight='bold')
 
         ax.plot(O[0], O[1], 'k.', markersize=5)
 
@@ -2568,7 +2559,7 @@ class Mat048:
         ax.add_patch(arc_aco)
         
         mid_aco = np.radians((angle_start_aco + angle_end_aco) / 2)
-        ax.text(C[0] + 0.4 * np.cos(mid_aco), C[1] + 0.4 * np.sin(mid_aco), f"{round(self.angle_aco, 2)}°", fontsize=10, ha='center')
+        ax.text(C[0] + 0.4 * np.cos(mid_aco), C[1] + 0.4 * np.sin(mid_aco), f"{self.angle_aco}°", fontsize=10, ha='center')
 
         # Angle BCO
         angle_start_bco = get_angle(C, B)
@@ -2578,7 +2569,7 @@ class Mat048:
         ax.add_patch(arc_bco)
         
         mid_bco = np.radians((angle_start_bco + angle_end_bco) / 2)
-        ax.text(C[0] + 0.4 * np.cos(mid_bco), C[1] + 0.4 * np.sin(mid_bco), f"{round(self.angle_bco, 2)}°", fontsize=10, ha='center')
+        ax.text(C[0] + 0.4 * np.cos(mid_bco), C[1] + 0.4 * np.sin(mid_bco), f"{self.angle_bco}°", fontsize=10, ha='center')
 
         # NOT TO SCALE
         ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='right', va='top')

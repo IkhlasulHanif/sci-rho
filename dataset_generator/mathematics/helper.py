@@ -1,5 +1,6 @@
 import random as rnd
 import numpy as np
+import matplotlib.patches as patches
 
 # write helper functions here
 def randrange_float(start, stop, step):
