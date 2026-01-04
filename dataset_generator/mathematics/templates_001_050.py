@@ -1524,6 +1524,79 @@ class Mat032:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close(fig)
+
+class Mat039:
+    def __init__(self):
+        self.length_b = round(randrange_float(2.2, 5.8, 0.1), 2)
+        self.width_b = round(randrange_float(1.4, 4.6, 0.1), 2)
+        
+        # Scale factor as a decimal
+        self.scale_factor = round(randrange_float(1.2, 3.4, 0.1), 2)
+        
+        # Calculate A dimensions and round to ensure consistency
+        self.length_a = round(self.length_b * self.scale_factor, 2)
+        self.width_a = round(self.width_b * self.scale_factor, 2)
+        
+        self.answer = self.width_a
+
+        self.description = (
+            f"Rectangle $A$ is mathematically similar to rectangle $B$. "
+            f"Rectangle $A$ has a length of ${self.length_a}$ cm and a width of $x$ cm. "
+            f"Rectangle $B$ has a length of ${self.length_b}$ cm and a width of ${self.width_b}$ cm. "
+            f"Work out the value of $x$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Similarity"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 13"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Scale Factor }} (k) &= \\frac{{\\text{{Length}}_A}}{{\\text{{Length}}_B}}\\\\"
+            f"&= \\frac{{{self.length_a}}}{{{self.length_b}}}\\\\"
+            f"&= {round(self.length_a / self.length_b, 10)}\\\\"
+            f"\\text{{Since the rectangles are similar, the width }} x \\text{{ is:}} &\\\\"
+            f"x &= \\text{{Width}}_B \\times k\\\\"
+            f"&= {self.width_b} \\times {round(self.length_a / self.length_b, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+        print(self.reasoning)
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 6)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Draw Rectangle A
+        rect_a_w, rect_a_h = 5, 3
+        rect_a = patches.Rectangle((1, 1.5), rect_a_w, rect_a_h, linewidth=2, edgecolor='black', facecolor='none')
+        ax.add_patch(rect_a)
+        
+        # Use :g formatting to strip unnecessary decimals in labels
+        ax.text(1 + rect_a_w/2, 1.5 + rect_a_h + 0.2, f"{self.length_a:g} cm", ha='center', fontsize=14)
+        ax.text(1 + rect_a_w + 0.2, 1.5 + rect_a_h/2, f"$x$ cm", va='center', fontsize=14)
+        ax.text(1 + rect_a_w/2, 1.1, "Rectangle $A$", ha='center', fontsize=14)
+
+        # Draw Rectangle B
+        rect_b_w, rect_b_h = 2.5, 1.5
+        rect_b = patches.Rectangle((8, 1.5), rect_b_w, rect_b_h, linewidth=2, edgecolor='black', facecolor='none')
+        ax.add_patch(rect_b)
+        
+        # Use :g formatting here as well for the labels
+        ax.text(8 + rect_b_w/2, 1.5 + rect_b_h + 0.2, f"{self.length_b:g} cm", ha='center', fontsize=14)
+        ax.text(8 + rect_b_w + 0.2, 1.5 + rect_b_h/2, f"{self.width_b:g} cm", va='center', fontsize=14)
+        ax.text(8 + rect_b_w/2, 1.1, "Rectangle $B$", ha='center', fontsize=14)
+
+        ax.text(11, 5, "NOT TO\nSCALE", ha='center', fontsize=12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
         
 class Mat042:
     
