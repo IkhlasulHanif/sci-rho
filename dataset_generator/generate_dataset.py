@@ -6,7 +6,10 @@ import json
 import os
 import sys
 import re
+import shutil
+import time
 
+from pathlib import Path
 from biology.helper import *
 from chemistry.helper import *
 from compsci.helper import *
@@ -68,6 +71,13 @@ def parse_args():
         default=False,
         help="Activate debug mode (default: False)"
     )
+
+    parser.add_argument(
+        "--exp",
+        type=bool,
+        default=False,
+        help="Generate 10 instances of dataset for experiment (default: False)"
+    )
     
     args = parser.parse_args()
 
@@ -82,71 +92,100 @@ def parse_args():
                 print(f"Error: subject '{s}' is not valid. Choose from {available_subjects} or 'all'.")
                 sys.exit(1)
 
-    return subjects, args.seed, args.debug
+    return subjects, args.seed, args.debug, args.exp
 
 if __name__ == "__main__":
+    start_time = time.perf_counter()
 
-    subjects, seed, debug = parse_args()
+    subjects, seed, debug, exp = parse_args()
 
     print("Dataset generation started")
-    print(f"Seed: {seed}")
+    print(f"Master Seed: {seed}")
     if debug:
         print("RUNNING ON DEBUG MODE")
+    
+    if exp:
+        print("GENERATING 10 INSTANCES FOR EXPERIMENT")
+        num_of_loop = 10
+        # Path to this script ('dataset_generator/')
+        SCRIPT_DIR = Path(__file__).resolve().parent
 
-    rnd.seed(seed)
+        # Project root (one level up from 'dataset_generator/')
+        PROJECT_ROOT = SCRIPT_DIR.parent
 
-    for subject in subjects:
-        print(f"Subject: {subject}\n")
+        # Source: project_root/dataset
+        src = PROJECT_ROOT / "dataset"
+    else:
+        num_of_loop = 1
 
-        destination_folder = os.path.join(
-            os.path.dirname(os.getcwd()), "dataset", subject
-        )
-        os.makedirs(destination_folder, exist_ok=True)
-        json_path = os.path.join(destination_folder, "dataset.json")
+    for index in range(num_of_loop):
+        sub_seed = seed + index # to make seed unique for each instances when generating 10 instances of problem
+        print(f"Sub Seed: {sub_seed}")
+        for subject in subjects:
+            print(f"Subject: {subject}\n")
 
-        if os.path.exists(json_path):
-            with open(json_path, "r") as file:
-                data = json.load(file)
-        else:
-            data = {}
+            destination_folder = os.path.join(
+                os.path.dirname(os.getcwd()), "dataset", subject
+            )
+            os.makedirs(destination_folder, exist_ok=True)
+            json_path = os.path.join(destination_folder, "dataset.json")
 
-        if debug:
-            debug_folder_path = os.path.join(destination_folder, "debug")
-            os.makedirs(debug_folder_path, exist_ok=True)
-
-        count = 1
-        all_classes = get_template_classes(subject)
-        for class_ in all_classes:
-            instance = class_()
-            instance.generate(count)
-            temp_data = {
-                "description": instance.description,
-                "topic": instance.topic,
-                "subtopic": instance.subtopic,
-                "source": instance.source,
-                "curriculum": instance.curriculum,
-                "answer": instance.answer,
-                "reasoning": instance.reasoning,
-                "image": os.path.join("image", f"image{count}.png")
-            }
+            if os.path.exists(json_path):
+                with open(json_path, "r") as file:
+                    data = json.load(file)
+            else:
+                data = {}
 
             if debug:
-                debug_file_path = os.path.join(debug_folder_path, f"{count}.txt")
-                with open(debug_file_path, 'w') as file:
-                    file.write(instance.reasoning)
+                debug_folder_path = os.path.join(destination_folder, "debug")
+                os.makedirs(debug_folder_path, exist_ok=True)
 
-            data[f"{count}"] = temp_data
+            count = 1
+            all_classes = get_template_classes(subject)
+            for class_ in all_classes:
+                instance = class_()
+                instance.generate(count)
+                temp_data = {
+                    "description": instance.description,
+                    "topic": instance.topic,
+                    "subtopic": instance.subtopic,
+                    "source": instance.source,
+                    "curriculum": instance.curriculum,
+                    "answer": instance.answer,
+                    "reasoning": instance.reasoning,
+                    "image": os.path.join("image", f"image{count}.png")
+                }
 
-            print(f"Generated Instance Number {count}")
+                if debug:
+                    debug_file_path = os.path.join(debug_folder_path, f"{count}.txt")
+                    with open(debug_file_path, 'w') as file:
+                        file.write(instance.reasoning)
 
-            count += 1
+                data[f"{count}"] = temp_data
 
-        json_data = json.dumps(data, indent=4)
-        with open(json_path, 'w') as file:
-            file.write(json_data)
+                print(f"Generated Instance Number {count}")
 
-        print(f"All instances of {subject} are sucessfully generated!\n")
+                count += 1
 
-    seed_path = os.path.join(os.path.dirname(os.getcwd()), "dataset", "seed.txt")
-    with open(seed_path, "w") as file:
-        file.write(str(seed))
+            json_data = json.dumps(data, indent=4)
+            with open(json_path, 'w') as file:
+                file.write(json_data)
+
+            print(f"All instances of {subject} are sucessfully generated!\n")
+
+        seed_path = os.path.join(os.path.dirname(os.getcwd()), "dataset", "seed.txt")
+        with open(seed_path, "w") as file:
+            file.write(str(sub_seed))
+
+        if exp:
+            # destination at 'experiment/sample/01', 'experiment/sample/02', etc.
+            dst = os.path.join(PROJECT_ROOT, 'experiment', 'sample', f'0{index}')
+
+            # Copy folder and rename
+            shutil.copytree(src, dst, dirs_exist_ok=True)
+    
+    # benchmark time
+    end_time = time.perf_counter()
+    total_time = int(end_time - start_time)
+    minutes, seconds = divmod(total_time, 60)
+    print(f"Total time taken: {minutes:02d}:{seconds:02d}")
