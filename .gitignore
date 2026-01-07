@@ -181,6 +181,8 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-experiment/
+experiment/result/
+experiment/sample/
+experiment/user_prompt.txt
 dataset/
 tes.ipynb
