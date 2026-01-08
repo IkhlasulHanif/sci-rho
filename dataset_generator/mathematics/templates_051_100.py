@@ -2323,3 +2323,97 @@ class Mat090:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat091:
+    
+    def __init__(self):
+        # We choose range 2 to 8 to keep points distinct from origin and clearly visible
+        self.x = rnd.randint(2, 8) 
+        self.y = rnd.randint(2, 8)
+        
+        # Calculate New Coordinates (90 degrees clockwise)
+        # Formula: (x, y) -> (y, -x)
+        self.x_prime = self.y
+        self.y_prime = -self.x
+
+        self.answer = self.y_prime
+
+        self.description = (
+            f"What is the new y-coordinate of point A′?"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Transformations"
+        self.source = "Common transformation coordinate rule found in GCSE/IGCSE revision guides"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original point }} A \\text{{ has coordinates:}} &\\quad (x, y) = ({self.x}, {self.y})\\\\"
+            f"\\text{{A }} 90^{{\\circ}} \\text{{ clockwise rotation about the origin follows the rule:}} &\\quad (x, y) \\to (y, -x)\\\\"
+            f"\\text{{Thus, the new coordinates }} (x', y') \\text{{ are:}} &\\\\"
+            f"x' &= y = {self.y}\\\\"
+            f"y' &= -x\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the Plot
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Set plot limits with some padding
+        limit = max(abs(self.x), abs(self.y), abs(self.x_prime), abs(self.y_prime)) + 2
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        
+        # Draw Cartesian axes centered at (0,0)
+        ax.spines['left'].set_position('center')
+        ax.spines['bottom'].set_position('center')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        ax.grid(True, linestyle=':', alpha=0.6)
+        
+        # Ensure 1 unit on x equals 1 unit on y (crucial for rotation to look correct)
+        ax.set_aspect('equal')
+
+        # Plot the Points and Lines
+        # Original Point A
+        ax.plot([0, self.x], [0, self.y], linestyle='--', color='blue', alpha=0.5)
+        ax.scatter(self.x, self.y, color='blue', s=100, label='Start')
+        ax.text(self.x + 0.5, self.y + 0.5, f"A({self.x}, {self.y})", color='blue', fontsize=12, fontweight='bold')
+
+        # Rotated Point A'
+        ax.plot([0, self.x_prime], [0, self.y_prime], linestyle='--', color='red', alpha=0.5)
+        ax.scatter(self.x_prime, self.y_prime, color='red', s=100, label='End')
+        ax.text(self.x_prime + 0.5, self.y_prime - 1, f"A'(?, ?)", color='red', fontsize=12, fontweight='bold')
+
+        # Draw the Rotation Arc/Arrow
+        # Calculate angles in degrees
+        angle_start = np.degrees(np.arctan2(self.y, self.x))
+        angle_end = np.degrees(np.arctan2(self.y_prime, self.x_prime))
+        
+        # Create an arrow depicting the rotation
+        # We use FancyArrowPatch to create a curved arrow
+        radius = min(np.sqrt(self.x**2 + self.y**2) / 2, 3) # Place arrow halfway or at radius 3
+        
+        arrow = patches.FancyArrowPatch(
+            (radius * np.cos(np.radians(angle_start)), radius * np.sin(np.radians(angle_start))),
+            (radius * np.cos(np.radians(angle_end)), radius * np.sin(np.radians(angle_end))),
+            connectionstyle=f"arc3,rad=-0.3", # Negative rad for clockwise curvature
+            arrowstyle="Simple, tail_width=0.5, head_width=4, head_length=8",
+            color="green"
+        )
+        ax.add_patch(arrow)
+        
+        # Label the rotation
+        mid_angle = (angle_start + angle_end) / 2
+        if abs(angle_start - angle_end) > 180: # Handle crossing the -180/180 line if necessary
+            mid_angle += 180
+                
+        ax.text((1.2 * radius) * np.cos(np.radians(mid_angle)), (1.2 * radius) * np.sin(np.radians(mid_angle)), "90°", color='green', fontsize=10, ha='center')
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
