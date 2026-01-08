@@ -2517,3 +2517,102 @@ class Mat092:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat093:
+    
+    def __init__(self):
+        # Random half-length of the side (e.g., between 2 and 6)
+        self.s = rnd.randint(2, 6) 
+        
+        # Define the original vertices (A, B, C, D)
+        # A=(s,s), B=(s,-s), C=(-s,-s), D=(-s,s)
+        self.vertices = {
+            'A': (self.s, self.s),
+            'B': (self.s, -self.s),
+            'C': (-self.s, -self.s),
+            'D': (-self.s, self.s)
+        }
+
+        self.answer = 2
+
+        self.description = (
+            f"How many vertices remain in the exact same position (invariant) after the reflection?"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Transformations"
+        self.source = "Adapted from \"Symmetry and Transformations\" conceptual questions in Cambridge IGCSE / O Level Mathematics"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The vertices of the square are defined as:}} \\\\"
+            f"A &= ({self.s}, {self.s}) \\\\"
+            f"B &= ({self.s}, {-self.s}) \\\\"
+            f"C &= ({-self.s}, {-self.s}) \\\\"
+            f"D &= ({-self.s}, {self.s}) \\\\"
+            f"\\text{{For a reflection across the main diagonal }} y = x, \\text{{ the transformation is }} (x, y) \\to (y, x). \\\\"
+            f"\\text{{Applying the reflection to each vertex:}} \\\\"
+            f"A' &= ({self.s}, {self.s}) = A \\quad (\\text{{Invariant}}) \\\\"
+            f"B' &= ({-self.s}, {self.s}) = D \\neq B \\\\"
+            f"C' &= ({-self.s}, {-self.s}) = C \\quad (\\text{{Invariant}}) \\\\"
+            f"D' &= ({self.s}, {-self.s}) = B \\neq D \\\\"
+            f"\\text{{Counting the invariant vertices (A and C):}} \\\\"
+            f"\\text{{Total}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the Plot
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Set plot limits with some padding
+        limit = self.s + 2
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        
+        # Draw axes
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.grid(True, linestyle=':', alpha=0.6)
+        
+        # Plot the Reflection Line (y = x)
+        # Generate points for the line
+        line_range = np.linspace(-limit, limit, 100)
+        ax.plot(line_range, line_range, color='green', linestyle='--', linewidth=2, label='Reflection Line (y=x)')
+        
+        # Plot the Square
+        # Extract coordinates for plotting shapes (append first point at end to close the square)
+        pts = [self.vertices['A'], self.vertices['B'], self.vertices['C'], self.vertices['D'], self.vertices['A']]
+        xs, ys = zip(*pts)
+        
+        # Fill the square
+        ax.fill(xs, ys, color='skyblue', alpha=0.3, label='Original Square')
+        # Draw edges
+        ax.plot(xs, ys, color='blue', linewidth=2)
+        
+        # Calculate and Plot Vertices (and Reflections)
+        invariant_count = 0
+        
+        for label, (x, y) in self.vertices.items():
+            # Reflection across y=x simply swaps coordinates: (x, y) -> (y, x)
+            x_new, y_new = y, x
+        
+            # Plot non-invariant points in Blue
+            ax.scatter(x, y, color='blue', s=80, zorder=5)
+            ax.text(x + 0.1, y + 0.1, f"{label}({x},{y})", fontsize=10, color='blue')
+            
+            # Optional: Show where they reflect to with an arrow
+            ax.annotate("", xy=(x_new, y_new), xytext=(x, y),
+                        arrowprops=dict(arrowstyle="->", color='gray', linestyle='dashed'))
+
+        # Final Formatting
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.legend(loc='upper left')
+        ax.set_aspect('equal') # Essential for geometry figures
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
