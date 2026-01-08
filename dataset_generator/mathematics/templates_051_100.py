@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib import colors
 import matplotlib.patches as patches
+from matplotlib.patches import Polygon
 from PIL import Image, ImageDraw, ImageFont
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
 from mathematics.helper import *
@@ -2413,6 +2414,105 @@ class Mat091:
         ax.text((1.2 * radius) * np.cos(np.radians(mid_angle)), (1.2 * radius) * np.sin(np.radians(mid_angle)), "90°", color='green', fontsize=10, ha='center')
         
         plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat092:
+    
+    def __init__(self):
+        # Generate a random triangle (3 vertices)
+        # Keeping coordinates between -5 and 5 for better visibility on a standard grid
+        v1 = [rnd.randint(-4, 4), rnd.randint(-4, 4)]
+        v2 = [rnd.randint(-4, 4), rnd.randint(-4, 4)]
+        v3 = [rnd.randint(-4, 4), rnd.randint(-4, 4)]
+        
+        self.triangle_orig = np.array([v1, v2, v3])
+
+        # Generate a random translation vector
+        # Ensure it's not (0,0)
+        tx, ty = 0, 0
+        while tx == 0 and ty == 0:
+            tx = rnd.randint(-6, 6)  # spacing it out a bit
+            ty = rnd.randint(-3, 3)
+        translation_vector = np.array([tx, ty])
+
+        # Calculate new triangle vertices
+        self.triangle_new = self.triangle_orig + translation_vector
+
+        # Select one random vertex to be the focus of the question
+        target_index = rnd.randint(0, 2)
+        self.target_vertex_orig = self.triangle_orig[target_index]
+        self.target_vertex_new = self.triangle_new[target_index]
+        
+        # Calculate the answer (Sum of x and y of the new vertex)
+        self.answer = int(self.target_vertex_new[0] + self.target_vertex_new[1])
+
+        self.description = (
+            f"One of the vertices of the original triangle is highlighted. After it got translate it, what is the sum of the x and y coordinates of the new vertex?"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Transformations"
+        self.source = "Modeled after standard vector translation questions in IGCSE Mathematics (0580) Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original Vertex Coordinates: }} P &= ({round(self.target_vertex_orig[0], 10)}, {round(self.target_vertex_orig[1], 10)})\\\\"
+            f"\\text{{Translation Vector: }} \\vec{{v}} &= \\begin{{pmatrix}} {round(translation_vector[0], 10)} \\\\ {round(translation_vector[1], 10)} \\end{{pmatrix}}\\\\"
+            f"\\text{{New Vertex Coordinates }} P' &= P + \\vec{{v}}\\\\"
+            f"&= \\begin{{pmatrix}} {round(self.target_vertex_orig[0], 10)} \\\\ {round(self.target_vertex_orig[1], 10)} \\end{{pmatrix}} + \\begin{{pmatrix}} {round(translation_vector[0], 10)} \\\\ {round(translation_vector[1], 10)} \\end{{pmatrix}}\\\\"
+            f"&= \\begin{{pmatrix}} {round(self.target_vertex_orig[0], 10)} + ({round(translation_vector[0], 10)}) \\\\ {round(self.target_vertex_orig[1], 10)} + ({round(translation_vector[1], 10)}) \\end{{pmatrix}}\\\\"
+            f"&= \\begin{{pmatrix}} {round(self.target_vertex_new[0], 10)} \\\\ {round(self.target_vertex_new[1], 10)} \\end{{pmatrix}}\\\\"
+            f"\\text{{Sum of coordinates}} &= x' + y'\\\\"
+            f"&= {round(self.target_vertex_new[0], 10)} + ({round(self.target_vertex_new[1], 10)})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Figure
+        fig, ax = plt.subplots(figsize=(6, 6))
+
+        # Grid and Axis setup
+        ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+        ax.axhline(y=0, color='k', linewidth=1)
+        ax.axvline(x=0, color='k', linewidth=1)
+
+        # Plot Original Triangle (Blue)
+        poly_orig = Polygon(self.triangle_orig, facecolor='skyblue', edgecolor='blue', alpha=0.5, label='Original')
+        ax.add_patch(poly_orig)
+
+        # Plot Translated Triangle (Red/Orange, Dashed)
+        poly_new = Polygon(self.triangle_new, facecolor='none', edgecolor='red', linestyle='--', linewidth=2, label='Translated')
+        ax.add_patch(poly_new)
+
+        # Visualizing the Translation Vector (Arrow)
+        # We draw an arrow from the target vertex to its new position
+        ax.annotate("", 
+                    xy=(self.target_vertex_new[0], self.target_vertex_new[1]), 
+                    xytext=(self.target_vertex_orig[0], self.target_vertex_orig[1]),
+                    arrowprops=dict(arrowstyle="->", color="green", lw=2))
+
+        # Label the vector
+        mid_x = (self.target_vertex_orig[0] + self.target_vertex_new[0]) / 2
+        mid_y = (self.target_vertex_orig[1] + self.target_vertex_new[1]) / 2
+        ax.text(mid_x, mid_y, f"v", color="green", fontsize=12, fontweight='bold', ha='right')
+
+        # Highlight the specific vertex mentioned in the question
+        ax.plot(self.target_vertex_orig[0], self.target_vertex_orig[1], 'bo') # Blue dot
+        ax.text(self.target_vertex_orig[0] + 0.2, self.target_vertex_orig[1] + 0.2, 
+                f"({self.target_vertex_orig[0]}, {self.target_vertex_orig[1]})", fontsize=10, color='blue')
+
+        # Set Limits (dynamic based on points)
+        all_x = np.concatenate((self.triangle_orig[:,0], self.triangle_new[:,0]))
+        all_y = np.concatenate((self.triangle_orig[:,1], self.triangle_new[:,1]))
+        buffer = 2
+        ax.set_xlim(min(all_x)-buffer, max(all_x)+buffer)
+        ax.set_ylim(min(all_y)-buffer, max(all_y)+buffer)
+        ax.set_aspect('equal')
+        ax.legend()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
