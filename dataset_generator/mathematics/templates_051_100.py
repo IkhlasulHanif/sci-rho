@@ -1449,3 +1449,141 @@ class Mat067:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat068:
+    
+    def __init__(self):
+        # We randomize the base and the vertical height first to ensure a valid shape,
+        # then calculate the Slant Edge to display as the "known" value.
+        self.side_length = rnd.randint(10, 20) # In m
+        self.vertical_height_real = rnd.randint(10, 20) # In m
+        
+        # Calculate half diagonal (center to corner) needed for Pythagoras
+        # d^2 = (s/2)^2 + (s/2)^2
+        self.half_base_diagonal = np.sqrt((self.side_length/2)**2 + (self.side_length/2)**2) # In m
+        
+        # Calculate Slant Edge (Edge from corner to top)
+        self.slant_edge_len = round(np.sqrt(self.vertical_height_real**2 + self.half_base_diagonal**2), 2) # In m
+
+        # Calculate the height
+        vertical_height = np.sqrt(self.slant_edge_len**2 - self.half_base_diagonal**2) # In m
+
+        # Calculate the volume
+        self.answer = round((1/3) * self.side_length**2 * vertical_height, 2)
+
+        self.description = (
+            f"Calculate the vertical height of the pyramid and then use it to find the volume. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Surface area and volume"
+        self.source = "Common \"high-mark\" question in IGCSE Mathematics 0580 Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Side length }} (s) &= {self.side_length}\\,\\text{{m}}\\\\"
+            f"\\text{{Slant edge }} (l) &= {self.slant_edge_len}\\,\\text{{m}}\\\\"
+            f"\\text{{Half base diagonal }} (d) &= \\sqrt{{\\left(\\frac{{s}}{{2}}\\right)^2 + \\left(\\frac{{s}}{{2}}\\right)^2}}\\\\"
+            f"&= \\sqrt{{\\left(\\frac{{{self.side_length}}}{{2}}\\right)^2 + \\left(\\frac{{{self.side_length}}}{{2}}\\right)^2}}\\\\"
+            f"&= {round(self.half_base_diagonal, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Vertical height }} (h) &= \\sqrt{{l^2 - d^2}}\\\\"
+            f"&= \\sqrt{{{self.slant_edge_len}^2 - {round(self.half_base_diagonal, 10)}^2}}\\\\"
+            f"&= {round(vertical_height, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Volume }} (V) &= \\frac{{1}}{{3}} \\times s^2 \\times h\\\\"
+            f"&= \\frac{{1}}{{3}} \\times {self.side_length}^2 \\times {round(vertical_height, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}^3"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Coordinates
+        # Center is at (0,0,0)
+        r = self.side_length / 2
+        
+        # Base corners
+        corners = np.array([
+            [-r, -r, 0], # Rear Left
+            [ r, -r, 0], # Rear Right
+            [ r,  r, 0], # Front Right
+            [-r,  r, 0]  # Front Left
+        ])
+        
+        apex = np.array([0, 0, self.vertical_height_real])
+        center = np.array([0, 0, 0])
+
+        # Setup Plot
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # Hide axes ticks for a cleaner diagram look
+        ax.set_axis_off()
+
+        # Plot Geometry
+        
+        # Plot Base (Square)
+        # We reorder indices to draw a closed loop: 0->1->2->3->0
+        base_x = np.append(corners[:,0], corners[0,0])
+        base_y = np.append(corners[:,1], corners[0,1])
+        base_z = np.append(corners[:,2], corners[0,2])
+        ax.plot(base_x, base_y, base_z, color='black', linewidth=1.5)
+        
+        # Plot Slant Edges (Connecting corners to Apex)
+        # We make the front edges solid and back edges dashed for depth perception
+        for i, corner in enumerate(corners):
+            # Determine if "front" or "back" based on y-coordinate roughly
+            style = '-'
+            alpha = 1.0
+            if corner[1] < 0: # Back vertices in this view
+                style = '--'
+                alpha = 0.5
+            ax.plot([corner[0], apex[0]], [corner[1], apex[1]], [corner[2], apex[2]], 
+                    color='blue', linestyle=style, alpha=alpha, linewidth=1.5)
+
+        # Plot Vertical Height (The Unknown 'h')
+        ax.plot([center[0], apex[0]], [center[1], apex[1]], [center[2], apex[2]], 
+                color='red', linestyle='--', linewidth=2, label='Height (h)')
+
+        # Plot Half-Diagonal (dashed line on floor to show the Right Triangle relation)
+        # Connecting Center to Corner 2 (Front Right)
+        target_corner = corners[2] 
+        ax.plot([center[0], target_corner[0]], [center[1], target_corner[1]], [center[2], target_corner[2]], 
+                color='gray', linestyle=':', linewidth=1)
+
+        # Add Labels
+        
+        # Label Base Side
+        # Place label between Corner 2 and Corner 3 (Front side)
+        mid_base = (corners[2] + corners[3]) / 2
+        ax.text(mid_base[0], mid_base[1] - self.side_length - 2, mid_base[2], 
+                f"{self.side_length} m", color='black', fontsize=12, fontweight='bold', ha='center')
+
+        # Label Slant Edge
+        # Place label on the edge connecting Corner 2 to Apex
+        mid_slant = (corners[2] + apex) / 2
+        ax.text(mid_slant[0]+1, mid_slant[1], mid_slant[2], 
+                f"{self.slant_edge_len:.2f} m", color='blue', fontsize=12, fontweight='bold')
+
+        # Label Vertical Height
+        mid_height = (center + apex) / 2
+        ax.text(mid_height[0]+0.5, mid_height[1], mid_height[2], 
+                "h = ?", color='red', fontsize=14, fontweight='bold')
+
+        # # Title with the question
+        # plt.title(f"Example 8: Calculate Vertical Height (h)\nand Volume of the Pyramid", fontsize=14)
+        
+        # Adjust aspect ratio so it looks like a real pyramid
+        # Scaling to make axes equal
+        max_range = np.array([base_x.max()-base_x.min(), base_y.max()-base_y.min(), apex[2]]).max() / 2.0
+        mid_x = (base_x.max()+base_x.min()) * 0.5
+        mid_y = (base_y.max()+base_y.min()) * 0.5
+        mid_z = apex[2] * 0.5
+        ax.set_xlim(mid_x - max_range, mid_x + max_range)
+        ax.set_ylim(mid_y - max_range, mid_y + max_range)
+        ax.set_zlim(0, apex[2] + 2)
+        ax.set_box_aspect((1, 1, self.vertical_height_real/self.side_length)) # Approximate aspect ratio
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
