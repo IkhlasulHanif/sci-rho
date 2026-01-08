@@ -2616,3 +2616,104 @@ class Mat093:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat094:
+    
+    def __init__(self):
+        # Base vectors (keep u horizontal and v vertical as per description)
+        self.u_mag = rnd.randint(1, 3)  # Magnitude of u (e.g., 1, 2, or 3)
+        self.v_mag = rnd.randint(1, 3)  # Magnitude of v
+        
+        # Scalars (coefficients)
+        self.a = rnd.randint(2, 4)      # Scalar for u
+        self.b = rnd.randint(2, 4)      # Scalar for v
+        
+        # Define vectors
+        self.u_vec = np.array([self.u_mag, 0])
+        self.v_vec = np.array([0, self.v_mag])
+        
+        # Scaled vectors
+        self.scaled_u = self.a * self.u_vec
+        self.scaled_v = self.b * self.v_vec
+        
+        # Resultant vector
+        self.r_vec = self.scaled_u + self.scaled_v
+        
+        # Calculate Answer
+        # The question asks for the x-component of r
+        self.answer= int(self.r_vec[0])
+
+        self.description = (
+            f"What is the value of the x-component of the resultant vector $\\mathbf{{r}}$?"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vectors in two dimensions"
+        self.source = "OpenStax Precalculus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given vectors:}} &\\\\"
+            f"\\mathbf{{u}} &= \\binom{{{self.u_mag}}}{{0}}, \\quad \\mathbf{{v}} = \\binom{{0}}{{{self.v_mag}}}\\\\"
+            f"\\text{{Calculate the resultant vector }} \\mathbf{{r}}: &\\\\"
+            f"\\mathbf{{r}} &= {self.a}\\mathbf{{u}} + {self.b}\\mathbf{{v}}\\\\"
+            f"&= {self.a}\\binom{{{self.u_mag}}}{{0}} + {self.b}\\binom{{0}}{{{self.v_mag}}}\\\\"
+            f"&= \\binom{{{self.a} \\cdot {self.u_mag}}}{{0}} + \\binom{{0}}{{{self.b} \\cdot {self.v_mag}}}\\\\"
+            f"&= \\binom{{{self.a * self.u_mag}}}{{0}} + \\binom{{0}}{{{self.b * self.v_mag}}}\\\\"
+            f"&= \\binom{{{self.a * self.u_mag} + 0}}{{0 + {self.b * self.v_mag}}}\\\\"
+            f"&= \\binom{{{self.answer}}}{{{self.b * self.v_mag}}}\\\\"
+            f"\\text{{The x-component is:}} &\\\\"
+            f"r_x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Determine plot limits with some padding
+        max_val = max(self.r_vec[0], self.r_vec[1]) + 2
+        ax.set_xlim(-1, max_val)
+        ax.set_ylim(-1, max_val)
+        
+        # Add grid (at integer intervals for easy reading)
+        ax.grid(True, which='both', linestyle='--', alpha=0.6)
+        ax.set_xticks(np.arange(0, max_val, 1))
+        ax.set_yticks(np.arange(0, max_val, 1))
+        ax.set_aspect('equal')
+        
+        # Plot Vectors (Tip-to-Tail Method)
+        # Helper to plot quiver arrows
+        def plot_arrow(start, direction, color, label):
+            ax.quiver(start[0], start[1], direction[0], direction[1], 
+                    angles='xy', scale_units='xy', scale=1, color=color, label=label, width=0.015, headwidth=4)
+
+        # Vector 1: Scaled u (Horizontal) starting from origin
+        plot_arrow([0, 0], self.scaled_u, 'blue', label=f'${self.a}\\mathbf{{u}}$')
+        
+        # Vector 2: Scaled v (Vertical) starting from tip of u
+        plot_arrow(self.scaled_u, self.scaled_v, 'green', label=f'${self.b}\\mathbf{{v}}$')
+        
+        # Vector 3: Resultant r (Origin to tip of v)
+        plot_arrow([0, 0], self.r_vec, 'red', label=r'$\mathbf{r}$')
+
+        # Annotations & Aesthetics
+        # Label the base vector definitions in the title or text
+        question_text = (
+            f"Find x-component of $\\mathbf{{r}} = {self.a}\\mathbf{{u}} + {self.b}\\mathbf{{v}}$"
+        )
+        
+        ax.set_title(question_text, fontsize=14, pad=15)
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        
+        # Show legend
+        ax.legend()
+        
+        # Dashed lines to show components on axes (optional visual aid)
+        ax.plot([self.r_vec[0], self.r_vec[0]], [0, self.r_vec[1]], 'k:', alpha=0.3) # Drop to x-axis
+        ax.plot([0, self.r_vec[0]], [self.r_vec[1], self.r_vec[1]], 'k:', alpha=0.3) # Drop to y-axis
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
