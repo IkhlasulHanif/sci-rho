@@ -1804,3 +1804,86 @@ class Mat070:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat071:
+    
+    def __init__(self):
+        # Randomize the variable (Side length between 6 and 30, even numbers preferred for cleaner radius)
+        self.side = rnd.randrange(6, 31, 2) # In cm
+        self.radius = self.side / 2.0 # In cm
+        
+        # Calculate the answer
+        area_square = self.side ** 2
+        area_circle = np.pi * (self.radius ** 2)
+        area_shaded = area_square - area_circle
+
+        self.answer = round(area_shaded, 2)
+
+        self.description = (
+            f"Calculate the area of the shaded region. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Compound shapes and parts of shapes"
+        self.source = "Standard Geometry Problem (Common in GCSE Mathematics past papers)"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Side length, }} s &= {self.side}\\,\\text{{cm}}\\\\"
+            f"\\text{{Radius, }} r &= \\frac{{s}}{{2}} = \\frac{{{self.side}}}{{2}} = {round(self.radius, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Area of Square}} &= s^2 = ({self.side})^2 = {round(self.side**2, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Area of Circle}} &= \\pi r^2 = \\pi ({round(self.radius, 10)})^2 \\approx {round(np.pi * self.radius**2, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Shaded Area}} &= \\text{{Area of Square}} - \\text{{Area of Circle}}\\\\"
+            f"&= {round(self.side**2, 10)} - {round(np.pi * self.radius**2, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the Plot
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Create the Shapes
+        # A. The Square (This acts as the shaded background)
+        # We use 'lightgray' for color and '//' for hatching to represent "shading"
+        square = patches.Rectangle(
+            (0, 0), self.side, self.side, 
+            edgecolor='black', 
+            facecolor='lightgray', 
+            hatch='//',       # The hatching pattern
+            label='Square'
+        )
+        
+        # B. The Circle (This masks the center of the square)
+        # Facecolor must be 'white' to hide the square's hatching behind it
+        circle = patches.Circle(
+            (self.radius, self.radius), self.radius, 
+            edgecolor='black', 
+            facecolor='white', 
+            label='Inscribed Circle'
+        )
+        
+        # Add patches to the plot (Order matters: Square first, then Circle)
+        ax.add_patch(square)
+        ax.add_patch(circle)
+        
+        # Add Dimensions and Annotations
+        # Draw a line for the side length
+        plt.plot([0, self.side], [-1, -1], color='black', marker='|', markersize=10, linewidth=1.5)
+        plt.text(self.side/2, -2, f'{self.side} cm', ha='center', va='center', fontsize=12, fontweight='bold')
+        
+        # Plot Styling
+        padding = self.side * 0.2
+        ax.set_xlim(-padding, self.side + padding)
+        ax.set_ylim(-padding, self.side + padding)
+        ax.set_aspect('equal') # Crucial to make the circle look like a circle
+        ax.axis('off')         # Hide the graph axis numbers
+        
+        # # Title and Question Display
+        # plt.title(f"Find the Area of the Shaded Region\n(Square Side: {side} cm)", fontsize=14)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
