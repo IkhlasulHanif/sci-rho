@@ -1693,3 +1693,114 @@ class Mat069:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat070:
+    
+    def __init__(self):
+        # Length between 6 and 18, Width between 4 and 12 (even numbers preferred for easy radius)
+        self.length = rnd.randint(6, 18) # In cm
+        self.width = rnd.randrange(4, 12, 2) # In cm
+        self.radius = self.width / 2 # In cm
+
+        PI = 3.1416
+
+        area = self.length * self.width + PI * self.radius ** 2
+
+        self.answer = round(area, 2)
+
+        self.description = (
+            f"Calculate the total area of the shape. Use π = 3.1416. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Compound shapes and parts of shapes"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given Length }} (l) &= {self.length}\\,\\text{{cm}}\\\\"
+            f"\\text{{Given Width }} (w) &= {self.width}\\,\\text{{cm}}\\\\"
+            f"\\text{{Radius }} (r) &= \\frac{{w}}{{2}} = \\frac{{{self.width}}}{{2}} = {round(self.radius, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Area of Rectangle}} &= l \\times w\\\\"
+            f"&= {self.length} \\times {self.width}\\\\"
+            f"&= {round(self.length * self.width, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Area of Circular Parts}} &= \\pi r^2\\\\"
+            f"&= 3.1416 \\times ({round(self.radius, 10)})^2\\\\"
+            f"&= 3.1416 \\times {round(self.radius**2, 10)}\\\\"
+            f"&= {round(3.1416 * self.radius**2, 10)}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Total Area}} &= \\text{{Area of Rectangle}} + \\text{{Area of Circular Parts}}\\\\"
+            f"&= {round(self.length * self.width, 10)} + {round(3.1416 * self.radius**2, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.set_aspect('equal')
+        ax.axis('off')  # Hide axis ticks
+        
+        # Define colors
+        shape_color = '#E0F7FA'  # Light Cyan fill
+        line_color = '#006064'   # Dark Cyan outline
+        dim_color = 'black'
+
+        # Draw Shapes
+        # We construct the shape using specific patches to avoid drawing the "internal" vertical lines
+        
+        # A. Central Rectangle (Fill only)
+        rect = patches.Rectangle((0, 0), self.length, self.width, color=shape_color, ec='none')
+        ax.add_patch(rect)
+        
+        # B. Right Semicircle (Fill)
+        right_wedge = patches.Wedge((self.length, self.radius), self.radius, -90, 90, color=shape_color, ec='none')
+        ax.add_patch(right_wedge)
+
+        # C. Left Semicircle (Fill)
+        left_wedge = patches.Wedge((0, self.radius), self.radius, 90, 270, color=shape_color, ec='none')
+        ax.add_patch(left_wedge)
+
+        # D. Draw the OUTLINE (Top, Bottom, and Arcs)
+        # Top Line
+        ax.plot([0, self.length], [self.width, self.width], color=line_color, linewidth=2)
+        # Bottom Line
+        ax.plot([0, self.length], [0, 0], color=line_color, linewidth=2)
+        # Right Arc
+        right_arc = patches.Arc((self.length, self.radius), self.width, self.width, theta1=-90, theta2=90, color=line_color, linewidth=2)
+        ax.add_patch(right_arc)
+        # Left Arc
+        left_arc = patches.Arc((0, self.radius), self.width, self.width, theta1=90, theta2=270, color=line_color, linewidth=2)
+        ax.add_patch(left_arc)
+
+        # E. Internal Dashed Lines (Optional, to show it was a rectangle)
+        ax.plot([0, 0], [0, self.width], color='gray', linestyle='--', alpha=0.5)
+        ax.plot([self.length, self.length], [0, self.width], color='gray', linestyle='--', alpha=0.5)
+
+        # Add Dimensions (Labels)
+        
+        # Label Length (L)
+        ax.annotate(
+            text='', xy=(0, -0.5 * self.radius), xytext=(self.length, -0.5 * self.radius),
+            arrowprops=dict(arrowstyle='<->', color=dim_color)
+        )
+        ax.text(self.length/2, -0.5 * self.radius - 0.5, f"{self.length} cm", ha='center', va='top', fontsize=12, color=dim_color)
+        
+        # Label Width (W) - inside the shape or on the side
+        # Drawing a vertical dimension line at x = length + radius + offset
+        dim_x = self.length + self.radius + 1
+        ax.annotate(
+            text='', xy=(dim_x, 0), xytext=(dim_x, self.width),
+            arrowprops=dict(arrowstyle='<->', color=dim_color)
+        )
+        ax.text(dim_x + 0.2, self.radius, f"{self.width} cm", ha='left', va='center', fontsize=12, color=dim_color)
+
+        # Set plot limits with some padding
+        ax.set_xlim(-self.radius - 2, self.length + self.radius + 3)
+        ax.set_ylim(-self.radius - 2, self.width + 2)
+        
+        # plt.title("Geometry Problem: Compound Shape", fontsize=14, pad=20)
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
