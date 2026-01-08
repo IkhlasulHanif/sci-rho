@@ -2006,3 +2006,124 @@ class Mat072:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat073:
+    
+    def __init__(self):
+        # Radius between 2.0 and 6.0
+        self.r = round(rnd.uniform(2.0, 6.0), 2) # In m
+        # Cylinder height between 4.0 and 12.0
+        self.h_cyl = round(rnd.uniform(4.0, 12.0), 2) # In m
+        # Cone height between 4.0 and 12.0
+        self.h_cone = round(rnd.uniform(4.0, 12.0), 2) # In m
+
+        base_area = np.pi * (self.r ** 2)
+        cylinder_lateral_area = 2 * np.pi * self.r * self.h_cyl
+        slant = np.sqrt(self.r ** 2 + self.h_cone ** 2)
+        cone_lateral_area = np.pi * self.r * slant
+        surface_area = base_area + cylinder_lateral_area + cone_lateral_area
+
+        self.answer = round(surface_area, 2)
+
+        self.description = (
+            f"Calculate the total exterior surface area of the tank (assuming the base is flat and closed). Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Mensuration"
+        self.subtopic = "Compound shapes and parts of shapes"
+        self.source = "Adapted from Haese Mathematics for IGCSE"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{First, calculate the slant height }} s \\text{{ of the cone:}} &\\\\"
+            f"s &= \\sqrt{{r^2 + h_{{\\text{{cone}}}}^2}} \\\\"
+            f"&= \\sqrt{{({self.r})^2 + ({self.h_cone})^2}} \\\\"
+            f"&= {round(np.sqrt(self.r**2 + self.h_cone**2), 10)}\\,\\text{{m}} \\\\[1em]"
+            f"\\text{{Now, calculate the total surface area:}} &\\\\"
+            f"\\text{{Area}} &= \\text{{Base}} + \\text{{Cylinder Lateral}} + \\text{{Cone Lateral}} \\\\"
+            f"&= \\pi r^2 + 2 \\pi r h_{{\\text{{cyl}}}} + \\pi r s \\\\"
+            f"&= \\pi({self.r})^2 + 2 \\pi({self.r})({self.h_cyl}) + \\pi({self.r})({round(np.sqrt(self.r**2 + self.h_cone**2), 10)}) \\\\"
+            f"&= {self.answer}\\,\\text{{m}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        
+        # Resolution for the shapes
+        theta = np.linspace(0, 2*np.pi, 50)
+        
+        # --- PART A: THE CYLINDER ---
+        # z goes from 0 to h_cyl
+        z_cyl = np.linspace(0, self.h_cyl, 10)
+        theta_grid, z_cyl_grid = np.meshgrid(theta, z_cyl)
+        x_cyl = self.r * np.cos(theta_grid)
+        y_cyl = self.r * np.sin(theta_grid)
+        
+        # Plot Cylinder Surface
+        ax.plot_surface(x_cyl, y_cyl, z_cyl_grid, color='skyblue', alpha=0.6, edgecolor='none')
+        
+        # Draw bottom and top circles of cylinder for clarity
+        ax.plot(self.r * np.cos(theta), self.r * np.sin(theta), 0, color='blue')       # Bottom
+        ax.plot(self.r * np.cos(theta), self.r * np.sin(theta), self.h_cyl, color='blue')   # Top (Interface)
+
+        # --- PART B: THE CONE ---
+        # z goes from h_cyl to (h_cyl + h_cone)
+        # Radius shrinks from r to 0 as z increases
+        u = np.linspace(0, 1, 10) # 0 to 1 relative height of cone
+        theta_grid_cone, u_grid = np.meshgrid(theta, u)
+        
+        # Current height at step u
+        z_cone_grid = self.h_cyl + u_grid * self.h_cone
+        # Current radius at step u (Linear interpolation)
+        current_r = self.r * (1 - u_grid)
+        
+        x_cone = current_r * np.cos(theta_grid_cone)
+        y_cone = current_r * np.sin(theta_grid_cone)
+        
+        # Plot Cone Surface
+        ax.plot_surface(x_cone, y_cone, z_cone_grid, color='orange', alpha=0.6, edgecolor='none')
+
+        # --- PART C: ANNOTATIONS & FORMATTING ---
+        
+        # Add a vertical line through the center to visualize height better
+        total_height = self.h_cyl + self.h_cone
+        ax.plot([0, 0], [0, 0], [0, total_height], 'k--', lw=1)
+        
+        # Add text labels for the variables
+        info_text = (
+            f"Radius: {self.r} m\n"
+            f"Cylinder Height: {self.h_cyl} m\n"
+            f"Cone Height: {self.h_cone} m"
+        )
+        
+        # Place text in the figure (outside the 3D box to avoid rotation issues)
+        plt.figtext(0.05, 0.8, info_text, fontsize=12, bbox=dict(facecolor='white', alpha=0.8))
+
+        # # Dimension lines visualizers (Approximate placement)
+        # # Radius label
+        # ax.text(r/2, 0, 0, f"r={r}", color='blue')
+        # # Cylinder height label (placed slightly outside)
+        # ax.text(r + 0.5, 0, h_cyl/2, f"h_cyl={h_cyl}", color='blue')
+        # # Cone height label
+        # ax.text(r + 0.5, 0, h_cyl + h_cone/2, f"h_cone={h_cone}", color='orange')
+
+        # Axis limits and labels
+        limit = max(self.r, total_height/2) + 1
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_zlim(0, total_height + 1)
+        
+        ax.set_xlabel('X axis')
+        ax.set_ylabel('Y axis')
+        ax.set_zlabel('Height (Z)')
+        # ax.set_title('Randomized Grain Silo (Compound Solid)')
+        
+        # Ensure aspect ratio is correct so the cylinder looks round
+        ax.set_box_aspect([1, 1, total_height / (2*limit)]) 
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
