@@ -2798,3 +2798,87 @@ class Mat095:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat096:
+    
+    def __init__(self):
+        # We choose integers between 3 and 8 to keep the graph readable
+        self.x = rnd.choice([-1, 1]) * rnd.randint(3, 8) 
+        self.y = rnd.choice([-1, 1]) * rnd.randint(3, 8)
+        
+        # Calculate the answer (Magnitude)
+        self.magnitude = np.sqrt(self.x**2 + self.y**2)
+
+        self.answer = round(self.magnitude, 2)
+
+        self.description = (
+            f"Calculate the magnitude (length) of the vector. Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Magnitude of a vector"
+        self.source = "Cambridge IGCSE® Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given vector components:}}&\\\\"
+            f"x &= {self.x}\\\\"
+            f"y &= {self.y}\\\\"
+            f"\\text{{The magnitude is calculated as:}}&\\\\"
+            f"|\\mathbf{{v}}| &= \\sqrt{{x^2 + y^2}}\\\\"
+            f"&= \\sqrt{{({self.x})^2 + ({self.y})^2}}\\\\"
+            f"&= \\sqrt{{{self.x**2} + {self.y**2}}}\\\\"
+            f"&= \\sqrt{{{self.x**2 + self.y**2}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the Plot
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Set plot limits with some padding
+        limit = max(abs(self.x), abs(self.y)) + 1
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        
+        # Add Grid and Axes at center
+        ax.grid(True, linestyle='--', alpha=0.6)
+        ax.set_aspect('equal')
+        
+        # Move left and bottom spines to x = 0 and y = 0
+        ax.spines['left'].set_position('zero')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        
+        # Add arrows to the axes ends (optional aesthetic)
+        ax.plot(1, 0, ">k", transform=ax.get_yaxis_transform(), clip_on=False)
+        ax.plot(0, 1, "^k", transform=ax.get_xaxis_transform(), clip_on=False)
+
+        # Draw the Vector and Components
+        # Draw the main Vector 'a' (Red arrow)
+        ax.quiver(0, 0, self.x, self.y, angles='xy', scale_units='xy', scale=1, color='red', label=r'$\mathbf{a}$')
+        
+        # Draw the components (Dashed Blue Lines forming the triangle)
+        # Horizontal component line
+        ax.plot([0, self.x], [0, 0], 'b--', alpha=0.5, linewidth=1.5)
+        # Vertical component line
+        ax.plot([self.x, self.x], [0, self.y], 'b--', alpha=0.5, linewidth=1.5)
+
+        # Annotations
+        # Label the vector
+        ax.text(self.x/2, self.y/2 + 0.5, r'$\mathbf{a}$', color='red', fontsize=14, fontweight='bold')
+        
+        # Label the coordinates
+        ax.text(self.x, self.y, f' ({self.x}, {self.y})', fontsize=10, verticalalignment='bottom')
+        
+        # Label the components lengths
+        ax.text(self.x/2, -0.5 if self.y > 0 else 0.5, f'{self.x}', color='blue', ha='center')
+        ax.text(self.x + (0.2 if self.x > 0 else -0.8), self.y/2, f'{self.y}', color='blue', va='center')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
