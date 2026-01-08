@@ -2127,3 +2127,130 @@ class Mat073:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat089:
+    
+    def __init__(self):
+        # Randomize base and height for Triangle A (small)
+        self.base_a = rnd.randint(2, 5)
+        self.height_a = rnd.randint(2, 5)
+        
+        # Randomize scale factor (integer for simplicity)
+        self.scale_factor = rnd.randint(2, 5)
+        
+        # Calculate dimensions for Triangle B (large)
+        self.base_b = self.base_a * self.scale_factor
+        self.height_b = self.height_a * self.scale_factor
+
+        # Either of these
+        self.answer = self.scale_factor
+        self.answer = self.base_b // self.base_a
+        self.answer = self.height_b // self.height_a
+
+        self.description = (
+            f"What is the scale factor of the enlargement?"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Transformations"
+        self.source = "Adapted from Cambridge IGCSE Mathematics (0580) Past Papers"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Scale Factor}} &= \\frac{{\\text{{Base of Triangle B}}}}{{\\text{{Base of Triangle A}}}}\\\\"
+            f"&= \\frac{{{self.base_b}}}{{{self.base_a}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define Coordinates
+        # Using right-angled triangles for clear grid alignment
+        
+        # Triangle A (Small)
+        start_ax, start_ay = 1, 1
+        triangle_a_coords = [
+            (start_ax, start_ay),                  # Bottom-left
+            (start_ax + self.base_a, start_ay),         # Bottom-right
+            (start_ax, start_ay + self.height_a)        # Top-left
+        ]
+        
+        # Triangle B (Large) - Shifted to the right to avoid overlap
+        padding = 2
+        start_bx = start_ax + self.base_a + padding
+        start_by = 1
+        triangle_b_coords = [
+            (start_bx, start_by),
+            (start_bx + self.base_b, start_by),
+            (start_bx, start_by + self.height_b)
+        ]
+        
+        # Plotting
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Draw Triangles
+        poly_a = patches.Polygon(triangle_a_coords, closed=True, 
+                                facecolor='#87CEEB', edgecolor='blue', alpha=0.7, label='Triangle A')
+        poly_b = patches.Polygon(triangle_b_coords, closed=True, 
+                                facecolor='#FA8072', edgecolor='red', alpha=0.7, label='Triangle B')
+        
+        ax.add_patch(poly_a)
+        ax.add_patch(poly_b)
+        
+        # Grid and Axes Configuration
+        # Determine plot limits
+        max_x = start_bx + self.base_b + 2
+        max_y = max(start_ay + self.height_a, start_by + self.height_b) + 2
+        
+        ax.set_xlim(0, max_x)
+        ax.set_ylim(0, max_y)
+        ax.set_aspect('equal')
+        
+        # Add grid
+        ax.grid(True, which='both', linestyle='--', linewidth=0.5, color='gray')
+        ax.set_xticks(range(0, int(max_x) + 1))
+        ax.set_yticks(range(0, int(max_y) + 1))
+        
+        # Annotations
+        # Label the triangles
+        # Centroid-ish position for label
+        ax.text(start_ax + self.base_a/3, start_ay + self.height_a/3, "A", 
+                fontsize=15, fontweight='bold', color='darkblue')
+        ax.text(start_bx + self.base_b/3, start_by + self.height_b/3, "B", 
+                fontsize=15, fontweight='bold', color='darkred')
+        
+        # # Dimension Brackets for Base A
+        # ax.annotate(f'{base_a} units', 
+        #             xy=(start_ax + base_a/2, start_ay), 
+        #             xytext=(0, -25), textcoords='offset points', 
+        #             ha='center', va='top', fontsize=12, fontweight='bold',
+        #             arrowprops=dict(arrowstyle='-[, widthB=1.5, lengthB=0.5', lw=1.5))
+
+        # # Dimension Brackets for Base B
+        # # Adjust widthB based on size relative to A to make brackets look proportional
+        # bracket_width = 1.5 * scale_factor
+        # ax.annotate(f'{base_b} units', 
+        #             xy=(start_bx + base_b/2, start_by), 
+        #             xytext=(0, -25), textcoords='offset points', 
+        #             ha='center', va='top', fontsize=12, fontweight='bold',
+        #             arrowprops=dict(arrowstyle=f'-[, widthB={bracket_width}, lengthB=0.5', lw=1.5))
+
+        # # Titles and Problem Text
+        # plt.title("Enlargement: Finding the Scale Factor", fontsize=16, pad=20)
+        
+        # # Dynamic Question Text
+        # question_text = (f"Triangle A has a base of {base_a} units.\n"
+        #                  f"Triangle B has a base of {base_b} units.\n"
+        #                  "Triangle B is the image of Triangle A after an enlargement.\n\n"
+        #                  "**Question:** What is the scale factor of the enlargement?")
+        
+        # # Add text box below the plot
+        # plt.figtext(0.5, 0.01, question_text, ha="center", fontsize=12, 
+        #             bbox={"facecolor":"#f0f0f0", "alpha":1.0, "pad":10, "edgecolor":"gray"})
+
+        # Adjust layout to make room for text
+        plt.subplots_adjust(bottom=0.25)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
