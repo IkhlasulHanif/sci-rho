@@ -2218,38 +2218,107 @@ class Mat089:
                 fontsize=15, fontweight='bold', color='darkblue')
         ax.text(start_bx + self.base_b/3, start_by + self.height_b/3, "B", 
                 fontsize=15, fontweight='bold', color='darkred')
-        
-        # # Dimension Brackets for Base A
-        # ax.annotate(f'{base_a} units', 
-        #             xy=(start_ax + base_a/2, start_ay), 
-        #             xytext=(0, -25), textcoords='offset points', 
-        #             ha='center', va='top', fontsize=12, fontweight='bold',
-        #             arrowprops=dict(arrowstyle='-[, widthB=1.5, lengthB=0.5', lw=1.5))
-
-        # # Dimension Brackets for Base B
-        # # Adjust widthB based on size relative to A to make brackets look proportional
-        # bracket_width = 1.5 * scale_factor
-        # ax.annotate(f'{base_b} units', 
-        #             xy=(start_bx + base_b/2, start_by), 
-        #             xytext=(0, -25), textcoords='offset points', 
-        #             ha='center', va='top', fontsize=12, fontweight='bold',
-        #             arrowprops=dict(arrowstyle=f'-[, widthB={bracket_width}, lengthB=0.5', lw=1.5))
-
-        # # Titles and Problem Text
-        # plt.title("Enlargement: Finding the Scale Factor", fontsize=16, pad=20)
-        
-        # # Dynamic Question Text
-        # question_text = (f"Triangle A has a base of {base_a} units.\n"
-        #                  f"Triangle B has a base of {base_b} units.\n"
-        #                  "Triangle B is the image of Triangle A after an enlargement.\n\n"
-        #                  "**Question:** What is the scale factor of the enlargement?")
-        
-        # # Add text box below the plot
-        # plt.figtext(0.5, 0.01, question_text, ha="center", fontsize=12, 
-        #             bbox={"facecolor":"#f0f0f0", "alpha":1.0, "pad":10, "edgecolor":"gray"})
 
         # Adjust layout to make room for text
         plt.subplots_adjust(bottom=0.25)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat090:
+    
+    def __init__(self):
+        # Choose a base side length for P (so Area P is a perfect square for simplicity, or just simple int)
+        self.side_p = rnd.randint(2, 5) # In cm
+        self.area_p = self.side_p ** 2 # In cm
+        
+        # Choose a scale factor (k)
+        self.scale_factor = round(rnd.uniform(2, 4), 1) # In cm
+        
+        # Calculate Shape Q properties
+        self.side_q = self.side_p * self.scale_factor # In cm
+        self.area_q = self.area_p * (self.scale_factor ** 2) # In cm
+
+        self.answer = round(self.area_q, 2)
+
+        self.description = (
+            f"What is the area of shape Q in cm²?, Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Transformations"
+        self.source = "Based on standard IGCSE/O Level \"Area Scale Factor\" questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area of shape P}} &= {self.area_p}\\,\\text{{cm}}^2\\\\"
+            f"\\text{{Scale factor (k)}} &= {self.scale_factor}\\\\"
+            f"\\text{{Area of shape Q is given by:}} &\\\\"
+            f"\\text{{Area}}_Q &= k^2 \\times \\text{{Area}}_P\\\\"
+            f"&= ({self.scale_factor})^2 \\times {self.area_p}\\\\"
+            f"&= {round(self.scale_factor**2, 10)} \\times {self.area_p}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # --- 2. Setup Plot ---
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Determine canvas limits based on larger shape
+        spacing = self.side_p * 1.5
+        total_width = self.side_p + spacing + self.side_q
+        max_height = max(self.side_p, self.side_q)
+        
+        ax.set_xlim(-1, total_width + 1)
+        ax.set_ylim(-1, max_height + 2)
+        ax.set_aspect('equal')
+        ax.axis('off')  # Turn off axis numbers
+
+        # --- 3. Draw Shape P (Original) ---
+        # Draw a square for P
+        rect_p = patches.Rectangle((0, 0), self.side_p, self.side_p, 
+                                edgecolor='blue', facecolor='skyblue', alpha=0.6, linewidth=2)
+        ax.add_patch(rect_p)
+        
+        # Label P
+        cx_p = self.side_p / 2
+        cy_p = self.side_p / 2
+        ax.text(cx_p, cy_p, f"Shape P\nArea = {self.area_p} cm²", 
+                ha='center', va='center', fontsize=10, fontweight='bold', color='darkblue')
+
+        # --- 4. Draw Shape Q (Enlarged) ---
+        # Draw a square for Q, offset to the right
+        start_x_q = self.side_p + spacing
+        rect_q = patches.Rectangle((start_x_q, 0), self.side_q, self.side_q, 
+                                edgecolor='red', facecolor='salmon', alpha=0.6, linewidth=2)
+        ax.add_patch(rect_q)
+
+        # Label Q
+        cx_q = start_x_q + (self.side_q / 2)
+        cy_q = self.side_q / 2
+        ax.text(cx_q, cy_q, "Shape Q\nArea = ?", 
+                ha='center', va='center', fontsize=12, fontweight='bold', color='darkred')
+
+        # --- 5. Annotations (Arrow & Scale Factor) ---
+        # Draw an arrow from P to Q
+        arrow_start = (self.side_p + 0.5, self.side_p / 2)
+        arrow_end = (start_x_q - 0.5, self.side_q / 2)
+        
+        # If the arrow is slanted (because Q is taller), keep it horizontal centered on P
+        arrow_y = self.side_p / 2
+        arrow_end_adj = (start_x_q - 0.5, arrow_y)
+        
+        ax.annotate("", xy=arrow_end_adj, xytext=arrow_start,
+                    arrowprops=dict(arrowstyle="->", lw=2, color='black'))
+        
+        # Text for Scale Factor
+        mid_x = (arrow_start[0] + arrow_end_adj[0]) / 2
+        ax.text(mid_x, arrow_y + 0.5, f"Enlargement\nScale Factor = {self.scale_factor}", 
+                ha='center', va='bottom', fontsize=10)
+        
+        plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
