@@ -2717,3 +2717,84 @@ class Mat094:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat095:
+    
+    def __init__(self):
+        # Define Vector p (keep components small for readability)
+        self.px = rnd.randint(1, 3)
+        self.py = rnd.randint(1, 4)
+        
+        # Define Scalar Multiplier (m)
+        # This determines how much larger q is compared to p
+        self.scalar = rnd.randint(2, 4) 
+        
+        # Define Vector q based on scalar
+        self.qx = self.px * self.scalar
+        self.real_k = self.py * self.scalar  # This is the hidden value 'k'
+
+        self.answer = self.real_k
+
+        self.description = (
+            f"Vector $\\mathbf{{p}} = \\binom{{{self.px}}}{{{self.py}}}$ and Vector $\\mathbf{{q}} = \\binom{{{self.qx}}}{{k}}$. If vectors $\\mathbf{{p}}$ and $\\mathbf{{q}}$ are parallel, what is the value of $k$?"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vectors in two dimensions"
+        self.source = "Haese Mathematics: Mathematics for the International Student"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Since vectors }} \\mathbf{{p}} \\text{{ and }} \\mathbf{{q}} \\text{{ are parallel, their components must be proportional:}} &\\\\"
+            f"\\frac{{p_x}}{{q_x}} &= \\frac{{p_y}}{{q_y}}\\\\"
+            f"\\frac{{{self.px}}}{{{self.qx}}} &= \\frac{{{self.py}}}{{k}}\\\\"
+            f"\\text{{Cross-multiplying to solve for }} k: &\\\\"
+            f"{self.px} \\cdot k &= {self.py} \\cdot {self.qx}\\\\"
+            f"{self.px}k &= {self.py * self.qx}\\\\"
+            f"k &= \\frac{{{self.py * self.qx}}}{{{self.px}}}\\\\"
+            f"k &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Generate Figure
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Coordinates:
+        # Vector p starts at origin (0,0)
+        start_p = np.array([0, 0])
+        vec_p = np.array([self.px, self.py])
+        
+        # Vector q starts offset so they look parallel but don't overlap
+        # Offset x by 1 and y by -2 (visual preference)
+        start_q = np.array([1, -1]) 
+        vec_q = np.array([self.qx, self.real_k])
+        
+        # Plot Vectors using quiver
+        # angles='xy', scale_units='xy', scale=1 ensures accurate grid representation
+        ax.quiver(start_p[0], start_p[1], vec_p[0], vec_p[1], 
+                angles='xy', scale_units='xy', scale=1, color='blue', label=r'$\mathbf{p}$')
+        
+        ax.quiver(start_q[0], start_q[1], vec_q[0], vec_q[1], 
+                angles='xy', scale_units='xy', scale=1, color='red', label=r'$\mathbf{q}$')
+        
+        # Add labels near the vectors
+        ax.text(start_p[0] + vec_p[0]/2, start_p[1] + vec_p[1]/2 + 0.5, 
+                r'$\mathbf{p}$', color='blue', fontsize=14, fontweight='bold')
+        ax.text(start_q[0] + vec_q[0]/2, start_q[1] + vec_q[1]/2 + 0.5, 
+                r'$\mathbf{q}$', color='red', fontsize=14, fontweight='bold')
+        
+        # Configure Grid and Aspect Ratio
+        # Calculate limits dynamically to ensure vectors fit
+        max_coord = max(self.qx + start_q[0], self.real_k + start_q[1]) + 2
+        
+        ax.set_xlim(-1, max_coord)
+        ax.set_ylim(-2, max_coord)
+        ax.grid(True, linestyle='--', alpha=0.6)
+        ax.set_aspect('equal')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
