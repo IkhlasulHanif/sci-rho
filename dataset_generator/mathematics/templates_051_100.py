@@ -2882,3 +2882,121 @@ class Mat096:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat097:
+    
+    def __init__(self):
+        # Start with a random "middle" point B (using integers for cleaner math)
+        # Range -10 to 10
+        self.B = np.random.randint(-10, 11, size=3)
+
+        # Create a random Direction Vector (dx, dy, dz)
+        # We avoid (0,0,0) to ensure a line exists
+        direction = np.random.randint(-5, 6, size=3)
+        while np.all(direction == 0):
+            direction = np.random.randint(-5, 6, size=3)
+
+        # Generate scalars (multipliers) for A and C
+        # We make sure they aren't 0 (same as B) and are distinct
+        t_a = np.random.randint(-3, 4)
+        while t_a == 0: t_a = np.random.randint(-3, 4)
+
+        t_c = np.random.randint(-3, 4)
+        while t_c == 0 or t_c == t_a: t_c = np.random.randint(-3, 4)
+
+        # Calculate points A and C based on the direction vector
+        # A = B + t_a * direction
+        # C = B + t_c * direction
+        self.A = self.B + t_a * direction
+        self.C = self.B + t_c * direction
+
+        # The "Secret" Answer
+        k_answer = self.A[0]
+
+        vec_bc = self.C - self.B
+        dy_ba = self.A[1] - self.B[1]
+        dz_ba = self.A[2] - self.B[2]
+
+        # Determine which component to use for ratio (prefer y, fallback to z to avoid zero division)
+        if vec_bc[1] != 0:
+            comp_name = "y"
+            numerator = dy_ba
+            denominator = vec_bc[1]
+        else:
+            comp_name = "z"
+            numerator = dz_ba
+            denominator = vec_bc[2]
+
+        m = numerator / denominator
+        x_term = m * vec_bc[0]
+
+        self.answer = int(k_answer)
+
+        self.description = (
+            f"Using vectors, find the value of the scalar $k$ such that the points $A$, $B$, and $C$ are collinear."
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vector geometry"
+        self.source = "Allen - Vector Geometry Questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{First, determine the vector }} \\vec{{BC}}: &\\\\"
+            f"\\vec{{BC}} &= C - B\\\\"
+            f"&= ({self.C[0]} - {self.B[0]}, {self.C[1]} - {self.B[1]}, {self.C[2]} - {self.B[2]})\\\\"
+            f"&= ({vec_bc[0]}, {vec_bc[1]}, {vec_bc[2]})\\\\"
+            f"\\text{{Next, express the vector }} \\vec{{BA}} \\text{{ in terms of }} k: &\\\\"
+            f"\\vec{{BA}} &= A - B\\\\"
+            f"&= (k - {self.B[0]}, {self.A[1]} - {self.B[1]}, {self.A[2]} - {self.B[2]})\\\\"
+            f"&= (k - {self.B[0]}, {dy_ba}, {dz_ba})\\\\"
+            f"\\text{{Since the points are collinear, }} \\vec{{BA}} = m \\cdot \\vec{{BC}}. &\\\\"
+            f"\\text{{Find the scalar }} m \\text{{ using the {comp_name}-components:}} &\\\\"
+            f"{numerator} &= m({denominator})\\\\"
+            f"m &= \\frac{{{numerator}}}{{{denominator}}}"
+            f" = {round(m, 10)}\\\\"
+            f"\\text{{Now, substitute }} m \\text{{ into the x-component equation to find }} k: &\\\\"
+            f"k - {self.B[0]} &= m({vec_bc[0]})\\\\"
+            f"k - {self.B[0]} &= {round(m, 10)} \\cdot {vec_bc[0]}\\\\"
+            f"k &= {self.B[0]} + {round(x_term, 10)}\\\\"
+            f"k &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Plot the line connecting the furthest points to show the path
+        # We stack the points to easily plot the line
+        points_matrix = np.vstack((self.A, self.B, self.C))
+        # Sort points by X-coordinate simply to draw a neat line from end-to-end
+        points_sorted = points_matrix[points_matrix[:,0].argsort()]
+        ax.plot(points_sorted[:,0], points_sorted[:,1], points_sorted[:,2],
+                color='gray', linestyle='--', alpha=0.5, label='Line of Collinearity')
+
+        # Plot the specific points
+        ax.scatter(*self.A, color='red', s=100, label='Point A (Target)')
+        ax.scatter(*self.B, color='blue', s=100, label='Point B')
+        ax.scatter(*self.C, color='green', s=100, label='Point C')
+
+        # Add Text Labels (The Question)
+        # Note: We display 'k' for A's x-coordinate
+        ax.text(self.A[0], self.A[1], self.A[2], f'  A(k, {self.A[1]}, {self.A[2]})', color='red', fontsize=11, fontweight='bold')
+        ax.text(self.B[0], self.B[1], self.B[2], f'  B({self.B[0]}, {self.B[1]}, {self.B[2]})', color='blue', fontsize=10)
+        ax.text(self.C[0], self.C[1], self.C[2], f'  C({self.C[0]}, {self.C[1]}, {self.C[2]})', color='green', fontsize=10)
+
+        # Remove all axis elements
+        ax.set_axis_off()
+
+        # Force equal aspect ratio so the vectors don't look distorted
+        try:
+            ax.set_box_aspect([1,1,1])
+        except:
+            pass # Older matplotlib versions might not support this
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
