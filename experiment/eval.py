@@ -2,29 +2,65 @@ import os
 import json
 import pandas as pd
 import PIL
+import gc
+import torch
 
 from vllm import LLM, SamplingParams
 from transformers import AutoTokenizer
+from argparse import ArgumentParser
+from dataclasses import fields
+from config import *
 
-model_names = [
-    'HuggingFaceTB/SmolVLM-256M-Instruct'
-    # 'Qwen/Qwen3-VL-2B-Instruct'
-    # "HuggingFaceTB/SmolVLM-500M-Instruct"
-]
+# function to load args from config.py
+def add_args_from_dataclass(parser, dc, prefix=""):
+    for f in fields(dc):
+        arg_name = f"--{prefix}{f.name}"
+        parser.add_argument(
+            arg_name,
+            default=f.default,
+            type=f.type,
+        )
 
-subjects = ["mathematics", "physics", "chemistry", "biology", "compsci"]
+# function to extract config
+def extract_config(args, cls, prefix):
+    kwargs = {
+        f.name: getattr(args, f"{prefix}{f.name}")
+        for f in fields(cls)
+    }
+    return cls(**kwargs)
 
-NUM_OF_INSTANCES = 10
+# load config.py
+parser = ArgumentParser()
+add_args_from_dataclass(parser, ModelConfig, prefix="model.")
+add_args_from_dataclass(parser, SamplingConfig, prefix="sampling.")
+add_args_from_dataclass(parser, ExperimentConfig, prefix="experiment.")
+args = parser.parse_args()
+
+# extract config
+model_cfg = extract_config(args, ModelConfig, "model.")
+sampling_cfg = extract_config(args, SamplingConfig, "sampling.")
+experiment_cfg = extract_config(args, ExperimentConfig, "experiment.")
+
+# process only one instance when debugging
+if experiment_cfg.debug:
+    NUM_OF_INSTANCES = 1
+else:
+    NUM_OF_INSTANCES = 10
 
 # loop for all models, then all subjects, then all instances
-for model_name in model_names:
-    llm = LLM(model=model_name,
-            dtype='float16',
-            gpu_memory_utilization=0.7,
-            max_model_len=2048,
-            swap_space=8)
+for model_name in experiment_cfg.model_names:
+    llm = LLM(
+        model=model_name,
+        dtype=model_cfg.dtype,
+        max_model_len=model_cfg.max_model_len,
+        tensor_parallel_size=model_cfg.tensor_parallel_size,
+        gpu_memory_utilization=model_cfg.gpu_memory_utilization,
+        swap_space=model_cfg.swap_space,
+        cpu_offload_gb=model_cfg.cpu_offload_gb,
+        enforce_eager=model_cfg.enforce_eager
+    )
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    for subject in subjects:
+    for subject in experiment_cfg.subject_list:
         for index in range(NUM_OF_INSTANCES):
 
             # process dataset
@@ -33,7 +69,7 @@ for model_name in model_names:
             with open(json_path, 'r') as file:
                 data = json.load(file)
             df = pd.DataFrame.from_dict(data, orient="index")
-            if len(df) == 0:
+            if len(df) == 0: # skip if instance has no data. To be deleted later
                 continue
             df.insert(0, "id", range(1, len(df) + 1)) # insert `id` starting from 1
 
@@ -50,7 +86,10 @@ for model_name in model_names:
                 ]
                 for desc in df["description"]
             ]
-            sampling_params = SamplingParams(max_tokens=128)
+            sampling_params = SamplingParams(
+                max_tokens=sampling_cfg.max_tokens,
+                temperature=sampling_cfg.temperature
+            )
             prompts = tokenizer.apply_chat_template(messages, tokenize=False)
 
             # make vLLM requests
@@ -80,3 +119,8 @@ for model_name in model_names:
             os.makedirs(output_path, exist_ok=True)
             full_output_path = os.path.join(output_path, output_filename) # ex: 'result/raw/physics/00/model_name.xlsx'
             df_new.to_excel(full_output_path, index=False, engine="openpyxl")
+
+    # clear memory
+    del llm
+    gc.collect()
+    torch.cuda.empty_cache()
