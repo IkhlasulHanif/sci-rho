@@ -2240,6 +2240,101 @@ class Mat074:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat075:
+    def __init__(self):
+        # Expanded range for ground distance and wall height
+        # Higher variation allows for very shallow or very steep ladder angles
+        self.ground_dist = round(randrange_float(1.5, 8.5, 0.01), 2)
+        self.wall_height = round(randrange_float(5.0, 15.0, 0.01), 2)
+        
+        # Calculate ladder length (hypotenuse)
+        self.ladder_length = round(math.sqrt(self.ground_dist**2 + self.wall_height**2), 2)
+        
+        self.answer = self.ladder_length
+
+        self.description = (
+            f"A ladder rests against a vertical wall. The bottom of the ladder is ${self.ground_dist}$ m "
+            f"from the bottom of the wall, on horizontal ground. The ladder reaches ${self.wall_height}$ m "
+            f"up the wall. Calculate the length of the ladder."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Pythagoras’ theorem"
+        self.source = "Adapted from 2025-specimen-paper-3"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance from wall (base), }} a &= {round(self.ground_dist, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Height reached (vertical), }} b &= {round(self.wall_height, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{The ladder length }} L \\text{{ is the hypotenuse:}} &\\\\"
+            f"L^2 &= a^2 + b^2\\\\"
+            f"L^2 &= ({round(self.ground_dist, 10)})^2 + ({round(self.wall_height, 10)})^2\\\\"
+            f"L^2 &= {round(self.ground_dist**2, 10)} + {round(self.wall_height**2, 10)}\\\\"
+            f"L^2 &= {round(self.ground_dist**2 + self.wall_height**2, 10)}\\\\"
+            f"L &= \\sqrt{{{round(self.ground_dist**2 + self.wall_height**2, 10)}}}\\\\"
+            f"L &= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Coordinates: corner at origin, top of ladder on y-axis, base on x-axis
+        p_corner = np.array([0, 0])
+        p_top = np.array([0, self.wall_height])
+        p_base = np.array([self.ground_dist, 0])
+        
+        # Wall and ground extensions for visual context
+        wall_ext = self.wall_height + 1.5
+        ground_ext = self.ground_dist + 2.0
+
+        # Draw Wall (vertical) and Ground (horizontal)
+        ax.plot([0, 0], [0, wall_ext], color='black', lw=2)
+        ax.plot([0, ground_ext], [0, 0], color='black', lw=2)
+        
+        # Draw Ladder (hypotenuse)
+        ax.plot([p_top[0], p_base[0]], [p_top[1], p_base[1]], color='black', lw=3.5)
+
+        # Right angle symbol at origin
+        ra_size = 0.5
+        ra_rect = patches.Rectangle((0, 0), ra_size, ra_size, fill=False, edgecolor='black', lw=1.2)
+        ax.add_patch(ra_rect)
+
+        # --- Labels and Dimension Lines ---
+        
+        # Wall Height Label (placed left of the wall)
+        ax.text(-0.6, self.wall_height / 2, f"{self.wall_height} m", 
+                fontsize=14, ha='right', va='center')
+
+        # Ground Distance Label and Arrows (placed below ground)
+        arrow_y = -0.8
+        ax.text(self.ground_dist / 2, arrow_y - 0.5, f"{self.ground_dist} m", 
+                fontsize=14, ha='center', va='top')
+        
+        # Double-headed arrow for ground distance
+        ax.annotate('', xy=(0, arrow_y), xytext=(self.ground_dist, arrow_y),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
+
+        # Ladder Label (placed offset from the ladder line)
+        mid_ladder = (p_top + p_base) / 2
+        ax.text(mid_ladder[0] + 0.5, mid_ladder[1] + 0.5, "$L$ m", 
+                fontsize=16, fontweight='bold', ha='left', va='bottom')
+
+        # Formatting
+        ax.set_xlim(-2, ground_ext + 1)
+        ax.set_ylim(-2, wall_ext + 1)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, 
+                 fontsize=12, ha='center', va='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        
+        plt.close()
+        
 class Mat089:
     
     def __init__(self):
