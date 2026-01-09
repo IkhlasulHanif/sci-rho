@@ -3513,3 +3513,104 @@ class Mat099:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat100:
+    
+    def __init__(self):
+        # Define Origin
+        self.O = np.array([0, 0])
+        
+        # Randomize vertices A and B to create different triangle shapes
+        # A in upper-left-ish area, B in lower-right-ish area
+        self.A = np.array([rnd.uniform(1, 3), rnd.uniform(4, 6)])
+        self.B = np.array([rnd.uniform(4, 7), rnd.uniform(1, 3)])
+        
+        # Randomize the ratio AP:PB = m:n
+        self.m = rnd.randint(1, 5)
+        self.n = rnd.randint(1, 5)
+        
+        # Calculate Point P using the Section Formula
+        # P = (n*A + m*B) / (m + n)
+        # Note: For internal division AP:PB = m:n, the weight for A is n and B is m
+        self.P = (self.n * self.A + self.m * self.B) / (self.m + self.n)
+
+        k = 1 / (self.m + self.n)
+
+        self.answer = round(k, 3)
+
+        self.description = (
+            f"In triangle OAB, vector OA = a and vector OB = b. "
+            f"Point P is on AB such that AP:PB = {self.m}:{self.n}. "
+            f"The vector OP can be expressed as k({self.n}a + {self.m}b). "
+            "Find the value of k. "
+            "Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vector geometry"
+        self.source = "Maths Genie - Vectors Proof Questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given ratio }} AP:PB &= {self.m}:{self.n}\\\\"
+            f"\\text{{Using the section formula for internal division:}}&\\\\"
+            f"\\vec{{OP}} &= \\frac{{{self.n}\\vec{{OA}} + {self.m}\\vec{{OB}}}}{{{self.m} + {self.n}}}\\\\"
+            f"\\text{{Substitute }} \\vec{{OA}} = \\mathbf{{a}} \\text{{ and }} \\vec{{OB}} = \\mathbf{{b}}:&\\\\"
+            f"\\vec{{OP}} &= \\frac{{{self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}}}}{{{self.m + self.n}}}\\\\"
+            f"&= \\frac{{1}}{{{self.m + self.n}}} ({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})\\\\"
+            f"\\text{{Comparing with the given expression }} \\vec{{OP}} &= k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}}):&\\\\"
+            f"k &= \\frac{{1}}{{{self.m + self.n}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Plotting the Figure
+        plt.figure(figsize=(6, 6))
+        
+        # Plot Points
+        points = {'O': self.O, 'A': self.A, 'B': self.B, 'P': self.P}
+        for label, coord in points.items():
+            plt.scatter(coord[0], coord[1], color='black', s=50, zorder=5)
+            
+            # Dynamic label positioning to avoid overlap
+            offset = np.array([0.1, 0.1])
+            if label == 'O': offset = np.array([-0.3, -0.3])
+            elif label == 'A': offset = np.array([-0.2, 0.2])
+            elif label == 'B': offset = np.array([0.1, -0.3])
+            elif label == 'P': offset = np.array([0.1, 0.2])
+            
+            plt.text(coord[0]+offset[0], coord[1]+offset[1], f'${label}$', fontsize=14)
+
+        # Draw Line Segment AB
+        plt.plot([self.A[0], self.B[0]], [self.A[1], self.B[1]], 'k-', lw=1, zorder=1)
+        
+        # Draw Vectors with Quiver (Arrows)
+        def draw_vector(start, end, text, color='blue'):
+            vec = end - start
+            plt.quiver(start[0], start[1], vec[0], vec[1], 
+                    angles='xy', scale_units='xy', scale=1, 
+                    color=color, width=0.008, headwidth=4, zorder=2)
+            # Label position at midpoint
+            mid = start + vec * 0.5
+            plt.text(mid[0] - 0.25, mid[1] + 0.1, text, fontsize=12, color=color, fontweight='bold')
+
+        draw_vector(self.O, self.A, r'$\vec{a}$', 'blue')
+        draw_vector(self.O, self.B, r'$\vec{b}$', 'blue')
+        draw_vector(self.O, self.P, r'$\vec{OP}$', 'red')
+        
+        # Annotate the Ratio on the segment
+        # Label positions for m and n
+        mid_AP = (self.A + self.P) / 2
+        mid_PB = (self.P + self.B) / 2
+        plt.text(mid_AP[0], mid_AP[1] + 0.2, f'{self.m}', color='green', fontsize=12, fontweight='bold', ha='center')
+        plt.text(mid_PB[0], mid_PB[1] + 0.2, f'{self.n}', color='green', fontsize=12, fontweight='bold', ha='center')
+
+        # Figure styling
+        plt.axis('equal')
+        plt.axis('off')
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
