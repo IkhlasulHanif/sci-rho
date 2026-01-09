@@ -2351,7 +2351,7 @@ class Mat076:
         
         self.topic = "Trigonometry"
         self.subtopic = "Pythagoras’ theorem"
-        self.source = "Adapted from IGCSE Higher Tier Past Paper"
+        self.source = "Common questions"
         self.curriculum = "IGCSE"
 
         self.reasoning = (
@@ -2423,6 +2423,148 @@ class Mat076:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+    
+class Mat077:
+    def __init__(self):
+        # mode: 0 (sin), 1 (cos), 2 (tan)
+        self.mode = rnd.choice([0, 1, 2])
+        self.config = rnd.choice([0, 1])
+        
+        self.angle = round(randrange_float(25.0, 65.0, 0.01), 2)
+        val_main = round(randrange_float(5.0, 15.0, 0.01), 2)
+
+        if self.mode == 0: # SINE (Opp / Hyp)
+            self.ratio_name = "\\sin"
+            if self.config == 0: # Find Opposite
+                self.hyp = val_main
+                self.opp = self.hyp * math.sin(math.radians(self.angle))
+                self.adj = self.hyp * math.cos(math.radians(self.angle))
+                self.known_label, self.known_val = "hypotenuse", self.hyp
+                self.asked_label, self.ans_val = "opposite", self.opp
+            else: # Find Hypotenuse
+                self.opp = val_main
+                self.hyp = self.opp / math.sin(math.radians(self.angle))
+                self.adj = self.hyp * math.cos(math.radians(self.angle))
+                self.known_label, self.known_val = "opposite", self.opp
+                self.asked_label, self.ans_val = "hypotenuse", self.hyp
+
+        elif self.mode == 1: # COSINE (Adj / Hyp)
+            self.ratio_name = "\\cos"
+            if self.config == 0: # Find Adjacent
+                self.hyp = val_main
+                self.adj = self.hyp * math.cos(math.radians(self.angle))
+                self.opp = self.hyp * math.sin(math.radians(self.angle))
+                self.known_label, self.known_val = "hypotenuse", self.hyp
+                self.asked_label, self.ans_val = "adjacent", self.adj
+            else: # Find Hypotenuse
+                self.adj = val_main
+                self.hyp = self.adj / math.cos(math.radians(self.angle))
+                self.opp = self.hyp * math.sin(math.radians(self.angle))
+                self.known_label, self.known_val = "adjacent", self.adj
+                self.asked_label, self.ans_val = "hypotenuse", self.hyp
+
+        else: # TANGENT (Opp / Adj)
+            self.ratio_name = "\\tan"
+            if self.config == 0: # Find Opposite
+                self.adj = val_main
+                self.opp = self.adj * math.tan(math.radians(self.angle))
+                self.hyp = math.sqrt(self.opp**2 + self.adj**2)
+                self.known_label, self.known_val = "adjacent", self.adj
+                self.asked_label, self.ans_val = "opposite", self.opp
+            else: # Find Adjacent
+                self.opp = val_main
+                self.adj = self.opp / math.tan(math.radians(self.angle))
+                self.hyp = math.sqrt(self.opp**2 + self.adj**2)
+                self.known_label, self.known_val = "opposite", self.opp
+                self.asked_label, self.ans_val = "adjacent", self.adj
+
+        self.answer = self.ans_val
+
+        self.description = "The diagram shows a right-angled triangle. Calculate the value of $x$."
+        self.topic = "Trigonometry"
+        self.subtopic = "Right-angled triangles"
+        self.curriculum = "IGCSE", 
+        self.source = "Adapted from IGCSE June 2025"
+
+        # Dynamic Reasoning
+        ratio_def = {
+            0: "\\frac{\\text{Opposite}}{\\text{Hypotenuse}}",
+            1: "\\frac{\\text{Adjacent}}{\\text{Hypotenuse}}",
+            2: "\\frac{\\text{Opposite}}{\\text{Adjacent}}"
+        }[self.mode]
+
+        subst_step = (
+            f"\\frac{{x}}{{{round(self.known_val, 10)}}}" 
+            if self.config == 0 else 
+            f"\\frac{{{round(self.known_val, 10)}}}{{x}}"
+        )
+
+        rearrange_step = (
+            f"{round(self.known_val, 10)} \\times {self.ratio_name}({round(self.angle, 10)}^\\circ)" 
+            if self.config == 0 else 
+            f"\\frac{{{round(self.known_val, 10)}}}{{{self.ratio_name}({round(self.angle, 10)}^\\circ)}}"
+        )
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the given parts relative to the angle }} {round(self.angle, 10)}^\\circ: &\\\\"
+            f"\\text{{{self.known_label.capitalize()}}} &= {round(self.known_val, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{{self.asked_label.capitalize()}}} &= x\\\\"
+            f"\\text{{Using the trigonometric ratio }} {self.ratio_name}: &\\\\"
+            f"{self.ratio_name}(\\theta) &= {ratio_def}\\\\"
+            f"{self.ratio_name}({round(self.angle, 10)}^\\circ) &= {subst_step}\\\\"
+            f"x &= {rearrange_step}\\\\"
+            f"x &= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        fx, fy = rnd.choice([-1, 1]), rnd.choice([-1, 1])
+        
+        # Base Vertices
+        pA = np.array([0, 0]) # Angle vertex
+        pB = np.array([self.adj * fx, 0]) # Right angle vertex
+        pC = np.array([self.adj * fx, self.opp * fy]) # Top vertex
+        pts = np.array([pA, pB, pC])
+        
+        ax.add_patch(plt.Polygon(pts, fill=False, lw=1, edgecolor='black'))
+
+        # Right Angle Symbol
+        ra = min(self.adj, self.opp) * 0.15
+        ax.plot([pB[0]-ra*fx, pB[0]-ra*fx, pB[0]], [pB[1], pB[1]+ra*fy, pB[1]+ra*fy], color='black', lw=1.5)
+
+        # Angle Arc at A
+        arc_r = self.adj * 0.25
+        t1 = 0 if fx > 0 else 180
+        t2 = t1 + (self.angle if fx*fy > 0 else -self.angle)
+        ax.add_patch(patches.Arc(pA, arc_r*2, arc_r*2, theta1=min(t1,t2), theta2=max(t1,t2), lw=1.5))
+        
+        mid_t = np.radians((t1 + t2) / 2)
+        ax.text(arc_r*1.7*np.cos(mid_t), arc_r*1.7*np.sin(mid_t), f"{self.angle}°", fontsize=15, ha='center')
+
+        # Label Placement
+        labels = {
+            "hypotenuse": ( (pA+pC)/2, np.array([-fy*self.opp, fx*self.adj])/self.hyp * 0.8 ),
+            "adjacent": ( (pA+pB)/2, np.array([0, -0.7*fy]) ),
+            "opposite": ( (pB+pC)/2, np.array([0.6*fx, 0]) )
+        }
+
+        for side, (pos, off) in labels.items():
+            content = ""
+            if side == self.known_label: content = f"{self.known_val} cm"
+            elif side == self.asked_label: content = "$x$ cm"
+            if content:
+                ax.text(pos[0]+off[0], pos[1]+off[1], content, fontsize=16, ha='center', va='center')
+
+        # Viewport
+        buff = self.hyp * 0.3
+        ax.set_xlim(min(pts[:,0])-buff, max(pts[:,0])+buff)
+        ax.set_ylim(min(pts[:,1])-buff, max(pts[:,1])+buff)
+        ax.set_aspect('equal'); ax.axis('off')
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center')
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), bbox_inches='tight', dpi=100)
         plt.close()
 
 class Mat089:
