@@ -8,6 +8,7 @@ from matplotlib import colors
 import matplotlib.patches as patches
 from matplotlib.patches import Polygon
 from PIL import Image, ImageDraw, ImageFont
+from matplotlib.ticker import MultipleLocator, FuncFormatter
 from matplotlib_venn import venn2, venn2_circles, venn3, venn3_circles
 from mathematics.helper import *
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -2776,6 +2777,129 @@ class Mat079:
         ax.axis('off')
 
         plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat080:
+    def __init__(self):
+        self.func_type = rnd.choice(["sin", "cos", "tan"])
+        self.a = rnd.randint(2, 5)            
+        self.b = rnd.choice([1, 2, 3])        
+        self.c = rnd.choice([-30, -45, -60, -90]) 
+        self.d = rnd.randint(-4, 4)           
+        
+        self.func_name = f"\\{self.func_type}"
+        self.answer = f"{self.a}, {self.b}, {self.c}, {self.d}"
+        
+        self.x_anchor = round(-self.c / self.b, 10)
+
+        self.description = (
+            f"The diagram shows the graph of a trigonometric function of the form "
+            f"$y = a {self.func_name}(bx + c) + d$. "
+            f"Find the values of $a$, $b$, $c$, and $d$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Trigonometric functions"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 43"
+        self.curriculum = "IGCSE"
+
+        # Branching Reasoning Logic
+        common_start = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Find vertical shift (}} d \\text{{): midline of the wave}} & \\\\"
+            f"\\text{{Identify the maximum }} y\\text{{-value (peak) and minimum }} y\\text{{-value (trough) on the y-axis.}} & \\\\"
+            f"\\text{{Max}} = {self.a + self.d}, \\, \\text{{Min}} = {self.d - self.a} & \\\\"
+            f"d &= \\frac{{\\text{{Max}} + \\text{{Min}}}}{{2}} = \\frac{{{self.a + self.d} + ({self.d - self.a})}}{{2}} = {self.d} \\\\"
+            f"\\text{{2. Find coefficient (}} a \\text{{): vertical stretch/amplitude}} & \\\\"
+            f"\\text{{Calculate the distance from the midline (}} d = {self.d} \\text{{) to the peak (}} y = {self.a + self.d} \\text{{).}} & \\\\"
+            f"a &= \\text{{Max}} - d = {self.a + self.d} - {self.d} = {self.a} \\\\"
+        )
+
+        if self.func_type == "tan":
+            self.reasoning = common_start + (
+                f"\\text{{3. Find period (}} P \\text{{) and frequency (}} b \\text{{):}} & \\\\"
+                f"\\text{{Standard period for tan is }} 180^\\circ. \\text{{ Measure the distance between consecutive asymptotes.}} & \\\\"
+                f"\\text{{Observed Period }} P &= {round(180/self.b, 10)}^\\circ \\\\"
+                f"b &= \\frac{{180^\\circ}}{{P}} = \\frac{{180^\\circ}}{{{round(180/self.b, 10)}^\\circ}} = {self.b} \\\\"
+                f"\\text{{4. Find phase shift (}} c \\text{{) using the midline crossing:}} & \\\\"
+                f"\\text{{The graph crosses the midline }} y={self.d} \\text{{ at }} x = {self.x_anchor}^\\circ. & \\\\"
+                f"\\text{{In }} y = a \\tan(bx + c) + d, \\text{{ the argument equals 0 at this anchor point:}} & \\\\"
+                f"b(x) + c &= 0 \\implies {self.b}({self.x_anchor}) + c = 0 \\\\"
+                f"c &= {self.c}^\\circ \\\\"
+                f"\\text{{5. Final parameters identified: }} a, b, c, d &= {self.answer}"
+                "\\end{aligned}\\]"
+            )
+        elif self.func_type == "sin":
+            self.reasoning = common_start + (
+                f"\\text{{3. Find period (}} P \\text{{) and frequency (}} b \\text{{):}} & \\\\"
+                f"\\text{{Standard period for sin is }} 360^\\circ. \\text{{ Measure the distance for one full cycle on the x-axis.}} & \\\\"
+                f"\\text{{Observed Period }} P &= {round(360/self.b, 10)}^\\circ \\\\"
+                f"b &= \\frac{{360^\\circ}}{{P}} = \\frac{{360^\\circ}}{{{round(360/self.b, 10)}^\\circ}} = {self.b} \\\\"
+                f"\\text{{4. Find phase shift (}} c \\text{{) using the midline crossing:}} & \\\\"
+                f"\\text{{The graph crosses the midline moving upwards at }} x = {self.x_anchor}^\\circ. & \\\\"
+                f"\\text{{In }} y = a \\sin(bx + c) + d, \\text{{ the argument equals 0 at this point:}} & \\\\"
+                f"b(x) + c &= 0 \\implies {self.b}({self.x_anchor}) + c = 0 \\\\"
+                f"c &= {self.c}^\\circ \\\\"
+                f"\\text{{5. Final parameters identified: }} a, b, c, d &= {self.answer}"
+                "\\end{aligned}\\]"
+            )
+        else: # cos
+            self.reasoning = common_start + (
+                f"\\text{{3. Find period (}} P \\text{{) and frequency (}} b \\text{{):}} & \\\\"
+                f"\\text{{Standard period for cos is }} 360^\\circ. \\text{{ Measure the distance between two consecutive peaks.}} & \\\\"
+                f"\\text{{Observed Period }} P &= {round(360/self.b, 10)}^\\circ \\\\"
+                f"b &= \\frac{{360^\\circ}}{{P}} = \\frac{{360^\\circ}}{{{round(360/self.b, 10)}^\\circ}} = {self.b} \\\\"
+                f"\\text{{4. Find phase shift (}} c \\text{{) using the first peak:}} & \\\\"
+                f"\\text{{The first visible peak is located at }} x = {self.x_anchor}^\\circ. & \\\\"
+                f"\\text{{In }} y = a \\cos(bx + c) + d, \\text{{ the argument equals 0 at a peak:}} & \\\\"
+                f"b(x) + c &= 0 \\implies {self.b}({self.x_anchor}) + c = 0 \\\\"
+                f"c &= {self.c}^\\circ \\\\"
+                f"\\text{{5. Final parameters identified: }} a, b, c, d &= {self.answer}"
+                "\\end{aligned}\\]"
+            )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        x = np.linspace(0, 360, 1000)
+        x_rad = np.radians(x)
+        
+        if self.func_type == "sin":
+            y = self.a * np.sin(self.b * x_rad + np.radians(self.c)) + self.d
+        elif self.func_type == "cos":
+            y = self.a * np.cos(self.b * x_rad + np.radians(self.c)) + self.d
+        else: # tan
+            y = self.a * np.tan(self.b * x_rad + np.radians(self.c)) + self.d
+            y[np.abs(y) > 20] = np.nan 
+
+        ax.plot(x, y, color='black', lw=2.5)
+        ax.axhline(0, color='black', lw=1.2)
+        ax.axvline(0, color='black', lw=1.2)
+        
+        # Grid and Ticks
+        ax.grid(True, which='major', ls='--', alpha=0.6, color='gray')
+        ax.grid(True, which='minor', ls=':', alpha=0.4, color='lightgray')
+        ax.set_xlim(0, 360)
+        
+        # Adaptive y-limits
+        if self.func_type == "tan":
+            ax.set_ylim(-10, 10)
+        else:
+            ax.set_ylim(self.d - self.a - 2, self.d + self.a + 2)
+
+        major_ticks = np.arange(0, 361, 90)
+        special_ticks = [30, 45, 60]
+        all_tick_pos = np.sort(np.unique(np.concatenate([major_ticks, special_ticks])))
+        
+        ax.set_xticks(all_tick_pos)
+        ax.set_xticklabels([f'{int(t)}°' for t in all_tick_pos], fontsize=10)
+        ax.xaxis.set_minor_locator(MultipleLocator(15))
+        
+        plt.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=10, ha='right', va='top')
+        ax.set_xlabel("x (degrees)")
+        ax.set_ylabel("y")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
