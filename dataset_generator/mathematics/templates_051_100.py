@@ -3,6 +3,7 @@ import random as rnd
 import math
 import os
 import matplotlib.pyplot as plt
+import sympy
 from matplotlib import colors
 import matplotlib.patches as patches
 from matplotlib.patches import Polygon
@@ -3550,6 +3551,207 @@ class Mat098:
         # Set graphical limits and remove axes for "Geometry Figure" look
         ax.set_aspect('equal')
         ax.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat099:
+    
+    def __init__(self):
+        # We pick the answer first to ensure the graph looks nice, 
+        # but we hide 'k' in the final output.
+        self.val_x = rnd.randint(3, 8)       # The known i component
+        self.val_k = rnd.randint(3, 10)      # The unknown j component (the answer)
+
+        # Calculate Magnitude symbolically to get the exact sqrt string (e.g., 3sqrt(17))
+        self.magnitude_sym = sympy.sqrt(self.val_x**2 + self.val_k**2)
+        self.magnitude_latex = sympy.latex(self.magnitude_sym)
+
+        self.answer = self.val_k
+
+        self.description = (
+            f"Find positive $k$ given $\\vec{{v}} = {self.val_x}\\mathbf{{i}} + k\\mathbf{{j}}$ "
+            f"and $|\\vec{{v}}| = {self.magnitude_latex}$"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vector geometry"
+        self.source = "Maths Genie - A Level Vectors Questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"|\\vec{{v}}| &= \\sqrt{{x^2 + k^2}}\\\\"
+            f"{self.magnitude_latex} &= \\sqrt{{({self.val_x})^2 + k^2}}\\\\"
+            f"\\text{{Squaring both sides:}} &\\\\"
+            f"({self.magnitude_latex})^2 &= ({self.val_x})^2 + k^2\\\\"
+            f"{self.val_x**2 + self.val_k**2} &= {self.val_x**2} + k^2\\\\"
+            f"k^2 &= {self.val_x**2 + self.val_k**2} - {self.val_x**2}\\\\"
+            f"k^2 &= {self.val_k**2}\\\\"
+            f"k &= \\sqrt{{{self.val_k**2}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 8))
+
+        # Coordinates for the triangle
+        origin = np.array([0, 0])
+        point_x = np.array([self.val_x, 0])
+        point_v = np.array([self.val_x, self.val_k])
+
+        # Draw the Triangle Components
+        # X-component (Horizontal)
+        ax.annotate('', xy=point_x, xytext=origin,
+                    arrowprops=dict(facecolor='blue', shrink=0, width=2, headwidth=8))
+        
+        # Y-component (Vertical - represented as k)
+        # Drawn from the tip of the x-component to the tip of the vector
+        ax.annotate('', xy=point_v, xytext=point_x,
+                    arrowprops=dict(facecolor='red', shrink=0, width=2, headwidth=8))
+        
+        # Vector v (Hypotenuse)
+        ax.annotate('', xy=point_v, xytext=origin,
+                    arrowprops=dict(facecolor='green', shrink=0, width=3, headwidth=10))
+
+        # Labeling
+        # Label x-component
+        ax.text(self.val_x / 2, -self.val_k * 0.05, f"${self.val_x}$", 
+                fontsize=14, color='blue', ha='center', va='top')
+
+        # Label y-component (The Unknown 'k')
+        ax.text(self.val_x + 0.3, self.val_k / 2, "$k$", 
+                fontsize=14, color='red', ha='left', va='center')
+
+        # Label Hypotenuse (The Magnitude)
+        # Calculate rotation for text so it aligns with the hypotenuse
+        angle = np.degrees(np.arctan2(self.val_k, self.val_x))
+        ax.text(self.val_x/2 - 0.2, self.val_k/2 + 0.5, f"$|\\vec{{v}}| = {self.magnitude_latex}$", 
+                fontsize=14, color='green', ha='right', va='bottom', rotation=angle)
+
+        # Right Angle Marker
+        rect_size = min(self.val_x, self.val_k) * 0.1
+        rect = plt.Rectangle((self.val_x - rect_size, 0), rect_size, rect_size, 
+                            fill=False, edgecolor='black', linewidth=1)
+        ax.add_patch(rect)
+
+        # Styling
+        ax.set_xlim(-1, self.val_x + 2)
+        ax.set_ylim(-1, self.val_k + 2)
+        ax.set_aspect('equal') # Important for geometry to look correct
+        ax.grid(True, which='both', linestyle='--', alpha=0.5)
+        
+        # Draw axes lines
+        ax.axhline(y=0, color='k', linewidth=1)
+        ax.axvline(x=0, color='k', linewidth=1)
+        
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat100:
+    
+    def __init__(self):
+        # Define Origin
+        self.O = np.array([0, 0])
+        
+        # Randomize vertices A and B to create different triangle shapes
+        # A in upper-left-ish area, B in lower-right-ish area
+        self.A = np.array([rnd.uniform(1, 3), rnd.uniform(4, 6)])
+        self.B = np.array([rnd.uniform(4, 7), rnd.uniform(1, 3)])
+        
+        # Randomize the ratio AP:PB = m:n
+        self.m = rnd.randint(1, 5)
+        self.n = rnd.randint(1, 5)
+        
+        # Calculate Point P using the Section Formula
+        # P = (n*A + m*B) / (m + n)
+        # Note: For internal division AP:PB = m:n, the weight for A is n and B is m
+        self.P = (self.n * self.A + self.m * self.B) / (self.m + self.n)
+
+        k = 1 / (self.m + self.n)
+
+        self.answer = round(k, 3)
+
+        self.description = (
+            f"In triangle OAB, vector OA = a and vector OB = b. "
+            f"Point P is on AB such that AP:PB = {self.m}:{self.n}. "
+            f"The vector OP can be expressed as k({self.n}a + {self.m}b). "
+            "Find the value of k. "
+            "Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vector geometry"
+        self.source = "Maths Genie - Vectors Proof Questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given ratio }} AP:PB &= {self.m}:{self.n}\\\\"
+            f"\\text{{Using the section formula for internal division:}}&\\\\"
+            f"\\vec{{OP}} &= \\frac{{{self.n}\\vec{{OA}} + {self.m}\\vec{{OB}}}}{{{self.m} + {self.n}}}\\\\"
+            f"\\text{{Substitute }} \\vec{{OA}} = \\mathbf{{a}} \\text{{ and }} \\vec{{OB}} = \\mathbf{{b}}:&\\\\"
+            f"\\vec{{OP}} &= \\frac{{{self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}}}}{{{self.m + self.n}}}\\\\"
+            f"&= \\frac{{1}}{{{self.m + self.n}}} ({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})\\\\"
+            f"\\text{{Comparing with the given expression }} \\vec{{OP}} &= k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}}):&\\\\"
+            f"k &= \\frac{{1}}{{{self.m + self.n}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Plotting the Figure
+        plt.figure(figsize=(6, 6))
+        
+        # Plot Points
+        points = {'O': self.O, 'A': self.A, 'B': self.B, 'P': self.P}
+        for label, coord in points.items():
+            plt.scatter(coord[0], coord[1], color='black', s=50, zorder=5)
+            
+            # Dynamic label positioning to avoid overlap
+            offset = np.array([0.1, 0.1])
+            if label == 'O': offset = np.array([-0.3, -0.3])
+            elif label == 'A': offset = np.array([-0.2, 0.2])
+            elif label == 'B': offset = np.array([0.1, -0.3])
+            elif label == 'P': offset = np.array([0.1, 0.2])
+            
+            plt.text(coord[0]+offset[0], coord[1]+offset[1], f'${label}$', fontsize=14)
+
+        # Draw Line Segment AB
+        plt.plot([self.A[0], self.B[0]], [self.A[1], self.B[1]], 'k-', lw=1, zorder=1)
+        
+        # Draw Vectors with Quiver (Arrows)
+        def draw_vector(start, end, text, color='blue'):
+            vec = end - start
+            plt.quiver(start[0], start[1], vec[0], vec[1], 
+                    angles='xy', scale_units='xy', scale=1, 
+                    color=color, width=0.008, headwidth=4, zorder=2)
+            # Label position at midpoint
+            mid = start + vec * 0.5
+            plt.text(mid[0] - 0.25, mid[1] + 0.1, text, fontsize=12, color=color, fontweight='bold')
+
+        draw_vector(self.O, self.A, r'$\vec{a}$', 'blue')
+        draw_vector(self.O, self.B, r'$\vec{b}$', 'blue')
+        draw_vector(self.O, self.P, r'$\vec{OP}$', 'red')
+        
+        # Annotate the Ratio on the segment
+        # Label positions for m and n
+        mid_AP = (self.A + self.P) / 2
+        mid_PB = (self.P + self.B) / 2
+        plt.text(mid_AP[0], mid_AP[1] + 0.2, f'{self.m}', color='green', fontsize=12, fontweight='bold', ha='center')
+        plt.text(mid_PB[0], mid_PB[1] + 0.2, f'{self.n}', color='green', fontsize=12, fontweight='bold', ha='center')
+
+        # Figure styling
+        plt.axis('equal')
+        plt.axis('off')
+        plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
