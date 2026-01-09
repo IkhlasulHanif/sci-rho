@@ -2242,8 +2242,6 @@ class Mat074:
 
 class Mat075:
     def __init__(self):
-        # Expanded range for ground distance and wall height
-        # Higher variation allows for very shallow or very steep ladder angles
         self.ground_dist = round(randrange_float(1.5, 8.5, 0.01), 2)
         self.wall_height = round(randrange_float(5.0, 15.0, 0.01), 2)
         
@@ -2335,6 +2333,98 @@ class Mat075:
         
         plt.close()
         
+class Mat076:
+    def __init__(self):
+        # 3D Pythagoras: Calculate the internal diagonal of a cuboid
+        self.length = round(randrange_float(5.0, 15.0, 0.01), 2)
+        self.width = round(randrange_float(5.0, 15.0, 0.01), 2)
+        self.height = round(randrange_float(5.0, 15.0, 0.01), 2)
+        
+        # Internal diagonal formula: d = sqrt(l^2 + w^2 + h^2)
+        self.diag_val = math.sqrt(self.length**2 + self.width**2 + self.height**2)
+        self.answer = round(self.diag_val, 2)
+
+        self.description = (
+            f"The diagram shows a cuboid with length, width, height as shown in the figure cm. "
+            f"Calculate the length of the internal diagonal from corner $A$ to corner $G$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Pythagoras’ theorem"
+        self.source = "Adapted from IGCSE Higher Tier Past Paper"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Length (l)}} &= {self.length}\\,\\text{{ cm}}\\\\"
+            f"\\text{{Width (w)}} &= {self.width}\\,\\text{{ cm}}\\\\"
+            f"\\text{{Height (h)}} &= {self.height}\\,\\text{{ cm}}\\\\"
+            f"\\text{{The internal diagonal }} d \\text{{ of a cuboid is calculated using:}} &\\\\"
+            f"d &= \\sqrt{{l^2 + w^2 + h^2}}\\\\"
+            f"&= \\sqrt{{{self.length}^2 + {self.width}^2 + {self.height}^2}}\\\\"
+            f"&= \\sqrt{{{round(self.length**2, 10)} + {round(self.width**2, 10)} + {round(self.height**2, 10)}}}\\\\"
+            f"&= \\sqrt{{{round(self.length**2 + self.width**2 + self.height**2, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{ cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Isometric-style projection factors
+        iso_x = 0.5
+        iso_y = 0.5
+        
+        # Define 8 vertices of the cuboid
+        # Bottom face
+        A = np.array([0, 0])
+        B = np.array([self.length, 0])
+        C = np.array([self.length + self.width * iso_x, self.width * iso_y])
+        D = np.array([self.width * iso_x, self.width * iso_y])
+        
+        # Top face
+        E = A + np.array([0, self.height])
+        F = B + np.array([0, self.height])
+        G = C + np.array([0, self.height])
+        H = D + np.array([0, self.height])
+
+        # Draw Hidden Lines (Dashed)
+        ax.plot([D[0], A[0]], [D[1], A[1]], color='black', lw=1, ls='--')
+        ax.plot([D[0], C[0]], [D[1], C[1]], color='black', lw=1, ls='--')
+        ax.plot([D[0], H[0]], [D[1], H[1]], color='black', lw=1, ls='--')
+
+        # Draw Visible Lines (Solid)
+        ax.plot([A[0], B[0]], [A[1], B[1]], color='black', lw=2)
+        ax.plot([B[0], C[0]], [B[1], C[1]], color='black', lw=2)
+        ax.plot([E[0], F[0]], [E[1], F[1]], color='black', lw=2)
+        ax.plot([F[0], G[0]], [F[1], G[1]], color='black', lw=2)
+        ax.plot([G[0], H[0]], [G[1], H[1]], color='black', lw=2)
+        ax.plot([H[0], E[0]], [H[1], E[1]], color='black', lw=2)
+        ax.plot([A[0], E[0]], [A[1], E[1]], color='black', lw=2)
+        ax.plot([B[0], F[0]], [B[1], F[1]], color='black', lw=2)
+        ax.plot([C[0], G[0]], [C[1], G[1]], color='black', lw=2)
+
+        # Draw the internal diagonal (A to G)
+        ax.plot([A[0], G[0]], [A[1], G[1]], color='red', lw=2, ls='-')
+
+        # Vertex Labels
+        ax.text(A[0]-0.5, A[1]-0.5, "A", fontsize=15, fontweight='bold')
+        ax.text(G[0]+0.5, G[1]+0.5, "G", fontsize=15, fontweight='bold')
+
+        # Dimension Labels
+        ax.text(self.length/2, -1, f"{self.length} cm", fontsize=12, ha='center')
+        ax.text(self.length + (self.width*iso_x)/2 + 0.5, (self.width*iso_y)/2, f"{self.width} cm", fontsize=12, rotation=30)
+        ax.text(-1.5, self.height/2, f"{self.height} cm", fontsize=12, rotation=90, va='center')
+
+        # Final Plot adjustments
+        ax.set_aspect('equal')
+        ax.axis('off')
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat089:
     
     def __init__(self):
