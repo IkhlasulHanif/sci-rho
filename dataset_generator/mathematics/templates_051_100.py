@@ -2682,6 +2682,105 @@ class Mat078:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
         
+class Mat079:
+    def __init__(self):
+        # Triangle ACD
+        self.angle_a = round(randrange_float(35.0, 55.0, 0.01), 2)
+        self.side_ac = round(randrange_float(10.0, 20.0, 0.01), 2)
+        
+        # CD = AC * sin(A)
+        self.height_cd = self.side_ac * math.sin(math.radians(self.angle_a))
+        # AD = AC * cos(A)
+        self.side_ad = self.side_ac * math.cos(math.radians(self.angle_a))
+        
+        # Triangle BCD
+        # We provide side BC and ask for AB (which is AD + DB)
+        # We must ensure BC > CD
+        self.side_bc = round(self.height_cd + randrange_float(2.0, 8.0, 0.1), 1)
+        
+        # DB^2 = BC^2 - CD^2
+        self.side_db = math.sqrt(self.side_bc**2 - self.height_cd**2)
+        
+        self.total_ab = self.side_ad + self.side_db
+        self.answer = round(self.total_ab, 2)
+
+        self.description = (
+            f"In triangle $ABC$, $AC = {self.side_ac}$ cm and $BC = {self.side_bc}$ cm. "
+            f"The angle $BAC = {self.angle_a}^\\circ$. A perpendicular is dropped from $C$ "
+            f"to meet $AB$ at $D$. Calculate the length of $AB$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Right-angled triangles"
+        self.source = "Original question"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{In triangle }} ACD: &\\\\"
+            f"CD &= AC \\times \\sin(A)\\\\"
+            f"&= {round(self.side_ac, 10)} \\times \\sin({round(self.angle_a, 10)}^\\circ)\\\\"
+            f"&= {round(self.height_cd, 10)}\\,\\text{{cm}}\\\\"
+            f"AD &= AC \\times \\cos(A)\\\\"
+            f"&= {round(self.side_ac, 10)} \\times \\cos({round(self.angle_a, 10)}^\\circ)\\\\"
+            f"&= {round(self.side_ad, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{In triangle }} BCD \\text{{ (using Pythagoras' theorem):}} &\\\\"
+            f"DB &= \\sqrt{{BC^2 - CD^2}}\\\\"
+            f"&= \\sqrt{{{round(self.side_bc, 10)}^2 - {round(self.height_cd, 10)}^2}}\\\\"
+            f"&= \\sqrt{{{round(self.side_bc**2, 10)} - {round(self.height_cd**2, 10)}}}\\\\"
+            f"&= {round(self.side_db, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{The total length }} AB \\text{{ is:}} &\\\\"
+            f"AB &= AD + DB\\\\"
+            f"&= {round(self.side_ad, 10)} + {round(self.side_db, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Coordinates
+        pA = np.array([0, 0])
+        pD = np.array([self.side_ad, 0])
+        pB = np.array([self.total_ab, 0])
+        pC = np.array([self.side_ad, self.height_cd])
+        
+        # Draw triangle ABC and height CD
+        ax.plot([pA[0], pB[0], pC[0], pA[0]], [pA[1], pB[1], pC[1], pA[1]], color='black', lw=2)
+        ax.plot([pD[0], pC[0]], [pD[1], pC[1]], color='black', ls='--', lw=1.5) # Height
+        
+        # Points and Right Angle
+        ax.scatter([pA[0], pB[0], pC[0], pD[0]], [pA[1], pB[1], pC[1], pD[1]], color='black')
+        for pt, txt in zip([pA, pB, pC, pD], ['A', 'B', 'C', 'D']):
+            ax.text(pt[0], pt[1] + (0.5 if txt=='C' else -1), txt, fontsize=14, ha='center')
+
+        # Right angle symbol at D
+        ra_size = 0.5
+        ax.plot([pD[0]-ra_size, pD[0]-ra_size, pD[0]], [pD[1], pD[1]+ra_size, pD[1]+ra_size], color='black')
+
+        # Angle arc at A
+        arc_r = 1.5
+        ax.add_patch(patches.Arc(pA, arc_r*2, arc_r*2, theta1=0, 
+                                 theta2=self.angle_a, color='black', lw=1.5))
+        ax.text(arc_r+0.5, 0.5, f"{self.angle_a}°", fontsize=12)
+
+        # Dimension Labels
+        ax.text(pA[0] + self.side_ad/2 - 1, self.height_cd/2, f"{self.side_ac} cm", rotation=self.angle_a)
+        ax.text(pD[0] + self.side_db/2 + 1, self.height_cd/2, f"{self.side_bc} cm", 
+                rotation=-np.degrees(np.arctan2(self.height_cd, self.side_db)))
+
+        # Final Formatting
+        ax.set_xlim(-2, self.total_ab + 2)
+        ax.set_ylim(-3, self.height_cd + 3)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
 class Mat089:
     
     def __init__(self):
