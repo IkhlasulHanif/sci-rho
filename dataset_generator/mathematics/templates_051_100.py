@@ -2128,6 +2128,117 @@ class Mat073:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+        
+        
+class Mat074:
+    def __init__(self):
+        self.ab = randrange_float(10.0, 60.0, 0.01)
+        self.bc = randrange_float(10.0, 60.0, 0.01)
+        
+        self.ac = round(math.sqrt(self.ab**2 + self.bc**2), 2)
+        
+        self.answer = self.bc
+
+        self.description = (
+            f"The diagram shows a right-angled triangle $ABC$. "
+            f"Calculate $BC$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Pythagoras’ theorem"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 31"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given: }} AB &= {round(self.ab, 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{Hypotenuse }} AC &= {round(self.ac, 10)}\\,\\text{{cm}} \\\\"
+            "\\text{{Using Pythagoras' theorem:}} & \\\\"
+            "AC^2 &= AB^2 + BC^2 \\\\"
+            "BC^2 &= AC^2 - AB^2 \\\\"
+            f"BC^2 &= ({round(self.ac, 10)})^2 - ({round(self.ab, 10)})^2 \\\\"
+            f"BC^2 &= {round(self.ac**2, 10)} - {round(self.ab**2, 10)} \\\\"
+            f"BC^2 &= {round(self.ac**2 - self.ab**2, 10)} \\\\"
+            f"BC &= \\sqrt{{{round(self.ac**2 - self.ab**2, 10)}}} \\\\"
+            f"BC &= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Generate a random rotation angle
+        rotation = rnd.uniform(0, 360)
+        theta = np.radians(rotation)
+        c, s = np.cos(theta), np.sin(theta)
+        R = np.array(((c, -s), (s, c)))
+
+        # Define triangle vertices in local coordinates (B at origin)
+        pB_local = np.array([0.0, 0.0])
+        pA_local = np.array([0.0, self.ab])
+        pC_local = np.array([self.bc, 0.0])
+
+        # Apply rotation to the vertices
+        pB = R @ pB_local
+        pA = R @ pA_local
+        pC = R @ pC_local
+        
+        all_pts = np.array([pA, pB, pC])
+
+        # --- Centering the figure ---
+        min_x, min_y = np.min(all_pts, axis=0)
+        max_x, max_y = np.max(all_pts, axis=0)
+        center_x = (min_x + max_x) / 2
+        center_y = (min_y + max_y) / 2
+        
+        span_x = (max_x - min_x) / 2
+        span_y = (max_y - min_y) / 2
+        max_span = max(span_x, span_y)
+        padding = max_span * 0.5 
+        
+        ax.set_xlim(center_x - max_span - padding, center_x + max_span + padding)
+        ax.set_ylim(center_y - max_span - padding, center_y + max_span + padding)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        triangle = plt.Polygon(all_pts, fill=False, lw=2, edgecolor='black')
+        ax.add_patch(triangle)
+
+        # --- Add Right Angle Symbol ---
+        size = min(self.ab, self.bc) * 0.12
+        ra_local = np.array([[0, size], [size, size], [size, 0]])
+        ra = (R @ ra_local.T).T
+        ax.plot(ra[:, 0], ra[:, 1], color='black', lw=1.5)
+
+        # --- Label Placement (Collision Avoidance) ---
+        centroid = np.mean(all_pts, axis=0)
+        vertex_offset_dist = max_span * 0.25
+
+        put_vertex_label(ax, pA, 'A', centroid, vertex_offset_dist)
+        put_vertex_label(ax, pB, 'B', centroid, vertex_offset_dist)
+        put_vertex_label(ax, pC, 'C', centroid, vertex_offset_dist)
+
+        side_label_offset_dist = max_span * 0.2
+
+        mid_ab = (pA + pB) / 2
+        offset_ab_local = np.array([-1.0, 0.0])
+        pos_ab = mid_ab + (R @ offset_ab_local) * side_label_offset_dist
+        ax.text(pos_ab[0], pos_ab[1], f"{self.ab:.1f} cm", fontsize=16, 
+                ha='center', va='center')
+
+        mid_ac = (pA + pC) / 2
+        dir_ac = mid_ac - pB 
+        dir_ac_unit = dir_ac / np.linalg.norm(dir_ac)
+        pos_ac = mid_ac + dir_ac_unit * side_label_offset_dist
+        ax.text(pos_ac[0], pos_ac[1], f"{self.ac:.1f} cm", fontsize=16, 
+                ha='center', va='center')
+
+        # --- "NOT TO SCALE" Label ---
+        ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, 
+                 fontsize=12, ha='right', va='top')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
 
 class Mat089:
     

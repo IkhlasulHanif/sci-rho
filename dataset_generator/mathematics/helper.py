@@ -149,3 +149,10 @@ def draw_solid(ax, x_offset, y_offset, scale, val_h, shape_type):
     ax.text(dim_x - 0.2 * scale, (h_top + h_bottom)/2, f"{val_h}", ha='right', va='center', fontsize=12)
     
     return label_y_pos
+
+def put_vertex_label(ax, pt, label, centroid, vertex_offset_dist):
+    dir_vec = pt - centroid
+    dir_unit = dir_vec / np.linalg.norm(dir_vec)
+    pos = pt + dir_unit * vertex_offset_dist
+    ax.text(pos[0], pos[1], label, fontsize=18, fontweight='bold', 
+            ha='center', va='center')
