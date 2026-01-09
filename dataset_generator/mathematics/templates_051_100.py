@@ -2888,6 +2888,106 @@ class Mat080:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
         
+class Mat081:
+    def __init__(self):
+        self.a = rnd.choice([1, 2, 3])
+        self.b = rnd.choice([1, 2])
+        self.c = rnd.choice([0, 45, -45, 90, -90])
+        self.d = rnd.randint(-3, 3)
+        
+        target_inner = rnd.choice([-1, 0, 1])
+        self.k_total = self.a * target_inner + self.d
+        
+        def get_fmt_func(a, b, c, d):
+            a_str = f"{a}" if a != 1 else ""
+            b_str = f"{b}x" if b != 1 else "x"
+            c_str = ""
+            if c > 0: c_str = f" + {c}"
+            elif c < 0: c_str = f" - {abs(c)}"
+            
+            d_str = ""
+            if d > 0: d_str = f" + {d}"
+            elif d < 0: d_str = f" - {abs(d)}"
+            
+            return f"{a_str}\\tan({b_str}{c_str}){d_str}"
+
+        self.func_display = get_fmt_func(self.a, self.b, self.c, self.d)
+        lhs_implicit = get_fmt_func(self.a, self.b, self.c, 0)
+        rhs_implicit = self.k_total - self.d
+        self.implicit_eq = f"{lhs_implicit} = {rhs_implicit}"
+        
+        # Solve for x
+        inner_angle_deg = np.degrees(np.arctan(target_inner))
+        sols = []
+        period = 180 / self.b
+        first_sol = (inner_angle_deg - self.c) / self.b
+        
+        for n in range(-5, 10):
+            s = first_sol + n * period
+            if 0 <= s <= 360:
+                sols.append(int(round(s)))
+        
+        sorted_sols = sorted(list(set(sols)))
+        self.answer = ", ".join([f"{s}^\\circ" for s in sorted_sols])
+
+        self.description = (
+            f"The diagram shows the graph of $y = f(x)$ where $f(x) = {self.func_display}$. "
+            f"Using the visual information provided, find all solutions for ${self.implicit_eq}$ "
+            f"in the range $0^\\circ \\leqslant x \\leqslant 360^\\circ$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Trigonometric functions"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 43"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Start with the given equation:}} & \\\\"
+            f"{self.implicit_eq} & \\\\"
+            f"\\text{{2. To use the graph, transform the equation into the form }} f(x) = k: & \\\\"
+            f"\\text{{The function is defined as }} f(x) &= {self.func_display} \\\\"
+            f"\\text{{Add the vertical shift }} ({self.d}) \\text{{ to both sides of the equation:}} & \\\\"
+            f"{lhs_implicit} + ({self.d}) &= {rhs_implicit} + ({self.d}) \\\\"
+            f"f(x) &= {self.k_total} \\\\"
+            f"\\text{{3. Identify intersection points visually:}} & \\\\"
+            f"\\text{{Locate the line }} y = {self.k_total} \\text{{ on the y-axis and find where it intersects the curve.}} & \\\\"
+            f"\\text{{At }} y = {self.k_total}, \\text{{ the horizontal line crosses }} f(x) \\text{{ at:}} & \\\\"
+            f"x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+                
+        print(self.reasoning)
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        x = np.linspace(0, 360, 3000)
+        y = self.a * np.tan(np.radians(self.b * x + self.c)) + self.d
+        y[np.abs(y) > 20] = np.nan 
+
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Styling and Grid
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        ax.grid(True, which='major', ls='-', alpha=0.5, color='gray')
+        ax.grid(True, which='minor', ls=':', alpha=0.3, color='gray')
+        
+        ax.set_xlim(0, 360)
+        ax.set_ylim(self.d - 6, self.d + 6)
+        
+        ax.set_xticks(np.arange(0, 361, 45))
+        ax.xaxis.set_minor_locator(MultipleLocator(15))
+        ax.yaxis.set_major_locator(MultipleLocator(2))
+        
+        ax.set_xlabel("$x$ (degrees)")
+        ax.set_ylabel("$y$")
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=150)
+        plt.close()
+        
 class Mat089:
     
     def __init__(self):
