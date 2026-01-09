@@ -1448,3 +1448,90 @@ class Bio023:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Bio024:
+
+    def __init__(self):
+        self.total_cells = 100
+        self.interphase = rnd.randint(22, 25)
+        self.prophase = rnd.randint(19, 22)
+        self.metaphase = rnd.randint(22, 25)
+        self.anaphase = rnd.randint(18, 20)
+        self.telophase = self.total_cells - self.interphase - self.prophase - self.metaphase - self.anaphase
+        self.mitosis_cells = self.prophase + self.metaphase + self.anaphase + self.telophase
+        self.mitotic_index = self.mitosis_cells / self.total_cells
+        self.answer = round(self.mitotic_index * 100, 2)
+
+        self.description = f"This image shows {self.total_cells} cells in different stages of the cell cycle. From this image, calculate the mitotic index (as a percentage)."
+        self.topic = "The mitotic cell cycle"
+        self.subtopic = "Chromosome behaviour in mitosis"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Number of cells in Interphase}} &= {self.interphase}\\\\"
+            f"\\text{{Number of cells in Prophase}} &= {self.prophase}\\\\"
+            f"\\text{{Number of cells in Metaphase}} &= {self.metaphase}\\\\"
+            f"\\text{{Number of cells in Anaphase}} &= {self.anaphase}\\\\"
+            f"\\text{{Number of cells in Telophase}} &= {self.telophase}\\\\"
+            f"\\text{{Total cells in Mitosis (}} n_m) &= \\text{{Prophase}} + \\text{{Metaphase}} + \\text{{Anaphase}} + \\text{{Telophase}}\\\\"
+            f"n_m &= {self.prophase} + {self.metaphase} + {self.anaphase} + {self.telophase} = {self.mitosis_cells}\\\\"
+            f"\\text{{Total cells observed (}} N) &= {self.total_cells}\\\\"
+            f"\\text{{Mitotic Index (MI) is given by:}} &\\\\"
+            f"\\text{{MI}} &= \\frac{{n_m}}{{N}} \\times 100\\\\"
+            f"&= \\frac{{{self.mitosis_cells}}}{{{self.total_cells}}} \\times 100\\\\"
+            f"&= {round(self.mitotic_index, 10)} \\times 100\\\\"
+            f"&= {self.answer}\\%"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('biology/temp_image/Bio024temp.png').convert('RGBA')
+
+        bboxes = {
+            "interphase": (93,  350,  430,  731),
+            "prophase":   (442, 350,  779,  731),
+            "metaphase":  (791, 350, 1128,  731),
+            "anaphase":   (1140,350, 1476,  731),
+            "telophase":  (1488,350, 1825,  731),
+        }
+
+        rows, cols = 10, 10
+        cell_w, cell_h = 150, 150
+
+        sprites = {}
+        for phase, bbox in bboxes.items():
+            sprite = img.crop(bbox).resize((cell_w, cell_h))
+            sprites[phase] = sprite
+
+        labels = (
+            ["interphase"] * self.interphase +
+            ["prophase"]   * self.prophase +
+            ["metaphase"]  * self.metaphase +
+            ["anaphase"]   * self.anaphase +
+            ["telophase"]  * self.telophase
+        )
+        rnd.shuffle(labels)
+
+        canvas_w, canvas_h = cols * cell_w, rows * cell_h
+        canvas = Image.new("RGBA", (canvas_w, canvas_h), (255, 255, 255, 255))
+
+        i = 0
+        for r in range(rows):
+            for c in range(cols):
+                x0 = c * cell_w
+                y0 = r * cell_h
+                phase = labels[i]
+                sprite = sprites[phase]
+                canvas.paste(sprite, (x0, y0), sprite)
+                i += 1
+
+        rgba = np.array(canvas)
+        plt.figure(figsize=(canvas_w / 100, canvas_h / 100), dpi=100)
+        plt.imshow(rgba)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
