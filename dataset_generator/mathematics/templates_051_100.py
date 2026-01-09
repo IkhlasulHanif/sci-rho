@@ -3,6 +3,7 @@ import random as rnd
 import math
 import os
 import matplotlib.pyplot as plt
+import sympy
 from matplotlib import colors
 import matplotlib.patches as patches
 from matplotlib.patches import Polygon
@@ -3408,6 +3409,106 @@ class Mat098:
         # Set graphical limits and remove axes for "Geometry Figure" look
         ax.set_aspect('equal')
         ax.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat099:
+    
+    def __init__(self):
+        # We pick the answer first to ensure the graph looks nice, 
+        # but we hide 'k' in the final output.
+        self.val_x = rnd.randint(3, 8)       # The known i component
+        self.val_k = rnd.randint(3, 10)      # The unknown j component (the answer)
+
+        # Calculate Magnitude symbolically to get the exact sqrt string (e.g., 3sqrt(17))
+        self.magnitude_sym = sympy.sqrt(self.val_x**2 + self.val_k**2)
+        self.magnitude_latex = sympy.latex(self.magnitude_sym)
+
+        self.answer = self.val_k
+
+        self.description = (
+            f"Find positive $k$ given $\\vec{{v}} = {self.val_x}\\mathbf{{i}} + k\\mathbf{{j}}$ "
+            f"and $|\\vec{{v}}| = {self.magnitude_latex}$"
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vector geometry"
+        self.source = "Maths Genie - A Level Vectors Questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"|\\vec{{v}}| &= \\sqrt{{x^2 + k^2}}\\\\"
+            f"{self.magnitude_latex} &= \\sqrt{{({self.val_x})^2 + k^2}}\\\\"
+            f"\\text{{Squaring both sides:}} &\\\\"
+            f"({self.magnitude_latex})^2 &= ({self.val_x})^2 + k^2\\\\"
+            f"{self.val_x**2 + self.val_k**2} &= {self.val_x**2} + k^2\\\\"
+            f"k^2 &= {self.val_x**2 + self.val_k**2} - {self.val_x**2}\\\\"
+            f"k^2 &= {self.val_k**2}\\\\"
+            f"k &= \\sqrt{{{self.val_k**2}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup Plot
+        fig, ax = plt.subplots(figsize=(8, 8))
+
+        # Coordinates for the triangle
+        origin = np.array([0, 0])
+        point_x = np.array([self.val_x, 0])
+        point_v = np.array([self.val_x, self.val_k])
+
+        # Draw the Triangle Components
+        # X-component (Horizontal)
+        ax.annotate('', xy=point_x, xytext=origin,
+                    arrowprops=dict(facecolor='blue', shrink=0, width=2, headwidth=8))
+        
+        # Y-component (Vertical - represented as k)
+        # Drawn from the tip of the x-component to the tip of the vector
+        ax.annotate('', xy=point_v, xytext=point_x,
+                    arrowprops=dict(facecolor='red', shrink=0, width=2, headwidth=8))
+        
+        # Vector v (Hypotenuse)
+        ax.annotate('', xy=point_v, xytext=origin,
+                    arrowprops=dict(facecolor='green', shrink=0, width=3, headwidth=10))
+
+        # Labeling
+        # Label x-component
+        ax.text(self.val_x / 2, -self.val_k * 0.05, f"${self.val_x}$", 
+                fontsize=14, color='blue', ha='center', va='top')
+
+        # Label y-component (The Unknown 'k')
+        ax.text(self.val_x + 0.3, self.val_k / 2, "$k$", 
+                fontsize=14, color='red', ha='left', va='center')
+
+        # Label Hypotenuse (The Magnitude)
+        # Calculate rotation for text so it aligns with the hypotenuse
+        angle = np.degrees(np.arctan2(self.val_k, self.val_x))
+        ax.text(self.val_x/2 - 0.2, self.val_k/2 + 0.5, f"$|\\vec{{v}}| = {self.magnitude_latex}$", 
+                fontsize=14, color='green', ha='right', va='bottom', rotation=angle)
+
+        # Right Angle Marker
+        rect_size = min(self.val_x, self.val_k) * 0.1
+        rect = plt.Rectangle((self.val_x - rect_size, 0), rect_size, rect_size, 
+                            fill=False, edgecolor='black', linewidth=1)
+        ax.add_patch(rect)
+
+        # Styling
+        ax.set_xlim(-1, self.val_x + 2)
+        ax.set_ylim(-1, self.val_k + 2)
+        ax.set_aspect('equal') # Important for geometry to look correct
+        ax.grid(True, which='both', linestyle='--', alpha=0.5)
+        
+        # Draw axes lines
+        ax.axhline(y=0, color='k', linewidth=1)
+        ax.axvline(x=0, color='k', linewidth=1)
+        
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+
+        plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
