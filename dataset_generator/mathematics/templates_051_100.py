@@ -2568,6 +2568,120 @@ class Mat077:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat078:
+    def __init__(self):
+        self.person_height = round(randrange_float(1.5, 1.9, 0.01), 2)
+        self.distance = round(randrange_float(20.0, 50.0, 0.5), 1)
+        self.angle_elevation = round(randrange_float(25.0, 45.0, 0.01), 2)
+        
+        self.opp_height = self.distance * math.tan(math.radians(self.angle_elevation))
+        
+        # Total tower height = height from eye level + person's height
+        self.total_height = self.opp_height + self.person_height
+        self.answer = round(self.total_height, 2)
+
+        self.description = (
+            f"A person of height {self.person_height} m stands on horizontal ground, "
+            f"{self.distance} m from the base of a vertical tower. The angle of elevation "
+            f"from the person's eyes to the top of the tower is {self.angle_elevation}^\\circ. "
+            f"Calculate the total height of the tower."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Right-angled triangles"
+        self.source = "Original question"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Height of person}} &= {round(self.person_height, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Distance from tower (Adjacent)}} &= {round(self.distance, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Angle of elevation (}} \\theta \\text{{)}} &= {round(self.angle_elevation, 10)}^\\circ\\\\"
+            f"\\text{{Let }} h_{{opp}} \\text{{ be the height from eye level to the top of the tower:}} &\\\\"
+            f"\\tan(\\theta) &= \\frac{{\\text{{Opposite}}}}{{\\text{{Adjacent}}}}\\\\"
+            f"\\tan({round(self.angle_elevation, 10)}^\\circ) &= \\frac{{h_{{opp}}}}{{{round(self.distance, 10)}}}\\\\"
+            f"h_{{opp}} &= {round(self.distance, 10)} \\times \\tan({round(self.angle_elevation, 10)}^\\circ)\\\\"
+            f"h_{{opp}} &= {round(self.opp_height, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Total height (H)}} &= h_{{opp}} + \\text{{height of person}}\\\\"
+            f"H &= {round(self.opp_height, 10)} + {round(self.person_height, 10)}\\\\"
+            f"H &= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        p_foot = np.array([0, 0])
+        p_eye = np.array([0, self.person_height])
+        p_tower_base = np.array([self.distance, 0])
+        p_tower_top = np.array([self.distance, self.total_height])
+        p_eye_level_base = np.array([self.distance, self.person_height])
+
+        # Ground
+        ax.plot([-5, self.distance + 10], [0, 0], color='black', lw=2)
+        # Tower (represented as a thick rectangle or line)
+        tower_width = 2
+        tower_rect = patches.Rectangle((self.distance - tower_width/2, 0), tower_width, 
+                                       self.total_height, color='gray', alpha=0.3)
+        ax.add_patch(tower_rect)
+        ax.plot([self.distance, self.distance], [0, self.total_height], color='black', lw=3)
+
+        # Body
+        ax.plot([0, 0], [0.5, self.person_height - 0.3], color='black', lw=2)
+        # Legs
+        ax.plot([0, -0.3], [0.5, 0], color='black', lw=2)
+        ax.plot([0, 0.3], [0.5, 0], color='black', lw=2)
+        # Arms
+        ax.plot([0, -0.4], [self.person_height - 0.7, self.person_height - 0.5], color='black', lw=1.5)
+        ax.plot([0, 0.4], [self.person_height - 0.7, self.person_height - 0.5], color='black', lw=1.5)
+        # Head
+        head = patches.Circle((0, self.person_height - 0.15), 0.15, color='black', fill=False, lw=2)
+        ax.add_patch(head)
+
+        # Line of sight (hypotenuse)
+        ax.plot([p_eye[0], p_tower_top[0]], [p_eye[1], p_tower_top[1]], color='blue', ls='--', lw=2)
+        # Horizontal eye level line (adjacent)
+        ax.plot([p_eye[0], p_eye_level_base[0]], [p_eye[1], p_eye_level_base[1]], color='black', ls=':', lw=1.5)
+        # Vertical tower segment (opposite)
+        ax.plot([p_eye_level_base[0], p_tower_top[0]], [p_eye_level_base[1], p_tower_top[1]], color='red', lw=2)
+
+        # Right angle symbol at p_eye_level_base
+        ra_size = 1.0
+        ax.plot([p_eye_level_base[0] - ra_size, p_eye_level_base[0] - ra_size, p_eye_level_base[0]], 
+                [p_eye_level_base[1], p_eye_level_base[1] + ra_size, p_eye_level_base[1] + ra_size], 
+                color='black', lw=1)
+
+        # Angle of elevation arc
+        arc_r = 3.0
+        arc = patches.Arc(p_eye, arc_r*2, arc_r*2, theta1=0, theta2=self.angle_elevation, color='black', lw=1.5)
+        ax.add_patch(arc)
+        ax.text(arc_r + 1, self.person_height + 0.5, f"{self.angle_elevation}°", fontsize=12)
+
+        # Dimension Labels
+        # Ground distance
+        ax.annotate('', xy=(0, -1), xytext=(self.distance, -1), arrowprops=dict(arrowstyle='<->'))
+        ax.text(self.distance/2, -2, f"{self.distance} m", ha='center', fontsize=14)
+        
+        # Person height
+        ax.text(-1, self.person_height/2, f"{self.person_height} m", ha='right', fontsize=12)
+        
+        # Total height asked
+        ax.annotate('', xy=(self.distance + 4, 0), xytext=(self.distance + 4, self.total_height), 
+                    arrowprops=dict(arrowstyle='<->'))
+        ax.text(self.distance + 5, self.total_height/2, "$H$", fontsize=16, fontweight='bold')
+
+        # Formatting
+        ax.set_xlim(-10, self.distance + 15)
+        ax.set_ylim(-5, self.total_height + 10)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
 class Mat089:
     
     def __init__(self):
