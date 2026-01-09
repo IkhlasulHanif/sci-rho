@@ -3000,3 +3000,119 @@ class Mat097:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat098:
+    
+    def __init__(self):
+        # Coefficients for OA = c1*a and OB = c2*b
+        self.c1 = rnd.randint(2, 6)
+        self.c2 = rnd.randint(2, 6)
+        
+        # Ratio AP:PB = m:n
+        self.m = rnd.randint(1, 4)
+        self.n = rnd.randint(1, 4)
+        
+        # Calculate terms for the Question Text to ensure math works
+        # Section Formula: OP = (n*OA + m*OB) / (m+n)
+        # OP = (n*(c1*a) + m*(c2*b)) / (m+n)
+        # OP = (1/(m+n)) * ( (n*c1)a + (m*c2)b )
+        
+        term_a = self.n * self.c1
+        term_b = self.m * self.c2
+        k_solution = 1 / (self.m + self.n)
+
+        self.answer = round(k_solution, 3)
+
+        self.description = (
+            f"Trapezium OABC where OA is parallel to CB. "
+            f"OA = {self.c1}a and OB = {self.c2}b. "
+            f"Point P is on AB such that AP:PB = {self.m}:{self.n}. "
+            f"If vector OP = k({term_a}a + {term_b}b), find k. "
+            "Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Transformations and vectors"
+        self.subtopic = "Vector geometry"
+        self.source = "Maths Genie - Vectors Proof Questions"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Using the Section Formula for vector }} \\vec{{OP}} \\text{{ with ratio }} {self.m}:{self.n}:&\\\\"
+            f"\\vec{{OP}} &= \\frac{{{self.n}\\vec{{OA}} + {self.m}\\vec{{OB}}}}{{{self.m} + {self.n}}}\\\\"
+            f"\\text{{Substitute }} \\vec{{OA}} = {self.c1}\\mathbf{{a}} \\text{{ and }} \\vec{{OB}} = {self.c2}\\mathbf{{b}}:&\\\\"
+            f"\\vec{{OP}} &= \\frac{{{self.n}({self.c1}\\mathbf{{a}}) + {self.m}({self.c2}\\mathbf{{b}})}}{{{self.m + self.n}}}\\\\"
+            f"&= \\frac{{{self.n * self.c1}\\mathbf{{a}} + {self.m * self.c2}\\mathbf{{b}}}}{{{self.m + self.n}}}\\\\"
+            f"&= \\frac{{1}}{{{self.m + self.n}}} ({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})\\\\"
+            f"\\text{{Comparing with the given }} \\vec{{OP}} = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}}):&\\\\"
+            f"k &= \\frac{{1}}{{{self.m + self.n}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Define basis vectors (arbitrary visual choices)
+        # a points right (1, 0), b points up-right (angle 60 degrees)
+        vec_a = np.array([1, 0])
+        vec_b = np.array([0.5, 0.866]) 
+        
+        # Define Points O, A, B
+        O = np.array([0, 0])
+        A = self.c1 * vec_a
+        B = self.c2 * vec_b
+        
+        # Define P using the vector ratio logic
+        # P divides AB in ratio m:n
+        P = (self.n * A + self.m * B) / (self.m + self.n)
+        
+        # Define C to make it a Trapezium (OA || CB)
+        # CB is parallel to OA, so C is shifted from B by some amount of 'a'
+        # We pick a random length for CB to make the shape look nice
+        scale_cb = rnd.uniform(0.3, 0.8) * self.c1
+        C = B - (scale_cb * vec_a)
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Function to draw line segments
+        def draw_line(p1, p2, style='-', label=None):
+            ax.plot([p1[0], p2[0]], [p1[1], p2[1]], style, linewidth=1.5, label=label)
+
+        # Draw Trapezium OABC
+        draw_line(O, A, 'k') # OA
+        draw_line(A, B, 'k') # AB
+        draw_line(B, C, 'k') # BC
+        draw_line(C, O, 'k') # CO
+        
+        # Draw Vector OP
+        draw_line(O, P, 'b--') # OP dashed
+        
+        # Plot Points
+        points = {'O': O, 'A': A, 'B': B, 'C': C, 'P': P}
+        for label, coord in points.items():
+            ax.plot(coord[0], coord[1], 'ko', markersize=5)
+            # Offset label slightly
+            xytext = (5, 5)
+            if label == 'P': xytext = (5, 0)
+            if label == 'O': xytext = (-15, -10)
+            ax.annotate(r'$' + label + '$', (coord[0], coord[1]), 
+                        xytext=xytext, textcoords='offset points', fontsize=14)
+
+        # Label vectors OA and OB
+        ax.annotate(rf'$2\mathbf{{a}}$' if self.c1==2 else rf'${self.c1}\mathbf{{a}}$', 
+                    (A[0]/2 + 0.3, A[1]/2 + 0.1), color='green', fontsize=12)
+        ax.annotate(rf'$3\mathbf{{b}}$' if self.c2==3 else rf'${self.c2}\mathbf{{b}}$', 
+                    (B[0]/2 - 0.2, B[1]/2 + 0.2), color='green', fontsize=12)
+        
+        # Annotate Ratio on line AB
+        # Midpoints of AP and PB for labels
+        mid_AP = (A + P) / 2
+        mid_PB = (P + B) / 2
+        ax.annotate(f'{self.m}', mid_AP + 0.1, color='red', fontsize=10, ha='center')
+        ax.annotate(f'{self.n}', mid_PB + 0.1, color='red', fontsize=10, ha='center')
+
+        # Set graphical limits and remove axes for "Geometry Figure" look
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
