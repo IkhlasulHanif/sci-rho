@@ -2784,7 +2784,7 @@ class Mat079:
 
 class Mat080:
     def __init__(self):
-        self.func_type = rnd.choice(["sin", "cos", "tan"])
+        self.func_type = rnd.choice(["sin", "cos"])
         self.a = rnd.randint(2, 5)            
         self.b = rnd.choice([1, 2, 3])        
         self.c = rnd.choice([-30, -45, -60, -90]) 
@@ -2818,21 +2818,7 @@ class Mat080:
             f"a &= \\text{{Max}} - d = {self.a + self.d} - {self.d} = {self.a} \\\\"
         )
 
-        if self.func_type == "tan":
-            self.reasoning = common_start + (
-                f"\\text{{3. Find period (}} P \\text{{) and frequency (}} b \\text{{):}} & \\\\"
-                f"\\text{{Standard period for tan is }} 180^\\circ. \\text{{ Measure the distance between consecutive asymptotes.}} & \\\\"
-                f"\\text{{Observed Period }} P &= {round(180/self.b, 10)}^\\circ \\\\"
-                f"b &= \\frac{{180^\\circ}}{{P}} = \\frac{{180^\\circ}}{{{round(180/self.b, 10)}^\\circ}} = {self.b} \\\\"
-                f"\\text{{4. Find phase shift (}} c \\text{{) using the midline crossing:}} & \\\\"
-                f"\\text{{The graph crosses the midline }} y={self.d} \\text{{ at }} x = {self.x_anchor}^\\circ. & \\\\"
-                f"\\text{{In }} y = a \\tan(bx + c) + d, \\text{{ the argument equals 0 at this anchor point:}} & \\\\"
-                f"b(x) + c &= 0 \\implies {self.b}({self.x_anchor}) + c = 0 \\\\"
-                f"c &= {self.c}^\\circ \\\\"
-                f"\\text{{5. Final parameters identified: }} a, b, c, d &= {self.answer}"
-                "\\end{aligned}\\]"
-            )
-        elif self.func_type == "sin":
+        if self.func_type == "sin":
             self.reasoning = common_start + (
                 f"\\text{{3. Find period (}} P \\text{{) and frequency (}} b \\text{{):}} & \\\\"
                 f"\\text{{Standard period for sin is }} 360^\\circ. \\text{{ Measure the distance for one full cycle on the x-axis.}} & \\\\"
@@ -2860,7 +2846,7 @@ class Mat080:
                 f"\\text{{5. Final parameters identified: }} a, b, c, d &= {self.answer}"
                 "\\end{aligned}\\]"
             )
-        
+            
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 6))
         x = np.linspace(0, 360, 1000)
@@ -2870,9 +2856,6 @@ class Mat080:
             y = self.a * np.sin(self.b * x_rad + np.radians(self.c)) + self.d
         elif self.func_type == "cos":
             y = self.a * np.cos(self.b * x_rad + np.radians(self.c)) + self.d
-        else: # tan
-            y = self.a * np.tan(self.b * x_rad + np.radians(self.c)) + self.d
-            y[np.abs(y) > 20] = np.nan 
 
         ax.plot(x, y, color='black', lw=2.5)
         ax.axhline(0, color='black', lw=1.2)
