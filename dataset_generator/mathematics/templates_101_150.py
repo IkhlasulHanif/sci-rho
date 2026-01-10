@@ -265,3 +265,90 @@ class Mat103:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat104:
+    
+    def __init__(self):
+        # Randomize the core variables (e.g., between 5 and 25 students)
+        g9_sci = rnd.randint(5, 25)
+        g9_art = rnd.randint(5, 25)
+        
+        g10_sci = rnd.randint(5, 25)
+        g10_art_actual = rnd.randint(5, 25) # This is 'x'
+        
+        g11_sci = rnd.randint(5, 25)
+        g11_art = rnd.randint(5, 25)
+
+        # Row Totals
+        total_g9 = g9_sci + g9_art
+        total_g10 = g10_sci + g10_art_actual
+        total_g11 = g11_sci + g11_art
+        
+        # Column Totals
+        total_sci = g9_sci + g10_sci + g11_sci
+        total_art = g9_art + g10_art_actual + g11_art
+        
+        # Grand Total
+        grand_total = total_sci + total_art
+
+        # We replace the actual value of Grade 10 Art with 'x' for the display
+        self.data = [
+            ["Grade 9", g9_sci, g9_art, total_g9],
+            ["Grade 10", g10_sci, "$x$", total_g10],
+            ["Grade 11", g11_sci, g11_art, total_g11],
+            ["Total", total_sci, total_art, grand_total]
+        ]
+
+        self.columns = ["Grade Level", "Science Club", "Art Club", "Total"]
+
+        self.answer = g10_art_actual
+
+        self.description = (
+            "Using the data in the figure, determine the number of students in Grade 10 who joined the Art Club (represented by $x$)."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Interpreting statistical data"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Using the row totals for Grade 10:}} &\\\\"
+            f"\\text{{Science}} + \\text{{Art}} &= \\text{{Total}}\\\\"
+            f"{g10_sci} + x &= {total_g10}\\\\"
+            f"x &= {total_g10} - {g10_sci}\\\\"
+            f"x &= {self.answer}\\,\\text{{students}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Figure using Matplotlib
+        fig, ax = plt.subplots(figsize=(8, 4)) # Adjust size as needed
+        
+        # Hide axes (we only want the table)
+        ax.axis('tight')
+        ax.axis('off')
+
+        # Create the table
+        the_table = ax.table(cellText=self.data,
+                            colLabels=self.columns,
+                            loc='center',
+                            cellLoc='center')
+
+        # Styling the Table
+        the_table.auto_set_font_size(False)
+        the_table.set_fontsize(12)
+        the_table.scale(1.2, 2) # Scale width and height of cells
+
+        # Highlight the headers (optional)
+        for (i, j), cell in the_table.get_celld().items():
+            if i == 0: # Header row
+                cell.set_text_props(weight='bold')
+                cell.set_facecolor('#e6e6e6') # Light gray background
+
+        # Add Figure Title
+        plt.title("Club Membership Data", fontsize=14, pad=20, weight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
