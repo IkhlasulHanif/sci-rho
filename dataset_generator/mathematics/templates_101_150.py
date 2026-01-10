@@ -416,3 +416,63 @@ class Mat105:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat106:
+    
+    def __init__(self):
+        self.weeks = ['Week 1', 'Week 2', 'Week 3']
+        
+        # Generate random sales between 20 and 80 for each week
+        self.store_a_sales = [rnd.randint(20, 80) for _ in range(3)]
+        self.store_b_sales = [rnd.randint(20, 80) for _ in range(3)]
+
+        total_a = sum(self.store_a_sales)
+        total_b = sum(self.store_b_sales)
+        difference = abs(total_a - total_b)
+
+        self.answer = difference
+
+        self.description = (
+            "Using the figure, calculate the difference between the total number of laptops sold by Store A and the total number of laptops sold by Store B over the entire three-week period."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Interpreting statistical data"
+        self.source = "Adapted from Extended Mathematics for IGCSE"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total Sales (Store A)}} &= {self.store_a_sales[0]} + {self.store_a_sales[1]} + {self.store_a_sales[2]} \\\\"
+            f"&= {total_a} \\\\"
+            f"\\text{{Total Sales (Store B)}} &= {self.store_b_sales[0]} + {self.store_b_sales[1]} + {self.store_b_sales[2]} \\\\"
+            f"&= {total_b} \\\\"
+            f"\\text{{Difference}} &= |\\text{{Total Store A}} - \\text{{Total Store B}}| \\\\"
+            f"&= |{total_a} - {total_b}| \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        x = np.arange(len(self.weeks))  # Label locations
+        width = 0.35  # Width of the bars
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+        rects1 = ax.bar(x - width/2, self.store_a_sales, width, label='Store A')
+        rects2 = ax.bar(x + width/2, self.store_b_sales, width, label='Store B')
+
+        # Add labels, title, and custom x-axis tick labels
+        ax.set_ylabel('Number of Laptops Sold')
+        ax.set_title('Weekly Sales Comparison')
+        ax.set_xticks(x)
+        ax.set_xticklabels(self.weeks)
+        ax.legend()
+
+        # Add value labels on top of the bars for clarity
+        ax.bar_label(rects1, padding=3)
+        ax.bar_label(rects2, padding=3)
+
+        fig.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
