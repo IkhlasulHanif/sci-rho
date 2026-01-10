@@ -1566,3 +1566,98 @@ class Mat119:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat120:
+    
+    def __init__(self):
+        # We choose specific widths common in exams (5, 10, 15, 20)
+        possible_widths = [5, 10, 15, 20]
+        
+        # Generate Group A
+        self.width_a = rnd.choice(possible_widths)
+        self.height_a = rnd.randint(2, 8) # Randomize height (Freq Density) directly for integer results
+        self.freq_a = self.width_a * self.height_a
+        
+        # Generate Group B (ensure it's different enough to be interesting)
+        self.width_b = rnd.choice(possible_widths)
+        self.height_b = rnd.randint(2, 8)
+        
+        # Ensure heights are not equal so there is always a difference
+        while self.height_b == self.height_a:
+            self.height_b = rnd.randint(2, 8)
+        
+        self.freq_b = self.width_b * self.height_b
+
+        # Calculate the answer
+        diff = abs(self.height_b - self.height_a)
+
+        self.answer = diff
+
+        self.description = (
+            f"If these groups are plotted on the same histogram, "
+            f"what is the positive difference between the height of the bar for Group B and Group A?"
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Histograms"
+        self.source = "Adapted from Cambridge Assessment International Education"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Frequency Density (Height)}} &= \\frac{{\\text{{Frequency}}}}{{\\text{{Width}}}}\\\\"
+            f"\\text{{Height}}_A &= \\frac{{{self.freq_a}}}{{{self.width_a}}} = {round(self.freq_a / self.width_a, 10)}\\\\"
+            f"\\text{{Height}}_B &= \\frac{{{self.freq_b}}}{{{self.width_b}}} = {round(self.freq_b / self.width_b, 10)}\\\\"
+            f"\\text{{Difference}} &= |\\text{{Height}}_B - \\text{{Height}}_A|\\\\"
+            f"&= |{round(self.freq_b / self.width_b, 10)} - {round(self.freq_a / self.width_a, 10)}|\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        # Data for plotting
+        # We plot Group A starting at x=0, and Group B starting immediately after A
+        x_start_a = 0
+        x_start_b = self.width_a 
+        
+        # Plot Bar A
+        ax.bar(x=x_start_a, height=self.height_a, width=self.width_a, align='edge', 
+            color='#4c72b0', edgecolor='black', alpha=0.7, label='Group A')
+        
+        # Plot Bar B
+        ax.bar(x=x_start_b, height=self.height_b, width=self.width_b, align='edge', 
+            color='#dd8452', edgecolor='black', alpha=0.7, label='Group B')
+
+        # Annotations to help visualize the math
+        # Label for Group A
+        ax.text(x_start_a + self.width_a/2, self.height_a/2, 
+                f'Freq= {self.freq_a}', 
+                ha='center', va='center', color='white', fontweight='bold')
+
+        # Label for Group B
+        ax.text(x_start_b + self.width_b/2, self.height_b/2, 
+                f'Freq= {self.freq_b}', 
+                ha='center', va='center', color='white', fontweight='bold')
+
+        # Visualizing the difference line
+        max_h = max(self.height_a, self.height_b)
+        min_h = min(self.height_a, self.height_b)
+        
+        # Draw a dashed line to show the difference
+        ax.hlines(y=min_h, xmin=0, xmax=self.width_a+self.width_b, colors='gray', linestyles='dashed')
+        
+        # Formatting
+        ax.set_title("Frequency Density Comparison")
+        ax.set_xlabel("Class Interval (Variable)")
+        ax.set_ylabel("Frequency Density (Height)")
+        ax.set_xlim(-2, self.width_a + self.width_b + 10) # Add space for the arrow
+        ax.set_ylim(0, max_h + 2)
+        ax.grid(axis='y', linestyle='--', alpha=0.5)
+        ax.legend()
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
