@@ -1137,3 +1137,99 @@ class Mat114:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat115:
+    
+    def __init__(self):
+        # Randomize the "Line of Best Fit" parameters
+        # Equation: y = mx + c
+        self.slope = round(rnd.uniform(0.8, 1.2), 2)     # Random slope roughly around 1
+        self.intercept = rnd.randint(0, 10)              # Random intercept
+        
+        # Generate Background Data (to make the scatter plot look real)
+        # We create random scores for 50 students around the line
+        num_students = 50
+        self.x_data = np.random.randint(40, 95, num_students)  # Math scores
+        noise = np.random.normal(0, 3, num_students)      # Natural variance
+        self.y_data = self.slope * self.x_data + self.intercept + noise       # Physics scores
+        
+        # Define "Student A" (The Target)
+        # Pick a Math score (x) within a reasonable middle range
+        self.student_a_x = rnd.randint(50, 85)
+        
+        # Calculate the PREDICTED score (on the line)
+        self.student_a_y_predicted = self.slope * self.student_a_x + self.intercept
+        
+        # Randomize the ACTUAL score (off the line)
+        # Ensure the residual is noticeable (at least +/- 8 points away)
+        residual_offset = rnd.choice([-1, 1]) * rnd.randint(8, 15)
+        self.student_a_y_actual = round(self.student_a_y_predicted + residual_offset, 1)
+
+        self.answer = round(abs(self.student_a_y_actual - self.student_a_y_predicted), 3)
+
+        self.description = (
+            f"What is the vertical difference (residual) between Student A's actual Physics score and the score predicted by the line of best fit for a Math score of {self.student_a_x}?"
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Scatter diagrams"
+        self.source = "Adapted from Mathematics for the International Student: Mathematics SL"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Line of Best Fit Equation:}} &\\\\"
+            f"y &= mx + c\\\\"
+            f"y &= {self.slope}x + {self.intercept}\\\\"
+            f"\\text{{Calculate the predicted score for }} x &= {self.student_a_x}:\\\\"
+            f"y_{{\\text{{predicted}}}} &= {self.slope}({self.student_a_x}) + {self.intercept}\\\\"
+            f"&= {round(self.slope * self.student_a_x, 10)} + {self.intercept}\\\\"
+            f"&= {round(self.student_a_y_predicted, 10)}\\\\"
+            f"\\text{{Identify the actual score:}} &\\\\"
+            f"y_{{\\text{{actual}}}} &= {self.student_a_y_actual}\\\\"
+            f"\\text{{Calculate the vertical difference (residual):}} &\\\\"
+            f"\\text{{Residual}} &= |y_{{\\text{{actual}}}} - y_{{\\text{{predicted}}}}|\\\\"
+            f"&= |{self.student_a_y_actual} - {round(self.student_a_y_predicted, 10)}|\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Setup the Plot
+        plt.figure(figsize=(10, 6))
+        
+        # Plot Background Scatter
+        plt.scatter(self.x_data, self.y_data, color='lightgray', label='Other Students', alpha=0.6)
+        
+        # Plot Line of Best Fit
+        x_line = np.array([30, 100])
+        y_line = self.slope * x_line + self.intercept
+        plt.plot(x_line, y_line, color='blue', linewidth=2, label=f'Best Fit: $y = {self.slope}x + {self.intercept}$')
+        
+        # Plot Student A
+        plt.scatter(self.student_a_x, self.student_a_y_actual, color='red', s=100, zorder=5, label='Student A')
+        
+        # Visualize the Residual (Vertical Line)
+        # Draw a dashed line from the actual point to the predicted point on the line
+        plt.vlines(x=self.student_a_x, 
+                ymin=min(self.student_a_y_actual, self.student_a_y_predicted), 
+                ymax=max(self.student_a_y_actual, self.student_a_y_predicted), 
+                colors='red', linestyles='--', linewidth=2, label='Residual')
+
+        # Formatting and Annotations
+        plt.xlabel("Math Score ($x$)", fontsize=12)
+        plt.ylabel("Physics Score ($y$)", fontsize=12)
+        plt.grid(True, linestyle='--', alpha=0.5)
+        plt.xlim(30, 100)
+        plt.ylim(30, 110)
+        plt.legend()
+        
+        # Annotate Student A's coordinates
+        sign = abs(self.student_a_y_actual - self.student_a_y_predicted) / (self.student_a_y_actual - self.student_a_y_predicted)
+        plt.text(self.student_a_x, self.student_a_y_actual + 3 * sign, 
+                f'({self.student_a_x}, {self.student_a_y_actual})', 
+                fontsize=10, verticalalignment='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
