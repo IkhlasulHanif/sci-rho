@@ -1333,3 +1333,93 @@ class Mat116:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat117:
+    
+    def __init__(self):
+        self.total_frequency = 80
+        
+        # Calculate Y-axis positions for quartiles
+        self.y_q1 = 0.25 * self.total_frequency  # Lower Quartile position (25% of 80 = 20)
+        self.y_median = 0.50 * self.total_frequency # Median position
+        self.y_q3 = 0.75 * self.total_frequency  # Upper Quartile position (75% of 80 = 60)
+
+        # Randomize X-axis values (Heights in cm)
+        # We ensure they are strictly increasing: Min < Q1 < Median < Q3 < Max
+        self.h_min = rnd.randint(5, 15)
+        self.h_q1 = rnd.randint(self.h_min + 5, self.h_min + 15)      # Q1 Height
+        self.h_median = rnd.randint(self.h_q1 + 5, self.h_q1 + 15)    # Median Height
+        self.h_q3 = rnd.randint(self.h_median + 10, self.h_median + 20) # Q3 Height
+        self.h_max = rnd.randint(self.h_q3 + 5, self.h_q3 + 15)
+
+        # Calculate the Answer (IQR)
+        iqr = self.h_q3 - self.h_q1
+
+        # For Q1, it will be shown by a green dashed line
+        # For Q3, it will be shown by a red dashed line
+        self.answer = iqr
+
+        self.description = (
+            f"Calculate the Interquartile Range (IQR) of the plant heights based on the data provided in the figure."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Cumulative frequency diagrams"
+        self.source = "Adapted from Extended Mathematics for IGCSE"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Position of Lower Quartile }} (Q_1) &= 0.25 \\times {self.total_frequency} = {round(self.y_q1, 10)}\\\\"
+            f"\\text{{Reading from the graph at frequency }} {round(self.y_q1, 10)}: &\\\\"
+            f"Q_1 &= {self.h_q1}\\,\\text{{cm}}\\\\"
+            f"\\text{{Position of Upper Quartile }} (Q_3) &= 0.75 \\times {self.total_frequency} = {round(self.y_q3, 10)}\\\\"
+            f"\\text{{Reading from the graph at frequency }} {round(self.y_q3, 10)}: &\\\\"
+            f"Q_3 &= {self.h_q3}\\,\\text{{cm}}\\\\"
+            f"\\text{{Interquartile Range (IQR)}} &= Q_3 - Q_1\\\\"
+            f"&= {self.h_q3} - {self.h_q1}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Curve Data
+        # Define the key anchor points (x, y)
+        x_points = [self.h_min, self.h_q1, self.h_median, self.h_q3, self.h_max]
+        y_points = [0, self.y_q1, self.y_median, self.y_q3, self.total_frequency]
+
+        # Create a smooth curve using PchipInterpolator (preserves monotonicity)
+        # This ensures the graph never goes "down", which is impossible for cumulative freq.
+        interpolator = PchipInterpolator(x_points, y_points)
+        
+        # Generate dense points for plotting the smooth line
+        x_smooth = np.linspace(self.h_min, self.h_max, 300)
+        y_smooth = interpolator(x_smooth)
+
+        # Plotting
+        plt.figure(figsize=(10, 6))
+        
+        # Plot the main curve
+        plt.plot(x_smooth, y_smooth, color='blue', linewidth=2, label='Cumulative Frequency')
+
+        # Add guidelines for Q1
+        plt.hlines(y=self.y_q1, xmin=0, xmax=self.h_q1, colors='green', linestyles='dashed')
+        plt.vlines(x=self.h_q1, ymin=0, ymax=self.y_q1, colors='green', linestyles='dashed')
+        plt.text(0, self.y_q1 + 1, f'20 (25%)', color='green', va='bottom', fontsize=9)
+
+        # Add guidelines for Q3
+        plt.hlines(y=self.y_q3, xmin=0, xmax=self.h_q3, colors='red', linestyles='dashed')
+        plt.vlines(x=self.h_q3, ymin=0, ymax=self.y_q3, colors='red', linestyles='dashed')
+        plt.text(0, self.y_q3 + 1, f'60 (75%)', color='red', va='bottom', fontsize=9)
+
+        # Formatting the Graph
+        plt.title(f"Cumulative Frequency of Plant Heights (N={self.total_frequency})")
+        plt.xlabel("Height (cm)")
+        plt.ylabel("Cumulative Frequency")
+        plt.xlim(0, self.h_max + 5)
+        plt.xticks(np.arange(0, self.h_max + 6, 2)) # Set x-axis ticks to increments of 2
+        plt.ylim(0, self.total_frequency + 5)
+        plt.grid(True, alpha=0.3)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
