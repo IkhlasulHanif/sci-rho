@@ -476,3 +476,70 @@ class Mat106:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat107:
+    
+    def __init__(self):
+        # Generate 11 random test scores between 0 and 100
+        self.n_students = 11
+        self.scores = [rnd.randint(0, 100) for _ in range(self.n_students)]
+        self.scores.sort() # Important: Data must be sorted for quartiles
+
+        # For N=11 (odd):
+        # Median is the 6th value.
+        # Q1 is the median of the lower 5 values.
+        # Q3 is the median of the upper 5 values.
+
+        median_index = len(self.scores) // 2
+        # Lower half indices: 0 to 4. Median is at index 2.
+        q1 = self.scores[median_index // 2] 
+        # Upper half indices: 6 to 10. Median is at index 8.
+        q3 = self.scores[median_index + 1 + (median_index // 2)]
+        iqr = q3 - q1
+
+        self.answer = iqr
+
+        self.description = (
+            "Refer to the figure, which lists the test scores of 11 students sorted in ascending order. Calculate the Interquartile Range (IQR) of this data set."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Averages and measures of spread"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Sorted Data}} &= \\{{ {', '.join(map(str, self.scores))} \\}}\\\\"
+            f"\\text{{The dataset has }} N={self.n_students} \\text{{ values. The median is the 6th value.}}\\\\"
+            f"\\text{{Lower Half (first 5 values)}} &= \\{{ {', '.join(map(str, self.scores[:5]))} \\}}\\\\"
+            f"Q_1 &= \\text{{Median of Lower Half}} = {self.scores[2]}\\\\"
+            f"\\text{{Upper Half (last 5 values)}} &= \\{{ {', '.join(map(str, self.scores[6:]))} \\}}\\\\"
+            f"Q_3 &= \\text{{Median of Upper Half}} = {self.scores[8]}\\\\"
+            f"IQR &= Q_3 - Q_1\\\\"
+            f"&= {self.scores[8]} - {self.scores[2]}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 2))
+        ax.axis('off') # Turn off x/y axis
+
+        # Create a table with a single row of data
+        the_table = ax.table(cellText=[[str(x) for x in self.scores]],
+                            loc='center',
+                            cellLoc='center')
+
+        # Style the table
+        the_table.scale(1, 2.5) # Stretch height
+        the_table.auto_set_font_size(False)
+        the_table.set_fontsize(14)
+
+        # Add title
+        plt.title(f"Test Scores of {self.n_students} Students", fontsize=16, y=0.8)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
