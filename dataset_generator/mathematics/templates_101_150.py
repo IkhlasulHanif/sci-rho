@@ -543,3 +543,76 @@ class Mat107:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat108:
+    
+    def __init__(self):
+        # Random number of categories (rows) between 4 and 6
+        num_categories = rnd.randint(4, 6)
+
+        # Generate 'Number of Books' (x) - sequential starting from 1
+        self.x_values = np.arange(1, num_categories + 1)
+
+        # Generate 'Frequency' (f) - random integers between 1 and 20
+        self.f_values = np.random.randint(1, 20, size=num_categories)
+
+        # Create the Table
+        df = pd.DataFrame({
+            'Number of Books (x)': self.x_values,
+            'Frequency (f)': self.f_values
+        })
+
+        # Formula: Mean = sum(x * f) / sum(f)
+        total_frequency = np.sum(self.f_values)
+        weighted_sum = np.sum(self.x_values * self.f_values)
+        mean_books = weighted_sum / total_frequency
+
+        f_expansion = " + ".join([str(f) for f in self.f_values])
+        xf_expansion = " + ".join([f"({x} \\cdot {f})" for x, f in zip(self.x_values, self.f_values)])
+
+        self.answer = round(mean_books, 3)
+
+        self.description = (
+            "Refer to the figure. Calculate the mean number of books read by the students. Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Averages and measures of spread"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total Frequency }} (\\sum f) &= {f_expansion}\\\\"
+            f"&= {total_frequency}\\\\"
+            f"\\text{{Sum of Products }} (\\sum x \\cdot f) &= {xf_expansion}\\\\"
+            f"&= {weighted_sum}\\\\"
+            f"\\text{{Mean }} (\\bar{{x}}) &= \\frac{{\\sum x \\cdot f}}{{\\sum f}}\\\\"
+            f"&= \\frac{{{weighted_sum}}}{{{total_frequency}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.figure(figsize=(8, 5))
+        bars = plt.bar(self.x_values, self.f_values, color='skyblue', edgecolor='black', zorder=3)
+
+        # Add labels and title
+        plt.xlabel('Number of Books ($x$)')
+        plt.ylabel('Frequency ($f$)')
+        plt.title('Number of Books Read by Students')
+
+        # Customize ticks and grid
+        plt.xticks(self.x_values)
+        plt.grid(axis='y', linestyle='--', alpha=0.7, zorder=0)
+
+        # Optional: Add value labels on top of bars
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width() / 2, height,
+                    f'{height}', ha='center', va='bottom')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
