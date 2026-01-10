@@ -3,6 +3,7 @@ import pandas as pd
 import random as rnd
 import os
 import matplotlib.pyplot as plt
+from matplotlib.patches import Wedge, Circle
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -839,6 +840,120 @@ class Mat111:
         # Set appropriate y-limit
         max_height = max(self.food_sales + self.drink_sales)
         plt.ylim(0, max_height * 1.2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat112:
+    
+    def __init__(self):
+        # Randomize the key (1 symbol = X pizzas). Common pictogram keys: 4, 8, 12, etc.
+        self.key_value = rnd.choice([4, 8, 12, 16])
+        
+        # Define possible partial fractions for the problem (Quarter, Half, Three-Quarters, Full)
+        fractions = [0.25, 0.5, 0.75, 1.0]
+        fraction_names = {0.25: "one quarter-symbol", 0.5: "half-symbol", 
+                        0.75: "three quarter-symbol", 1.0: "full symbol"}
+        
+        # Randomize Tuesday's sales
+        full_symbols_tuesday = rnd.randint(1, 4)  # Between 1 and 4 full pizzas
+        fraction_tuesday = rnd.choice(fractions)
+        
+        total_pizzas_tuesday = (full_symbols_tuesday + fraction_tuesday) * self.key_value
+        
+        # Generate random data for other days to flesh out the chart
+        self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
+        self.data = {}
+        
+        for day in self.days:
+            if day == 'Tuesday':
+                self.data[day] = full_symbols_tuesday + fraction_tuesday
+            else:
+                # Random other days (integers or simple halves for visual variety)
+                self.data[day] = rnd.randint(1, 5) + rnd.choice([0, 0.5])
+
+        self.answer = int(total_pizzas_tuesday)
+
+        self.description = (
+            f"The pictogram shows pizzas sold on four evenings. "
+            f"The key indicates that one full symbol represents {self.key_value} pizzas. "
+            f"How many pizzas were sold on Tuesday?"
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Statistical charts and diagrams"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Value of 1 symbol}} &= {self.key_value}\\,\\text{{pizzas}}\\\\"
+            f"\\text{{Symbols on Tuesday}} &= {full_symbols_tuesday} + {fraction_tuesday}\\\\"
+            f"&= {round(full_symbols_tuesday + fraction_tuesday, 10)}\\\\"
+            f"\\text{{Total pizzas}} &= \\text{{Symbols on Tuesday}} \\times \\text{{Value of 1 symbol}}\\\\"
+            f"&= {round(full_symbols_tuesday + fraction_tuesday, 10)} \\times {self.key_value}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Create a simple "Pizza" marker using a circle patch or text
+        # Note: For a real image, we would load a .png. Here we draw circles.
+        
+        y_positions = range(len(self.days))
+        ax.set_yticks(y_positions)
+        ax.set_yticklabels(self.days[::-1], fontsize=12, fontweight='bold')
+        ax.set_xlim(0, max(self.data.values()) + 1)
+        ax.set_ylim(-0.5, len(self.days) - 0.5)
+        
+        # Hide X axis
+        ax.get_xaxis().set_visible(False)
+        
+        # Remove spines
+        for spine in ['top', 'right', 'bottom', 'left']:
+            ax.spines[spine].set_visible(False)
+
+        # 3. Draw Pictogram
+        # We will draw circles to represent pizzas.
+        # A full circle is a full pizza. Partial wedges for fractions.
+        
+        for i, day in enumerate(self.days[::-1]):
+            value = self.data[day]
+            full_count = int(value)
+            partial = value - full_count
+            
+            # Draw full symbols
+            for j in range(full_count):
+                # Draw a yellow circle with orange border (Pizza-ish)
+                circle = Circle((j + 0.5, i), 0.35, facecolor='gold', edgecolor='orange', linewidth=2)
+                ax.add_patch(circle)
+                
+                # Add "pepperoni" dots for detail
+                ax.scatter([j+0.5-0.1, j+0.5+0.1, j+0.5], [i+0.1, i+0.1, i-0.15], 
+                        color='darkred', s=20, zorder=2)
+
+            # Draw partial symbol if exists
+            if partial > 0:
+                # Theta1, Theta2 for wedge (0 to 360)
+                # 0.25 -> 90 deg, 0.5 -> 180 deg, etc.
+                theta = partial * 360
+                wedge = Wedge((full_count + 0.5, i), 0.35, 0, theta, facecolor='gold', edgecolor='orange', linewidth=2)
+                ax.add_patch(wedge)
+
+        # 4. Add Key and Text
+        plt.title("Pizzas Sold", fontsize=16, pad=20)
+        
+        # Add Key at the bottom
+        key_text = f"KEY:   = {self.key_value} Pizzas"
+        # Draw a small example pizza for the key
+        key_circle = Circle((0, -1.2), 0.35, facecolor='gold', edgecolor='orange', linewidth=2, clip_on=False)
+        ax.add_patch(key_circle)
+        # Since we can't easily place patches outside axes in relative coords, we use text annotation for the label
+        ax.text(0.5, -1.3, f"= {self.key_value} Pizzas", fontsize=12, ha='left', va='center', transform=ax.transData)
+        
+        plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
