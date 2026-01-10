@@ -1039,3 +1039,101 @@ class Mat113:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat114:
+    
+    def __init__(self):
+        # Randomize the two key points for the line of best fit
+        # Ensure x2 > x1 and y2 > y1 to simulate positive growth (fertilizer effect)
+        self.x1 = rnd.randint(5, 15)
+        self.y1 = rnd.randint(15, 30)
+        
+        self.x2 = self.x1 + rnd.randint(15, 25)  # Gap of 15-25 units
+        self.y2 = self.y1 + rnd.randint(20, 40)  # Significant growth
+        
+        # Calculate slope (m) and intercept (c) for the line: y = mx + c
+        self.m = (self.y2 - self.y1) / (self.x2 - self.x1)
+        self.c = self.y1 - self.m * self.x1
+        
+        # Randomize the query point (x_query)
+        # Pick a value somewhere between x1 and x2
+        x_query = rnd.randint(self.x1 + 2, self.x2 - 2)
+        y_query = self.m * x_query + self.c
+
+        # Generate "Scatter" data around this line
+        # We create random x values and calculate y based on the line + random noise
+        num_points = 20
+        self.scatter_x = np.linspace(self.x1 - 5, self.x2 + 5, num_points)
+        
+        # Add randomness to x (so they aren't perfectly spaced)
+        self.scatter_x = self.scatter_x + np.random.uniform(-1, 1, size=num_points)
+        
+        # Calculate y with noise
+        noise_level = (self.y2 - self.y1) * 0.15 # Noise relative to the data range
+        self.scatter_y = (self.m * self.scatter_x + self.c) + np.random.normal(0, noise_level, size=num_points)
+
+        self.answer = round(y_query, 3)
+
+        self.description = (
+            f"Using the line of best fit shown in the figure, calculate the "
+            f"predicted height (in cm) of a plant when {x_query} grams of fertilizer are used. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Scatter diagrams"
+        self.source = "Adapted from Extended Mathematics for Cambridge IGCSE"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify two points on the line:}} &\\\\"
+            f"(x_1, y_1) &= ({self.x1}, {self.y1})\\\\"
+            f"(x_2, y_2) &= ({self.x2}, {self.y2})\\\\"
+            f"\\text{{Calculate the slope }} m: &\\\\"
+            f"m &= \\frac{{y_2 - y_1}}{{x_2 - x_1}}\\\\"
+            f"&= \\frac{{{self.y2} - {self.y1}}}{{{self.x2} - {self.x1}}}\\\\"
+            f"&= \\frac{{{self.y2 - self.y1}}}{{{self.x2 - self.x1}}}\\\\"
+            f"&= {round(self.m, 10)}\\\\"
+            f"\\text{{Calculate the y-intercept }} c: &\\\\"
+            f"c &= y_1 - m \\cdot x_1\\\\"
+            f"&= {self.y1} - ({round(self.m, 10)})({self.x1})\\\\"
+            f"&= {self.y1} - {round(self.m * self.x1, 10)}\\\\"
+            f"&= {round(self.c, 10)}\\\\"
+            f"\\text{{Equation of the line:}} &\\\\"
+            f"y &= {round(self.m, 10)}x + {round(self.c, 10)}\\\\"
+            f"\\text{{Calculate height for }} x = {x_query}\\,\\text{{g:}} &\\\\"
+            f"y &= {round(self.m, 10)}({x_query}) + {round(self.c, 10)}\\\\"
+            f"&= {round(self.m * x_query, 10)} + {round(self.c, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Plot
+        plt.figure(figsize=(8, 6))
+        
+        # Plot Scatter Data
+        plt.scatter(self.scatter_x, self.scatter_y, color='gray', alpha=0.6, label='Observed Data')
+        
+        # Plot the Line of Best Fit (extend slightly beyond x1 and x2)
+        line_x = np.array([min(self.scatter_x), max(self.scatter_x)])
+        line_y = self.m * line_x + self.c
+        plt.plot(line_x, line_y, color='blue', linewidth=2, label='Line of Best Fit')
+        
+        # Highlight the two specific points mentioned in the problem
+        plt.plot([self.x1, self.x2], [self.y1, self.y2], 'ro', zorder=5, label='Reference Points')
+        plt.text(self.x1, self.y1 + 2, f'({self.x1}, {self.y1})', fontsize=10, ha='center', color='red')
+        plt.text(self.x2, self.y2 - 4, f'({self.x2}, {self.y2})', fontsize=10, ha='center', color='red')
+
+        # Formatting
+        plt.title("Plant Height vs. Fertilizer Amount")
+        plt.xlabel("Fertilizer (grams)")
+        plt.ylabel("Height (cm)")
+        plt.grid(True, linestyle='--', alpha=0.5)
+        plt.legend()
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
