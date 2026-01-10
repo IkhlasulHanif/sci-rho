@@ -680,3 +680,89 @@ class Mat109:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat110:
+    
+    def __init__(self):
+        # Generate a random number of members (between 10 and 20)
+        num_members = np.random.randint(10, 21)
+        # Generate random ages between 15 and 65
+        self.ages = np.random.randint(15, 66, size=num_members)
+        self.ages.sort()
+
+        lowest = self.ages[0]
+        highest = self.ages[-1]
+
+        self.answer = int(highest - lowest)
+
+        self.description = (
+            "The stem-and-leaf diagram below displays the ages of members in a book club. "
+            "Using the provided key, calculate the range of the ages."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Statistical charts and diagrams"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Highest age}} &= {highest}\\\\"
+            f"\\text{{Lowest age}} &= {lowest}\\\\"
+            f"\\text{{Range}} &= \\text{{Highest}} - \\text{{Lowest}}\\\\"
+            f"&= {highest} - {lowest}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Process Data into Stems and Leaves
+        stems = {}
+        for age in self.ages:
+            stem = age // 10
+            leaf = age % 10
+            if stem not in stems:
+                stems[stem] = []
+            stems[stem].append(leaf)
+        
+        sorted_stems = sorted(stems.keys())
+
+        # Construct the Diagram Text
+        # Calculate padding based on the largest stem (usually 1 or 2 digits)
+        max_stem_width = len(str(max(sorted_stems)))
+        
+        diagram_lines = []
+        for stem in sorted_stems:
+            leaves = stems[stem]
+            # Use double spaces to mimic the LaTeX \, spacing
+            leaves_str = "  ".join(str(l) for l in leaves)
+            # Format: "Stem | Leaves"
+            line = f"{stem:>{max_stem_width}} | {leaves_str}"
+            diagram_lines.append(line)
+        
+        diagram_text = "\n".join(diagram_lines)
+
+        # Generate the Key
+        # Select a stem/leaf pair from the data to serve as the key (e.g., from the middle)
+        key_stem = sorted_stems[len(sorted_stems) // 2]
+        key_leaf = stems[key_stem][0]
+        key_value = key_stem * 10 + key_leaf
+        key_text = f"Key: {key_stem} | {key_leaf} = {key_value} years old"
+
+        # Create the Figure
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.axis('off')  # Turn off the axis lines
+
+        # Add the Diagram
+        # Using 'monospace' font is critical for the stem and leaf alignment
+        ax.text(0.2, 0.60, diagram_text, fontsize=16, family='monospace', va='top')
+
+        # Add the Key
+        # Position the key below the diagram. 
+        # (Adjust the y-coordinate 0.35 if the diagram is very long)
+        ax.text(0.2, 0.30, key_text, fontsize=12, va='top')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
