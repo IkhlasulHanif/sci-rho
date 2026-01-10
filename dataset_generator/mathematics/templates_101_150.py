@@ -1496,3 +1496,73 @@ class Mat118:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat119:
+    
+    def __init__(self):
+        # Define 3 random widths (e.g., between 5 and 20)
+        self.widths = [rnd.randint(2, 4) * 5 for _ in range(3)] 
+        
+        # Define 3 random densities (e.g., 0.5, 1.0, ..., 5.0)
+        self.densities = [rnd.choice([x / 5 for x in range(1, 26)]) for _ in range(3)]
+        
+        # Calculate Interval Boundaries
+        self.boundaries = [0]
+        current_x = 0
+        for w in self.widths:
+            current_x += w
+            self.boundaries.append(current_x)
+            
+        # Calculate Total Frequency (The Answer)
+        # Frequency = Width * Frequency Density
+        frequencies = [w * h for w, h in zip(self.widths, self.densities)]
+        total_frequency = sum(frequencies)
+
+        self.answer = int(round(total_frequency, 0))
+
+        self.description = (
+            f"What is the total frequency of the data represented by these three bars?"
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Histograms"
+        self.source = "Adapted from Cambridge IGCSE Mathematics"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Frequency}} &= \\text{{Width}} \\times \\text{{Frequency Density}} \\\\"
+            f"\\text{{Total Frequency}} &= ({self.widths[0]} \\times {self.densities[0]}) + ({self.widths[1]} \\times {self.densities[1]}) + ({self.widths[2]} \\times {self.densities[2]}) \\\\"
+            f"&= {round(self.widths[0] * self.densities[0], 10)} + {round(self.widths[1] * self.densities[1], 10)} + {round(self.widths[2] * self.densities[2], 10)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Generate the Plot
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        # Plot bars: x needs the left edges, width needs the specific bar widths
+        # align='edge' makes the bar start at x and extend right by 'width'
+        ax.bar(x=self.boundaries[:-1], height=self.densities, width=self.widths, 
+            align='edge', color='skyblue', edgecolor='black', alpha=0.7)
+
+        # Formatting to match Exam Style
+        ax.set_title("Frequency Density vs Interval", fontsize=14)
+        ax.set_xlabel("Variable $x$ (Intervals)", fontsize=12)
+        ax.set_ylabel("Frequency Density", fontsize=12)
+        
+        # Set X-ticks exactly at the boundaries so students can read widths easily
+        ax.set_xticks(self.boundaries)
+        
+        # Add grid for readability
+        ax.grid(axis='y', linestyle='--', alpha=0.5)
+        
+        for i, (w, h) in enumerate(zip(self.widths, self.densities)):
+            mid_point = self.boundaries[i] + (w / 2)
+            ax.text(mid_point, h + 0.05, f"{h}", ha='center', fontweight='bold')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
