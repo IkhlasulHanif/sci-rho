@@ -766,3 +766,80 @@ class Mat110:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat111:
+    
+    def __init__(self):
+        # Day names
+        self.days = ['Friday', 'Saturday', 'Sunday']
+        
+        # Generate random data for Friday (The focus of the question)
+        # Ensure numbers are nice integers (e.g., steps of 10 or 50) for readability
+        self.friday_total = rnd.randint(40, 80) * 10  # e.g., 400 to 800
+        self.friday_food = rnd.randint(20, (self.friday_total // 10) - 10) * 10 # Ensure food < total
+        friday_drink = self.friday_total - self.friday_food
+        
+        # Generate random data for other days (Background context)
+        saturday_food = rnd.randint(20, 60) * 10
+        saturday_drink = rnd.randint(10, 40) * 10
+        
+        sunday_food = rnd.randint(20, 60) * 10
+        sunday_drink = rnd.randint(10, 40) * 10
+
+        # Organize data into lists
+        self.food_sales = np.array([self.friday_food, saturday_food, sunday_food])
+        self.drink_sales = np.array([friday_drink, saturday_drink, sunday_drink])
+
+        self.answer = friday_drink
+
+        self.description = (
+            f"The composite bar chart below shows the total revenue of a store over three days. "
+            f"On Friday, the total height of the bar represents ${self.friday_total}. "
+            f"What is the value of the 'Drink' sales for that day?"
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Statistical charts and diagrams"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total sales on Friday}} &= \\${self.friday_total}\\\\"
+            f"\\text{{Food sales on Friday}} &= \\${self.friday_food}\\\\"
+            f"\\text{{Drink sales}} &= \\text{{Total sales}} - \\text{{Food sales}}\\\\"
+            f"&= {self.friday_total} - {self.friday_food}\\\\"
+            f"&= \\${self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.figure(figsize=(8, 6))
+        
+        # Plot 'Food' first (bottom layer)
+        p1 = plt.bar(self.days, self.food_sales, color='#4e79a7', label='Food', width=0.5)
+        
+        # Plot 'Drink' on top of 'Food' (bottom=food_sales)
+        p2 = plt.bar(self.days, self.drink_sales, bottom=self.food_sales, color='#f28e2b', label='Drink', width=0.5)
+
+        # 4. Formatting the Figure
+        plt.ylabel('Revenue ($)')
+        plt.title('Store Revenue: Food vs Drink Sales')
+        plt.legend(loc='upper right')
+        
+        # Add grid on y-axis for easier reading
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        # Optional: Annotate the specific bar mentioned in the question for clarity
+        # Label the Total Height of Friday
+        plt.text(0, self.friday_total + 10, f"${self.friday_total}", ha='center', fontweight='bold')
+        
+        # Label the Food Section of Friday
+        plt.text(0, self.friday_food / 2, f"${self.friday_food}", ha='center', color='white', fontweight='bold')
+
+        # Set appropriate y-limit
+        max_height = max(self.food_sales + self.drink_sales)
+        plt.ylim(0, max_height * 1.2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
