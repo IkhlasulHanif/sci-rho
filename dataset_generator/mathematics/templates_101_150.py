@@ -4,6 +4,7 @@ import random as rnd
 import os
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge, Circle
+from scipy.interpolate import PchipInterpolator
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -1229,6 +1230,105 @@ class Mat115:
         plt.text(self.student_a_x, self.student_a_y_actual + 3 * sign, 
                 f'({self.student_a_x}, {self.student_a_y_actual})', 
                 fontsize=10, verticalalignment='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat116:
+    
+    def __init__(self):
+        # Random total number of students (e.g., between 150 and 300)
+        self.total_students = rnd.randint(150, 300)
+
+        # X-axis points (Marks): Fixed milestones to keep the graph structure similar to the prompt
+        self.x_points = np.array([0, 20, 40, 50, 70, 90, 100])
+
+        # Y-axis points (Cumulative Frequency):
+        # We need 5 intermediate points between 0 and total_students that are strictly increasing
+        intermediate_points = sorted(rnd.sample(range(10, self.total_students - 10), 5))
+
+        # Combine to form the full coordinate set
+        self.y_points = np.array([0] + intermediate_points + [self.total_students])
+
+        # Create Smooth Curve (Interpolation)
+        # We use PchipInterpolator because it guarantees the curve is monotonic (always goes up),
+        # which is required for cumulative frequency.
+        interpolator = PchipInterpolator(self.x_points, self.y_points)
+
+        # Generate smooth line data
+        self.x_smooth = np.linspace(0, 100, 500)
+        self.y_smooth = interpolator(self.x_smooth)
+
+        # Calculate Median
+        self.median_y = self.total_students / 2
+
+        # Find the index where y_smooth is closest to median_y
+        idx_median = np.argmin(np.abs(self.y_smooth - self.median_y))
+        self.median_x = self.x_smooth[idx_median]
+
+        # There'll be a green line showing the median_x and median_y
+        # It had to be seen at the graph
+        self.answer = round(self.median_x, 1)
+
+        self.description = (
+            f"Using the coordinate points provided in the figure, determine the median mark for the students."
+            f"Give your answer correct to 1 decimal places."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Cumulative frequency diagrams"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total number of students (}} N \\text{{)}} &= {self.total_students}\\\\"
+            f"\\text{{The median occurs at half of the total cumulative frequency:}} &\\\\"
+            f"\\text{{Median Position}} &= \\frac{{N}}{{2}}\\\\"
+            f"&= \\frac{{{self.total_students}}}{{2}}\\\\"
+            f"&= {round(self.total_students / 2, 10)}\\\\"
+            f"\\text{{Locate }} y &= {round(self.total_students / 2, 10)} \\text{{ on the vertical axis (Cumulative Frequency).}} &\\\\"
+            f"\\text{{Read the corresponding value on the horizontal axis (Marks):}} &\\\\"
+            f"\\text{{Median}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Plotting
+        plt.figure(figsize=(10, 6))
+
+        # Plot the smooth curve
+        plt.plot(self.x_smooth, self.y_smooth, color='blue', linewidth=1, label='Cumulative Frequency')
+
+        # Plot the specific coordinate points used
+        plt.scatter(self.x_points, self.y_points, color='red', zorder=5)
+
+        # Draw Median Lines (Dashed)
+        # Horizontal line from Y-axis to curve
+        plt.hlines(self.median_y, -10, self.median_x, colors='green', linestyles='dashed')
+        # Vertical line from curve to X-axis
+        plt.vlines(self.median_x, -10, self.median_y, colors='green', linestyles='dashed')
+
+        # Formatting
+        plt.title(f"Cumulative Frequency Diagram (N={self.total_students})", fontsize=14)
+        plt.xlabel("Marks (0-100)", fontsize=12)
+        plt.ylabel("Cumulative Frequency", fontsize=12)
+
+        # Set limits
+        plt.xlim(-10, 110)
+        plt.ylim(-10, self.total_students + 10)
+
+        # Set x-axis ticks to increments of 10
+        plt.xticks(np.arange(-10, 111, 5))
+
+        # Add Grid
+        plt.grid(True, which='both', linestyle='--', alpha=0.7)
+
+        # Show the specific points as text
+        for i, (x, y) in enumerate(zip(self.x_points, self.y_points)):
+            plt.text(x, y + (self.total_students*0.025), f"({x},{y})", fontsize=8, ha='center')
+
+        plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
