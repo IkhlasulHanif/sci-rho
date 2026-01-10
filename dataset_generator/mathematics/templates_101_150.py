@@ -958,3 +958,84 @@ class Mat112:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat113:
+    
+    def __init__(self):
+        # Randomize the Target Point P
+        # Age between 2 and 8 years, Value between 5k and 20k
+        self.target_age = rnd.randint(2, 8)
+        self.target_value = 5 * rnd.randint(1, 4)
+        
+        # Generate Random Data Points (Background Noise)
+        # Create 9 other points with a general downward trend (older = cheaper)
+        num_points = 9
+        self.ages = np.random.uniform(1, 10, num_points)
+        
+        # Simple linear trend + noise for realism
+        # Base formula: Value starts high and decreases by ~2k per year
+        self.values = 25 - (2 * self.ages) + np.random.normal(0, 2, num_points)
+        
+        # Ensure values are positive and reasonable
+        self.values = np.clip(self.values, 2, 28)
+        
+        # Add target point to lists for plotting
+        all_ages = np.append(self.ages, self.target_age)
+        all_values = np.append(self.values, self.target_value)
+
+        self.answer = self.target_value
+
+        self.description = (
+            f"According to the scatter diagram, what is the resale value (in thousands of dollars) of the {self.target_age}-year-old car represented by point P?"
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Scatter diagrams"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the age of the car represented by point P:}} &\\\\"
+            f"\\text{{Age (x-axis)}} &= {self.target_age}\\,\\text{{years}}\\\\"
+            f"\\text{{Locate point P on the scatter diagram at }} x &= {self.target_age}.\\\\"
+            f"\\text{{Read the corresponding value on the vertical axis (y-axis):}} &\\\\"
+            f"\\text{{Value}} &= {self.target_value}\\\\"
+            f"\\text{{Thus, the resale value is:}} &\\\\"
+            f"&= {self.answer}\\,\\text{{thousand dollars}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Plot
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plot background points (blue)
+        ax.scatter(self.ages, self.values, color='cornflowerblue', s=80, alpha=0.7, label='Other Cars')
+        
+        # Plot target point P (red, larger)
+        ax.scatter(self.target_age, self.target_value, color='crimson', s=120, zorder=5, label=f'Point P')
+        
+        # Annotation and Formatting
+        # Label Point P
+        ax.annotate(f' P', (self.target_age, self.target_value), 
+                    xytext=(5, 5), textcoords='offset points', 
+                    fontsize=14, fontweight='bold', color='crimson')
+
+        # Add dashed lines to axes for readability
+        ax.vlines(self.target_age, 0, self.target_value, linestyle='--', color='gray', alpha=0.5)
+        ax.hlines(self.target_value, 0, self.target_age, linestyle='--', color='gray', alpha=0.5)
+
+        # Labels and Title
+        ax.set_title("Car Age vs. Resale Value", fontsize=16)
+        ax.set_xlabel("Age of Car (Years)", fontsize=12)
+        ax.set_ylabel("Resale Value ($1000s)", fontsize=12)
+        
+        # Set Limits and Grid
+        ax.set_xlim(0, 11)
+        ax.set_ylim(0, 30)
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
