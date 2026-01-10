@@ -616,3 +616,67 @@ class Mat108:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat109:
+    
+    def __init__(self):
+        # Generating random frequencies between 2 and 15 for each group
+        freq1 = rnd.randint(2, 15)
+        freq2 = rnd.randint(2, 15)
+        freq3 = rnd.randint(2, 15)
+
+        self.frequencies = [freq1, freq2, freq3]
+        self.intervals = [r'$10 < h \leq 20$', r'$20 < h \leq 30$', r'$30 < h \leq 40$']
+
+        # Calculate an estimate of the mean height
+        # For grouped data, we use the midpoint of each class interval.
+        # Midpoints: 10-20 -> 15, 20-30 -> 25, 30-40 -> 35
+        midpoints = [15, 25, 35]
+
+        # Formula: Sum(Frequency * Midpoint) / Total Frequency
+        sum_f_x = sum(f * x for f, x in zip(self.frequencies, midpoints))
+        total_frequency = sum(self.frequencies)
+        estimated_mean = sum_f_x / total_frequency
+
+        self.answer = round(estimated_mean, 3)
+
+        self.description = (
+            "Refer to the figure. Calculate the mean number of books read by the students. Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Averages and measures of spread"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Midpoints }} (x) &= 15, 25, 35\\\\"
+            f"\\text{{Mean }} (\\bar{{x}}) &= \\frac{{\\sum f \\cdot x}}{{\\sum f}}\\\\"
+            f"&= \\frac{{({self.frequencies[0]} \\times 15) + ({self.frequencies[1]} \\times 25) + ({self.frequencies[2]} \\times 35)}}{{{self.frequencies[0]} + {self.frequencies[1]} + {self.frequencies[2]}}}\\\\"
+            f"&= \\frac{{{self.frequencies[0] * 15} + {self.frequencies[1] * 25} + {self.frequencies[2] * 35}}}{{{sum(self.frequencies)}}}\\\\"
+            f"&= \\frac{{{sum(f * x for f, x in zip(self.frequencies, [15, 25, 35]))}}}{{{sum(self.frequencies)}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.figure(figsize=(8, 6))
+        bars = plt.bar(self.intervals, self.frequencies, color='#66b3ff', edgecolor='black', width=0.6)
+
+        # Add labels and title
+        plt.xlabel(r'Height ($h$ in cm)', fontsize=12)
+        plt.ylabel('Frequency', fontsize=12)
+        plt.title('Height of Saplings', fontsize=14, fontweight='bold')
+
+        # Add the frequency count on top of each bar
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2.0, height + 0.2, 
+                    f'{int(height)}', ha='center', va='bottom', fontsize=11)
+
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
