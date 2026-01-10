@@ -352,3 +352,67 @@ class Mat104:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat105:
+    
+    def __init__(self):
+        # Define the time slots
+        self.times = ["08:00", "10:00", "12:00", "14:00", "16:00"]
+        
+        # Generate random temperatures in degrees Celsius with a realistic daily pattern
+        # (Rise in the morning, peak around noon, drop in the afternoon)
+        start_temp = rnd.randint(15, 25)
+        
+        t1 = start_temp
+        t2 = t1 + rnd.randint(1, 4)      # 10:00 (Rising)
+        t3 = t2 + rnd.randint(1, 3)      # 12:00 (Peak)
+        t4 = t3 - rnd.randint(1, 3)      # 14:00 (Starting to drop or plateau)
+        t5 = t4 - rnd.randint(1, 4)      # 16:00 (Dropping)
+        
+        self.temps = [t1, t2, t3, t4, t5]
+
+        hottest_point = max(self.temps)
+        final_point = self.temps[-1]
+
+        self.answer = hottest_point - final_point
+
+        self.description = (
+            "The line graph above represents the temperature recorded every two hours in a city over an 8-hour period. "
+            "Calculate the total drop in temperature, in degrees Celsius, between the hottest point recorded and the temperature at 16:00."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Interpreting statistical data"
+        self.source = "Adapted from Cambridge IGCSE® Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Hottest point}} &= \\max({self.temps[0]}, {self.temps[1]}, {self.temps[2]}, {self.temps[3]}, {self.temps[4]})\\,^\\circ\\text{{C}}\\\\"
+            f"&= {hottest_point}\\,^\\circ\\text{{C}}\\\\"
+            f"\\text{{Temperature at 16:00}} &= {final_point}\\,^\\circ\\text{{C}}\\\\"
+            f"\\text{{Total drop}} &= \\text{{Hottest point}} - \\text{{Temperature at 16:00}}\\\\"
+            f"&= {hottest_point} - {final_point}\\\\"
+            f"&= {self.answer}\\,^\\circ\\text{{C}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.figure(figsize=(8, 6))
+        
+        # Plotting the line graph with star markers
+        plt.plot(self.times, self.temps, marker='*', markersize=12, color='navy', linestyle='-', linewidth=2, label='Temp (°C)')
+        
+        # Adding titles and labels
+        plt.title("Temperature Fluctuation", fontsize=14)
+        plt.xlabel("Time", fontsize=12)
+        plt.ylabel("Temperature (°C)", fontsize=12)
+        
+        # Adding a grid for easier reading (similar to graph paper)
+        plt.grid(True, linestyle='--', alpha=0.7)
+        
+        # Set Y-axis ticks to be integers only
+        plt.yticks(range(min(self.temps) - 2, max(self.temps) + 3))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
