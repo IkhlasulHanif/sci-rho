@@ -1423,3 +1423,76 @@ class Mat117:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat118:
+    
+    def __init__(self):
+        # Random start for the class interval (e.g., between 0 and 50)
+        self.start_x = rnd.randint(0, 50)
+
+        # Random width for the class interval (e.g., between 5 and 30)
+        self.width = rnd.randint(5, 30)
+        self.end_x = self.start_x + self.width
+
+        # Random Frequency Density (e.g., between 0.5 and 5.0, rounded to 1 decimal)
+        self.freq_density = round(rnd.uniform(0.5, 5.0), 1)
+
+        # Calculate the Answer (Frequency)
+        # Formula: Frequency = Frequency Density * Class Width
+        frequency = self.freq_density * self.width
+
+        self.answer = round(frequency, 1)
+
+        self.description = (
+            f"Calculate the frequency of the data represented by this bar. Give your answer correct to 1 decimal place."
+        )
+
+        self.topic = "Statistics"
+        self.subtopic = "Histograms"
+        self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Class Width}} &= {self.end_x} - {self.start_x}\\\\"
+            f"&= {self.width}\\\\"
+            f"\\text{{Frequency}} &= \\text{{Frequency Density}} \\times \\text{{Class Width}}\\\\"
+            f"&= {self.freq_density} \\times {self.width}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        # Create the Figure
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        # Plot the bar
+        # We use align='edge' so the bar starts exactly at 'start_x'
+        ax.bar(self.start_x, self.freq_density, width=self.width, align='edge',
+            color='skyblue', edgecolor='black', alpha=0.7)
+
+        # Add freq_density text at the top of the bar
+        ax.text(self.start_x + self.width / 2, self.freq_density + 0.1, f'{self.freq_density}',
+                ha='center', va='bottom', fontsize=10, color='black')
+
+        # Formatting the Plot to look like a Textbook Question
+        ax.set_xlabel("Class Interval ($x$)", fontsize=12)
+        ax.set_ylabel("Frequency Density", fontsize=12)
+
+        # Set axis limits to give some breathing room
+        ax.set_xlim(0, self.start_x + self.end_x)
+        ax.set_ylim(0, self.freq_density + 1)
+
+        # Add grid for easier reading
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+
+        # Add specific ticks for the interval start and end
+        current_xticks = list(ax.get_xticks())
+        # Ensure our start and end points are explicitly labeled
+        important_ticks = sorted(list(set([0, self.start_x, self.end_x])))
+        ax.set_xticks(important_ticks)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
