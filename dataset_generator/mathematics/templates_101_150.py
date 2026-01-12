@@ -2034,3 +2034,90 @@ class Mat124:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat125:
+    
+    def __init__(self):
+        # We work backwards to ensure integer answers.
+        # Choose a scale factor 'k' for y = h(kx) (e.g., 2, 3, or 0.5)
+        k_options = [2, 3, 4] 
+        self.k = rnd.choice(k_options)
+        
+        # Choose the 'new' intercept first (the answer), so the 'original' intercept is a multiple of k
+        answer_intercept = rnd.randint(1, 4)
+        self.original_intercept = answer_intercept * self.k
+
+        self.answer = answer_intercept
+
+        self.description = (
+            f"The blue solid line in the figure displays the graph of y = h(x), "
+            f"which intersects the positive x-axis at x = {self.original_intercept}. "
+            f"The red dashed line represents the transformation y = h({self.k}x). "
+            f"Find the x-intercept of the transformed graph y = h({self.k}x)."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The x-intercept of the original function }} y = h(x) \\text{{ is }} x &= {self.original_intercept}\\\\"
+            f"\\text{{This implies that:}} &\\\\"
+            f"h({self.original_intercept}) &= 0\\\\"
+            f"\\text{{For the transformed function }} y = h({self.k}x)\\text{{, we find the x-intercept by setting }} y &= 0:\\\\"
+            f"h({self.k}x) &= 0\\\\"
+            f"\\text{{Since }} h({self.original_intercept}) = 0\\text{{, we equate the arguments:}} &\\\\"
+            f"{self.k}x &= {self.original_intercept}\\\\"
+            f"x &= \\frac{{{self.original_intercept}}}{{{self.k}}}\\\\"
+            f"x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    # Define the abstract function h(x). 
+    # A simple inverted parabola shifted to hit the original_intercept works well visually.
+    # h(x) = -(x - original_intercept) * np.cbrt(x + 16)
+    def h(self, x):
+        return -1 * (x - self.original_intercept) * np.cbrt(x + 16)
+
+    def generate(self, num):
+        # Setup the Plot
+        x_max = self.original_intercept + 2
+        x = np.linspace(-3, x_max, 400)
+        
+        plt.figure(figsize=(10, 6))
+        
+        # Plot Original Graph y = h(x)
+        plt.plot(x, self.h(x), label=r'$y = h(x)$', color='blue', linewidth=2)
+        
+        # Plot Transformed Graph y = h(kx)
+        # We calculate the y values by passing (k*x) into the function h
+        plt.plot(x, self.h(self.k * x), label=fr'$y = h({self.k}x)$', color='red', linestyle='--', linewidth=2)
+        
+        # Styling the Axes
+        ax = plt.gca()
+        ax.spines['left'].set_position('zero')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        plt.grid(True, linestyle=':', alpha=0.6)
+        
+        # Annotate the known intercept (Original)
+        plt.plot(self.original_intercept, 0, 'bo') # Blue dot
+        plt.annotate(f'{self.original_intercept}', 
+                    (self.original_intercept, 0), 
+                    textcoords="offset points", 
+                    xytext=(5, 10), 
+                    ha='center', color='blue', fontweight='bold')
+
+        # Add limits to make it look nice
+        plt.xlim(-3, x_max + 1)
+        # Dynamic y-limits based on the peak of the curve
+        y_peak = np.max(self.h(x))
+        plt.ylim(-y_peak/2, y_peak + (y_peak/4))
+        
+        plt.legend(loc='upper right')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
