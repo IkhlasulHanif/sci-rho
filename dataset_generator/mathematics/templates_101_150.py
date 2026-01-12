@@ -1866,3 +1866,100 @@ class Mat122:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat123:
+    
+    def __init__(self):
+        # Original Vertex (h, k)
+        self.h = rnd.randint(-4, 4)
+        self.k = rnd.randint(-4, 4)
+        
+        # Transformation parameters: f(x - a) + b
+        # Shift 'a' (horizontal) and 'b' (vertical)
+        # Excluding 0 to ensure a visible transformation
+        self.a = rnd.choice([i for i in range(-5, 6) if i != 0])
+        self.b = rnd.choice([i for i in range(-5, 6) if i != 0])
+        
+        # Calculate new vertex for the transformed graph g(x)
+        self.new_h = self.h + self.a
+        self.new_k = self.k + self.b
+
+        self.answer = self.new_k
+
+        sign_a = '-' if self.a > 0 else '+'
+        sign_b = '+' if self.b > 0 else '-'
+        label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
+
+        self.description = (
+            f"The figure illustrates the graph of a quadratic function $y = f(x)$ which has a minimum turning point at the coordinate $({self.h}, {self.k})$. The figure also indicates a second dashed curve representing a transformation {label_g}. "
+            f"Calculate the $y$-coordinate of the minimum point of the transformed graph $g(x)$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original vertex coordinates}} &= ({self.h}, {self.k})\\\\"
+            f"\\text{{Vertical translation }} (b) &= {self.b}\\\\"
+            f"\\text{{The new }} y\\text{{-coordinate is given by:}} &\\\\"
+            f"y_{{new}} &= k + b\\\\"
+            f"&= {self.k} + ({self.b})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Define range for x
+        # Center the plot between the two vertices and add padding
+        center_x = (self.h + self.new_h) / 2
+        span_x = max(abs(self.new_h - self.h), 4) * 1.5
+        x = np.linspace(center_x - span_x, center_x + span_x, 500)
+        
+        # f(x) = (x - h)^2 + k  (Base quadratic)
+        f_x = (x - self.h)**2 + self.k
+        
+        # g(x) = f(x - a) + b
+        #      = ((x - a) - h)^2 + k + b
+        #      = (x - (h + a))^2 + (k + b)
+        g_x = (x - self.new_h)**2 + self.new_k
+
+        # Create Figure
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plot f(x) (Original)
+        ax.plot(x, f_x, label=r'$f(x)$', color='blue', linewidth=2)
+        # Mark original vertex
+        ax.plot(self.h, self.k, 'o', color='blue')
+        ax.text(self.h, self.k - 0.5 if self.k < 0 else self.k + 0.5, f'({self.h}, {self.k})', 
+                ha='center', va='top' if self.k < 0 else 'bottom', color='blue', fontweight='bold')
+
+        # Plot g(x) (Transformed)
+        # Determine sign for label: f(x - 3) vs f(x + 3)
+        sign_a = '-' if self.a > 0 else '+'
+        sign_b = '+' if self.b > 0 else '-'
+        label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
+        
+        ax.plot(x, g_x, label=label_g, linestyle='--', color='red', linewidth=2)
+        
+        # Formatting
+        ax.set_xlabel("$x$", fontsize=12)
+        ax.set_ylabel("$y$", fontsize=12)
+        
+        # Draw axes through origin
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        
+        # Grid and limits
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend(fontsize=11)
+        
+        # Adjust Y-limits to make the graph look nice
+        y_min = min(self.k, self.new_k) - 5
+        y_max = max(self.k, self.new_k) + 10
+        ax.set_ylim(y_min, y_max)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
