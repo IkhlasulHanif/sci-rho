@@ -1661,3 +1661,114 @@ class Mat120:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat121:
+    
+    def __init__(self):
+        # We work backwards to ensure the solution lies on integer coordinates (readable graph)
+
+        # The question asks for f(g(start_x))
+        self.start_x = rnd.randint(1, 6)
+
+        # Define g(x) logic
+        # g(x) must take start_x and output an 'intermediate' integer
+        self.intermediate_val = rnd.randint(1, 6)
+
+        # Pick a second point for g(x) to define the line
+        # Ensure x2 is different from start_x
+        self.g_x2 = self.start_x
+        while self.g_x2 == self.start_x:
+            self.g_x2 = rnd.randint(0, 8)
+        self.g_y2 = rnd.randint(0, 8)
+
+        # Points for g(x): (start_x, intermediate_val) and (g_x2, g_y2)
+        # Equation g(x): y - y1 = m(x - x1)
+        self.m_g = (self.g_y2 - self.intermediate_val) / (self.g_x2 - self.start_x)
+        self.c_g = self.intermediate_val - (self.m_g * self.start_x)
+
+        # Define f(x) logic
+        # f(x) must take 'intermediate_val' (which is the output of g) as its input
+        # and produce a 'final_ans'
+        self.final_ans = rnd.randint(0, 8)
+
+        # Pick a second point for f(x) to define the line
+        # Ensure f_x2 is different from intermediate_val
+        self.f_x2 = self.intermediate_val
+        while self.f_x2 == self.intermediate_val:
+            self.f_x2 = rnd.randint(0, 8)
+        self.f_y2 = rnd.randint(0, 8)
+
+        # Points for f(x): (intermediate_val, final_ans) and (f_x2, f_y2)
+        self.m_f = (self.f_y2 - self.final_ans) / (self.f_x2 - self.intermediate_val)
+        self.c_f = self.final_ans - (self.m_f * self.intermediate_val)
+
+        self.answer = self.final_ans
+
+        self.description = (
+            f"Using the graphs described in the figure, evaluate the composite function $f(g({self.start_x}))$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{To evaluate the composite function }} f(g({self.start_x})), \\text{{ we work from the inside out.}}\\\\"
+            f"\\text{{Step 1: Evaluate the inner function, }} g(x), \\text{{ at }} x = {self.start_x}.\\\\"
+            f"\\text{{From the graph of }} g(x), \\text{{ the corresponding y-value is:}}\\\\"
+            f"g({self.start_x}) &= {self.intermediate_val}\\\\"
+            f"\\text{{Step 2: Substitute this result into the outer function, }} f(x).\\\\"
+            f"f(g({self.start_x})) &= f({self.intermediate_val})\\\\"
+            f"\\text{{Step 3: Evaluate }} f(x) \\text{{ at }} x = {self.intermediate_val}.\\\\"
+            f"\\text{{From the graph of }} f(x), \\text{{ the corresponding y-value is:}}\\\\"
+            f"f({self.intermediate_val}) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        plt.figure(figsize=(8, 8))
+
+        # Define x range for plotting lines
+        x_range = np.linspace(-2, 10, 100)
+
+        # Calculate y values
+        y_f = self.m_f * x_range + self.c_f
+        y_g = self.m_g * x_range + self.c_g
+
+        # Plot Lines
+        plt.plot(x_range, y_f, label=f'$f(x)$', color='blue', linewidth=2)
+        plt.plot(x_range, y_g, label=f'$g(x)$', color='red', linewidth=2)
+
+        # Plot the specific integer points (to make it look like a textbook problem)
+        # f(x) points
+        plt.scatter([self.intermediate_val, self.f_x2], [self.final_ans, self.f_y2], color='blue', zorder=5)
+        # g(x) points
+        plt.scatter([self.start_x, self.g_x2], [self.intermediate_val, self.g_y2], color='red', zorder=5)
+
+        # Add text labels for the scatter points
+        plt.text(self.intermediate_val, self.final_ans + 0.2, f'({self.intermediate_val}, {self.final_ans})', color='blue', fontsize=9)
+        plt.text(self.f_x2, self.f_y2 + 0.2, f'({self.f_x2}, {self.f_y2})', color='blue', fontsize=9)
+        plt.text(self.start_x, self.intermediate_val + 0.2, f'({self.start_x}, {self.intermediate_val})', color='red', fontsize=9)
+        plt.text(self.g_x2, self.g_y2 + 0.2, f'({self.g_x2}, {self.g_y2})', color='red', fontsize=9)
+
+
+        # Grid configuration
+        plt.grid(True, which='both', linestyle='--', linewidth=0.7)
+        plt.axhline(0, color='black', linewidth=1.5)
+        plt.axvline(0, color='black', linewidth=1.5)
+
+        # Limits and Ticks (Integer ticks are crucial for reading graphs)
+        plt.xticks(np.arange(-2, 11, 1))
+        plt.yticks(np.arange(-5, 11, 1))
+        plt.xlim(-1, 9)
+        plt.ylim(-2, 9)
+
+        plt.legend(fontsize=12)
+        plt.title("Graphs of $f(x)$ and $g(x)$")
+        plt.xlabel("$x$")
+        plt.ylabel("$y$")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
