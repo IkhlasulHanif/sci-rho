@@ -2219,3 +2219,126 @@ class Mat126:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat127:
+    
+    def __init__(self):
+        # Random radius (integer between 3 and 10)
+        self.r = rnd.randint(3, 10)
+        
+        # Random slope (m) between -3 and 3 (avoiding 0 for better visual)
+        self.m = rnd.choice([-3, -2, -1, 1, 2, 3])
+        
+        # Random y-intercept (c)
+        # To ensure the line intersects the circle at two distinct points,
+        # the distance from origin to line (d) must be < radius.
+        # d = |c| / sqrt(m^2 + 1)  =>  |c| < r * sqrt(m^2 + 1)
+        limit_c = int(self.r * np.sqrt(self.m**2 + 1)) - 1
+        self.c = rnd.randint(-limit_c, limit_c)
+
+        # Circle: x^2 + y^2 = r^2
+        # Line: y = mx + c
+        # Substitute y: x^2 + (mx + c)^2 = r^2
+        # Quadratic form: (1 + m^2)x^2 + (2mc)x + (c^2 - r^2) = 0
+        
+        A_quad = 1 + self.m**2
+        B_quad = 2 * self.m * self.c
+        C_quad = self.c**2 - self.r**2
+        
+        delta = B_quad**2 - 4 * A_quad * C_quad
+        
+        # Calculate x coordinates of intersections
+        self.x1 = (-B_quad - np.sqrt(delta)) / (2 * A_quad)
+        self.x2 = (-B_quad + np.sqrt(delta)) / (2 * A_quad)
+        
+        # Calculate y coordinates
+        self.y1 = self.m * self.x1 + self.c
+        self.y2 = self.m * self.x2 + self.c
+        
+        # Calculate Squared Length of Chord AB: (x2-x1)^2 + (y2-y1)^2
+        answer_ab_squared = (self.x2 - self.x1)**2 + (self.y2 - self.y1)**2
+
+        self.answer = round(answer_ab_squared, 3)
+        
+        # Format the equation strings for display
+        line_eq = f"y = {self.m}x + {self.c}" if self.c >= 0 else f"y = {self.m}x - {abs(self.c)}"
+        circle_eq = f"x^2 + y^2 = {self.r**2}"
+
+        self.description = (
+            f"The straight line ${line_eq}$ intersects the circle ${circle_eq}$ "
+            f"at two distinct points, $A$ and $B$. "
+            f"Calculate the squared length of the chord $AB$ (i.e., find $AB^2$). "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Coordinate geometry"
+        self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Line equation:}} &\\quad y = {self.m}x + {self.c} \\\\"
+            f"\\text{{Circle equation:}} &\\quad x^2 + y^2 = {self.r**2} \\\\"
+            f"\\text{{Substitute }} y \\text{{ into the circle equation:}} &\\\\"
+            f"x^2 + ({self.m}x + {self.c})^2 &= {self.r**2} \\\\"
+            f"x^2 + ({self.m**2}x^2 + {2*self.m*self.c}x + {self.c**2}) - {self.r**2} &= 0 \\\\"
+            f"({1 + self.m**2})x^2 + {2*self.m*self.c}x + ({self.c**2 - self.r**2}) &= 0 \\\\"
+            f"\\text{{Identify coefficients }} A, B, C: &\\\\"
+            f"A = {1 + self.m**2}, \\quad B = {2*self.m*self.c}, \\quad C &= {self.c**2 - self.r**2} \\\\"
+            f"\\text{{Calculate discriminant }} \\Delta: &\\\\"
+            f"\\Delta = B^2 - 4AC &= ({2*self.m*self.c})^2 - 4({1 + self.m**2})({self.c**2 - self.r**2}) \\\\"
+            f"&= {round((2*self.m*self.c)**2 - 4*(1 + self.m**2)*(self.c**2 - self.r**2), 10)} \\\\"
+            f"\\text{{Solve for }} x \\text{{ using quadratic formula:}} &\\\\"
+            f"x &= \\frac{{-B \\pm \\sqrt{{\\Delta}}}}{{2A}} \\\\"
+            f"x_1 &= \\frac{{-{2*self.m*self.c} - \\sqrt{{{round((2*self.m*self.c)**2 - 4*(1 + self.m**2)*(self.c**2 - self.r**2), 10)}}}}}{{2({1 + self.m**2})}} \\approx {round(self.x1, 10)} \\\\"
+            f"x_2 &= \\frac{{-{2*self.m*self.c} + \\sqrt{{{round((2*self.m*self.c)**2 - 4*(1 + self.m**2)*(self.c**2 - self.r**2), 10)}}}}}{{2({1 + self.m**2})}} \\approx {round(self.x2, 10)} \\\\"
+            f"\\text{{Find corresponding }} y \\text{{ coordinates:}} &\\\\"
+            f"y_1 &= {self.m}({round(self.x1, 10)}) + {self.c} \\approx {round(self.y1, 10)} \\\\"
+            f"y_2 &= {self.m}({round(self.x2, 10)}) + {self.c} \\approx {round(self.y2, 10)} \\\\"
+            f"\\text{{Calculate squared length }} AB^2: &\\\\"
+            f"AB^2 &= (x_2 - x_1)^2 + (y_2 - y_1)^2 \\\\"
+            f"&= ({round(self.x2, 10)} - {round(self.x1, 10)})^2 + ({round(self.y2, 10)} - {round(self.y1, 10)})^2 \\\\"
+            f"&= {round((self.x2 - self.x1)**2, 10)} + {round((self.y2 - self.y1)**2, 10)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Draw Circle
+        circle_patch = Circle((0, 0), self.r, fill=False, color='teal', linewidth=2, label='Circle')
+        ax.add_patch(circle_patch)
+        
+        # Draw Line
+        # Create x-range slightly larger than radius for the line
+        x_vals = np.linspace(-self.r-2, self.r+2, 100)
+        y_vals = self.m * x_vals + self.c
+        ax.plot(x_vals, y_vals, color='orange', linewidth=2, label='Line')
+        
+        # Draw Chord AB (connect the dots)
+        ax.plot([self.x1, self.x2], [self.y1, self.y2], color='red', linestyle='--', linewidth=2, label='Chord AB')
+        
+        # Mark Points A and B
+        ax.scatter([self.x1, self.x2], [self.y1, self.y2], color='black', s=50, zorder=5)
+        
+        # Annotate Points with offset
+        offset = self.r * 0.1
+        ax.text(self.x1 + offset, self.y1, '$A$', fontsize=12, fontweight='bold')
+        ax.text(self.x2 + offset, self.y2, '$B$', fontsize=12, fontweight='bold')
+
+        # Grid and Setup
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.set_aspect('equal')
+        ax.grid(True, linestyle=':', alpha=0.6)
+        
+        # Set limits with some padding
+        ax.set_xlim(-self.r-3, self.r+3)
+        ax.set_ylim(-self.r-3, self.r+3)
+        
+        ax.legend(loc='upper right')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
