@@ -1963,3 +1963,74 @@ class Mat123:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat124:
+    
+    def __init__(self):
+        # We use the vertex form: f(x) = a(x - h)^2 + v
+        # To ensure integer arithmetic is clean, we stick to integers.
+        self.h = rnd.choice([i for i in range(-8, 9) if i != 0])   # x-coordinate of vertex (axis of symmetry)
+        self.v = rnd.randint(-5, 5)   # y-coordinate of vertex
+        self.a = rnd.choice([1])      # Coefficient (kept as 1 for simplicity, like the example)
+        
+        # Format the equation string for display
+        # Handles signs: e.g., (x - (-2)) becomes (x + 2)
+        op = "+" if self.h < 0 else "-"
+        v_op = "+" if self.v >= 0 else "-"
+        
+        self.equation_latex = f"f(x) = (x {op} {abs(self.h)})^2 {v_op} {abs(self.v)}"
+
+        self.answer = self.h
+
+        self.description = (
+            f"The figure shows the full parabola of the function: ${self.equation_latex}$. "
+            f"The axis of symmetry $x = {self.h}$ is marked with a dotted line. "
+            f"Determine the smallest integer value for $k$ such that the "
+            f"function $f(x)$ is a one-one function for the domain $x \\ge k$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given the function:}} &\\\\"
+            f"{self.equation_latex.replace('=', '&=')}\\\\"
+            f"\\text{{The function is in the vertex form:}} &\\\\"
+            f"f(x) &= a(x - h)^2 + v\\\\"
+            f"\\text{{Identifying the axis of symmetry }} x = h: &\\\\"
+            f"h &= {self.h}\\\\"
+            f"\\text{{A parabola is a one-to-one function on the domain }} x \\ge h. &\\\\"
+            f"\\text{{Therefore, the smallest integer }} k \\text{{ is:}} &\\\\"
+            f"k &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Generate x values centered around the axis of symmetry
+        x = np.linspace(self.h - 6, self.h + 6, 400)
+        y = self.a * (x - self.h)**2 + self.v
+        
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plot the full parabola
+        ax.plot(x, y, label=f'${self.equation_latex}$', linewidth=2, color='blue')
+        
+        # Plot the Axis of Symmetry
+        ax.axvline(x=self.h, color='red', linestyle='--', label=f'Axis of Symmetry $x={self.h}$')
+        
+        # Styling the plot
+        ax.set_title(f"Graph of ${self.equation_latex}$")
+        ax.set_xlabel("x")
+        ax.set_ylabel("f(x)")
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend(loc='upper right')
+        
+        # Ensure axes are readable based on random values
+        ax.set_xlim(self.h - 7, self.h + 7)
+        ax.set_ylim(min(y) - 2, max(y) + 2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
