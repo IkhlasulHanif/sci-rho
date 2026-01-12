@@ -1772,3 +1772,97 @@ class Mat121:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat122:
+    
+    def __init__(self):
+        # Randomize variables (Ensure a != b for clarity)
+        self.a = rnd.randint(2, 4)
+        self.b = rnd.randint(6, 9)
+        if self.a == self.b: self.b += 2  # Force difference if they collide
+
+        # x = f(a) = b
+        self.answer = self.b
+
+        self.description = (
+            f"Based on the relationship between a function and its inverse shown in the figure, determine the value of $x$ such that $f^{{-1}}(x) = {self.a}$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Pure Mathematics 1 for Cambridge International AS & A Level"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the graph of }} f(x), \\text{{ we identify the point:}}\\\\"
+            f"(x, y) &= ({self.a}, {self.b})\\\\"
+            f"\\text{{This relationship can be written as:}}\\\\"
+            f"f({self.a}) &= {self.b}\\\\"
+            f"\\text{{By the definition of an inverse function:}}\\\\"
+            f"y = f(x) &\\iff x = f^{{-1}}(y)\\\\"
+            f"\\text{{Applying this to our values:}}\\\\"
+            f"{self.a} &= f^{{-1}}({self.b})\\\\"
+            f"\\text{{The problem asks for }} x \\text{{ such that }} f^{{-1}}(x) = {self.a}.\\\\"
+            f"\\text{{By comparison:}}\\\\"
+            f"x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    # Define the function f(x) and its inverse
+    # We use a shifted cubic function to ensure it is one-to-one (monotonic) 
+    # and passes exactly through (a, b).
+    # Formula: f(x) = (x - a)^3 + b
+    # Inverse: f^-1(x) = cbrt(x - b) + a
+    def f(self, x):
+        return 0.5 * (x - self.a)**3 + self.b
+
+    def f_inv(self, x):
+        # np.cbrt handles negative cube roots correctly
+        return np.cbrt((x - self.b) / 0.5) + self.a
+
+    def generate(self, num):
+        # Setup Plot Range
+        limit = max(self.a, self.b) + 3
+        x = np.linspace(-1, limit, 400)
+        
+        plt.figure(figsize=(10, 8))
+        
+        # Filter y-values to keep plot within reasonable bounds
+        y_f = self.f(x)
+        mask_f = (y_f > -5) & (y_f < limit + 2)
+        plt.plot(x[mask_f], y_f[mask_f], 'b-', linewidth=2, label='$y = f(x)$')
+        
+        y_inv = self.f_inv(x)
+        mask_inv = (y_inv > -5) & (y_inv < limit + 2)
+        plt.plot(x[mask_inv], y_inv[mask_inv], 'r-', linewidth=2, label='$y = f^{-1}(x)$')
+
+        # Add Key Points and Annotations
+        
+        # Point on f(x): (a, b)
+        plt.plot(self.a, self.b, 'bo', markersize=8)
+        plt.text(self.a - 0.5, self.b + 0.5, f'({self.a}, {self.b})', color='blue', fontsize=12, fontweight='bold')
+        
+        # Point on f^-1(x): (b, a) -> The target of the question
+        plt.plot(self.b, self.a, 'ro', markersize=8)
+        plt.text(self.b + 0.5, self.a, f'(?, {self.a})', color='red', fontsize=12, fontweight='bold')
+
+        # Visual Guide Lines (Dotted)
+        plt.vlines(self.a, 0, self.b, colors='blue', linestyles=':', alpha=0.5)
+        plt.hlines(self.b, 0, self.a, colors='blue', linestyles=':', alpha=0.5)
+        
+        plt.vlines(self.b, 0, self.a, colors='red', linestyles=':', alpha=0.5)
+        plt.hlines(self.a, 0, self.b, colors='red', linestyles=':', alpha=0.5)
+
+        # Styling and Question Text
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.legend()
+        plt.grid(True, alpha=0.3)
+        plt.xlim(-1, limit)
+        plt.ylim(-1, limit)
+        plt.axhline(0, color='black', linewidth=1)
+        plt.axvline(0, color='black', linewidth=1)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
