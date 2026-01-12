@@ -2121,3 +2121,101 @@ class Mat125:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat126:
+    
+    def __init__(self):
+        # Triples format: (a, b, r) where a^2 + b^2 = r^2
+        triples = [(3, 4, 5), (4, 3, 5), (5, 12, 13), (12, 5, 13), (8, 15, 17), (6, 8, 10)]
+        dx, dy, self.r = rnd.choice(triples)
+        
+        # Randomly flip signs to vary the quadrant relative to center
+        dx = dx * rnd.choice([1, -1])
+        dy = dy * rnd.choice([1, -1])
+        
+        # Randomize Center (h, k) within a reasonable range for plotting
+        self.h = rnd.randint(2, 8)
+        self.k = rnd.randint(5, 10)
+        
+        # Calculate Point P coordinates
+        self.px = self.h + dx
+        self.py = self.k + dy
+        
+        # Slope of the radius line (center to P): m_radius = dy / dx
+        m_radius = dy / dx
+        
+        # Slope of the tangent (perpendicular to radius): m_tangent = -1 / m_radius
+        self.m_tangent = -1 / m_radius
+        
+        # Equation of tangent: y - py = m_tangent * (x - px)
+        # To find y-intercept, set x = 0: y_int = py - m_tangent * px
+        self.y_intercept = self.py - (self.m_tangent * self.px)
+
+        self.answer = round(self.y_intercept, 3)
+
+        self.description = (
+            f"A circle is defined by the equation $(x - {self.h})^2 + (y - {self.k})^2 = {self.r**2}$. "
+            f"A tangent line touches this circle at the point $P({self.px}, {self.py})$. "
+            f"Determine the $y$-intercept of this tangent line. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Coordinate geometry"
+        self.source = "Adapted from Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the center }} (h, k) \\text{{ and point }} P(x_1, y_1):&\\\\"
+            f"C &= ({self.h}, {self.k})\\\\"
+            f"P &= ({self.px}, {self.py})\\\\"
+            f"\\text{{Find the slope of the radius }} (m_r):&\\\\"
+            f"m_r &= \\frac{{y_1 - k}}{{x_1 - h}} = \\frac{{{self.py} - {self.k}}}{{{self.px} - {self.h}}} = \\frac{{{self.py - self.k}}}{{{self.px - self.h}}}\\\\"
+            f"\\text{{The tangent is perpendicular to the radius, so }} m_t \\cdot m_r = -1:&\\\\"
+            f"m_t &= -\\frac{{1}}{{m_r}} = -\\frac{{{self.px - self.h}}}{{{self.py - self.k}}}\\\\"
+            f"&= {round(self.m_tangent, 10)}\\\\"
+            f"\\text{{Find the y-intercept }} (c) \\text{{ using }} y = m_t x + c:&\\\\"
+            f"c &= y_1 - m_t x_1\\\\"
+            f"&= {self.py} - ({round(self.m_tangent, 10)})({self.px})\\\\"
+            f"&= {self.py} - ({round(self.m_tangent * self.px, 10)})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Plot Circle
+        circle = Circle((self.h, self.k), self.r, fill=False, color='blue', linewidth=1.5, label='Circle')
+        ax.add_patch(circle)
+        ax.plot(self.h, self.k, 'bo', markersize=5) # Center dot
+        ax.text(self.h, self.k-0.1*self.r, f'C({self.h}, {self.k})', ha='center', va='top', fontsize=10, color='blue')
+        
+        # Plot Point P
+        ax.plot(self.px, self.py, 'ro', markersize=5, zorder=5) # Point P
+        ax.text(self.px + 0.5, self.py, f'P({self.px}, {self.py})', ha='left', va='center', fontsize=10, color='red')
+        
+        # Plot Tangent Line
+        # We create x-values for the line to span across the y-axis
+        x_line = np.linspace(min(-2, self.px-self.r-2), max(self.px+5, self.h+self.r+2), 100)
+        y_line = self.m_tangent * (x_line - self.px) + self.py
+        ax.plot(x_line, y_line, 'r--', linewidth=1.5, label='Tangent Line')
+        
+        # Plot Radius (dashed, for visual context)
+        ax.plot([self.h, self.px], [self.k, self.py], 'b:', linewidth=1)
+        
+        # Highlight Y-intercept
+        ax.plot(0, self.y_intercept, 'go', markersize=5)
+        ax.text(0.5, self.y_intercept + 0.5, f'y-int?', ha='left', va='center', fontsize=10, color='green')
+
+        # Formatting plot
+        ax.axhline(0, color='black', linewidth=1) # X-axis
+        ax.axvline(0, color='black', linewidth=1) # Y-axis
+        ax.set_aspect('equal')
+        ax.grid(True, linestyle=':', alpha=0.6)
+        
+        ax.legend()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
