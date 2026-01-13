@@ -2342,3 +2342,111 @@ class Mat127:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat128:
+    
+    def __init__(self):
+        # We ensure x1 != x2 to avoid division by zero (vertical line segment)
+        # We ensure y1 != y2 to avoid a horizontal segment (which results in a vertical bisector)
+        while True:
+            self.x1 = rnd.randint(1, 9)
+            self.y1 = rnd.randint(2, 8)
+            self.x2 = self.x1 + rnd.choice([-1, 1]) * rnd.randint(3, 7)
+            self.y2 = self.y1 + rnd.choice([-1, 1]) * rnd.randint(3, 7)
+            
+            if self.x1 != self.x2 and self.y1 != self.y2:
+                break
+                
+        A = np.array([self.x1, self.y1])
+        B = np.array([self.x2, self.y2])
+
+        # Midpoint
+        midpoint = (A + B) / 2
+        self.mx, self.my = midpoint
+
+        # Slope of AB (m1)
+        m1 = (self.y2 - self.y1) / (self.x2 - self.x1)
+        
+        # Slope of Perpendicular Bisector (m2)
+        # Perpendicular slope is negative reciprocal
+        self.m2 = -1 / m1
+        
+        # Calculate Intersection with x-axis (Point P)
+        # Equation of bisector: y - my = m2(x - mx)
+        # Set y = 0 to find x-intercept: -my = m2(x - mx) -> x = mx - (my/m2)
+        self.p_x = self.mx - (self.my / self.m2)
+
+        self.answer = round(self.p_x, 3)
+
+        self.description = (
+            f"Consider the line segment connecting points $A({self.x1}, {self.y1})$ and $B({self.x2}, {self.y2})$. "
+            f"The perpendicular bisector of the line segment $AB$ intersects the x-axis at a point $P$. "
+            f"Determine the x-coordinate of $P$. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Coordinate geometry"
+        self.source = "Adapted from Pure Mathematics 1 for Cambridge International AS & A Level"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Midpoint }} M &= \\left(\\frac{{x_1 + x_2}}{{2}}, \\frac{{y_1 + y_2}}{{2}}\\right)\\\\"
+            f"&= \\left(\\frac{{{self.x1} + {self.x2}}}{{2}}, \\frac{{{self.y1} + {self.y2}}}{{2}}\\right)\\\\"
+            f"&= ({round(self.mx, 10)}, {round(self.my, 10)})\\\\"
+            f"\\text{{Slope of }} AB, m_1 &= \\frac{{y_2 - y_1}}{{x_2 - x_1}}\\\\"
+            f"&= \\frac{{{self.y2} - {self.y1}}}{{{self.x2} - {self.x1}}}\\\\"
+            f"&= {round(m1, 10)}\\\\"
+            f"\\text{{Slope of bisector, }} m_2 &= -\\frac{{1}}{{m_1}}\\\\"
+            f"&= {round(self.m2, 10)}\\\\"
+            f"\\text{{Equation of bisector:}} &\\\\"
+            f"y - y_M &= m_2(x - x_M)\\\\"
+            f"y - {round(self.my, 10)} &= {round(self.m2, 10)}(x - {round(self.mx, 10)})\\\\"
+            f"\\text{{At x-axis (}}y=0\\text{{):}} &\\\\"
+            f"-{round(self.my, 10)} &= {round(self.m2, 10)}(x - {round(self.mx, 10)})\\\\"
+            f"x &= {round(self.mx, 10)} - \\frac{{{round(self.my, 10)}}}{{{round(self.m2, 10)}}}\\\\"
+            f"x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Create Figure
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plot Segment AB
+        ax.plot([self.x1, self.x2], [self.y1, self.y2], 'o-', color='blue', label='Segment AB', markersize=6)
+        ax.text(self.x1, self.y1 + 0.5, f' A({self.x1},{self.y1})', color='blue', fontsize=10, fontweight='bold')
+        ax.text(self.x2, self.y2 + 0.5, f' B({self.x2},{self.y2})', color='blue', fontsize=10, fontweight='bold')
+
+        # Plot Midpoint
+        ax.plot(self.mx, self.my, 'o', color='green', markersize=6)
+        ax.text(self.mx, self.my + 0.5, ' M', color='green', fontsize=10)
+
+        # Plot Perpendicular Bisector Line
+        # We calculate plotting limits to ensure the line looks nice
+        x_range_min = min(self.x1, self.x2, self.p_x) - 2
+        x_range_max = max(self.x1, self.x2, self.p_x) + 2
+        
+        line_x = np.linspace(x_range_min, x_range_max, 100)
+        line_y = self.m2 * (line_x - self.mx) + self.my
+        
+        ax.plot(line_x, line_y, '--', color='red', label='Perpendicular Bisector')
+
+        # Plot Point P (x-intercept)
+        ax.plot(self.p_x, 0, 'o', color='red', markersize=8, label='Point P')
+        ax.text(self.p_x, -1, f'P', color='red', fontsize=10, ha='center', fontweight='bold')
+
+        # Formatting the Graph
+        ax.axhline(0, color='black', linewidth=1) # x-axis
+        ax.axvline(0, color='black', linewidth=1) # y-axis
+        ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+        ax.set_aspect('equal') # Important to make perpendicular lines look perpendicular
+        ax.set_title("Perpendicular Bisector Visualization")
+        
+        # Dynamic limits
+        ax.set_ylim(min(0, self.y1, self.y2, np.min(line_y)) - 2, max(self.y1, self.y2, np.max(line_y)) + 2)
+        ax.set_xlim(x_range_min, x_range_max)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
