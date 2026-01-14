@@ -3327,3 +3327,110 @@ class Mat136:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat137:
+    
+    def __init__(self):
+        # We generate integer coordinates to make the visual slope calculation 'nice'
+        # Range of coordinates
+        low, high = 0, 8
+        
+        # Generate points for f(x)
+        self.fx1, self.fy1 = rnd.randint(low, high), rnd.randint(low, high)
+        self.fx2, self.fy2 = rnd.randint(low, high), rnd.randint(low, high)
+        # Ensure x values are different to avoid undefined slope
+        while self.fx1 == self.fx2 or self.fy1 == self.fy2:
+            self.fx2 = rnd.randint(low, high)
+            self.fy2 = rnd.randint(low, high)
+
+        # Generate points for g(x)
+        self.gx1, self.gy1 = rnd.randint(low, high), rnd.randint(low, high)
+        self.gx2, self.gy2 = rnd.randint(low, high), rnd.randint(low, high)
+        while self.gx1 == self.gx2 or self.gy1 == self.gy2:
+            self.gx2 = rnd.randint(low, high)
+            self.gy2 = rnd.randint(low, high)
+            
+        # Randomize the x value to evaluate h'(x) at
+        self.x_target = rnd.randint(low, high)
+
+        # Slope of f (m_f)
+        self.m_f = (self.fy2 - self.fy1) / (self.fx2 - self.fx1)
+        # Slope of g (m_g)
+        self.m_g = (self.gy2 - self.gy1) / (self.gx2 - self.gx1)
+        
+        # h(x) = f(g(x))
+        # Chain rule: h'(x) = f'(g(x)) * g'(x)
+        # Since f and g are linear, their derivatives are their slopes (constants).
+        # h'(x) = m_f * m_g
+        self.answer = round(self.m_f * self.m_g, 3)
+
+        self.description = (
+            f"The figure displays two linear functions. "
+            f"Line f(x) passes through ({self.fx1}, {self.fy1}) and ({self.fx2}, {self.fy2}). "
+            f"Line g(x) passes through ({self.gx1}, {self.gy1}) and ({self.gx2}, {self.gy2}). "
+            f"Let h(x) = f(g(x)). "
+            f"Calculate the value of h'({self.x_target}). "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Active Calculus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Using the Chain Rule for }} h(x) = f(g(x)): &\\\\"
+            f"h'(x) &= f'(g(x)) \\cdot g'(x) \\\\"
+            f"\\text{{Since }} f(x) \\text{{ and }} g(x) \\text{{ are linear, their derivatives are their slopes.}} &\\\\"
+            f"\\text{{Finding slope }} m_f \\text{{ for }} f(x): &\\\\"
+            f"m_f &= \\frac{{y_2 - y_1}}{{x_2 - x_1}} \\\\"
+            f"&= \\frac{{{self.fy2} - {self.fy1}}}{{{self.fx2} - {self.fx1}}} \\\\"
+            f"&= \\frac{{{self.fy2 - self.fy1}}}{{{self.fx2 - self.fx1}}} \\approx {round(self.m_f, 10)} \\\\"
+            f"\\text{{Finding slope }} m_g \\text{{ for }} g(x): &\\\\"
+            f"m_g &= \\frac{{y_2 - y_1}}{{x_2 - x_1}} \\\\"
+            f"&= \\frac{{{self.gy2} - {self.gy1}}}{{{self.gx2} - {self.gx1}}} \\\\"
+            f"&= \\frac{{{self.gy2 - self.gy1}}}{{{self.gx2 - self.gx1}}} \\approx {round(self.m_g, 10)} \\\\"
+            f"\\text{{Calculating }} h'({self.x_target}): &\\\\"
+            f"h'({self.x_target}) &= f'(g({self.x_target})) \\cdot g'({self.x_target}) \\\\"
+            f"&= m_f \\cdot m_g \\\\"
+            f"&= ({round(self.m_f, 10)}) \\cdot ({round(self.m_g, 10)}) \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Create x range for plotting (add some padding)
+        x_vals = np.linspace(min(self.fx1, self.fx2, self.gx1, self.gx2) - 1, max(self.fx1, self.fx2, self.gx1, self.gx2) + 1, 100)
+        
+        # Define line equations: y = m(x - x1) + y1
+        y_f = self.m_f * (x_vals - self.fx1) + self.fy1
+        y_g = self.m_g * (x_vals - self.gx1) + self.gy1
+
+        plt.figure(figsize=(8, 6))
+        
+        # Plot Lines
+        plt.plot(x_vals, y_f, label=f'$f(x)$', color='blue', linewidth=2)
+        plt.plot(x_vals, y_g, label=f'$g(x)$', color='orange', linewidth=2)
+        
+        # Plot Points
+        plt.scatter([self.fx1, self.fx2], [self.fy1, self.fy2], color='blue', zorder=5)
+        plt.scatter([self.gx1, self.gx2], [self.gy1, self.gy2], color='orange', zorder=5)
+        
+        # Annotate Points
+        plt.text(self.fx1, self.fy1, f' ({self.fx1},{self.fy1})', fontsize=9, verticalalignment='bottom')
+        plt.text(self.fx2, self.fy2, f' ({self.fx2},{self.fy2})', fontsize=9, verticalalignment='bottom')
+        plt.text(self.gx1, self.gy1, f' ({self.gx1},{self.gy1})', fontsize=9, verticalalignment='bottom')
+        plt.text(self.gx2, self.gy2, f' ({self.gx2},{self.gy2})', fontsize=9, verticalalignment='bottom')
+
+        # Formatting
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.axhline(0, color='black', linewidth=0.5)
+        plt.axvline(0, color='black', linewidth=0.5)
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.legend()
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
