@@ -2616,3 +2616,130 @@ class Mat130:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat131:
+    
+    def __init__(self):
+        # Radius: integer between 3 and 15
+        self.r_val = rnd.randint(3, 15)
+        # Theta: float between 1.0 and 5.0 (rounded to 1 decimal place)
+        # Avoiding extremely small or large angles for better visualization
+        self.theta_val = round(rnd.uniform(1.0, 5.0), 1)
+        
+        # 2. Calculate Properties
+        # Perimeter of Sector = 2*r + arc_length = 2*r + r*theta
+        perimeter = 2 * self.r_val + (self.r_val * self.theta_val)
+        
+        # Square side length (Perimeter = 4*s)
+        self.square_side = perimeter / 4.0
+        
+        # Area of the Square
+        square_area = self.square_side ** 2
+
+        self.answer = round(square_area, 3)
+
+        self.description = (
+            f"A sector of a circle is defined by a radius r = {self.r_val} cm "
+            f"and a central angle θ = {self.theta_val} radians. "
+            f"A separate square is constructed such that its total perimeter "
+            f"is exactly equal to the total perimeter of the sector. "
+            f"Determine the area of the square in cm². "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Circular measure"
+        self.source = "Adapted from Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Perimeter of sector}} &= 2r + r\\theta\\\\"
+            f"&= 2({self.r_val}) + ({self.r_val})({self.theta_val})\\\\"
+            f"&= {2 * self.r_val} + {round(self.r_val * self.theta_val, 10)}\\\\"
+            f"&= {round(2 * self.r_val + self.r_val * self.theta_val, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Perimeter of square}} &= 4s\\\\"
+            f"4s &= {round(2 * self.r_val + self.r_val * self.theta_val, 10)}\\\\"
+            f"s &= \\frac{{{round(2 * self.r_val + self.r_val * self.theta_val, 10)}}}{{4}}\\\\"
+            f"s &= {round((2 * self.r_val + self.r_val * self.theta_val) / 4, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Area of square}} &= s^2\\\\"
+            f"&= ({round((2 * self.r_val + self.r_val * self.theta_val) / 4, 10)})^2\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.set_aspect('equal')
+        ax.axis('off')
+        
+        # --- Draw Sector (Left Side) ---
+        # Center of sector
+        sector_center = (0, 0)
+        # Visual scaling factor (to keep plot bounds reasonable regardless of random values)
+        scale = 1.0 
+        
+        # Matplotlib Wedge takes degrees. 
+        # We center the angle around 90 degrees (vertical) for a nice look, 
+        # or start at 0. Let's start at 0 for standard math diagram look.
+        theta_deg = np.degrees(self.theta_val)
+        
+        wedge = patches.Wedge(
+            center=sector_center, 
+            r=self.r_val, 
+            theta1=0, 
+            theta2=theta_deg, 
+            color='#a8dadc', 
+            alpha=0.6,
+            lw=2, ec='#1d3557' # Edge color
+        )
+        ax.add_patch(wedge)
+        
+        # Label r and theta
+        # Label radius on the bottom line
+        ax.text(self.r_val/2, -0.15 * self.r_val, f"r={self.r_val}", ha='center', va='top', fontsize=12, color='#1d3557')
+        # Label angle
+        angle_text_r = self.r_val * 0.3
+        angle_text_x = angle_text_r * np.cos(self.theta_val/2)
+        angle_text_y = angle_text_r * np.sin(self.theta_val/2)
+        ax.text(angle_text_x, angle_text_y, f"θ={self.theta_val}", ha='center', va='center', fontsize=10)
+
+        # --- Draw Equals Sign and Text (Middle) ---
+        # Calculate an offset based on r_val to place the square
+        offset_x = self.r_val * 2.5
+        
+        ax.text(self.r_val * 1.5, self.r_val/2, "=", ha='center', va='center', fontsize=30, fontweight='bold')
+        ax.text(self.r_val * 1.5, self.r_val/2 + self.r_val*0.2, "Equal Perimeters", ha='center', va='bottom', fontsize=10, style='italic')
+
+        # --- Draw Square (Right Side) ---
+        # Bottom left corner of the square
+        sq_x = offset_x
+        sq_y = 0 
+        
+        square = patches.Rectangle(
+            (sq_x, sq_y), 
+            self.square_side, 
+            self.square_side, 
+            color='#f4a261', 
+            alpha=0.6,
+            lw=2, ec='#e76f51'
+        )
+        ax.add_patch(square)
+        
+        # Label the square
+        ax.text(sq_x + self.square_side/2, -0.15 * self.square_side, f"s = ?", ha='center', va='top', fontsize=12, color='#e76f51')
+        ax.text(sq_x + self.square_side/2, self.square_side/2, "Square", ha='center', va='center', fontsize=10, color='white', fontweight='bold')
+
+        # Adjust Plot Limits to fit everything nicely
+        all_x = [0, self.r_val, sq_x + self.square_side]
+        all_y = [0, self.r_val, self.square_side]
+        
+        # Add a buffer
+        buff = max(self.r_val, self.square_side) * 1
+        ax.set_xlim(min(all_x) - buff, max(all_x) + buff)
+        ax.set_ylim(min(all_y) - buff, max(all_y) + buff)
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
