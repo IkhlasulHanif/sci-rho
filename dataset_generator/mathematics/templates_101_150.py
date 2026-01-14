@@ -3520,3 +3520,99 @@ class Mat138:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat139:
+    
+    def __init__(self):
+        # t1: Time where triangle ends (base of triangle)
+        self.t1 = np.random.randint(2, 6) 
+        
+        # rect_duration: Duration of the constant velocity phase (width of rectangle)
+        self.rect_duration = np.random.randint(3, 7)
+        self.t2 = self.t1 + self.rect_duration
+        
+        # v_max: Peak velocity (height of triangle and rectangle)
+        # We multiply by 2 to often get integer results for the triangle area
+        self.v_max = np.random.randint(3, 9) * 2
+
+        # Area of Triangle = 0.5 * base * height
+        area_triangle = 0.5 * self.t1 * self.v_max
+        
+        # Area of Rectangle = width * height
+        area_rectangle = (self.t2 - self.t1) * self.v_max
+        
+        # Total Displacement = Sum of areas
+        total_displacement = area_triangle + area_rectangle
+
+        self.answer = int(round(total_displacement, 0))
+
+        self.description = (
+            f"The figure shows the graph of a velocity function $v(t)$ (in m/s) over the interval $t = [0, {self.t2}]$. "
+            f"The graph formed a line of $(0,0) \\rightarrow ({self.t1},{self.v_max}) \\rightarrow ({self.t2},{self.v_max})$. "
+            f"Calculate the total displacement of the object from $t=0$ to $t={self.t2}$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Strang, G. (1991). Calculus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Displacement}} &= \\text{{Area under the }} v(t) \\text{{ graph}}\\\\"
+            f"\\text{{Area}}_{{\\text{{triangle}}}} &= \\frac{{1}}{{2}} \\times \\text{{base}} \\times \\text{{height}}\\\\"
+            f"&= \\frac{{1}}{{2}} \\times {self.t1} \\times {self.v_max}\\\\"
+            f"&= {round(0.5 * self.t1 * self.v_max, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Area}}_{{\\text{{rectangle}}}} &= \\text{{width}} \\times \\text{{height}}\\\\"
+            f"&= ({self.t2} - {self.t1}) \\times {self.v_max}\\\\"
+            f"&= {self.t2 - self.t1} \\times {self.v_max}\\\\"
+            f"&= {round((self.t2 - self.t1) * self.v_max, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{Total Displacement}} &= \\text{{Area}}_{{\\text{{triangle}}}} + \\text{{Area}}_{{\\text{{rectangle}}}}\\\\"
+            f"&= {round(0.5 * self.t1 * self.v_max, 10)} + {round((self.t2 - self.t1) * self.v_max, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Plot Triangle part: (0,0) to (t1, v_max)
+        ax.plot([0, self.t1], [0, self.v_max], 'b-', linewidth=2, label='$v(t)$')
+        
+        # Plot Rectangle part: (t1, v_max) to (t2, v_max)
+        ax.plot([self.t1, self.t2], [self.v_max, self.v_max], 'b-', linewidth=2)
+        
+        # Drop vertical lines for visual reference
+        ax.vlines(x=self.t1, ymin=0, ymax=self.v_max, colors='gray', linestyles='--', alpha=0.5)
+        ax.vlines(x=self.t2, ymin=0, ymax=self.v_max, colors='gray', linestyles='--', alpha=0.5)
+        
+        # Shade the areas
+        # Triangle shading
+        x_tri = np.linspace(0, self.t1, 100)
+        y_tri = (self.v_max / self.t1) * x_tri
+        ax.fill_between(x_tri, y_tri, color='skyblue', alpha=0.4, label='Area')
+        
+        # Rectangle shading
+        x_rect = np.linspace(self.t1, self.t2, 100)
+        y_rect = np.full_like(x_rect, self.v_max)
+        ax.fill_between(x_rect, 0, y_rect, color='skyblue', alpha=0.4)
+
+        # Formatting
+        ax.set_xlim(0, self.t2 + 1)
+        ax.set_ylim(0, self.v_max + (self.v_max * 0.5)) # Add some headroom
+        ax.set_xlabel('Time $t$ (s)')
+        ax.set_ylabel('Velocity $v(t)$ (m/s)')
+        ax.set_title(f'Velocity Function over $t = [0, {self.t2}]$')
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend(loc='upper right')
+        
+        # Annotate key vertices
+        ax.plot([0, self.t1, self.t2], [0, self.v_max, self.v_max], 'ro', markersize=5) # Mark points
+        ax.text(self.t1, self.v_max + (self.v_max * 0.05), f'({self.t1}, {self.v_max})', ha='center', fontsize=10, fontweight='bold')
+        ax.text(self.t2, self.v_max + (self.v_max * 0.05), f'({self.t2}, {self.v_max})', ha='center', fontsize=10, fontweight='bold')
+        ax.text(0, (self.v_max * 0.05), '(0, 0)', ha='left', fontsize=10, fontweight='bold')
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
