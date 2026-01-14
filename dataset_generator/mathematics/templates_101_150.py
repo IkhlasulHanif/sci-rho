@@ -2538,3 +2538,81 @@ class Mat129:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat130:
+    
+    def __init__(self):
+        while True:
+            # Generate random coordinates between -8 and 8 to keep plot readable
+            self.ax, self.ay = rnd.randint(-8, 8), rnd.randint(-8, 8)
+            self.bx, self.by = rnd.randint(-8, 8), rnd.randint(-8, 8)
+            self.cx, self.cy = rnd.randint(-8, 8), rnd.randint(-8, 8)
+            
+            # Calculate Area using the Shoelace Formula
+            # Area = 0.5 * |x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B)|
+            determinant = (self.ax * (self.by - self.cy) + self.bx * (self.cy - self.ay) + self.cx * (self.ay - self.by))
+            area = 0.5 * abs(determinant)
+            
+            # Ensure area is not 0 (collinear) and reasonably large for visibility
+            if area > 20.0:
+                break
+
+        self.answer = area
+
+        self.description = (
+            f"A triangle is formed by the vertices $A({self.ax}, {self.ay})$, $B({self.bx}, {self.by})$, and $C({self.cx}, {self.cy})$. "
+            f"Calculate the exact area of triangle $ABC$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Coordinate geometry"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\frac{{1}}{{2}} |x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B)|\\\\"
+            f"&= \\frac{{1}}{{2}} |{self.ax}({self.by} - {self.cy}) + {self.bx}({self.cy} - {self.ay}) + {self.cx}({self.ay} - {self.by})|\\\\"
+            f"&= \\frac{{1}}{{2}} |{self.ax}({self.by - self.cy}) + {self.bx}({self.cy - self.ay}) + {self.cx}({self.ay - self.by})|\\\\"
+            f"&= \\frac{{1}}{{2}} |{round(self.ax * (self.by - self.cy), 10)} + {round(self.bx * (self.cy - self.ay), 10)} + {round(self.cx * (self.ay - self.by), 10)}|\\\\"
+            f"&= \\frac{{1}}{{2}} |{round(self.ax * (self.by - self.cy) + self.bx * (self.cy - self.ay) + self.cx * (self.ay - self.by), 10)}|\\\\"
+            f"&= \\frac{{1}}{{2}} \\times {abs(round(self.ax * (self.by - self.cy) + self.bx * (self.cy - self.ay) + self.cx * (self.ay - self.by), 10))}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, plot_ax = plt.subplots(figsize=(6, 6))
+        
+        # Coordinates list (repeat first point at the end to close the shape)
+        x_vals = [self.ax, self.bx, self.cx, self.ax]
+        y_vals = [self.ay, self.by, self.cy, self.ay]
+        
+        # Plot edges and vertices
+        plot_ax.plot(x_vals, y_vals, marker='o', color='blue', linewidth=2, markersize=6)
+        
+        # Fill the triangle area
+        plot_ax.fill(x_vals, y_vals, color='skyblue', alpha=0.3)
+        
+        # Annotate vertices with labels and coordinates
+        # We add a small offset to text so it doesn't overlap the dot perfectly
+        text_offset = 0.5
+        plot_ax.text(self.ax, self.ay + text_offset, f'$A({self.ax}, {self.ay})$', fontsize=10, ha='center', fontweight='bold')
+        plot_ax.text(self.bx, self.by + text_offset, f'$B({self.bx}, {self.by})$', fontsize=10, ha='center', fontweight='bold')
+        plot_ax.text(self.cx, self.cy + text_offset, f'$C({self.cx}, {self.cy})$', fontsize=10, ha='center', fontweight='bold')
+        
+        # Configure Axes (Grid, Origin lines, Aspect Ratio)
+        plot_ax.axhline(0, color='black', linewidth=1)
+        plot_ax.axvline(0, color='black', linewidth=1)
+        plot_ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+        plot_ax.set_aspect('equal') # Essential for geometry figures to look correct
+        
+        # Set dynamic limits with some padding
+        all_x = [self.ax, self.bx, self.cx]
+        all_y = [self.ay, self.by, self.cy]
+        padding = 2
+        plot_ax.set_xlim(min(all_x) - padding, max(all_x) + padding)
+        plot_ax.set_ylim(min(all_y) - padding, max(all_y) + padding)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
