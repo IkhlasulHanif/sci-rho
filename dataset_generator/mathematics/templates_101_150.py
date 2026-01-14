@@ -2743,3 +2743,124 @@ class Mat131:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat132:
+    
+    def __init__(self):
+        # We pick the 'answer' (r) first to ensure the math works out cleanly.
+        self.r_answer = rnd.randint(10, 25)        # The hidden inner radius (e.g., 10 to 25 cm)
+        self.width = rnd.randint(4, 10)            # The width of the wiper blade (e.g., 4 to 10 cm)
+        self.theta_rad = round(rnd.uniform(1.2, 2.0), 1) # Central angle in radians (e.g., 1.2 to 2.0)
+
+        # Formula for Area of Annulus Sector: A = 0.5 * theta * (R_outer^2 - R_inner^2)
+        # Where R_outer = r + width, R_inner = r
+        self.outer_radius = self.r_answer + self.width
+        area = 0.5 * self.theta_rad * (self.outer_radius**2 - self.r_answer**2)
+        
+        # Format area to 2 decimal places to look like a textbook problem
+        self.area_display = f"{area:.2f}"
+
+        self.answer = self.r_answer
+
+        self.description = (
+            f"A rear window wiper for a car clears a region shaped like part of an annulus (a ring). "
+            f"This region is formed by two concentric arcs with the same central angle: "
+            f"θ = {self.theta_rad} radians. "
+            f"The inner radius of the cleaned region is 'r' cm. "
+            f"The outer radius is (r + {self.width}) cm. "
+            f"If the total area of the cleaned region (the shaded area) is exactly {self.area_display} cm², "
+            f"calculate the value of the inner radius 'r'."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Circular measure"
+        self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Formula for Area of Annulus Sector:}} &\\\\"
+            f"A &= \\frac{{1}}{{2}} \\theta (R_{{\\text{{outer}}}}^2 - R_{{\\text{{inner}}}}^2) \\\\"
+            f"\\text{{Given: }} R_{{\\text{{inner}}}} &= r, \\quad R_{{\\text{{outer}}}} = r + {self.width} \\\\"
+            f"\\text{{Substitute values:}} &\\\\"
+            f"{self.area_display} &= \\frac{{1}}{{2}} ({self.theta_rad}) \\left( (r + {self.width})^2 - r^2 \\right) \\\\"
+            f"{self.area_display} &= {round(0.5 * self.theta_rad, 10)} \\left( (r^2 + {2 * self.width}r + {self.width**2}) - r^2 \\right) \\\\"
+            f"{self.area_display} &= {round(0.5 * self.theta_rad, 10)} ({2 * self.width}r + {self.width**2}) \\\\"
+            f"\\frac{{{self.area_display}}}{{{round(0.5 * self.theta_rad, 10)}}} &= {2 * self.width}r + {self.width**2} \\\\"
+            f"{round(float(self.area_display) / (0.5 * self.theta_rad), 10)} &= {2 * self.width}r + {self.width**2} \\\\"
+            f"{2 * self.width}r &= {round(float(self.area_display) / (0.5 * self.theta_rad), 10)} - {self.width**2} \\\\"
+            f"{2 * self.width}r &= {round((float(self.area_display) / (0.5 * self.theta_rad)) - self.width**2, 10)} \\\\"
+            f"r &= \\frac{{{round((float(self.area_display) / (0.5 * self.theta_rad)) - self.width**2, 10)}}}{{{2 * self.width}}} \\\\"
+            f"r &= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 5))
+        
+        # Define angles to center the wiper upwards (90 degrees)
+        theta_deg = np.degrees(self.theta_rad)
+        start_angle = 90 - (theta_deg / 2)
+        end_angle = 90 + (theta_deg / 2)
+        
+        # Draw the Shaded Annulus Sector (The "Wiper" path)
+        # Wedge(center, r, theta1, theta2, width=width_of_ring)
+        # Note: 'r' in Wedge is the OUTER radius, 'width' is the thickness moving inward.
+        wiper_patch = patches.Wedge(
+            center=(0, 0), 
+            r=self.outer_radius, 
+            theta1=start_angle, 
+            theta2=end_angle, 
+            width=self.width, 
+            facecolor='#AEEEEE',  # Light Cyan
+            edgecolor='black',
+            linewidth=1.5,
+            alpha=0.8
+        )
+        ax.add_patch(wiper_patch)
+
+        # Draw an arrow from center to the start of the inner arc
+        inner_arc_x = self.r_answer * np.cos(np.radians(start_angle))
+        inner_arc_y = self.r_answer * np.sin(np.radians(start_angle))
+        ax.annotate(
+            text='', xy=(inner_arc_x, inner_arc_y), xytext=(0, 0),
+            arrowprops=dict(arrowstyle='<->', color='blue')
+        )
+        # Place text 'r' at midpoint of that line
+        ax.text(inner_arc_x/2 - 1, inner_arc_y/2, 'r', color='blue', fontsize=12, weight='bold')
+
+        # Draw arrow extending from inner arc to outer arc on the right side
+        outer_arc_x = self.outer_radius * np.cos(np.radians(end_angle))
+        outer_arc_y = self.outer_radius * np.sin(np.radians(end_angle))
+        inner_arc_end_x = self.r_answer * np.cos(np.radians(end_angle))
+        inner_arc_end_y = self.r_answer * np.sin(np.radians(end_angle))
+        
+        ax.annotate(
+            text='', xy=(outer_arc_x, outer_arc_y), xytext=(inner_arc_end_x, inner_arc_end_y),
+            arrowprops=dict(arrowstyle='<->', color='red')
+        )
+        # Label the width value
+        mid_width_x = (self.r_answer + self.width/2) * np.cos(np.radians(end_angle))
+        mid_width_y = (self.r_answer + self.width/2) * np.sin(np.radians(end_angle))
+        ax.text(mid_width_x + 1, mid_width_y, f'{self.width} cm', color='red', fontsize=10, weight='bold')
+
+        # Draw a small arc near the origin
+        arc_radius = self.r_answer * 0.4
+        angle_arc = patches.Arc((0,0), arc_radius*2, arc_radius*2, 
+                                theta1=start_angle, theta2=end_angle, color='green', linestyle='--')
+        ax.add_patch(angle_arc)
+        ax.text(0, arc_radius + 2, f'θ = {self.theta_rad}', ha='center', color='green', fontsize=10)
+
+        # Label Area
+        mid_radius = self.r_answer + (self.width / 2)
+        ax.text(0, mid_radius, f"Area\n{self.area_display}", ha='center', va='center', fontsize=9)
+
+        # Chart Cleanup
+        ax.set_xlim(-self.outer_radius - 5, self.outer_radius + 5)
+        ax.set_ylim(-2, self.outer_radius + 5)
+        ax.set_aspect('equal')
+        ax.axis('off')
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
