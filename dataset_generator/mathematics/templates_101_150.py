@@ -3221,3 +3221,109 @@ class Mat135:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat136:
+    
+    def __init__(self):
+        # Random side length (S) between 6 and 30.
+        # We allow floats but round for cleaner display, or stick to even integers.
+        self.side_length = rnd.choice(range(6, 32, 2)) 
+        
+        # The math for the solution:
+        # V(x) = x(S - 2x)^2
+        # V'(x) = 12x^2 - 8Sx + S^2
+        # Roots for critical points are x = S/2 (min) and x = S/6 (max).
+        optimal_x = self.side_length / 6.0
+        max_volume = optimal_x * (self.side_length - 2*optimal_x)**2
+
+        self.answer = round(max_volume, 3)
+
+        self.description = (
+            f"The figure above shows a net for an open-topped box made from a square sheet of metal of side **{self.side_length} cm** "
+            f"by cutting equal squares of side $x$ from the corners and folding up the flaps. "
+            f"Find the value of $x$ for which the volume $V$ is a maximum. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Let the side length }} S &= {self.side_length}\\,\\text{{cm}}\\\\"
+            f"\\text{{Volume of the box is given by:}} &\\\\"
+            f"V(x) &= x(S - 2x)^2\\\\"
+            f"V(x) &= x({self.side_length} - 2x)^2\\\\"
+            f"\\text{{To find the maximum, differentiate }} V(x): &\\\\"
+            f"V'(x) &= \\frac{{d}}{{dx}}\\left[ x({self.side_length} - 2x)^2 \\right]\\\\"
+            f"&= 1 \\cdot ({self.side_length} - 2x)^2 + x \\cdot 2({self.side_length} - 2x) \\cdot (-2)\\\\"
+            f"&= ({self.side_length} - 2x) [ ({self.side_length} - 2x) - 4x ]\\\\"
+            f"&= ({self.side_length} - 2x) ({self.side_length} - 6x)\\\\"
+            f"\\text{{Set }} V'(x) = 0 \\text{{ to find critical points:}} &\\\\"
+            f"0 &= ({self.side_length} - 2x) ({self.side_length} - 6x)\\\\"
+            f"\\text{{Possible values: }} x &= \\frac{{{self.side_length}}}{{2}} \\text{{ or }} x = \\frac{{{self.side_length}}}{{6}}\\\\"
+            f"\\text{{Since }} x = S/2 \\text{{ gives }} V=0, \\text{{ we choose:}} &\\\\"
+            f"x &= \\frac{{{self.side_length}}}{{6}} \\approx {round(self.side_length/6.0, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Max Volume:}} &\\\\"
+            f"V_{{max}} &= {round(self.side_length/6.0, 10)} \\left({self.side_length} - 2({round(self.side_length/6.0, 10)})\\right)^2\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^3"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Visual setup (we draw the cut 'x' as proportional to the real solution S/6 for accuracy)
+        vis_cut = self.side_length / 6.0 
+        
+        # Draw the main sheet (background square)
+        sheet = patches.Rectangle((0, 0), self.side_length, self.side_length, 
+                                linewidth=2, edgecolor='black', facecolor='#E0F7FA')
+        ax.add_patch(sheet)
+        
+        # Define the 4 corners to be cut out
+        corners = [
+            (0, 0),                                   # Bottom-left
+            (self.side_length - vis_cut, 0),               # Bottom-right
+            (0, self.side_length - vis_cut),               # Top-left
+            (self.side_length - vis_cut, self.side_length - vis_cut) # Top-right
+        ]
+        
+        # Draw the corners (shaded differently to indicate removal)
+        for (cx, cy) in corners:
+            corner_rect = patches.Rectangle((cx, cy), vis_cut, vis_cut, 
+                                            linewidth=1, edgecolor='#D32F2F', 
+                                            facecolor='#FFCDD2', hatch='//')
+            ax.add_patch(corner_rect)
+            
+            # Label 'x' inside the corners
+            # We put the label slightly centered in the corner box
+            ax.text(cx + vis_cut/2, cy + vis_cut/2, '$x$', 
+                    ha='center', va='center', fontsize=12, color='#D32F2F', fontweight='bold')
+
+        # Draw dashed fold lines for the inner box base
+        # Vertical lines
+        ax.vlines([vis_cut, self.side_length - vis_cut], 0, self.side_length, colors='black', linestyles='--')
+        # Horizontal lines
+        ax.hlines([vis_cut, self.side_length - vis_cut], 0, self.side_length, colors='black', linestyles='--')
+
+        # Add dimensions arrows/labels
+        # Bottom dimension arrow for total Side Length
+        ax.annotate(
+            '', xy=(0, -self.side_length*0.08), xytext=(self.side_length, -self.side_length*0.08),
+            arrowprops=dict(arrowstyle='<->', color='black')
+        )
+        ax.text(self.side_length/2, -self.side_length*0.15, f"{self.side_length} cm", ha='center', fontsize=12)
+
+        # Set plot limits and aspect
+        offset = self.side_length * 0.2
+        ax.set_xlim(-offset, self.side_length + offset)
+        ax.set_ylim(-offset, self.side_length + offset)
+        ax.set_aspect('equal')
+        ax.axis('off') # Turn off axes coordinates
+        plt.title("Net for Open-Topped Box", fontsize=14)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
