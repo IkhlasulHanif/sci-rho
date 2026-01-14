@@ -3131,3 +3131,93 @@ class Mat134:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat135:
+    
+    def __init__(self):
+        self.radius_val = rnd.randint(5, 20)      # Radius in meters
+        self.dr_dt_val = round(rnd.uniform(0.1, 2.0), 1) # Rate of radius change in m/s
+        
+        # Area A = pi * r^2
+        # dA/dt = 2 * pi * r * (dr/dt)
+        # The question asks for the answer divided by pi, so: Result = 2 * r * dr/dt
+        answer_raw = 2 * self.radius_val * self.dr_dt_val
+        self.answer = round(answer_raw, 2)
+
+        self.description = (
+            f"The figure illustrates a circular oil spill on the ocean surface. "
+            f"The spill is expanding such that its radius r is increasing "
+            f"at a constant rate. "
+            f"Given:\n"
+            f"• Instantaneous Radius (r): {self.radius_val} m\n"
+            f"• Rate of radius increase (dr/dt): {self.dr_dt_val} m/s\n\n"
+            f"Find the rate of increase of the area (dA/dt) in m²/s "
+            f"at this instant. (Divide your final answer by π). "
+            f"Give your answer correct to 2 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Calculus: Early Transcendentals"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given parameters:}} &\\\\"
+            f"r &= {self.radius_val}\\,\\text{{m}}\\\\"
+            f"\\frac{{dr}}{{dt}} &= {self.dr_dt_val}\\,\\text{{m/s}}\\\\"
+            f"\\text{{The area of a circle is }} A = \\pi r^2. \\text{{ Differentiating with respect to time:}} &\\\\"
+            f"\\frac{{dA}}{{dt}} &= \\frac{{d}}{{dt}}(\\pi r^2) = 2\\pi r \\frac{{dr}}{{dt}}\\\\"
+            f"\\text{{Substituting the known values:}} &\\\\"
+            f"\\frac{{dA}}{{dt}} &= 2\\pi ({self.radius_val})({self.dr_dt_val})\\\\"
+            f"&= 2\\pi ({round(self.radius_val * self.dr_dt_val, 10)})\\\\"
+            f"&= {round(2 * self.radius_val * self.dr_dt_val, 10)}\\pi\\,\\text{{m}}^2/\\text{{s}}\\\\"
+            f"\\text{{The question asks for the rate divided by }} \\pi: &\\\\"
+            f"\\text{{Result}} &= \\frac{{1}}{{\\pi}} \\left( {round(2 * self.radius_val * self.dr_dt_val, 10)}\\pi \\right)\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Set limits clearly around the circle
+        limit = self.radius_val * 1.5
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        
+        # Remove axes for a cleaner diagram look
+        ax.axis('off')
+
+        # Draw the "Ocean" (background mostly white/light blue implicitly) 
+        # and the "Oil Spill" (Circle)
+        oil_spill = patches.Circle((0, 0), self.radius_val, color='black', alpha=0.7, label='Oil Spill')
+        ax.add_patch(oil_spill)
+
+        # Draw Radius Line
+        plt.plot([0, self.radius_val], [0, 0], color='white', linewidth=2, linestyle='--')
+        plt.text(self.radius_val/2, -limit*0.1, f'r = {self.radius_val} m', color='black', 
+                fontsize=12, ha='center', fontweight='bold')
+
+        # Draw Expansion Arrows (Vectors)
+        # We put 4 arrows indicating outward expansion
+        directions = [(limit*0.8, 0), (-limit*0.8, 0), (0, limit*0.8), (0, -limit*0.8)]
+        for dx, dy in directions:
+            # Scale arrow start point to be just outside the circle
+            norm = np.sqrt(dx**2 + dy**2)
+            start_x, start_y = (dx/norm) * self.radius_val, (dy/norm) * self.radius_val
+            end_x, end_y = (dx/norm) * (self.radius_val + self.radius_val*0.3), (dy/norm) * (self.radius_val + self.radius_val*0.3)
+            
+            ax.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y),
+                        arrowprops=dict(arrowstyle='->', color='red', lw=2))
+
+        # Label for dr/dt
+        plt.text(self.radius_val * 0.7, self.radius_val * 0.7, f'dr/dt = {self.dr_dt_val} m/s', 
+                color='red', fontsize=12, fontweight='bold')
+
+        # Add Title
+        plt.title("Oil Spill Expansion", fontsize=14)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
