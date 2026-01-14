@@ -2864,3 +2864,143 @@ class Mat132:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat133:
+    
+    def __init__(self):
+        # Radius R between 10 and 50 cm
+        self.R = rnd.randint(10, 50) 
+        
+        # Angle theta (fraction of pi). We want a major sector (e.g., 1.1pi to 1.9pi)
+        # to make the cone look substantial.
+        self.theta_factor = round(rnd.uniform(1.1, 1.9), 1)
+        theta_rad = self.theta_factor * np.pi
+        self.theta_deg = np.degrees(theta_rad)
+
+        # Circumference of cone base = Arc length of sector
+        # 2 * pi * r = R * theta
+        self.r = (self.R * theta_rad) / (2 * np.pi)
+        
+        # Height of the cone (Pythagoras: R is the slant height)
+        # h^2 + r^2 = R^2
+        self.h = np.sqrt(self.R**2 - self.r**2)
+
+        self.answer = round(self.r, 3)
+
+        self.description = (
+            f"A paper sector with a radius of R = {self.R} cm and a central angle of theta = {self.theta_factor}π radians "
+            f"is cut out. The straight edges (radii) of the sector are joined together with no overlap "
+            f"to form the curved surface of a right circular cone. "
+            f"Calculate the base radius (r) of the resulting cone in cm. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Circular measure"
+        self.source = "Adapted from Understanding Pure Mathematics"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given: Radius of sector (Slant height) }} R &= {self.R}\\,\\text{{cm}}\\\\"
+            f"\\text{{Central angle }} \\theta &= {self.theta_factor}\\pi\\,\\text{{rad}}\\\\"
+            f"\\text{{The arc length of the sector equals the circumference of the base:}} &\\\\"
+            f"\\text{{Arc Length}} &= \\text{{Circumference}}\\\\"
+            f"R \\cdot \\theta &= 2\\pi r\\\\"
+            f"r &= \\frac{{R \\cdot \\theta}}{{2\\pi}}\\\\"
+            f"&= \\frac{{{self.R} \\cdot {self.theta_factor}\\pi}}{{2\\pi}}\\\\"
+            f"&= \\frac{{{self.R} \\cdot {self.theta_factor}}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.R * self.theta_factor, 10)}}}{{2}}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig = plt.figure(figsize=(12, 6))
+        
+        # --- LEFT SUBPLOT: The 2D Sector ---
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax1.set_title("Paper Sector (2D)", fontsize=14, pad=20)
+        
+        # Center the sector visually by rotating start angle
+        start_angle = (360 - self.theta_deg) / 2
+        sector = Wedge((0, 0), self.R, start_angle, start_angle + self.theta_deg, 
+                    facecolor='lightblue', edgecolor='navy', alpha=0.6, linewidth=2)
+        ax1.add_patch(sector)
+        
+        # Label R (Radius)
+        mid_angle_rad = np.radians(start_angle + self.theta_deg/2)
+        # Put label on one of the straight edges
+        edge_angle_rad = np.radians(start_angle)
+        ax1.text(self.R/2 * np.cos(edge_angle_rad), self.R/2 * np.sin(edge_angle_rad) + 1, 
+                f"$R={self.R}$", fontsize=12, color='navy', fontweight='bold')
+
+        # Label Theta (Angle)
+        ax1.text(0, -self.R*0.3, f"$\\theta = {self.theta_factor}\\pi$", 
+                fontsize=12, ha='center', color='darkred')
+        
+        # Draw an arc for the angle to make it clear
+        # Small arc near center
+        angle_arc = Wedge((0, 0), self.R*0.2, start_angle, start_angle + self.theta_deg, 
+                        facecolor='none', edgecolor='darkred', linestyle='--')
+        ax1.add_patch(angle_arc)
+
+        ax1.set_xlim(-self.R*1.1, self.R*1.1)
+        ax1.set_ylim(-self.R*1.1, self.R*1.1)
+        ax1.set_aspect('equal')
+        ax1.axis('off')
+
+        # Add a transition arrow between plots
+        # (We use figure coordinates for this usually, but plain text arrow works simply)
+        fig.text(0.5, 0.5, "Rolls up\ninto", ha='center', va='center', fontsize=12, fontweight='bold')
+        fig.text(0.5, 0.45, "------------>", ha='center', va='center', fontsize=16)
+
+        # --- RIGHT SUBPLOT: The 3D Cone ---
+        ax2 = fig.add_subplot(1, 2, 2, projection='3d')
+        ax2.set_title("Right Circular Cone (3D)", fontsize=14, pad=20)
+
+        # Create mesh for cone
+        # parametric eq: x = u*cos(v), y = u*sin(v), z = h*(1 - u/r) ... scaling appropriately
+        u = np.linspace(0, self.r, 50)      # radius variable from 0 to r
+        v = np.linspace(0, 2*np.pi, 60) # angle variable
+        U, V = np.meshgrid(u, v)
+        
+        X = U * np.cos(V)
+        Y = U * np.sin(V)
+        Z = self.h * (1 - U/self.r) # Height decreases as radius increases toward edge? No, tip is at 0,0,h usually.
+        # Let's do: Base at z=0, Tip at z=h
+        # Cone surface logic: at height z, radius is r*(h-z)/h
+        # Let's stick to U as radial distance from center of base:
+        # Z = h * (1 - U/r) -> When U=0 (center), Z=h. When U=r (edge), Z=0.
+        
+        ax2.plot_surface(X, Y, Z, alpha=0.6, color='orange', edgecolor='none')
+        
+        # Add wireframe for definition
+        ax2.plot_wireframe(X, Y, Z, color='brown', rstride=10, cstride=10, alpha=0.3)
+
+        # Draw the base circle explicitly for clarity
+        theta_base = np.linspace(0, 2*np.pi, 100)
+        x_base = self.r * np.cos(theta_base)
+        y_base = self.r * np.sin(theta_base)
+        z_base = np.zeros_like(x_base)
+        ax2.plot(x_base, y_base, z_base, color='brown', linewidth=2)
+
+        # Draw Radius r line
+        ax2.plot([0, self.r], [0, 0], [0, 0], color='black', linewidth=2, linestyle='--')
+        ax2.text(self.r/2, 0, -self.h*0.05, "$r=?$", fontsize=12, color='black', fontweight='bold')
+        
+        # Draw Height h line (optional, but good for context)
+        ax2.plot([0, 0], [0, 0], [0, self.h], color='blue', linestyle='--')
+
+        # Draw Slant Height s (which is R)
+        ax2.plot([self.r, 0], [0, 0], [0, self.h], color='navy', linestyle='-', alpha=0.5)
+        ax2.text(self.r/2, 0, self.h/2, f"$s=R={self.R}$", fontsize=10, color='navy')
+
+        # Adjust 3D view
+        ax2.set_box_aspect((self.r, self.r, self.h)) # Aspect ratio to make it look realistic
+        ax2.axis('off')
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
