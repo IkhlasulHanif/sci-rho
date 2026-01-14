@@ -3004,3 +3004,130 @@ class Mat133:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat134:
+    
+    def __init__(self):
+        # We want y = sqrt(ax - b) at x_p to result in an integer y_p
+        # Equation: y_p = sqrt(a * x_p - b)  =>  y_p^2 = a * x_p - b
+        
+        self.x_p = rnd.randint(2, 6)       # Pick a manageable x coordinate
+        self.y_p = rnd.randint(2, 6)       # Pick a resulting y coordinate
+        self.a = rnd.randint(2, 8)         # Coefficient 'a'
+        
+        # Calculate 'b' to satisfy the equation
+        self.b = self.a * self.x_p - self.y_p**2
+        
+        # Ensure 'b' is reasonable (keep the root valid and positive)
+        # If b is negative, the equation becomes sqrt(ax + |b|), which is fine but
+        # let's try to keep format sqrt(ax - b) or sqrt(ax + b) clean.
+        self.sign_str = "-" if self.b > 0 else "+"
+        self.b_disp = abs(self.b)
+        
+        # Function: f(x) = (ax - b)^(1/2)
+        # Derivative: f'(x) = a / (2 * sqrt(ax - b))
+        # At P: f'(x_p) = a / (2 * y_p)
+        
+        m_tangent = self.a / (2 * self.y_p)
+        m_normal = -1 / m_tangent  # Normal is perpendicular
+        
+        # Normal Line Equation: y - y_p = m_normal * (x - x_p)
+        # y = m_normal * (x - x_p) + y_p
+        
+        # Find Intercept A (y = 0):
+        # 0 = m_normal * (x_A - x_p) + y_p
+        # -y_p / m_normal = x_A - x_p
+        # x_A = x_p - (y_p / m_normal)
+        self.x_A = self.x_p - (self.y_p / m_normal)
+        
+        # Find Intercept B (x = 0):
+        # y_B = m_normal * (0 - x_p) + y_p
+        self.y_B = m_normal * (-self.x_p) + self.y_p
+        
+        # Area of Triangle AOB (Vertices: Origin, A, B)
+        # Since it's in the first quadrant/positive axes usually:
+        area = 0.5 * abs(self.x_A) * abs(self.y_B)
+
+        self.answer = round(area, 3)
+
+        self.description = (
+            f"The figure displays the curve $y = \\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}}$ in the first quadrant. "
+            f"A normal line is drawn to the curve at the point $P$ where $x = {self.x_p}$. "
+            f"This normal line intersects the x-axis at point $A$ and the y-axis at point $B$, "
+            f"forming a triangle $AOB$ with the coordinate axes. "
+            f"Calculate the area of the triangle $AOB$. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1 Coursebook"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Equation of curve:}} &\\quad y = \\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}} \\\\"
+            f"\\text{{Differentiating w.r.t }} x: &\\quad \\frac{{dy}}{{dx}} = \\frac{{{self.a}}}{{2\\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}}}} \\\\"
+            f"\\text{{At point }} P({self.x_p}, {self.y_p}), \\text{{ slope }} m_t: &\\quad m_t = \\frac{{{self.a}}}{{2({self.y_p})}} = {round(m_tangent, 10)} \\\\"
+            f"\\text{{Slope of normal }} m_n: &\\quad m_n = -\\frac{{1}}{{m_t}} = -\\frac{{1}}{{{round(m_tangent, 10)}}} = {round(m_normal, 10)} \\\\"
+            f"\\text{{Equation of normal line:}} &\\quad y - {self.y_p} = {round(m_normal, 10)}(x - {self.x_p}) \\\\"
+            f"\\text{{x-intercept }} A \\text{{ (set }} y=0): &\\quad -{self.y_p} = {round(m_normal, 10)}(x_A - {self.x_p}) \\\\"
+            f"x_A &= {self.x_p} - \\frac{{{self.y_p}}}{{{round(m_normal, 10)}}} = {round(self.x_A, 10)} \\\\"
+            f"\\text{{y-intercept }} B \\text{{ (set }} x=0): &\\quad y_B = {round(m_normal, 10)}(0 - {self.x_p}) + {self.y_p} \\\\"
+            f"y_B &= {round(self.y_B, 10)} \\\\"
+            f"\\text{{Area of }} \\Delta AOB: &\\quad \\text{{Area}} = \\frac{{1}}{{2}} |OA| |OB| \\\\"
+            f"&= 0.5 \\times |{round(self.x_A, 10)}| \\times |{round(self.y_B, 10)}| \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Domain for plotting curve
+        # Start slightly after the root to avoid imaginary numbers if strictly > 0 needed
+        root_x = self.b / self.a
+        x_vals = np.linspace(root_x, self.x_A + 2, 400)
+        y_vals = np.sqrt(self.a * x_vals - self.b)
+        
+        # Plot Curve
+        ax.plot(x_vals, y_vals, 'b-', lw=2, label=f'$y=\\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}}$')
+        
+        # Plot Normal Line (from B to A)
+        # We extend it slightly past A and B for visual clarity
+        line_x = np.array([0, self.x_A])
+        line_y = np.array([self.y_B, 0])
+        ax.plot(line_x, line_y, 'r-', lw=2, label='Normal Line')
+        
+        # Highlight Triangle AOB
+        triangle_x = [0, self.x_A, 0]
+        triangle_y = [0, 0, self.y_B]
+        ax.fill(triangle_x, triangle_y, color='green', alpha=0.2, label='Triangle AOB')
+        
+        # Plot Points
+        ax.plot(self.x_p, self.y_p, 'ko') # Point P
+        ax.text(self.x_p, self.y_p + 0.5, '$P$', fontsize=12, fontweight='bold')
+        
+        ax.plot(self.x_A, 0, 'ko')   # Point A
+        ax.text(self.x_A, 0.5, '$A$', fontsize=12, fontweight='bold')
+        
+        ax.plot(0, self.y_B, 'ko')   # Point B
+        ax.text(0.2, self.y_B, '$B$', fontsize=12, fontweight='bold')
+        
+        ax.plot(0, 0, 'ko')     # Origin
+        ax.text(-0.5, -0.5, '$O$', fontsize=12, fontweight='bold')
+
+        # Formatting
+        ax.set_xlim(-1, self.x_A + 2)
+        ax.set_ylim(-1, max(y_vals[-1], self.y_B) + 1)
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.legend(loc='upper right')
+        ax.grid(True, linestyle='--', alpha=0.6)
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
