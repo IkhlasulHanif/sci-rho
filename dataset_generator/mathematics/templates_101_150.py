@@ -3434,3 +3434,89 @@ class Mat137:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat138:
+    
+    def __init__(self):
+        # We use the form f(x) = ax(b - x) to ensure roots at 0 and b
+        # This expands to f(x) = (ab)x - ax^2
+        
+        self.scale_a = rnd.randint(1, 3)      # Vertical scaling factor
+        self.root_b = rnd.randint(3, 8)       # The second root (upper bound of integration)
+        
+        # Coefficients for standard form: cx - dx^2
+        self.coeff_linear = self.scale_a * self.root_b
+        self.coeff_quad = self.scale_a
+
+        # Integral of (ab)x - ax^2 dx = (ab)x^2/2 - ax^3/3
+        # Evaluated at root_b: (ab)(b^2)/2 - a(b^3)/3 = a*b^3/2 - a*b^3/3 = a*b^3/6
+        
+        exact_area = (self.scale_a * (self.root_b ** 3)) / 6
+
+        self.answer = round(exact_area, 3)
+        
+        # Format the equation string for display
+        if self.coeff_quad == 1:
+            self.eq_str = f"{self.coeff_linear}x - x^2"
+        else:
+            self.eq_str = f"{self.coeff_linear}x - {self.coeff_quad}x^2"
+
+        self.description = (
+            f"The figure displays a shaded region in the first quadrant bounded above by the "
+            f"parabolic function f(x) = {self.eq_str} and below by the x-axis. "
+            f"The region extends from x = 0 to x = {self.root_b}. "
+            f"Calculate the total area of the shaded region shown in the figure. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Calculus: Early Transcendentals"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\int_{{0}}^{{{self.root_b}}} \\left( {self.eq_str} \\right) \\, dx\\\\"
+            f"&= \\left[ \\frac{{{self.coeff_linear}x^2}}{{2}} - \\frac{{{self.coeff_quad}x^3}}{{3}} \\right]_{{0}}^{{{self.root_b}}}\\\\"
+            f"&= \\left( \\frac{{{self.coeff_linear}({self.root_b})^2}}{{2}} - \\frac{{{self.coeff_quad}({self.root_b})^3}}{{3}} \\right) - 0\\\\"
+            f"&= \\frac{{{self.coeff_linear * (self.root_b**2)}}}{{2}} - \\frac{{{self.coeff_quad * (self.root_b**3)}}}{{3}}\\\\"
+            f"&= {round((self.coeff_linear * self.root_b**2)/2, 10)} - {round((self.coeff_quad * self.root_b**3)/3, 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Define the function for calculation
+        def func(x):
+            return (self.coeff_linear * x) - (self.coeff_quad * x**2)
+
+        x = np.linspace(-1, self.root_b + 1, 400)
+        y = func(x)
+        
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Plot the main function line
+        ax.plot(x, y, label=f'$f(x) = {self.eq_str}$', color='blue', linewidth=2)
+        
+        # Shade the region under the curve
+        x_fill = np.linspace(0, self.root_b, 200)
+        y_fill = func(x_fill)
+        ax.fill_between(x_fill, y_fill, color='skyblue', alpha=0.4, label='Target Area')
+        
+        # Setup graph aesthetics
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.6)
+        
+        # Set dynamic limits based on the curve size
+        peak_y = func(self.root_b / 2)
+        ax.set_ylim(-peak_y * 0.2, peak_y * 1.2)
+        ax.set_xlim(-1, self.root_b + 1)
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
