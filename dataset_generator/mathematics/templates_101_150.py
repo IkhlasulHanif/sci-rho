@@ -2450,3 +2450,91 @@ class Mat128:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat129:
+    
+    def __init__(self):
+        # Random radius between 2 and 9
+        self.r = rnd.randint(2, 9)
+        
+        # Random y-coordinate for the center (y_c). 
+        # We ensure it's > r so the circle doesn't touch the x-axis (strictly touching y-axis only for this problem logic)
+        self.y_c = rnd.randint(self.r + 2, self.r + 8)
+        
+        # Calculate values for the equation (x - k)^2 + (y - b)^2 = r^2
+        r_squared = self.r**2
+        
+        # The logic: If a circle in the 1st quadrant touches the y-axis, 
+        # the x-coordinate of the center (k) must equal the radius (r).
+        self.k_hidden = self.r
+
+        self.answer = self.k_hidden
+
+        self.description = (
+            f"A circle with the equation $(x-k)^2 + (y-{self.y_c})^2 = {r_squared}$ "
+            f"lies entirely in the first quadrant and touches the y-axis at exactly one point. "
+            f"Find the value of $k$."
+        )
+
+        self.topic = "Pure Mathematics 1"
+        self.subtopic = "Coordinate geometry"
+        self.source = "Adapted from AS and A Level Mathematics Pure Mathematics 1"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The equation of the circle is given by:}} &\\\\"
+            f"(x - k)^2 + (y - {self.y_c})^2 &= {self.r**2}\\\\"
+            f"\\text{{Comparing this to the standard circle equation }} (x - x_c)^2 + (y - y_c)^2 = r^2: &\\\\"
+            f"r^2 &= {self.r**2} \\implies r = \\sqrt{{{self.r**2}}} = {self.r}\\\\"
+            f"\\text{{The center of the circle is }} (k, {self.y_c}). &\\\\"
+            f"\\text{{Since the circle lies in the first quadrant and touches the y-axis,}} &\\\\"
+            f"\\text{{the x-coordinate of the center must be equal to the radius.}} &\\\\"
+            f"k &= r\\\\"
+            f"k &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Draw the Circle
+        # Center is at (k_hidden, y_c)
+        circle = Circle((self.k_hidden, self.y_c), self.r, color='#3498db', fill=True, alpha=0.2, linewidth=0)
+        circle_outline = Circle((self.k_hidden, self.y_c), self.r, color='#2980b9', fill=False, linewidth=2)
+        ax.add_patch(circle)
+        ax.add_patch(circle_outline)
+        
+        # Draw Center Point
+        ax.plot(self.k_hidden, self.y_c, 'ro', markersize=6, label='Center $(k, y_{center})$')
+        
+        # Draw Radius Line (showing distance to y-axis)
+        ax.hlines(self.y_c, 0, self.k_hidden, colors='green', linestyles='--', label=f'Radius = {self.r}')
+        
+        # Draw Tangent Point on Y-axis
+        ax.plot(0, self.y_c, 'go', markersize=6) # Tangent point
+        
+        # Annotations
+        ax.text(self.k_hidden + 0.5, self.y_c, f'Center\n(k, {self.y_c})', fontsize=10, verticalalignment='center')
+        ax.text(self.k_hidden / 2, self.y_c + 0.5, 'r', fontsize=12, color='green', fontweight='bold')
+        
+        # Set Axis Limits & Spines
+        limit = max(self.k_hidden + self.r, self.y_c + self.r) + 2
+        ax.set_xlim(-1, limit)
+        ax.set_ylim(-1, limit)
+        ax.set_aspect('equal')
+        
+        # Move left and bottom spines to x = 0 and y = 0
+        ax.spines['left'].set_position('zero')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        
+        # Add grid and labels
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend(loc='upper right')
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
