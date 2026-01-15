@@ -738,3 +738,86 @@ class Mat158:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat159:
+    
+    def __init__(self):
+        # a: Determine the denominator (x^2 + a^2). Using integers 2-6.
+        self.a = rnd.randint(2, 6)
+        self.a_sq = self.a**2
+
+        # numerator: Make it a multiple of 'a' to keep the coefficient simple.
+        # Corresponds to '12' in the original example (where a=3, so 12 is 4*a).
+        self.multiplier = rnd.randint(1, 6)
+        self.numerator = self.multiplier * self.a
+
+        # x_limit: The integration limit.
+        # Setting x_limit = a ensures the result involves arctan(1) = pi/4.
+        self.x_limit = self.a
+
+        # --- 2. Calculate Hidden Answer ---
+        # Integral of k/(x^2 + a^2) dx is (k/a) * arctan(x/a)
+        # Definite integral from 0 to a: (numerator/a) * arctan(a/a) - 0
+        # = multiplier * arctan(1)
+        # = multiplier * (pi/4)
+
+        # Calculate numerical answer
+        numerical_answer = self.multiplier * (np.pi / 4)
+
+        self.answer = round(numerical_answer, 3)
+
+        self.description = (
+            f"The figure illustrates the bell-shaped curve of the "
+            f"function $y = \\frac{{{self.numerator}}}{{x^2+{self.a_sq}}}$. The region extends "
+            f"from the y-axis ($x=0$) to the vertical line $x={self.x_limit}$. "
+            f"Calculate the area of this region. "
+            f"Round your answer to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Khan Academy"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\int_{{0}}^{{{self.x_limit}}} \\frac{{{self.numerator}}}{{x^2 + {self.a_sq}}} \\, dx\\\\"
+            f"&= {self.numerator} \\cdot \\left[ \\frac{{1}}{{{self.a}}} \\arctan\\left(\\frac{{x}}{{{self.a}}}\\right) \\right]_{{0}}^{{{self.x_limit}}}\\\\"
+            f"&= \\frac{{{self.numerator}}}{{{self.a}}} \\left( \\arctan\\left(\\frac{{{self.x_limit}}}{{{self.a}}}\\right) - \\arctan\\left(\\frac{{0}}{{{self.a}}}\\right) \\right)\\\\"
+            f"&= {self.multiplier} \\cdot (\\arctan(1) - 0)\\\\"
+            f"&= {self.multiplier} \\cdot \\frac{{\\pi}}{{4}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Create data points
+        # x range from slightly left of y-axis to slightly right of limit
+        x = np.linspace(-1, self.x_limit + 1, 400)
+        y = self.numerator / (x**2 + self.a_sq)
+
+        plt.figure(figsize=(8, 5))
+
+        # Plot the function curve
+        plt.plot(x, y, label=f'$y = \\frac{{{self.numerator}}}{{x^2+{self.a_sq}}}$', color='blue', linewidth=2)
+
+        # Shade the integration region
+        x_fill = np.linspace(0, self.x_limit, 200)
+        y_fill = self.numerator / (x_fill**2 + self.a_sq)
+        plt.fill_between(x_fill, y_fill, color='skyblue', alpha=0.5, label='Target Region')
+
+        # Draw reference lines
+        plt.axvline(x=0, color='black', linewidth=1) # y-axis
+        plt.axhline(y=0, color='black', linewidth=1) # x-axis
+        plt.axvline(x=self.x_limit, color='red', linestyle='--', label=f'$x={self.x_limit}$')
+
+        # Labels
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.legend(loc='upper right')
+        plt.grid(True, linestyle=':', alpha=0.6)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
