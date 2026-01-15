@@ -100,3 +100,79 @@ class Mat151:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat152:
+    
+    def __init__(self):
+        # We generate integer coordinates for the log-log plot so the math is clean.
+        # Let (X1, Y1) be the first point and (X2, Y2) be the second point on the lg-lg axes.
+        
+        self.x1 = rnd.randint(0, 3)
+        self.y1 = rnd.randint(1, 5)
+        
+        # Ensure the second point is distinct and to the right
+        delta_x = rnd.randint(1, 4) 
+        
+        # Allow positive or negative gradients (n can be negative), but keep coordinates reasonable
+        delta_y = rnd.randint(-4, 4)
+        if delta_y == 0: delta_y = 2 # Avoid horizontal lines for this specific problem type
+        
+        self.x2 = self.x1 + delta_x
+        self.y2 = self.y1 + delta_y
+        
+        # Calculate the power n (gradient)
+        n = (self.y2 - self.y1) / (self.x2 - self.x1)
+
+        self.answer = round(n, 3)
+
+        self.description = (
+            f"Variables $x$ and $y$ satisfy the relationship $y = Ax^n$. "
+            f"The figure shows a straight line plotted on axes labeled $\\lg x$ (horizontal) "
+            f"and $\\lg y$ (vertical), where $\\lg$ denotes $\\log_{{10}}$. "
+            f"The line passes through the points $({self.x1}, {self.y1})$ and $({self.x2}, {self.y2})$. "
+            f"Find the value of $n$. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Logarithmic and exponential functions"
+        self.source = "Adapted from Pure Mathematics 3 by Sophie Goldie"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Taking logs of both sides of } y = Ax^n:\\\\"
+            "\\lg y &= \\lg(Ax^n) \\\\"
+            "\\lg y &= n \\lg x + \\lg A \\\\"
+            "\\text{This is a linear equation } Y &= mX + C \\text{ where } Y=\\lg y, X=\\lg x.\\\\"
+            "\\text{Thus, the gradient (slope) of the line represents } n.\\\\"
+            f"\\text{{Points given on the }} \\lg y \\text{{ vs }} \\lg x \\text{{ graph: }} &({self.x1}, {self.y1}) \\text{{ and }} ({self.x2}, {self.y2})\\\\"
+            "n &= \\frac{\\text{change in vertical axis}}{\\text{change in horizontal axis}} \\\\"
+            f"&= \\frac{{{self.y2} - {self.y1}}}{{{self.x2} - {self.x1}}} \\\\"
+            f"&= \\frac{{{self.y2 - self.y1}}}{{{self.x2 - self.x1}}} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 4))
+        
+        # Plot the line
+        ax.plot([self.x1, self.x2], [self.y1, self.y2], color='blue', marker='o', linestyle='-', linewidth=2, markersize=8)
+        
+        # Annotate points
+        ax.text(self.x1, self.y1 + 0.2, f'({self.x1}, {self.y1})', fontsize=10, ha='center', color='black')
+        ax.text(self.x2, self.y2 + 0.2, f'({self.x2}, {self.y2})', fontsize=10, ha='center', color='black')
+        
+        # Styling the graph
+        ax.set_xlabel(r'$\lg x$', fontsize=12)
+        ax.set_ylabel(r'$\lg y$', fontsize=12)
+        ax.set_title('Logarithmic Transformation of Power Law', fontsize=14)
+        ax.grid(True, linestyle='--', alpha=0.6)
+        
+        # Set limits with some padding
+        ax.set_xlim(min(self.x1, self.x2) - 1, max(self.x1, self.x2) + 1)
+        ax.set_ylim(min(self.y1, self.y2) - 1, max(self.y1, self.y2) + 1)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
