@@ -821,3 +821,124 @@ class Mat159:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat160:
+    
+    def __init__(self):
+        # Equation form: y = A * func^2(B * x)
+        self.amplitude = rnd.randint(1, 5)  # A
+        self.freq = rnd.randint(1, 3)       # B
+        self.func_type = rnd.choice(['sin', 'cos'])
+        
+        # Randomize interval [0, upper_limit]
+        # We choose limits that result in clean answers (multiples of pi/4 or pi/2)
+        # limit_coeff represents the multiplier of pi (e.g., 0.5 means pi/2, 1 means pi)
+        self.limit_choices = [0.5, 1.0, 1.5, 2.0] 
+        self.limit_coeff = rnd.choice(self.limit_choices) 
+        self.upper_limit = self.limit_coeff * np.pi
+        
+        # Integral of A*cos^2(Bx) dx = A * [ x/2 + sin(2Bx)/(4B) ]
+        # Integral of A*sin^2(Bx) dx = A * [ x/2 - sin(2Bx)/(4B) ]
+        # Evaluated from 0 to upper_limit.
+        
+        # The term sin(2*B*limit) usually becomes 0 if limit is a multiple of pi/2 and B is int.
+        # Let's compute exact float first, then format nicely.
+        
+        term1 = self.upper_limit / 2.0
+        term2 = np.sin(2 * self.freq * self.upper_limit) / (4 * self.freq)
+        
+        if self.func_type == 'cos':
+            area_val = self.amplitude * (term1 + term2)
+        else:
+            area_val = self.amplitude * (term1 - term2)
+
+        # Format the function string for LaTeX
+        # e.g. 3 \cos^2(2x)
+        amp_str = str(self.amplitude) if self.amplitude > 1 else ""
+        freq_str = str(self.freq) if self.freq > 1 else ""
+        self.func_latex = f"{amp_str} \\{self.func_type}^2({freq_str}x)"
+        
+        # Format limit string
+        if self.limit_coeff == 1:
+            self.limit_text = r"\pi"
+        elif self.limit_coeff == 0.5:
+            self.limit_text = r"\frac{\pi}{2}"
+        elif self.limit_coeff == 1.5:
+            self.limit_text = r"\frac{3\pi}{2}"
+        elif self.limit_coeff == 2:
+            self.limit_text = r"2\pi"
+        else:
+            self.limit_text = f"{self.limit_coeff}\\pi"
+
+        sign_op = "+" if self.func_type == 'cos' else "-"
+        double_freq = 2 * self.freq
+
+        self.answer = round(area_val, 3)
+
+        self.description = (
+            f"The figure shows the graph of $y = {self.func_latex}$ "
+            f"over the interval $[0, {self.limit_text}]$. The area under the curve is shaded. "
+            f"Find the area of the shaded region. Round to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Oxford International AQA Examinations: International A Level Mathematics"
+        self.curriculum = "AS & A Level"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\int_{{0}}^{{{self.limit_text}}} {self.func_latex} \\, dx\\\\"
+            f"&= \\int_{{0}}^{{{self.limit_text}}} {self.amplitude} \\left( \\frac{{1 {sign_op} \\cos({double_freq}x)}}{{2}} \\right) \\, dx\\\\"
+            f"&= \\frac{{{self.amplitude}}}{{2}} \\left[ x {sign_op} \\frac{{\\sin({double_freq}x)}}{{{double_freq}}} \\right]_{{0}}^{{{self.limit_text}}}\\\\"
+            f"&= \\frac{{{self.amplitude}}}{{2}} \\left( \\left( {self.limit_text} {sign_op} \\frac{{\\sin({double_freq} \\cdot {self.limit_text})}}{{{double_freq}}} \\right) - 0 \\right)\\\\"
+            f"&= \\frac{{{self.amplitude}}}{{2}} \\left( {round(self.upper_limit, 10)} {sign_op} 0 \\right)\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        x = np.linspace(0, self.upper_limit, 400)
+        if self.func_type == 'cos':
+            y = self.amplitude * (np.cos(self.freq * x) ** 2)
+        else:
+            y = self.amplitude * (np.sin(self.freq * x) ** 2)
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        
+        # Plot line
+        ax.plot(x, y, color='blue', linewidth=2, label=f'$y={self.func_latex}$')
+        
+        # Shade area
+        ax.fill_between(x, y, alpha=0.3, color='skyblue', hatch='//')
+        
+        # Formatting axes
+        ax.set_xlim(0, self.upper_limit * 1.1)
+        ax.set_ylim(0, self.amplitude * 1.2)
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        
+        # Custom ticks for X-axis (0 and the upper limit)
+        tick_vals = [0, self.upper_limit]
+        tick_labels = ['$0$', f'${self.limit_text}$']
+        
+        # Optional: Add midpoint tick if interval is large
+        if self.limit_coeff >= 1:
+            midpoint = self.upper_limit / 2
+            tick_vals.insert(1, midpoint)
+            # Determine midpoint label
+            if self.limit_coeff == 1: mid_lbl = r"\frac{\pi}{2}"
+            elif self.limit_coeff == 2: mid_lbl = r"\pi"
+            else: mid_lbl = ""
+            tick_labels.insert(1, f"${mid_lbl}$")
+
+        ax.set_xticks(tick_vals)
+        ax.set_xticklabels(tick_labels)
+        
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
