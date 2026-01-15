@@ -176,3 +176,93 @@ class Mat152:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat153:
+    
+    def __init__(self):
+        base_sym = "e" 
+        
+        # Generate coefficients for the exponents (e.g., length = e^(ax), width = e^(bx))
+        # We ensure length coefficient is usually positive and width can be negative
+        a = rnd.randint(4, 8)           # Coefficient for length (e.g., 5 means 5x)
+        b = rnd.choice([-1, -2, -3, 1]) # Coefficient for width (e.g., -1 means -x)
+        
+        # Decide on the hidden numerical value for x
+        actual_x = rnd.randint(1, 5)
+        
+        # Calculate the exponent for the Area
+        # Area = Length * Width = e^(ax) * e^(bx) = e^((a+b)x)
+        # The displayed area power 'k' is the result of (a+b) * actual_x
+        total_exponent_val = (a + b) * actual_x
+        
+        # Formatting strings for LaTeX display
+        self.len_label = f"${base_sym}^{{{a}x}}$"
+        
+        # Handle the width label sign specifically for cleaner formatting
+        if b == -1:
+            self.wid_label = f"${base_sym}^{{-x}}$"
+        elif b == 1:
+            self.wid_label = f"${base_sym}^{{x}}$"
+        else:
+            self.wid_label = f"${base_sym}^{{{b}x}}$"
+            
+        self.area_label = f"${base_sym}^{{{total_exponent_val}}}$"
+
+        self.answer = actual_x
+
+        self.description = (
+            f"A rectangle is shown with Length = {self.len_label} and Width = {self.wid_label}. "
+            f"The Area of this rectangle is given as {self.area_label}. "
+            f"Calculate the numerical value of $x$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Logarithmic and exponential functions"
+        self.source = "Adapted from Khan Academy"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\text{{Length}} \\times \\text{{Width}} \\\\"
+            f"{base_sym}^{{{total_exponent_val}}} &= {base_sym}^{{{a}x}} \\times {base_sym}^{{{b}x}} \\\\"
+            f"&= {base_sym}^{{({a} + ({b}))x}} \\\\"
+            f"\\text{{Equating the exponents:}} & \\\\"
+            f"{total_exponent_val} &= ({a} + ({b}))x \\\\"
+            f"{total_exponent_val} &= {a + b}x \\\\"
+            f"x &= \\frac{{{total_exponent_val}}}{{{a + b}}} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 4))
+        
+        # Draw Rectangle
+        # Note: We use fixed visual dimensions for clarity. 
+        # Using actual mathematical dimensions (e.g., e^10) would make the plot unreadable.
+        rect_width_visual = 6
+        rect_height_visual = 3
+        rect = patches.Rectangle((1, 1), rect_width_visual, rect_height_visual, 
+                                linewidth=2, edgecolor='black', facecolor='#e6f2ff')
+        ax.add_patch(rect)
+        
+        # Add Labels
+        # Top (Length)
+        ax.text(1 + rect_width_visual/2, 1 + rect_height_visual + 0.2, self.len_label, 
+                ha='center', va='bottom', fontsize=14, color='blue')
+        
+        # Right (Width)
+        ax.text(1 + rect_width_visual + 0.2, 1 + rect_height_visual/2, self.wid_label, 
+                ha='left', va='center', fontsize=14, color='red')
+        
+        # Center (Area)
+        ax.text(1 + rect_width_visual/2, 1 + rect_height_visual/2, f"Area = {self.area_label}", 
+                ha='center', va='center', fontsize=16, fontweight='bold')
+
+        # Plot settings
+        ax.set_xlim(0, 9)
+        ax.set_ylim(0, 6)
+        ax.axis('off') # Hide axes for a clean geometry look
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
