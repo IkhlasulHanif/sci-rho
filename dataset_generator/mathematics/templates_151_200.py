@@ -356,3 +356,81 @@ class Mat154:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat155:
+    
+    def __init__(self):
+        # Equation: y = e^(kx)
+        self.k = rnd.randint(1, 4)  # Random coefficient k (e.g., 2, 3, 4)
+        
+        # Limit: x = ln(a)
+        self.a = rnd.randint(2, 6)  # Random base for the log limit (e.g., ln(3), ln(5))
+        
+        # Calculate the exact limit value for plotting
+        self.x_limit = np.log(self.a)
+
+        # Integral of e^(kx) is (1/k) * e^(kx)
+        # Definite integral from 0 to ln(a):
+        # = (1/k) * (e^(k * ln(a)) - e^(k * 0))
+        # = (1/k) * (a^k - 1)
+        
+        numerator = (self.a**self.k) - 1
+        denominator = self.k
+
+        self.answer = round(numerator / denominator, 3)
+
+        self.description = (
+            f"The figure displays the curve $y = e^{{{self.k}x}}$. "
+            f"The region $R$ is shaded and is bounded by the curve, the x-axis, "
+            f"the y-axis (where $x=0$), and the vertical line $x = \\ln({self.a})$. "
+            f"Calculate the exact area of the shaded region $R$. "
+            f"Give your answer correct to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\int_{{0}}^{{\\ln({self.a})}} e^{{{self.k}x}} \\, dx\\\\"
+            f"&= \\left[ \\frac{{1}}{{{self.k}}} e^{{{self.k}x}} \\right]_{{0}}^{{\\ln({self.a})}}\\\\"
+            f"&= \\frac{{1}}{{{self.k}}} \\left( e^{{{self.k} \\ln({self.a})}} - e^{{0}} \\right)\\\\"
+            f"&= \\frac{{1}}{{{self.k}}} \\left( {self.a}^{{{self.k}}} - 1 \\right)\\\\"
+            f"&= \\frac{{{self.a**self.k} - 1}}{{{self.k}}}\\\\"
+            f"&= \\frac{{{self.a**self.k - 1}}}{{{self.k}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Create data points
+        # Plot slightly beyond the limit for better visuals
+        x = np.linspace(-0.2, self.x_limit + 0.5, 400)
+        y = np.exp(self.k * x)
+        
+        plt.figure(figsize=(8, 6))
+        
+        # Plot the main curve
+        plt.plot(x, y, label=f'$y = e^{{{self.k}x}}$', color='#1f77b4', linewidth=2)
+        
+        # Shade the region R
+        x_fill = np.linspace(0, self.x_limit, 200)
+        y_fill = np.exp(self.k * x_fill)
+        plt.fill_between(x_fill, y_fill, color='orange', alpha=0.3, label='Region R')
+        
+        # Add boundary lines
+        plt.axvline(x=0, color='black', linewidth=1.5) # y-axis
+        plt.axhline(y=0, color='black', linewidth=1.5) # x-axis
+        plt.axvline(x=self.x_limit, color='red', linestyle='--', linewidth=1.5, label=f'$x = \\ln({self.a})$')
+        
+        # Labels and Title
+        plt.title(f"The Exponential Region ($y=e^{{{self.k}x}}$)", fontsize=14)
+        plt.xlabel("$x$", fontsize=12)
+        plt.ylabel("$y$", fontsize=12)
+        plt.legend(loc="upper left")
+        plt.grid(True, linestyle=':', alpha=0.6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
