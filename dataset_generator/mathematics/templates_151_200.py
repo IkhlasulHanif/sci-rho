@@ -3,7 +3,7 @@ import pandas as pd
 import random as rnd
 import os
 import matplotlib.pyplot as plt
-from fractions import Fraction
+from matplotlib.patches import Polygon
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -644,6 +644,96 @@ class Mat157:
         # Add vertical lines for bounds
         ax.axvline(self.x1, color='red', linestyle='--', alpha=0.5)
         ax.axvline(self.x2, color='red', linestyle='--', alpha=0.5)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat158:
+    
+    def __init__(self):
+        # Model: y = (m*x) / (x^2 + c)
+        # Integral is (m/2) * ln(x^2 + c)
+        
+        # Choose c (constant in denominator)
+        self.c = rnd.randint(1, 5)
+        
+        # Choose upper limit (b) such that the log argument (b^2 + c)/c is clean if possible
+        # We define x=0 as the lower limit (a)
+        self.lower_limit = 0
+        self.upper_limit = rnd.randint(2, 6)
+        
+        # Choose numerator coefficient (m). 
+        # We ensure m is even so A = m/2 is an integer integer.
+        self.m = rnd.randint(1, 6) * 2 
+        
+        # Function string for display
+        self.func_latex = fr"\frac{{{self.m}x}}{{x^2 + {self.c}}}"
+        
+        # Calculate A (The coefficient outside the natural log)
+        # Integral of mx/(x^2+c) -> (m/2) * ln(x^2+c)
+        val_A = self.m // 2
+        
+        # Calculate the Log Argument
+        # Definite integral from 0 to b: (m/2) * [ln(b^2+c) - ln(0^2+c)]
+        # = (m/2) * ln( (b^2+c) / c )
+        numerator_arg = self.upper_limit**2 + self.c
+        denominator_arg = self.c
+        
+        self.answer = round(abs(val_A * np.log(numerator_arg / denominator_arg)), 3)
+
+        self.description = (
+            f"The figure shows the curve $y = {self.func_latex}$ in the first quadrant. A shaded region is defined between $x={self.lower_limit}$ and $x={self.upper_limit}$. "
+            f"Determine the area of the shaded region. Round to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Thomas' Calculus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\int_{{{self.lower_limit}}}^{{{self.upper_limit}}} \\frac{{{self.m}x}}{{x^2 + {self.c}}} \\, dx\\\\"
+            f"&= \\frac{{{self.m}}}{{2}} \\left[ \\ln(x^2 + {self.c}) \\right]_{{{self.lower_limit}}}^{{{self.upper_limit}}}\\\\"
+            f"&= {val_A} \\left[ \\ln(({self.upper_limit})^2 + {self.c}) - \\ln(({self.lower_limit})^2 + {self.c}) \\right]\\\\"
+            f"&= {val_A} \\left( \\ln({numerator_arg}) - \\ln({denominator_arg}) \\right)\\\\"
+            f"&= {val_A} \\ln\\left( \\frac{{{numerator_arg}}}{{{denominator_arg}}} \\right)\\\\"
+            f"&= {val_A} \\ln({round(numerator_arg / denominator_arg, 10)})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 4))
+        
+        # Define x range for the curve (go slightly beyond limits for aesthetics)
+        x = np.linspace(0, self.upper_limit + 1, 400)
+        y = (self.m * x) / (x**2 + self.c)
+        
+        # Plot the curve
+        ax.plot(x, y, 'b-', linewidth=2, label=f'$y={self.func_latex}$')
+        
+        # Shade the region
+        # Create x and y arrays specifically for the shaded area
+        ix = np.linspace(self.lower_limit, self.upper_limit, 200)
+        iy = (self.m * ix) / (ix**2 + self.c)
+        
+        # Create vertices for the polygon (shade to the x-axis)
+        verts = [(self.lower_limit, 0), *zip(ix, iy), (self.upper_limit, 0)]
+        poly = Polygon(verts, facecolor='skyblue', edgecolor='none', alpha=0.5)
+        ax.add_patch(poly)
+        
+        # Add boundary lines
+        ax.axvline(x=self.upper_limit, color='k', linestyle='--', alpha=0.6, label=f'$x={self.upper_limit}$')
+        
+        # Labels and Title
+        ax.set_title(f"Region under $y = {self.func_latex}$")
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_ylim(bottom=0)
+        ax.set_xlim(left=0)
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
