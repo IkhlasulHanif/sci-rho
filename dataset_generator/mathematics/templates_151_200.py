@@ -3,6 +3,7 @@ import pandas as pd
 import random as rnd
 import os
 import matplotlib.pyplot as plt
+from fractions import Fraction
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -523,6 +524,126 @@ class Mat156:
         
         # Display the plot
         plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat157:
+    
+    def __init__(self):
+        # Form: f(x) = NUM / ((x + a)(x + b))
+        # We want partial fraction decomposition to look like: C/(x+a) - C/(x+b)
+        # This implies NUM = C * (b - a).
+        
+        while True:
+            self.a = rnd.randint(1, 5)
+            self.b = rnd.randint(1, 5)
+            
+            # Ensure distinct roots to avoid repeated roots case (different technique)
+            if self.a != self.b: 
+                break
+                
+        # Calculate difference for the numerator scaling
+        self.diff = self.b - self.a
+        
+        # Choose a scalar C (how "tall" the fractions are). 
+        # To keep numbers integer-friendly, we usually pick C=1 or C=2.
+        self.C = rnd.choice([1, 2, 3])
+        
+        # Calculate the Numerator constant
+        # Decomposition: A/(x+a) + B/(x+b)
+        # A = C, B = -C  =>  f(x) = C(b-a) / ((x+a)(x+b))
+        self.NUM = self.C * self.diff
+        
+        # Randomize Integration Bounds (x1, x2)
+        # Constraint: The function has vertical asymptotes at x = -a and x = -b.
+        # To ensure the area is finite and valid, the integration interval [x1, x2]
+        # must NOT contain -a or -b.
+        # Since a, b > 0, asymptotes are negative. We can safely pick positive bounds.
+        self.x1 = rnd.randint(0, 3)
+        self.x2 = self.x1 + rnd.randint(1, 4) # Ensure x2 > x1
+
+        # Integral of C/(x+a) - C/(x+b) is C*ln|x+a| - C*ln|x+b| = C * ln|(x+a)/(x+b)|
+        # Evaluated from x1 to x2
+        
+        term_upper = (self.x2 + self.a) / (self.x2 + self.b)
+        term_lower = (self.x1 + self.a) / (self.x1 + self.b)
+        
+        # Value inside the log before raising to power C
+        ratio = term_upper / term_lower
+        
+        # Since answer form is ln(k), k = (ratio)^C
+        k_fraction = ratio ** self.C
+
+        self.answer = round(abs(np.log(k_fraction)), 3)
+
+        self.description = (
+            f"The figure depicts the graph of the function "
+            f"$f(x) = \\frac{{{self.NUM}}}{{(x+{self.a})(x+{self.b})}}$. "
+            f"The area of interest is bounded by the curve, the x-axis, and the vertical lines $x={self.x1}$ and $x={self.x2}$. "
+            f"Calculate the definite integral $\\int_{{{self.x1}}}^{{{self.x2}}} f(x) \\, dx$. "
+            f"Round your answer to three decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Pure Mathematics 2 & 3 by Hugh Neill & Douglas Quadling"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The integrand is:}} &\\\\"
+            f"f(x) &= \\frac{{{self.NUM}}}{{(x + {self.a})(x + {self.b})}}\\\\"
+            f"\\text{{Perform Partial Fraction Decomposition:}} &\\\\"
+            f"\\frac{{{self.NUM}}}{{(x + {self.a})(x + {self.b})}} &= \\frac{{A}}{{x + {self.a}}} + \\frac{{B}}{{x + {self.b}}}\\\\"
+            f"\\text{{Solving for A and B (with }} \\text{{NUM}} = {self.NUM} \\text{{):}} &\\\\"
+            f"A &= {self.C}, \\quad B = -{self.C}\\\\"
+            f"\\text{{Thus:}} &\\\\"
+            f"f(x) &= \\frac{{{self.C}}}{{x + {self.a}}} - \\frac{{{self.C}}}{{x + {self.b}}}\\\\"
+            f"\\text{{Evaluate the Definite Integral:}} &\\\\"
+            f"I &= \\int_{{{self.x1}}}^{{{self.x2}}} \\left( \\frac{{{self.C}}}{{x + {self.a}}} - \\frac{{{self.C}}}{{x + {self.b}}} \\right) \\, dx\\\\"
+            f"&= {self.C} \\left[ \\ln|x + {self.a}| - \\ln|x + {self.b}| \\right]_{{{self.x1}}}^{{{self.x2}}}\\\\"
+            f"&= {self.C} \\left[ \\ln\\left| \\frac{{x + {self.a}}}{{x + {self.b}}} \\right| \\right]_{{{self.x1}}}^{{{self.x2}}}\\\\"
+            f"\\text{{Substitute limits }} x_2={self.x2} \\text{{ and }} x_1={self.x1}: &\\\\"
+            f"I &= {self.C} \\left( \\ln\\left( \\frac{{{self.x2} + {self.a}}}{{{self.x2} + {self.b}}} \\right) - \\ln\\left( \\frac{{{self.x1} + {self.a}}}{{{self.x1} + {self.b}}} \\right) \\right)\\\\"
+            f"&= {self.C} \\left( \\ln\\left( \\frac{{{self.x2 + self.a}}}{{{self.x2 + self.b}}} \\right) - \\ln\\left( \\frac{{{self.x1 + self.a}}}{{{self.x1 + self.b}}} \\right) \\right)\\\\"
+            f"&= {self.C} \\ln\\left( \\frac{{{self.x2 + self.a}}}{{{self.x2 + self.b}}} \\cdot \\frac{{{self.x1 + self.b}}}{{{self.x1 + self.a}}} \\right)\\\\"
+            f"&= {self.C} \\ln\\left( {round(((self.x2 + self.a) * (self.x1 + self.b)) / ((self.x2 + self.b) * (self.x1 + self.a)), 10)} \\right)\\\\"
+            f"\\text{{Since we calculate the area (magnitude):}} &\\\\"
+            f"I &= |{self.answer}| = {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # 2. Define the Function for plotting and calculation
+        def f(x):
+            return self.NUM / ((x + self.a) * (x + self.b))
+
+        # 3. Create the Figure
+        x_plot = np.linspace(self.x1 - 1, self.x2 + 1, 400)
+        # Filter out potential asymptote points for clean plotting (though bounds are safe here)
+        y_plot = f(x_plot)
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+        ax.plot(x_plot, y_plot, 'b-', label=f'$f(x)$', linewidth=2)
+        
+        # Fill the area
+        x_fill = np.linspace(self.x1, self.x2, 200)
+        y_fill = f(x_fill)
+        ax.fill_between(x_fill, y_fill, alpha=0.3, color='orange', label='Area')
+
+        # Formatting plot
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.set_xlabel('x')
+        ax.set_ylabel('f(x)')
+        ax.set_title(f'Graph of $f(x) = \\frac{{{self.NUM}}}{{(x+{self.a})(x+{self.b})}}$')
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.6)
+        
+        # Add vertical lines for bounds
+        ax.axvline(self.x1, color='red', linestyle='--', alpha=0.5)
+        ax.axvline(self.x2, color='red', linestyle='--', alpha=0.5)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
