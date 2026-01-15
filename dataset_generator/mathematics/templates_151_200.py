@@ -434,3 +434,96 @@ class Mat155:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat156:
+    
+    def __init__(self):
+        # Equation form: y = a * x * sin(b * x)
+        self.a = rnd.randint(1, 5)      # Coefficient for x (e.g., 2x, 3x)
+        self.b = rnd.randint(1, 3)      # Coefficient inside sin (e.g., sin(2x))
+        
+        # Randomize Upper Limit (limit) to be a "nice" fraction of Pi
+        # Options: pi/6, pi/4, pi/3, pi/2
+        self.denom_options = {
+            6: r"\frac{\pi}{6}",
+            4: r"\frac{\pi}{4}",
+            3: r"\frac{\pi}{3}", 
+            2: r"\frac{\pi}{2}"
+        }
+        self.denom = rnd.choice(list(self.denom_options.keys()))
+        self.limit_val = np.pi / self.denom
+        self.limit_str = self.denom_options[self.denom]
+
+        # Calculate definite integral from 0 to limit_val    
+        numerator = self.a * (np.sin(self.b * self.limit_val) - self.b * self.limit_val * np.cos(self.b * self.limit_val))
+        denominator = self.b**2
+
+        area = numerator / denominator
+
+        self.answer = round(area, 3)
+
+        self.description = (
+            f"The figure shows the curve $y = {self.a}x \\sin({self.b}x)$ for $0 \\leq x \\leq {self.limit_str}$. "
+            f"The shaded region represents the area between the curve and the x-axis from the origin to $x = {self.limit_str}$. "
+            f"Find the area of the shaded region. Give your answer as a decimal rounded to three decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Calculus: Early Transcendentals by James Stewart"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Area}} &= \\int_{{0}}^{{{self.limit_str}}} {self.a}x \\sin({self.b}x) \\, dx \\\\"
+            f"&= \\left[ -\\frac{{{self.a}x}}{{{self.b}}} \\cos({self.b}x) + \\frac{{{self.a}}}{{{self.b**2}}} \\sin({self.b}x) \\right]_{{0}}^{{{self.limit_str}}} \\\\"
+            f"&= \\left( -\\frac{{{self.a}}}{{{self.b}}} \\left({self.limit_str}\\right) \\cos\\left({self.b} \\cdot {self.limit_str}\\right) + \\frac{{{self.a}}}{{{self.b**2}}} \\sin\\left({self.b} \\cdot {self.limit_str}\\right) \\right) - 0 \\\\"
+            f"&= {round(-self.a * self.limit_val / self.b, 10)} \\cdot {round(np.cos(self.b * self.limit_val), 10)} + {round(self.a / self.b**2, 10)} \\cdot {round(np.sin(self.b * self.limit_val), 10)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Define the function
+        func = lambda x: self.a * x * np.sin(self.b * x)
+
+        # Create x values for the curve (go slightly past the limit for visual context)
+        x = np.linspace(0, self.limit_val * 1.2, 400)
+        y = func(x)
+        
+        plt.figure(figsize=(8, 5))
+        
+        # Plot the main curve
+        plt.plot(x, y, label=f'$y = {self.a}x \\sin({self.b}x)$', color='#1f77b4', linewidth=2)
+        
+        # Shade the region (0 to limit)
+        x_fill = np.linspace(0, self.limit_val, 200)
+        y_fill = func(x_fill)
+        plt.fill_between(x_fill, y_fill, color='skyblue', alpha=0.4, label='Target Area')
+        
+        # Add vertical line at the limit
+        plt.axvline(x=self.limit_val, color='gray', linestyle='--', alpha=0.7)
+        
+        # Formatting the graph
+        plt.axhline(0, color='black', linewidth=1)
+        plt.axvline(0, color='black', linewidth=1)
+        
+        # Add custom tick for the limit on x-axis
+        current_xticks = list(plt.xticks()[0])
+        # Filter out ticks that might overlap too closely with our custom label
+        filtered_ticks = [t for t in current_xticks if abs(t - self.limit_val) > 0.1 and t >= 0]
+        plt.xticks(
+            filtered_ticks + [self.limit_val], 
+            [f"{t:.1f}" if t != 0 else "0" for t in filtered_ticks] + [f"${self.limit_str}$"]
+        )
+        
+        plt.xlabel("$x$")
+        plt.ylabel("$y$")
+        plt.legend(loc='upper right')
+        plt.grid(True, linestyle=':', alpha=0.6)
+        
+        # Display the plot
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
