@@ -266,3 +266,93 @@ class Mat153:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat154:
+    
+    def __init__(self):
+        # Equation: y = log_base(x - b)
+        
+        # Choose a base (e.g., 2, 3, 4, 5)
+        self.base = rnd.choice([2, 3, 4, 5])
+        
+        # Choose the vertical asymptote 'b' (shift)
+        self.b = rnd.randint(-3, 5)
+        
+        # Choose the target answer 'k' (y-value) to ensure x is an integer
+        # We want a clean point, so we pick k first, then calculate x.
+        # Range [-1, 3] ensures the point isn't too far off the chart.
+        self.k_target = rnd.choice([-1, 1, 2, 3])
+        
+        # Calculate x based on k: k = log_base(x - b)  -> base^k = x - b -> x = b + base^k
+        self.x_point = self.b + (self.base ** self.k_target)
+
+        self.answer = self.k_target
+
+        self.description = (
+            f"The graph shows the function $y = \\log_{{{self.base}}}(x - b)$. "
+            f"The graph has a vertical asymptote indicated by a dashed line at $x = {self.b}$. "
+            f"The curve passes through the point $({self.x_point}, k)$. "
+            f"Determine the value of $k$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Logarithmic and exponential functions"
+        self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 2 & 3 by L. Bostock"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given the function:}} &\\\\"
+            f"y &= \\log_{{{self.base}}}(x - b)\\\\"
+            f"\\text{{Substitute }} x = {self.x_point} \\text{{ and }} b = {self.b} \\text{{ to find }} k:\\\\"
+            f"k &= \\log_{{{self.base}}}({self.x_point} - {self.b})\\\\"
+            f"&= \\log_{{{self.base}}}({round(self.x_point - self.b, 10)})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Define domain for plotting
+        # Start slightly right of asymptote (b) to avoid log(0) error
+        x_start = self.b + 0.01 
+        x_end = self.x_point + (self.base if self.base < 5 else 2) # extend slightly past the point of interest
+        
+        x_values = np.linspace(x_start, x_end, 500)
+        
+        # Calculate y values using change of base formula: log_n(x) = ln(x) / ln(n)
+        y_values = np.log(x_values - self.b) / np.log(self.base)
+        
+        # Plot the curve
+        ax.plot(x_values, y_values, label=f'$y = \\log_{{{self.base}}}(x - b)$', linewidth=2)
+        
+        # Plot the Asymptote (Dashed Line)
+        ax.axvline(x=self.b, color='red', linestyle='--', label=f'Asymptote ($x={self.b}$)')
+        
+        # Plot the specific point (x_point, k)
+        ax.plot(self.x_point, self.k_target, 'ko') # 'ko' = black circle
+        ax.annotate(f'({self.x_point}, k)', 
+                    (self.x_point, self.k_target), 
+                    textcoords="offset points", 
+                    xytext=(-10, 10), 
+                    ha='right',
+                    fontsize=12,
+                    weight='bold')
+
+        # Grid and Axis formatting
+        ax.grid(True, which='both', linestyle='--', alpha=0.6)
+        ax.axhline(0, color='black', linewidth=1) # x-axis
+        ax.axvline(0, color='black', linewidth=1) # y-axis
+        
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.legend()
+        
+        # Limit y-axis to keep graph focused (don't show infinite drop near asymptote)
+        y_min_plot = min(self.k_target - 2, -3)
+        y_max_plot = max(self.k_target + 2, 3)
+        ax.set_ylim(y_min_plot, y_max_plot)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
