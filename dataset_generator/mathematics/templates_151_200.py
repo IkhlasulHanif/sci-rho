@@ -1315,3 +1315,122 @@ class Mat163:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat164:
+    
+    def __init__(self):
+        # To guarantee the problem is solvable, we start with the intersection point (X)
+        # and work backward to find A and B.
+        
+        # Random Intersection Point X
+        self.X = np.random.randint(-5, 6, 3) # [x, y, z]
+
+        # Random Direction Vectors (d1, d2)
+        # Ensure they are not parallel (cross product != 0)
+        while True:
+            self.d1 = np.random.randint(-3, 4, 3)
+            self.d2 = np.random.randint(-3, 4, 3)
+            # Avoid zero vectors and parallel vectors
+            if (np.linalg.norm(self.d1) > 0 and np.linalg.norm(self.d2) > 0 and 
+                np.linalg.norm(np.cross(self.d1, self.d2)) > 0.1):
+                break
+
+        # Random scalar multipliers (t and s) to define positions of A and B relative to X
+        # We ensure A and B are not the same point as X (multiplier != 0)
+        t_val = rnd.choice([-2, -1, 1, 2])
+        s_val = rnd.choice([-2, -1, 1, 2])
+
+        # Calculate Points A and B based on the logic: Point = Intersection - (scalar * direction)
+        # If A + t*d1 = X, then A = X - t*d1
+        self.A = self.X - (t_val * self.d1)
+        self.B = self.X - (s_val * self.d2)
+        
+        # The "hidden" variable m is the z-component of B
+        m_answer = self.B[2]
+
+        d1_str = f"{self.d1[0]}i + {self.d1[1]}j + {self.d1[2]}k".replace("+-", "- ").replace("+ -", "- ")
+        d2_str = f"{self.d2[0]}i + {self.d2[1]}j + {self.d2[2]}k".replace("+-", "- ").replace("+ -", "- ")
+
+        self.answer = int(m_answer)
+
+        self.description = (
+            f"A diagram shows two straight lines, $L_1$ and $L_2$, "
+            f"intersecting at a single point $X$ in three-dimensional space.\n\n"
+            f"**Line $L_1$** passes through point $A({self.A[0]}, {self.A[1]}, {self.A[2]})$ and is parallel "
+            f"to the vector $\\mathbf{{d_1}} = {d1_str}$.\n\n"
+            f"**Line $L_2$** passes through point $B({self.B[0]}, {self.B[1]}, m)$ and is parallel "
+            f"to the vector $\\mathbf{{d_2}} = {d2_str}$.\n\n"
+            f"By solving for the intersection of these two lines, determine the numerical value of the constant $m$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Vectors"
+        self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 2 & 3"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The parametric equations for line }} L_1 \\text{{ are:}} \\\\"
+            f"\\mathbf{{r}}_1 &= \\begin{{pmatrix}} {self.A[0]} \\\\ {self.A[1]} \\\\ {self.A[2]} \\end{{pmatrix}} + t \\begin{{pmatrix}} {self.d1[0]} \\\\ {self.d1[1]} \\\\ {self.d1[2]} \\end{{pmatrix}} \\\\"
+            f"\\text{{The parametric equations for line }} L_2 \\text{{ are:}} \\\\"
+            f"\\mathbf{{r}}_2 &= \\begin{{pmatrix}} {self.B[0]} \\\\ {self.B[1]} \\\\ m \\end{{pmatrix}} + s \\begin{{pmatrix}} {self.d2[0]} \\\\ {self.d2[1]} \\\\ {self.d2[2]} \\end{{pmatrix}} \\\\"
+            f"\\text{{Since the lines intersect, we equate the }} x \\text{{ and }} y \\text{{ components:}} \\\\"
+            f"{self.A[0]} + ({self.d1[0]})t &= {self.B[0]} + ({self.d2[0]})s \\\\"
+            f"{self.A[1]} + ({self.d1[1]})t &= {self.B[1]} + ({self.d2[1]})s \\\\"
+            f"\\text{{Solving this system for }} t \\text{{ and }} s \\text{{ yields:}} \\\\"
+            f"t &= {t_val}, \\quad s = {s_val} \\\\"
+            f"\\text{{Now, equate the }} z \\text{{ components to find }} m: \\\\"
+            f"{self.A[2]} + ({self.d1[2]})t &= m + ({self.d2[2]})s \\\\"
+            f"\\text{{Substituting }} t={t_val} \\text{{ and }} s={s_val}: \\\\"
+            f"{self.A[2]} + ({self.d1[2]})({t_val}) &= m + ({self.d2[2]})({s_val}) \\\\"
+            f"{round(self.A[2] + self.d1[2] * t_val, 10)} &= m + ({round(self.d2[2] * s_val, 10)}) \\\\"
+            f"m &= {round(self.A[2] + self.d1[2] * t_val, 10)} - ({round(self.d2[2] * s_val, 10)}) \\\\"
+            f"m &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig = plt.figure(figsize=(10, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Generate line points for plotting
+        # We plot a segment from (X - 3*d) to (X + 3*d) to ensure visual coverage
+        line1_pts = np.array([self.X - 3*self.d1, self.X + 3*self.d1])
+        line2_pts = np.array([self.X - 3*self.d2, self.X + 3*self.d2])
+
+        # Plot Lines
+        ax.plot(line1_pts[:,0], line1_pts[:,1], line1_pts[:,2], label='$L_1$', color='blue', alpha=0.6)
+        ax.plot(line2_pts[:,0], line2_pts[:,1], line2_pts[:,2], label='$L_2$', color='red', alpha=0.6)
+
+        # Plot Points
+        ax.scatter(*self.A, color='blue', s=100, label='Point A', edgecolors='black')
+        ax.scatter(*self.B, color='red', s=100, label='Point B', edgecolors='black')
+        ax.scatter(*self.X, color='green', s=150, marker='X', label='Intersection X', edgecolors='black')
+
+        # Add Direction Vectors (Quivers) starting at A and B
+        ax.quiver(self.A[0], self.A[1], self.A[2], self.d1[0], self.d1[1], self.d1[2], length=1.5, normalize=True, color='blue', linestyle='--')
+        ax.quiver(self.B[0], self.B[1], self.B[2], self.d2[0], self.d2[1], self.d2[2], length=1.5, normalize=True, color='red', linestyle='--')
+
+        # Labels and Legend
+        ax.text(self.A[0], self.A[1], self.A[2], f" A", fontsize=10)
+        ax.text(self.B[0], self.B[1], self.B[2], f" B", fontsize=10)
+        ax.text(self.X[0], self.X[1], self.X[2], f" X", fontsize=10)
+        
+        ax.set_xlabel('X axis')
+        ax.set_ylabel('Y axis')
+        ax.set_zlabel('Z axis')
+        ax.legend()
+        
+        # Auto-scale adjustment for better view
+        all_pts = np.vstack([self.A, self.B, self.X])
+        center = np.mean(all_pts, axis=0)
+        radius = np.max(np.linalg.norm(all_pts - center, axis=1)) + 2
+        
+        ax.set_xlim(center[0] - radius, center[0] + radius)
+        ax.set_ylim(center[1] - radius, center[1] + radius)
+        ax.set_zlim(center[2] - radius, center[2] + radius)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
