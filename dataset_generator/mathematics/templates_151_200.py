@@ -1898,3 +1898,104 @@ class Mat169:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat170:
+    
+    def __init__(self):
+        # Randomize the starting point A on the imaginary axis (0, y_start)
+        # We pick an integer between 2 and 8 to keep the scale reasonable.
+        self.y_start = rnd.randint(2, 8)
+        
+        # Randomize the angle (argument). 
+        # We choose standard angles so the math is "cleaner" for students, 
+        # but strictly negative to go "downwards".
+        angle_options = [
+            (30, r"-\frac{\pi}{6}", np.pi/6),
+            (45, r"-\frac{\pi}{4}", np.pi/4),
+            (60, r"-\frac{\pi}{3}", np.pi/3)
+        ]
+        self.deg_val, self.latex_angle, self.rad_val = rnd.choice(angle_options)
+        
+        # The actual geometric angle is negative
+        self.theta = -self.rad_val
+        
+        # The ray starts at (0, y_start). Slope m = tan(theta).
+        # Equation of line: y - y_start = m(x - 0)  =>  y = mx + y_start
+        # To find x-intercept, set y = 0:
+        # 0 = mx + y_start  =>  x = -y_start / m
+        self.m = np.tan(self.theta)
+        self.x_intercept = -self.y_start / self.m
+
+        self.answer = round(self.x_intercept, 3)
+
+        self.description = (
+            f"The figure shows a ray (half-line) originating from "
+            f"the point $A$ at coordinates $(0, {self.y_start})$ on the imaginary axis. "
+            f"The ray extends downwards and to the right, representing the locus "
+            f"$\\arg(z - {self.y_start}i) = {self.latex_angle}$.\n\n"
+            f"Find the value of the x-intercept where this locus, "
+            f"if extended as a full line, would cross the real axis. "
+            f"Round to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Complex numbers"
+        self.source = "Adapted from Edexcel A Level Mathematics: Pure Mathematics Year 2"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The ray starts at point }} A &= (0, {self.y_start})\\\\"
+            f"\\text{{The angle is }} \\theta &= {self.latex_angle}\\\\"
+            f"\\text{{The slope }} m \\text{{ is calculated as:}} &\\\\"
+            f"m &= \\tan(\\theta) = \\tan\\left({self.latex_angle}\\right)\\\\"
+            f"&= {round(self.m, 10)}\\\\"
+            f"\\text{{Using the point-slope equation }} y - y_1 &= m(x - x_1):\\\\"
+            f"y - {self.y_start} &= {round(self.m, 10)}(x - 0)\\\\"
+            f"\\text{{To find the x-intercept, set }} y &= 0:\\\\"
+            f"0 - {self.y_start} &= {round(self.m, 10)}x\\\\"
+            f"-{self.y_start} &= {round(self.m, 10)}x\\\\"
+            f"x &= \\frac{{-{self.y_start}}}{{{round(self.m, 10)}}}\\\\"
+            f"x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Set plot limits based on the calculated intercept to ensure everything fits
+        limit_x = self.x_intercept * 1.5
+        limit_y = self.y_start * 1.2
+        
+        # Plot X and Y axes (Real and Imaginary)
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        
+        # Plot the Ray
+        # We plot from x=0 to x=limit_x to show the ray extending past the axis
+        x_vals = np.linspace(0, limit_x, 100)
+        y_vals = self.m * x_vals + self.y_start
+        ax.plot(x_vals, y_vals, color='blue', linewidth=2, label=f'$arg(z - {self.y_start}i) = {self.latex_angle}$')
+        
+        # Plot Point A
+        ax.plot(0, self.y_start, 'ro', zorder=5) # Red dot
+        ax.text(0.2, self.y_start, f'$A(0, {self.y_start})$', fontsize=12, verticalalignment='bottom')
+        
+        # Plot the X-intercept (The solution point) - purely visual, optional to hide
+        ax.plot(self.x_intercept, 0, 'go') 
+        
+        # Formatting the ComplexPlane
+        ax.set_title("ComplexPlane Locus", fontsize=14)
+        ax.set_xlabel("Re(z)", fontsize=12, loc='right')
+        ax.set_ylabel("Im(z)", fontsize=12, loc='top')
+        ax.grid(True, which='both', linestyle='--', alpha=0.5)
+        ax.set_aspect('equal') # Crucial for angles to look correct
+        ax.legend(loc='upper right')
+        
+        # Remove standard ticks for a cleaner geometry-problem look, or keep them for reference
+        # Here we keep them but ensure the view is centered roughly
+        ax.set_xlim(-1, limit_x)
+        ax.set_ylim(-1, limit_y)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
