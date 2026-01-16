@@ -350,3 +350,89 @@ class Com006:
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
         
+class Com007:
+
+    def __init__(self):
+        self.elements = rnd.randint(7, 9)
+        self.array = [rnd.randint(1, 100) for _ in range(self.elements)]
+        self.target = rnd.choice([self.array[rnd.randint(0, len(self.array) - 1)], rnd.randint(50, 125)])
+        self.found = False
+        index = 0
+        result = -1
+        while (index < self.elements) and self.found == False:
+            if self.array[index] == self.target:
+                self.found = True
+                result = index
+            else:
+                index = index + 1
+        self.answer = result
+
+        self.description = f"This image is showing a pseudocode for a linear search algorithm. If the target (x) is set to {self.target}, what is the final output displayed?"
+        self.topic = "Algorithm design and problem-solving"
+        self.subtopic = "Understand standard methods of solution"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Array}} &= [{', '.join(map(str, self.array))}]\\\\"
+            f"\\text{{Target Value}} &= {self.target}\\\\"
+            f"\\text{{Linear Search Logic:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Step {i+1}: Check index }} {i} \\text{{ (Value: }} {self.array[i]} \\text{{)}} &\\rightarrow " + 
+                (f"\\text{{Match found!}}" if self.array[i] == self.target else f"\\text{{No match, move to index }} {i+1}")
+                for i in range(self.answer + 1 if self.found else self.elements)
+            ]) + "\\\\"
+            f"\\text{{Search Outcome:}} &\\\\"
+            + (f"\\text{{Found target at index }} {self.answer}" if self.found else f"\\text{{Target not found in array, output is }} -1") + "\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        pseudocode = [
+            f"DECLARE Numbers : ARRAY[0:{len(self.array)}] OF INTEGER",
+            "DECLARE Target : INTEGER",
+            "DECLARE Index : INTEGER",
+            "DECLARE Result : INTEGER",
+            "DECLARE Found : BOOLEAN",
+            "",
+            f"Numbers <- {self.array}",
+            "Target <- x",
+            "Found <- FALSE",
+            "Index <- 0",
+            "Result <- -1",
+            "",
+            f"WHILE Index < {len(self.array)} AND Found = FALSE",
+            "    IF Numbers[Index] = Target THEN",
+            "        Found <- TRUE",
+            "        Result <- Index",
+            "    ELSE",
+            "        Index <- Index + 1",
+            "    END IF",
+            "END WHILE",
+            "",
+            "OUTPUT Result"
+        ]
+        
+        fig, ax = plt.subplots(figsize=(8, 10))
+        plt.axis('off')
+        
+        y_pos = 0.95
+        line_height = 0.035
+                
+        for line in pseudocode:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(0.05, y_pos, line, 
+                    fontsize=14, 
+                    family='monospace', 
+                    verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
