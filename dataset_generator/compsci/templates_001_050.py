@@ -185,3 +185,65 @@ class Com004:
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
 
+class Com005:
+
+    def __init__(self):
+        self.length = 7
+        self.positive_binary = "0" + generate_binary(self.length, allow_leading_zeros=True)
+        self.invert = "".join(["1" if bit == "0" else "0" for bit in self.positive_binary])
+        result = []
+        carry = 1
+        for bit in reversed(self.invert):
+            total = int(bit) + carry
+            if total == 2:
+                result.append("0")
+                carry = 1
+            elif total == 1:
+                result.append("1")
+                carry = 0
+            else:
+                result.append("0")
+                carry = 0
+        self.answer = "".join(reversed(result))
+
+        self.description = f"Represent the binary numbers shown in the image into its negative form with two's complement."
+        self.topic = "Data representation"
+        self.subtopic = "Number systems"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial positive binary}} &= {self.positive_binary}_2\\\\"
+            f"\\text{{Step 1: Invert all bits (One's Complement)}} &\\\\"
+            f"\\text{{Original: }} & {self.positive_binary}\\\\"
+            f"\\text{{Inverted: }} & {self.invert}\\\\"
+            f"\\text{{Step 2: Add 1 to the least significant bit (Two's Complement)}} &\\\\"
+            f"\\text{{Operation: }} & {self.invert}_2 + 1_2\\\\"
+            + "\\\\".join([
+                f"\\text{{Bit {i}: }} {self.invert[7-i]} + {1 if i==0 else 'carry(' + str(1 if int(self.invert[8-i]) + (1 if (i==1) else 0) >= 2 else 0) + ')'} \\rightarrow \\text{{Result }} {self.answer[7-i]}"
+                for i in range(8)
+            ]) + "\\\\"
+            f"\\text{{Final Result (Two's Complement)}} &= {self.answer}_2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots()
+        ax.set_xlim(0, 1000)
+        ax.set_ylim(0, 1000)
+        plt.axis('off')
+
+        ax.plot([180, 812], [450, 450], color='black', lw=3)
+        ax.plot([180, 812], [600, 600], color='black', lw=3)
+        ax.plot([180, 180], [450, 600], color='black', lw=3)
+
+        gap = 0
+        for bit in self.positive_binary:
+            x = 200 + gap
+            ax.text(x, 500, bit, fontsize=22)
+            ax.plot([x + 60, x + 60], [450, 600], color='black', lw=3)
+            gap = gap + 80
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
