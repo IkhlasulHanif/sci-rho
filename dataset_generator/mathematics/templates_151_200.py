@@ -4,6 +4,7 @@ import random as rnd
 import os
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
+from scipy.optimize import brentq
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -929,7 +930,7 @@ class Mat160:
             # Determine midpoint label
             if self.limit_coeff == 1: mid_lbl = r"\frac{\pi}{2}"
             elif self.limit_coeff == 2: mid_lbl = r"\pi"
-            else: mid_lbl = ""
+            else: mid_lbl = " "
             tick_labels.insert(1, f"${mid_lbl}$")
 
         ax.set_xticks(tick_vals)
@@ -1038,6 +1039,121 @@ class Mat161:
         ax.set_ylabel("y")
         ax.legend()
         ax.grid(True, alpha=0.3)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat162:
+    
+    def __init__(self):
+        # We loop until we find coefficients that create a visually clear graph
+        # with a root that isn't ambiguous (i.e., not too close to an integer line).
+        while True:
+            # Equation form: y = a*ln(x) - x + b
+            # Randomize coefficients (using integers for cleaner problem text)
+            self.a = rnd.randint(2, 5) 
+            self.b = rnd.randint(1, 6)
+            
+            # Define the function
+            # Note: function is valid for x > 0
+            def f(x):
+                return self.a * np.log(x) - x + self.b
+            
+            # The maximum of this function occurs at x = a.
+            # We need f(a) > 0 to ensure the curve crosses the x-axis twice.
+            # We also want it reasonably high (> 0.5) so the "hump" is visible.
+            self.peak_y = f(self.a)
+            if self.peak_y < 0.5:
+                continue
+                
+            # 2. Find the roots
+            # The larger root (alpha) will be to the right of the peak (x > a).
+            # We search from the peak 'a' up to a reasonable upper bound (e.g., 20).
+            try:
+                self.alpha = brentq(f, self.a + 0.01, 20)
+            except ValueError:
+                # If root finding fails (no root in range), re-roll variables
+                continue
+                
+            # 3. Validation
+            # Ensure the root is not too close to an integer (within 0.15)
+            # to avoid visual ambiguity for the student.
+            if abs(self.alpha - round(self.alpha)) < 0.15:
+                continue
+                
+            # If we pass all checks, we have our variables.
+            # The answer n is the floor of alpha.
+            n = int(np.floor(self.alpha))
+            break
+
+        self.answer = n
+
+        self.description = (
+            f"The Figure shows a sketch of the curve $y = {self.a}\\ln(x) - x + {self.b}$. "
+            f"The curve intersects the $x$-axis at two points. The larger root, $\\alpha$, "
+            f"is shown to lie between two consecutive integers on the $x$-axis grid, "
+            f"which is marked with unit intervals. "
+            f"Based on the visual location of the larger root $\\alpha$ in the figure, "
+            f"identify the integer $n$ such that $n < \\alpha < n+1$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Numerical solution of equations"
+        self.source = "Adapted from Locating roots graphically and by searching for a sign change"
+        self.curriculum = "AS & A Level"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The function is given by:}} &\\\\"
+            f"f(x) &= {self.a} \\ln(x) - x + {self.b}\\\\"
+            f"\\text{{To find the integer }} n \\text{{ such that }} n < \\alpha < n+1, \\text{{ we evaluate }} f(x) \\text{{ at consecutive integers.}} &\\\\"
+            f"\\text{{Testing }} x &= {self.answer}:\\\\"
+            f"f({self.answer}) &= {self.a} \\ln({self.answer}) - {self.answer} + {self.b}\\\\"
+            f"&= {self.a}({round(np.log(self.answer), 10)}) - {self.answer} + {self.b}\\\\"
+            f"&= {round(self.a * np.log(self.answer) - self.answer + self.b, 10)} \\quad (\\text{{positive}})\\\\"
+            f"\\text{{Testing }} x &= {self.answer + 1}:\\\\"
+            f"f({self.answer + 1}) &= {self.a} \\ln({self.answer + 1}) - ({self.answer + 1}) + {self.b}\\\\"
+            f"&= {self.a}({round(np.log(self.answer + 1), 10)}) - {self.answer + 1} + {self.b}\\\\"
+            f"&= {round(self.a * np.log(self.answer + 1) - (self.answer + 1) + self.b, 10)} \\quad (\\text{{negative}})\\\\"
+            f"\\text{{Since the sign changes from positive to negative, the root }} \\alpha \\text{{ lies between }} {self.answer} \\text{{ and }} {self.answer + 1}. &\\\\"
+            f"n &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Define the function
+        # Note: function is valid for x > 0
+        def f(x):
+            return self.a * np.log(x) - x + self.b
+
+        # Create domain for plotting: slightly above 0 to past the root
+        x_max = int(self.alpha) + 2
+        x_vals = np.linspace(0.1, x_max, 400)
+        y_vals = f(x_vals)
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Plot curve
+        ax.plot(x_vals, y_vals, color='blue', linewidth=2, label=f'$y = {self.a}\\ln(x) - x + {self.b}$')
+        
+        # Style the axes to look like a standard math problem
+        ax.axhline(0, color='black', linewidth=1.5) # x-axis
+        ax.axvline(0, color='black', linewidth=1.5) # y-axis
+        
+        # Grid settings: Major ticks at every integer
+        ax.set_xticks(np.arange(0, x_max + 1, 1))
+        ax.grid(True, which='both', linestyle='--', linewidth=0.7, alpha=0.7)
+        
+        # Limits
+        ax.set_ylim(bottom=-3, top=self.peak_y + 1)
+        ax.set_xlim(left=0, right=x_max)
+        
+        # Labels
+        ax.set_xlabel("$x$")
+        ax.set_ylabel("$y$")
+        ax.set_title("Sketch of the curve")
+        ax.legend(loc='upper right')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
