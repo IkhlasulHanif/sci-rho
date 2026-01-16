@@ -1,6 +1,7 @@
 import random as rnd
 import os
 import matplotlib.pyplot as plt
+from PIL import Image
 from compsci.helper import *
 
 # target folder : "root/dataset/compsci/image"
@@ -432,6 +433,58 @@ class Com007:
                     weight=weight)
             
             y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com008:
+
+    def __init__(self):
+        self.days = 7
+        self.steps = [rnd.randint(3000, 7000) for _ in range(self.days)]
+        self.total_steps = 0
+        for day in range(self.days):
+            self.total_steps += self.steps[day]
+        self.average = self.total_steps / self.days
+        self.count_above_avg = 0
+        for day in range(self.days):
+            if self.steps[day] > self.average:
+                self.count_above_avg += 1
+        self.answer = self.count_above_avg
+
+        self.description = f"A person is measuring the number of their walking steps for each day of the week: {self.steps}. According to this pseudocode shown below, what is the final output displayed?"
+        self.topic = "Algorithm design and problem-solving"
+        self.subtopic = "Understand standard methods of solution"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Daily steps (S)}} &= [{', '.join(map(str, self.steps))}]\\\\"
+            f"\\text{{1. Calculate Total Steps:}} &\\\\"
+            f"\\Sigma S &= " + " + ".join(map(str, self.steps)) + f"\\\\"
+            f"&= {self.total_steps}\\\\"
+            f"\\text{{2. Calculate Average Steps (A):}} &\\\\"
+            f"A &= \\frac{{\\Sigma S}}{{\\text{{days}}}}\\\\"
+            f"&= \\frac{{{self.total_steps}}}{{{self.days}}}\\\\"
+            f"&= {round(self.average, 10)}\\\\"
+            f"\\text{{3. Identify days above average:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Day }} {i+1} \\text{{ ({self.steps[i]})}} &> {round(self.average, 10)} \\rightarrow " + 
+                ("\\text{{True}}" if self.steps[i] > self.average else "\\text{{False}}")
+                for i in range(self.days)
+            ]) + "\\\\"
+            f"\\text{{4. Final Count:}} &\\\\"
+            f"\\text{{Count}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com008temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis("off")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
