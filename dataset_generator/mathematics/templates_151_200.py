@@ -1625,3 +1625,88 @@ class Mat166:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat167:
+    
+    def __init__(self):
+        # We choose integers between -8 and 8, excluding 0, for clearer visualization
+        self.real_part = rnd.choice([i for i in range(-8, 9) if i != 0])
+        self.imag_part = rnd.choice([i for i in range(-8, 9) if i != 0])
+
+        # Define complex number z1 (Vertex P)
+        self.z1 = complex(self.real_part, self.imag_part)
+
+        # In a square OPQR (Counter-Clockwise), R is obtained by rotating P
+        # 90 degrees (pi/2) counter-clockwise about the origin O.
+        # Mathematically, this is multiplication by i (j in Python).
+        self.z_o = 0j
+        self.z_p = self.z1
+        self.z_r = self.z1 * 1j
+        self.z_q = self.z_p + self.z_r # Vector addition to find the far corner
+
+        # Format the complex number string (e.g., "4 + 2i" or "3 - 5i")
+        self.operator = "+" if self.z1.imag >= 0 else "-"
+        self.z1_str = f"{self.z1.real} {self.operator} {abs(int(self.z1.imag))}i"
+
+        self.answer = int(self.z_r.imag)
+
+        self.description = (
+            f"The figure shows a square in the Argand diagram with vertices "
+            f"labeled $O$, $P$, $Q$, and $R$ in counter-clockwise order. $O$ is the origin $(0,0)$. "
+            f"The vertex $P$ represents the complex number $z_1 = {self.z1_str}$.\n\n"
+            f"If the vertices form a square $OPQR$, determine the imaginary part of "
+            f"the complex number represented by vertex $R$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Complex numbers"
+        self.source = "Adapted from Pure Mathematics 2 & 3, Cambridge University Press"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given vertex }} P, z_P &= {self.z1_str}\\\\"
+            f"\\text{{Since }} OPQR \\text{{ is a square in counter-clockwise order,}}\\\\"
+            f"\\text{{vertex }} R \\text{{ is obtained by rotating }} P \\text{{ by }} 90^\\circ \\text{{ counter-clockwise about }} O.\\\\"
+            f"\\text{{Rotation by }} 90^\\circ \\text{{ corresponds to multiplication by }} i:\\\\"
+            f"z_R &= z_P \\cdot i\\\\"
+            f"&= ({self.z1_str}) \\cdot i\\\\"
+            f"&= {self.real_part}i {self.operator} {abs(self.imag_part)}i^2\\\\"
+            f"&= {self.real_part}i {self.operator} {abs(self.imag_part)}(-1)\\\\"
+            f"&= {int(-self.imag_part)} + {self.real_part}i\\\\"
+            f"\\text{{The imaginary part of }} z_R &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+
+        # Order of vertices for drawing lines: O -> P -> Q -> R -> O
+        vertices = [self.z_o, self.z_p, self.z_q, self.z_r, self.z_o]
+        X = [v.real for v in vertices]
+        Y = [v.imag for v in vertices]
+
+        # Plot square
+        ax.plot(X, Y, 'b-', linewidth=2, label='Square OPQR')
+        ax.fill(X, Y, 'blue', alpha=0.1) # Light shading inside
+
+        # Plot points
+        ax.scatter(X[:-1], Y[:-1], color='red', zorder=5)
+
+        # Label vertices
+        labels = ['O', 'P', 'Q', 'R']
+        for i, txt in enumerate(labels):
+            # Add a small offset to text so it doesn't overlap the dot
+            ax.text(X[i] + 0.5, Y[i] + 0.5, txt, fontsize=12, fontweight='bold', color='darkred')
+
+        # Formatting the Graph
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+        ax.set_aspect('equal') # Crucial so the square looks like a square
+        ax.set_title(f"Argand Diagram")
+        ax.set_xlabel("Real Axis")
+        ax.set_ylabel("Imaginary Axis")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
