@@ -1539,3 +1539,89 @@ class Mat165:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat166:
+    
+    def __init__(self):
+        # Using numpy arrays for easy vector math
+        self.a = np.array([rnd.randint(0, 10) for _ in range(3)])
+        self.b = np.array([rnd.randint(0, 10) for _ in range(3)])
+        self.c = np.array([rnd.randint(0, 10) for _ in range(3)])
+
+        # Property: Vector AB = Vector DC
+        # (B - A) = (C - D)  =>  D = C - B + A
+        self.d = self.c - self.b + self.a
+
+        # Calculate the answer (sum of x, y, z of D)
+        self.answer_sum = np.sum(self.d)
+
+        self.answer = int(self.answer_sum)
+
+        self.description = (
+            f"A parallelogram $ABCD$ is plotted in a 3D coordinate system. "
+            f"The coordinates for three of the vertices are provided:\n"
+            f"$A = ({self.a[0]}, {self.a[1]}, {self.a[2]})$\n"
+            f"$B = ({self.b[0]}, {self.b[1]}, {self.b[2]})$\n"
+            f"$C = ({self.c[0]}, {self.c[1]}, {self.c[2]})$\n"
+            f"The fourth vertex $D$ is labeled with unknown coordinates $(x, y, z)$. "
+            f"Using vector addition/subtraction properties for a parallelogram "
+            f"find the sum of the coordinates of vertex $D$ (i.e., calculate $x + y + z$)."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Vectors"
+        self.source = "Adapted from Pure Mathematics by Bostock and Chandler"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given vertices:}} &\\\\"
+            f"A &= ({self.a[0]}, {self.a[1]}, {self.a[2]})\\\\"
+            f"B &= ({self.b[0]}, {self.b[1]}, {self.b[2]})\\\\"
+            f"C &= ({self.c[0]}, {self.c[1]}, {self.c[2]})\\\\"
+            f"\\text{{For parallelogram }} ABCD, \\text{{ we use the vector property:}} &\\\\"
+            f"\\vec{{AB}} &= \\vec{{DC}}\\\\"
+            f"B - A &= C - D\\\\"
+            f"\\text{{Solving for vertex }} D: &\\\\"
+            f"D &= C - B + A\\\\"
+            f"&= ({self.c[0]}, {self.c[1]}, {self.c[2]}) - ({self.b[0]}, {self.b[1]}, {self.b[2]}) + ({self.a[0]}, {self.a[1]}, {self.a[2]})\\\\"
+            f"&= ({self.c[0]} - {self.b[0]} + {self.a[0]},\\; {self.c[1]} - {self.b[1]} + {self.a[1]},\\; {self.c[2]} - {self.b[2]} + {self.a[2]})\\\\"
+            f"&= ({self.d[0]}, {self.d[1]}, {self.d[2]})\\\\"
+            f"\\text{{Summing the coordinates of }} D: &\\\\"
+            f"\\text{{Sum}} &= {self.d[0]} + {self.d[1]} + {self.d[2]}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Combine points for plotting order: A -> B -> C -> D -> A
+        # We stack them to make drawing the lines easier
+        points = np.vstack([self.a, self.b, self.c, self.d, self.a])
+
+        # Plot the lines
+        x_vals, y_vals, z_vals = points[:, 0], points[:, 1], points[:, 2]
+        ax.plot(x_vals, y_vals, z_vals, color='blue', linewidth=2, label='Parallelogram ABCD')
+
+        # Plot the vertices (scatter)
+        ax.scatter(x_vals[:-1], y_vals[:-1], z_vals[:-1], color='red', s=50)
+
+        # Add Labels
+        labels = ['A', 'B', 'C', 'D']
+        coords = [self.a, self.b, self.c, self.d]
+        for lbl, coord in zip(labels, coords):
+            if lbl == 'D':
+                ax.text(coord[0], coord[1], coord[2], f'  {lbl} (x, y, z)', fontsize=10)
+            else:
+                ax.text(coord[0], coord[1], coord[2], f'  {lbl} {tuple(map(int, coord))}', fontsize=10)
+
+        # Styling the graph
+        ax.set_xlabel('X Axis')
+        ax.set_ylabel('Y Axis')
+        ax.set_zlabel('Z Axis')
+        ax.legend()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
