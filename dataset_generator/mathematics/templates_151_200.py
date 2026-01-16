@@ -942,3 +942,103 @@ class Mat160:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat161:
+    
+    def __init__(self):
+        # Function form: y = A / (x + B)
+        # We choose ranges that generally ensure a visible intersection in the positive quadrant
+        self.A = rnd.randint(2, 10)
+        self.B = rnd.randint(1, 3)
+
+        # Starting x1 (ensure it's not exactly the fixed point for visual interest)
+        self.x1 = rnd.randint(1, 5)
+
+        # 2. Calculate Iterations (The Logic)
+        # x_n+1 = A / (x_n + B)
+        self.iterations = [float(self.x1)]
+
+        # Calculate up to x_3 for the answer, but more for the plot
+        current_x = self.x1
+        for _ in range(10):
+            next_x = self.A / (current_x + self.B)
+            self.iterations.append(next_x)
+            current_x = next_x
+
+        x2 = self.iterations[1]
+        x3 = self.iterations[2]
+
+        self.answer = round(x3, 3)
+
+        self.description = (
+            f"The diagram shows the graphs of $y = x$ and $y = \frac{{{self.A}}}{{x + {self.B}}}$ for $x > 0$. "
+            f"A 'cobweb' sequence is drawn to illustrate the convergence of the iteration "
+            f"$x_{{n+1}} = \frac{{{self.A}}}{{x_n + {self.B}}}$, starting from an initial value $x_1 = {self.x1}$, "
+            f"which is marked on the x-axis. "
+            f"Using the iterative formula suggested by the figure, calculate the value of the third iteration, $x_3$. "
+            f"Round to 3 decimal places."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Numerical solution of equations"
+        self.source = "Adapted from Visualizing convergence using cobweb diagrams"
+        self.curriculum = "AS & A Level"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The recurrence relation is given by:}} &\\\\"
+            f"x_{{n+1}} &= \\frac{{{self.A}}}{{x_n + {self.B}}}\\\\"
+            f"\\text{{First, calculate }} x_2 \\text{{ using }} x_1 = {self.x1}: &\\\\"
+            f"x_2 &= \\frac{{{self.A}}}{{x_1 + {self.B}}}\\\\"
+            f"&= \\frac{{{self.A}}}{{{self.x1} + {self.B}}}\\\\"
+            f"&= \\frac{{{self.A}}}{{{self.x1 + self.B}}}\\\\"
+            f"&= {round(self.iterations[1], 10)}\\\\"
+            f"\\text{{Next, calculate }} x_3 \\text{{ using }} x_2: &\\\\"
+            f"x_3 &= \\frac{{{self.A}}}{{x_2 + {self.B}}}\\\\"
+            f"&= \\frac{{{self.A}}}{{{round(self.iterations[1], 10)} + {self.B}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        # Determine plot limits based on the trajectory
+        max_val = max(max(self.iterations[:4]), self.x1) * 1.5
+        x_vals = np.linspace(0.1, max_val, 400)
+
+        # Plot y = x
+        ax.plot(x_vals, x_vals, 'k--', label='$y=x$', alpha=0.5)
+
+        # Plot Curve y = A / (x + B)
+        y_vals = self.A / (x_vals + self.B)
+        ax.plot(x_vals, y_vals, 'b-', label=f'$y = \\frac{{{self.A}}}{{x + {self.B}}}$')
+
+        # Plot Cobweb path
+        # Path coordinates: (x1,0) -> (x1, y1) -> (y1, y1) -> (y1, y2) -> ...
+        px, py = [], []
+        px.append(self.x1); py.append(0) # Start at axis
+
+        curr = self.x1
+        for _ in range(5): # Draw a few steps of the cobweb
+            val = self.A / (curr + self.B)
+            # Vertical move to curve
+            px.append(curr); py.append(val)
+            # Horizontal move to y=x
+            px.append(val); py.append(val)
+            curr = val
+
+        ax.plot(px, py, 'r.-', alpha=0.6, linewidth=1.5, label='Cobweb sequence')
+
+        # Formatting
+        ax.set_title("Cobweb Diagram Iteration")
+        ax.set_xlim(0, max_val)
+        ax.set_ylim(0, max_val)
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
