@@ -1710,3 +1710,97 @@ class Mat167:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat168:
+    
+    def __init__(self):
+        # Randomize radius (integer between 2 and 5)
+        self.r = rnd.randint(2, 5)
+
+        # Randomize center of circle (cx, cy)
+        # Keeping cx within a range so the tangent doesn't go too far off screen
+        self.cx = rnd.randint(-2, 5)
+        self.cy = rnd.randint(-4, 4)
+
+        # Calculate the solution 'k'
+        # Condition: The vertical line is tangent to the circle on the RIGHT-hand side.
+        # Therefore, k = center_x + radius
+        self.k = self.cx + self.r
+
+        # Format the complex number string for the center text: |z - (a + bi)|
+        # We need to handle signs gracefully for the text display
+        if self.cy == 0:
+            self.center_str = f"{self.cx}"
+        elif self.cy < 0:
+            self.center_str = f"{self.cx} - {abs(self.cy)}i"
+        else:
+            self.center_str = f"{self.cx} + {self.cy}i"
+
+        self.answer = self.k
+
+        self.description = (
+            f"The figure displays an Argand diagram with a circle and a vertical line.\n"
+            f"The circle represents the locus defined by |z - ({self.center_str})| = {self.r}.\n"
+            f"The line represents the locus of points where the real part of z is k.\n"
+            f"The line is tangent to the circle on the right-hand side.\n\n"
+            f"Determine the value of the real number k represented by the vertical line."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Complex numbers"
+        self.source = "Adapted from Oxford International AQA Examinations: Pure Mathematics"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the circle equation }} |z - ({self.center_str})| &= {self.r}:\\\\"
+            f"\\text{{Center real part }} (x_c) &= {self.cx}\\\\"
+            f"\\text{{Radius }} (r) &= {self.r}\\\\"
+            f"\\text{{For a vertical line tangent to the right side:}} &\\\\"
+            f"k &= x_c + r\\\\"
+            f"&= {self.cx} + {self.r}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+
+        # Set up the Argand Diagram (ComplexPlane)
+        ax.set_aspect('equal')
+        ax.set_xlabel('Re(z)')
+        ax.set_ylabel('Im(z)')
+        ax.set_title('Argand Diagram')
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        # Plot the Circle
+        # Create circle patch
+        circle = plt.Circle((self.cx, self.cy), self.r, color='blue', fill=False, linewidth=2, label=f'$|z - ({self.center_str})| = {self.r}$');
+        ax.add_patch(circle)
+        # Plot center point
+        ax.plot(self.cx, self.cy, 'bo', markersize=5)
+
+        # Plot the Vertical Line (Tangent)
+        # We add some padding to y-limits for the line drawing
+        line_min_y = self.cy - self.r - 2
+        line_max_y = self.cy + self.r + 2
+        ax.vlines(x=self.k, ymin=line_min_y, ymax=line_max_y, color='red', linewidth=2, label=f'Re(z) = k')
+
+        # Annotate the tangency point
+        ax.plot(self.k, self.cy, 'ro', markersize=5)
+        ax.annotate(f'k', xy=(self.k, self.cy), xytext=(self.k + 1, self.cy + 1),
+                    arrowprops=dict(facecolor='black', arrowstyle='->'))
+
+        # Set Axis limits dynamically to ensure everything is visible
+        padding = 2
+        ax.set_xlim(self.cx - self.r - padding, self.k + padding)
+        ax.set_ylim(self.cy - self.r - padding, self.cy + self.r + padding)
+
+        # Add legend
+        ax.legend(loc='upper left', fontsize='small', framealpha=0.9)
+
+        # Prevent overlap
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
