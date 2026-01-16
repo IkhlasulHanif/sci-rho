@@ -930,8 +930,8 @@ class Mat160:
             # Determine midpoint label
             if self.limit_coeff == 1: mid_lbl = r"\frac{\pi}{2}"
             elif self.limit_coeff == 2: mid_lbl = r"\pi"
-            else: mid_lbl = " "
-            tick_labels.insert(1, f"${mid_lbl}$")
+            else: mid_lbl = ""
+            tick_labels.insert(1, f"{"$" + mid_lbl + "$" if mid_lbl else ""}")
 
         ax.set_xticks(tick_vals)
         ax.set_xticklabels(tick_labels)
@@ -1800,6 +1800,100 @@ class Mat168:
 
         # Prevent overlap
         plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
+
+class Mat169:
+    
+    def __init__(self):
+        self.real_part = rnd.randint(2, 8)  # a
+        self.imag_part = rnd.randint(2, 8)  # b
+        
+        # Define points
+        # Origin
+        self.O = np.array([0, 0])
+        # Point A (z)
+        self.A = np.array([self.real_part, self.imag_part])
+        # Point B (z conjugate)
+        self.B = np.array([self.real_part, -self.imag_part])
+
+        self.z_str = f"{self.real_part} + {self.imag_part}i"
+
+        # Calculate Area
+        # Base is distance between z and z_conjugate = 2 * imag_part
+        # Height is distance from Origin to real_part = real_part
+        self.base = 2 * self.imag_part
+        self.height = self.real_part
+        self.area = 0.5 * self.base * self.height
+
+        self.answer = int(self.area)
+
+        self.description = (
+            f"The figure shows an Argand diagram with three points plotted: the origin $O$, "
+            f"a point $A$ representing the complex number $z = {self.z_str}$, "
+            f"and a point $B$ representing the complex conjugate $\\bar{{z}}$.\n"
+            f"A shaded triangle connects these three points ($O$, $A$, and $B$).\n\n"
+            f"Calculate the area of the shaded triangle $OAB$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Complex numbers"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3 Coursebook"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Coordinates of }} A &= ({self.real_part}, {self.imag_part})\\\\"
+            f"\\text{{Coordinates of }} B &= ({self.real_part}, -{self.imag_part})\\\\"
+            f"\\text{{Base (distance }} AB\\text{{)}} &= |{self.imag_part} - (-{self.imag_part})|\\\\"
+            f"&= {self.imag_part} + {self.imag_part}\\\\"
+            f"&= {self.base}\\\\"
+            f"\\text{{Height (real part)}} &= {self.real_part}\\\\"
+            f"\\text{{Area}} &= \\frac{{1}}{{2}} \\times \\text{{base}} \\times \\text{{height}}\\\\"
+            f"&= \\frac{{1}}{{2}} \\times {self.base} \\times {self.height}\\\\"
+            f"&= {round(0.5 * self.base, 10)} \\times {self.height}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6))
+        
+        # Plot the points
+        ax.scatter([self.O[0], self.A[0], self.B[0]], [self.O[1], self.A[1], self.B[1]], color='black', zorder=5)
+        
+        # Label the points
+        ax.text(self.O[0] - 0.5, self.O[1], '$O$', fontsize=12, ha='right')
+        ax.text(self.A[0] + 0.3, self.A[1], '$A (z)$', fontsize=12)
+        ax.text(self.B[0] + 0.3, self.B[1], '$B (\\bar{z})$', fontsize=12)
+        
+        # Draw the Triangle and Shade it
+        triangle_points = np.array([self.O, self.A, self.B])
+        tri = Polygon(triangle_points, closed=True, color='skyblue', alpha=0.4, label='Triangle OAB')
+        ax.add_patch(tri)
+        
+        # Draw edges of the triangle
+        ax.plot([self.O[0], self.A[0]], [self.O[1], self.A[1]], 'b--', lw=1) # O to A
+        ax.plot([self.O[0], self.B[0]], [self.O[1], self.B[1]], 'b--', lw=1) # O to B
+        ax.plot([self.A[0], self.B[0]], [self.A[1], self.B[1]], 'b-', lw=1.5) # A to B (Vertical)
+
+        # 3. Axis Formatting (Make it look like an Argand Diagram)
+        limit = max(self.real_part, self.imag_part) + 2
+        ax.set_xlim(-1, limit)
+        ax.set_ylim(-limit, limit)
+        
+        # Move left and bottom spines to x = 0 and y = 0
+        ax.spines['left'].set_position('zero')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        
+        # Add grid and labels
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.set_xlabel('Real ($Re$)', loc='right')
+        ax.set_ylabel('Imaginary ($Im$)', loc='top', rotation=0)
+        ax.set_aspect('equal') # Crucial for geometry to look correct
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
