@@ -1434,3 +1434,108 @@ class Mat164:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat165:
+    
+    def __init__(self):
+        # Randomize Variables (Use even numbers for a and b to keep M clean, optionally)
+        self.a_val = rnd.randint(2, 8)  # Coefficient for i (x-axis)
+        self.b_val = rnd.randint(2, 8)  # Coefficient for j (y-axis)
+        self.c_val = rnd.randint(2, 8)  # Coefficient for k (z-axis)
+
+        # Define Coordinates
+        self.origin = np.array([0, 0, 0])
+        self.A = np.array([self.a_val, 0, 0])
+        self.B = np.array([0, self.b_val, 0])
+        self.C = np.array([0, 0, self.c_val])
+
+        # Midpoint M of edge AB
+        self.M = (self.A + self.B) / 2
+
+        # Vector MC = C - M
+        vec_MC = self.C - self.M
+
+        # Squared Magnitude = x^2 + y^2 + z^2
+        magnitude_squared = vec_MC[0]**2 + vec_MC[1]**2 + vec_MC[2]**2
+
+        self.answer = magnitude_squared
+
+        self.description = (
+            f"A triangular pyramid $OABC$ is shown with the origin at $O(0,0,0)$.\n"
+            f"The vertices are located at position vectors $\\mathbf{{a}} = {self.a_val}\\mathbf{{i}}$, "
+            f"$\\mathbf{{b}} = {self.b_val}\\mathbf{{j}}$, and $\\mathbf{{c}} = {self.c_val}\\mathbf{{k}}$.\n"
+            f"A point $M$ is marked as the exact midpoint of the edge $AB$.\n"
+            f"A vector $\vec{{MC}}$ connects $M$ to the top vertex $C$.\n\n"
+            f"Calculate the squared magnitude of the vector $\vec{{MC}}$ (i.e., calculate $|\vec{{MC}}|^2$)."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Vectors"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3 Coursebook"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Coordinates of vertices:}} &\\\\"
+            f"A &= ({self.a_val}, 0, 0), \\quad B = (0, {self.b_val}, 0), \\quad C = (0, 0, {self.c_val})\\\\"
+            f"\\text{{Midpoint }} M \\text{{ of edge }} AB: &\\\\"
+            f"M &= \\frac{{A + B}}{{2}}\\\\"
+            f"&= \\left( \\frac{{{self.a_val} + 0}}{{2}}, \\frac{{0 + {self.b_val}}}{{2}}, \\frac{{0 + 0}}{{2}} \\right)\\\\"
+            f"&= ({round(self.M[0], 10)}, {round(self.M[1], 10)}, 0)\\\\"
+            f"\\text{{Vector }} \\vec{{MC}} \\text{{ is given by }} C - M: &\\\\"
+            f"\\vec{{MC}} &= (0, 0, {self.c_val}) - ({round(self.M[0], 10)}, {round(self.M[1], 10)}, 0)\\\\"
+            f"&= ({round(vec_MC[0], 10)}, {round(vec_MC[1], 10)}, {round(vec_MC[2], 10)})\\\\"
+            f"\\text{{Squared magnitude }} |\\vec{{MC}}|^2: &\\\\"
+            f"|\\vec{{MC}}|^2 &= x^2 + y^2 + z^2\\\\"
+            f"&= ({round(vec_MC[0], 10)})^2 + ({round(vec_MC[1], 10)})^2 + ({round(vec_MC[2], 10)})^2\\\\"
+            f"&= {round(vec_MC[0]**2, 10)} + {round(vec_MC[1]**2, 10)} + {round(vec_MC[2]**2, 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Plot Vertices
+        vertices = {'O': self.origin, 'A': self.A, 'B': self.B, 'C': self.C}
+        for name, point in vertices.items():
+            ax.scatter(*point, color='black', s=50)
+            ax.text(point[0], point[1], point[2]+0.2, f" {name}", fontsize=12, fontweight='bold')
+
+        # Plot Edges of the Pyramid
+        # Base: OA, OB, AB
+        ax.plot([self.origin[0], self.A[0]], [self.origin[1], self.A[1]], [self.origin[2], self.A[2]], 'k-', alpha=0.5) # OA
+        ax.plot([self.origin[0], self.B[0]], [self.origin[1], self.B[1]], [self.origin[2], self.B[2]], 'k-', alpha=0.5) # OB
+        ax.plot([self.A[0], self.B[0]], [self.A[1], self.B[1]], [self.A[2], self.B[2]], 'k-', alpha=0.5)      # AB
+
+        # Sides: OC, AC, BC
+        ax.plot([self.origin[0], self.C[0]], [self.origin[1], self.C[1]], [self.origin[2], self.C[2]], 'k-', alpha=0.5) # OC
+        ax.plot([self.A[0], self.C[0]], [self.A[1], self.C[1]], [self.A[2], self.C[2]], 'k-', alpha=0.5)      # AC
+        ax.plot([self.B[0], self.C[0]], [self.B[1], self.C[1]], [self.B[2], self.C[2]], 'k-', alpha=0.5)      # BC
+
+        # Plot Midpoint M
+        ax.scatter(*self.M, color='red', s=60, label='M (Midpoint)')
+        ax.text(self.M[0], self.M[1], self.M[2]-0.5, " M", color='red', fontsize=12, fontweight='bold')
+
+        # Plot Vector MC
+        # We use quiver for the vector arrow, but a simple line often looks cleaner in static 3D plots
+        ax.plot([self.M[0], self.C[0]], [self.M[1], self.C[1]], [self.M[2], self.C[2]], color='red', linewidth=3, linestyle='--', label='Vector MC')
+
+        # Formatting the Plot
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
+        ax.set_title(f'Triangular Pyramid OABC')
+
+        # Ensure aspect ratio is roughly equal so geometry isn't distorted
+        max_range = max(self.a_val, self.b_val, self.c_val)
+        ax.set_xlim(0, max_range)
+        ax.set_ylim(0, max_range)
+        ax.set_zlim(0, max_range)
+        ax.legend()
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
