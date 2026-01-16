@@ -124,3 +124,64 @@ class Com003:
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
 
+class Com004:
+
+    def __init__(self):
+        self.length = 8
+        self.decimal_1 = rnd.randint(50, 255)
+        self.decimal_2 = rnd.randint(210, 255)
+        self.binary_1 = bin(self.decimal_1)[2:]
+        self.binary_2 = bin(self.decimal_2)[2:]
+        self.total_decimal = self.decimal_1 + self.decimal_2
+        self.total_binary = format(self.total_decimal, '09b')
+        self.overflow_bit = self.total_binary[0]
+        self.binary_8bit = self.total_binary[1:]
+        self.answer = int(self.binary_8bit, 2)
+
+        self.description = f"If we calculate the sum of the two 8-bit unsigned binary numbers shown and store the result in a standard 8-bit register, what is the final decimal value after the Carry Out/overflow bit is discarded?"
+        self.topic = "Data representation"
+        self.subtopic = "Number systems"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Binary 1}} &= {self.binary_1.zfill(8)}_2\\\\"
+            f"\\text{{Binary 2}} &= {self.binary_2.zfill(8)}_2\\\\"
+            f"\\text{{Note: Column 1 is the rightmost side.}} &\\\\"
+            f"\\text{{Perform 8-bit binary addition:}} &\\\\"
+            f"\\begin{{array}}{{rcc}} & \\text{{Carry In}} & \\text{{Calculation}} \\\\ \\hline"
+            + "\\\\".join([
+                f"\\text{{Column }} {i+1} & "
+                f"{((self.decimal_1 & ((1 << i) - 1)) + (self.decimal_2 & ((1 << i) - 1)) >> i) if i > 0 else 0} & "
+                f"({self.binary_1.zfill(8)[7-i]} + {self.binary_2.zfill(8)[7-i]} + "
+                f"{((self.decimal_1 & ((1 << i) - 1)) + (self.decimal_2 & ((1 << i) - 1)) >> i) if i > 0 else 0}) "
+                f"\\rightarrow \\text{{Sum }} {self.total_binary[8-i]}"
+                for i in range(8)
+            ]) +
+            f"\\\\ \\text{{Column 9}} & {((self.decimal_1 + self.decimal_2) >> 8) & 1} & \\text{{(Carry Out/Overflow)}} \\rightarrow \\text{{Sum }} {self.total_binary[0]}"
+            f"\\end{{array}} &\\\\"
+            f"\\text{{Full sum (9-bit)}} &= {self.total_binary}_2\\\\"
+            f"\\text{{Carry out (Overflow)}} &= {self.total_binary[0]}_2\\\\"
+            f"\\text{{8-bit Register Result}} &= {self.binary_8bit}_2\\\\"
+            f"\\text{{Convert to Decimal:}} &\\\\"
+            f"\\text{{Value}} &= " + " + ".join([f"({self.binary_8bit[i]} \\times 2^{7-i})" for i in range(8)]) + f"\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots()
+        ax.set_xlim(0, 1000)
+        ax.set_ylim(0, 1000)
+        plt.axis('off')
+
+        ax.text(700, 530, self.binary_1.zfill(8), fontsize=26, ha='right')
+        ax.text(700, 450, self.binary_2.zfill(8), fontsize=26, ha='right')
+        ax.text(280, 450, "+", fontsize=26, ha='right')
+        
+        ax.plot([220, 740], [420, 420], color='black', lw=3)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
