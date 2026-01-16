@@ -1158,3 +1158,160 @@ class Mat162:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
+
+class Mat163:
+    
+    def __init__(self):
+        while True:
+            # Generate random components for a (full) and b (partial)
+            # We limit the range to keep the numbers friendly (-8 to 8)
+            self.ax = rnd.choice([i for i in range(-8, 9) if i != 0])
+            self.ay = rnd.randint(-8, 8)
+            self.az = rnd.randint(-8, 8)
+
+            self.by = rnd.randint(-8, 8)
+            self.bz = rnd.randint(-8, 8)
+
+            # Calculate the dot product of the known Y and Z parts
+            partial_dot = (self.ay * self.by) + (self.az * self.bz)
+
+            # We need: ax*p + ay*by + az*bz = 0  =>  ax*p = -partial_dot
+            # To ensure 'p' is an integer, 'ax' must divide '-partial_dot' perfectly.
+            target = -partial_dot
+
+            if target == 0:
+                # If target is 0, p would be 0 (if ax != 0).
+                # We accept this but ensure vectors aren't zero vectors.
+                self.p = 0
+            elif target % self.ax == 0:
+                self.p = target // self.ax
+            else:
+                # If division isn't clean, re-roll the random numbers
+                continue
+
+            # Ensure neither vector is a zero vector [0,0,0]
+            if (self.ax==0 and self.ay==0 and self.az==0) or (self.p==0 and self.by==0 and self.bz==0):
+                continue
+
+            # If we got here, we found valid numbers
+            break
+
+        vec_a_str = self.format_vec_str(self.ax, self.ay, self.az)
+        vec_b_str = self.format_vec_str(self.p, self.by, self.bz, unknown_axis='i')
+
+        self.answer = self.p
+
+        self.description = (
+            f"The figure displays two vectors originating from a common point $O$ in 3D space. "
+            f"Vector $\\mathbf{{a}}$ is defined as ${vec_a_str}$. "
+            f"Vector $\\mathbf{{b}}$ is defined as ${vec_b_str}$. "
+            f"A right-angle symbol indicates that the two vectors are perpendicular to each other. "
+            f"Given that the vectors $\\mathbf{{a}}$ and $\\mathbf{{b}}$ are perpendicular, "
+            f"calculate the value of the constant $p$."
+        )
+
+        self.topic = "Pure Mathematics 3"
+        self.subtopic = "Vectors"
+        self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Two vectors are perpendicular if their dot product is zero:}} &\\\\"
+            f"\\mathbf{{a}} \\cdot \\mathbf{{b}} &= 0\\\\"
+            f"a_x b_x + a_y b_y + a_z b_z &= 0\\\\"
+            f"({self.ax})(p) + ({self.ay})({self.by}) + ({self.az})({self.bz}) &= 0\\\\"
+            f"{self.ax}p + ({self.ay * self.by}) + ({self.az * self.bz}) &= 0\\\\"
+            f"{self.ax}p + ({self.ay * self.by + self.az * self.bz}) &= 0\\\\"
+            f"{self.ax}p &= {-(self.ay * self.by + self.az * self.bz)}\\\\"
+            f"p &= \\frac{{{-(self.ay * self.by + self.az * self.bz)}}}{{{self.ax}}}\\\\"
+            f"p &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def format_vec_str(self, x, y, z, unknown_axis=None):
+        components = []
+
+        # Helper to format individual terms like "- 2j" or "+ k"
+        def add_term(val, label, is_unknown=False):
+            if is_unknown:
+                return f"p\\mathbf{{{label}}}"
+            if val == 0: return None
+
+            abs_val = abs(val)
+            val_str = "" if abs_val == 1 else str(abs_val)
+            sign = "+" if val > 0 else "-"
+            return (sign, f"{val_str}\\mathbf{{{label}}}")
+
+        # Process X
+        is_p = (unknown_axis == 'i')
+        term_x = add_term(x, 'i', is_p)
+
+        # Process Y
+        term_y = add_term(y, 'j')
+
+        # Process Z
+        term_z = add_term(z, 'k')
+
+        # Build list
+        raw_terms = []
+        if is_p:
+            raw_terms.append(term_x) # just the string for p
+        elif term_x:
+            raw_terms.append(term_x) # (sign, string)
+
+        if term_y: raw_terms.append(term_y)
+        if term_z: raw_terms.append(term_z)
+
+        # Construct final string
+        final_str = ""
+        for i, item in enumerate(raw_terms):
+            if isinstance(item, str): # This is the 'p' case
+                final_str += item
+            else:
+                sign, text = item
+                if i == 0: # First term
+                    if sign == "-": final_str += "-" + text
+                    else: final_str += text
+                else: # Subsequent terms need spacing
+                    final_str += f" {sign} {text}"
+
+        return final_str if final_str else "\\mathbf{0}"
+
+    def generate(self, num):
+        fig = plt.figure(figsize=(6, 6))
+        ax_plot = fig.add_subplot(111, projection='3d')
+
+        # Vector data
+        origin = [0, 0, 0]
+        # We plot the actual numeric solution for 'b'
+        V = np.array([[self.ax, self.ay, self.az], [self.p, self.by, self.bz]])
+        colors = ['r', 'b']
+        labels = [r'$\mathbf{a}$', r'$\mathbf{b}$']
+
+        # Quiver plot
+        for i in range(2):
+            ax_plot.quiver(0, 0, 0, V[i, 0], V[i, 1], V[i, 2],
+                        color=colors[i], label=labels[i], arrow_length_ratio=0.1, linewidth=2)
+
+        # Setting plot limits to ensure vectors are visible
+        limit = max(np.max(np.abs(V)), 1) * 1.2
+        ax_plot.set_xlim([-limit, limit])
+        ax_plot.set_ylim([-limit, limit])
+        ax_plot.set_zlim([-limit, limit])
+
+        # Labels and Title
+        ax_plot.set_xlabel('x')
+        ax_plot.set_ylabel('y')
+        ax_plot.set_zlabel('z')
+        ax_plot.legend()
+
+        # Visual helper for origin
+        ax_plot.scatter(0,0,0, color='k', s=50)
+        ax_plot.text(0, 0, -limit*0.1, "$O$", fontsize=12)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path)
+        plt.close()
