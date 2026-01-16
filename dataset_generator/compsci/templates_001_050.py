@@ -247,3 +247,106 @@ class Com005:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com006:
+
+    def __init__(self):
+        self.type = "Odd"
+        self.num_bytes = 7
+        self.bytes = [generate_binary(length=7, allow_leading_zeros=True) for _ in range(self.num_bytes)]
+        self.parity_bits = []
+        for byte in self.bytes:
+            ones_count = byte.count('1')
+            p_bit = 1 if ones_count % 2 == 0 else 0
+            self.parity_bits.append(p_bit)
+        self.parity_byte = []
+        for col_i in range(7):
+            col_ones = sum(int(byte[col_i]) for byte in self.bytes)
+            # To make the column odd:
+            self.parity_byte.append(1 if col_ones % 2 == 0 else 0)
+        self.parity_byte.insert(0, 1 if sum(self.parity_bits) % 2 == 0 else 0)
+
+        self.target_byte_idx = rnd.randint(0, 6) # Which byte, 
+        self.target_bit_idx = rnd.randint(0, 6) # which bit to be flipped
+        self.row_sum = sum(int(bit) for bit in self.bytes[self.target_byte_idx]) + self.parity_bits[self.target_byte_idx]
+        self.column_sum = sum(int(byte[self.target_bit_idx]) for byte in self.bytes) + self.parity_byte[self.target_bit_idx + 1]
+        self.answer = self.row_sum + self.column_sum
+
+        corrected_bits_list = list(self.bytes[self.target_byte_idx]) 
+        corrected_col_list = [byte[self.target_bit_idx] for byte in self.bytes]
+        
+        target_byte = self.bytes[self.target_byte_idx]
+        bit_list = list(target_byte)
+        target_bit = bit_list[self.target_bit_idx]
+        bit_list[self.target_bit_idx] = "1" if target_bit == "0" else "0"
+        self.bytes[self.target_byte_idx] = "".join(bit_list)
+
+        self.description = f"A sensor transmits data in a {self.num_bytes}x{self.num_bytes} block using {self.type} Parity. After identifying the corrupted bit in the data block below, and flip it to its correct value, what is the total sum of the bits in the corrected row and corrected column combined now?"
+        self.topic = "Data transmission"
+        self.subtopic = "Methods of error detection"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Parity Type}} &= \\text{{{self.type}}}\\\\"
+            f"\\text{{1. Identify the corrupted bit:}} &\\\\"
+            f"\\text{{In {self.type} parity, the total number of 1s in each row and column (including parity) must be odd.}} &\\\\"
+            f"\\text{{Check Row Parity:}} &\\\\"
+            f"\\text{{Byte }} {self.target_byte_idx + 1} \\text{{ has an even count of 1s, indicating an error in this row.}} &\\\\"
+            f"\\text{{Check Column Parity:}} &\\\\"
+            f"\\text{{Bit }} {self.target_bit_idx + 1} \\text{{ has an even count of 1s, indicating an error in this column.}} &\\\\"
+            f"\\text{{The intersection of Byte }} {self.target_byte_idx + 1} \\text{{ and Bit }} {self.target_bit_idx + 1} \\text{{ identifies the corrupted bit.}} &\\\\"
+            f"\\text{{2. Correct the corrupted bit:}} &\\\\"
+            f"\\text{{The bit at this position is flipped to its opposite value to restore odd parity.}} &\\\\"
+            f"\\text{{3. Calculate the sum of bits in the corrected row:}} &\\\\"
+            f"\\text{{Row sum}} &= {' + '.join(corrected_bits_list)} + {self.parity_bits[self.target_byte_idx]}\\\\"
+            # f"\\text{{Row sum}} &= " + " + ".join([f"{bit}" for bit in list(self.bytes[self.target_byte_idx])]) + f" + {self.parity_bits[self.target_byte_idx]}\\\\"
+            f"&= {self.row_sum}\\\\"
+            f"\\text{{4. Calculate the sum of bits in the corrected column:}} &\\\\"
+            f"\\text{{Column sum}} &= {' + '.join(corrected_col_list)} + {self.parity_byte[self.target_bit_idx + 1]}\\\\"
+            # f"\\text{{Column sum}} &= " + " + ".join([f"{byte[self.target_bit_idx]}" for byte in self.bytes]) + f" + {self.parity_byte[self.target_bit_idx + 1]}\\\\"
+            f"&= {self.column_sum}\\\\"
+            f"\\text{{5. Final combined sum:}} &\\\\"
+            f"\\text{{Total}} &= \\text{{Row sum}} + \\text{{Column sum}}\\\\"
+            f"&= {self.row_sum} + {self.column_sum}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 5))
+        plt.axis('off')
+
+        table_data = []
+        for i, byte_str in enumerate(self.bytes):
+            row = [f"Byte {i+1}"] + [str(self.parity_bits[i])] + list(byte_str)
+            table_data.append(row)
+
+        parity_row = ["Parity Byte"] + [str(b) for b in self.parity_byte]
+        table_data.append(parity_row)
+
+        headers = [""] + ["Parity Bit"] + [f"Bit {i+1}" for i in range(7)]
+        
+        table = ax.table(
+            cellText=table_data,
+            colLabels=headers,
+            loc='center', 
+            cellLoc='center'
+        )
+
+        table.auto_set_font_size(False)
+        table.set_fontsize(14)
+        table.scale(1.2, 2.0)
+
+        for (row, col), cell in table.get_celld().items():
+            cell.set_text_props(fontfamily='serif')
+            cell.set_linewidth(0.5)
+
+            if row == 0:
+                cell.set_text_props(weight='bold')
+                cell.set_facecolor('#f0f0f0')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+        
