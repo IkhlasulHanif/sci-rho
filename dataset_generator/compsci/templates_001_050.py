@@ -1,6 +1,7 @@
 import random as rnd
 import os
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 from PIL import Image
 from compsci.helper import *
 
@@ -368,7 +369,7 @@ class Com007:
                 index = index + 1
         self.answer = result
 
-        self.description = f"This image is showing a pseudocode for a linear search algorithm. If the target (x) is set to {self.target}, what is the final output displayed?"
+        self.description = f"This image is showing a pseudocode for a searching algorithm. If the target (x) is set to {self.target}, what is the final output displayed?"
         self.topic = "Algorithm design and problem-solving"
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
@@ -519,7 +520,7 @@ class Com009:
                 })
         self.answer = self.swap_count
 
-        self.description = f"This image is showing a pseudocode for a bubble sort algorithm. Given the unsorted array of numbers, how many swaps will it take to sort the array?"
+        self.description = f"This image is showing a pseudocode for a sorting algorithm. Given the unsorted array of numbers, how many swaps will it take to sort the data?"
         self.topic = "Algorithm design and problem-solving"
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
@@ -556,8 +557,8 @@ class Com009:
             f"DECLARE Data : ARRAY[0:{self.elements}] OF INTEGER",
             "DECLARE N, I, J, Temp, SwapCount : INTEGER",
             "",
-            f"Data <- {self.array_copy}",
-            f"N <- {self.elements}",
+            # f"Data <- {self.array_copy}",
+            f"N <- Number of Data Elements",
             "SwapCount <- 0",
             "",
             "FOR I <- 0 TO N - 2",
@@ -572,7 +573,7 @@ class Com009:
             "    NEXT J",
             "NEXT I",
             "",
-            "OUTPUT \"Sorted array: \", Data",
+            # "OUTPUT \"Sorted array: \", Data",
             "OUTPUT \"Total swaps: \", SwapCount"
         ]
         
@@ -593,7 +594,7 @@ class Com009:
                 clean_word = word.strip("[]:,")
                 
                 if clean_word in keywords:
-                    word_color = 'red'
+                    word_color = 'orange'
                 else:
                     word_color = 'white'
 
@@ -609,7 +610,33 @@ class Com009:
                 
                 x_pos += (len(word) + 1) * char_width
 
-            y_pos -= line_height    
+            y_pos -= line_height  
+
+        values = self.array_copy
+        n = self.elements
+
+        x = 0.76
+        y_top = 0.90
+        box_w = 0.135
+        box_h = 0.135
+
+        for i, val in enumerate(values):
+            y1 = y_top - i * box_h
+            y0 = y1 - box_h
+
+            xs = [x, x + box_w, x + box_w, x]
+            ys = [y0, y0, y1, y1]
+            ax.fill(xs, ys, transform=ax.transAxes, color="#fffca8", zorder=5)
+
+            ax.plot([x, x + box_w, x + box_w, x, x], [y0, y0, y1, y1, y0], transform=ax.transAxes, color="white", linewidth=2, zorder=6)
+
+            if i < n - 1:
+                ax.plot([x, x + box_w], [y0, y0],
+                        transform=ax.transAxes, color="white", linewidth=2, zorder=7)
+
+            ax.text(x + box_w/2, (y0 + y1)/2, str(val),
+                    transform=ax.transAxes, ha="center", va="center",
+                    fontsize=12, family="monospace", color="black", zorder=8)  
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
@@ -670,4 +697,3 @@ class Com010:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
-
