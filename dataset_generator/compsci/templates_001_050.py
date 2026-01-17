@@ -615,4 +615,59 @@ class Com009:
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
 
-        plt.axis("off")
+class Com010:
+
+    def __init__(self):
+        self.N = rnd.randint(5, 8)
+        self.N_copy = self.N
+        self.total = 0
+        self.steps = []
+        
+        while (self.N > 0):
+            total_before = self.total
+            if self.N % 2 == 0:
+                added = self.N
+            else:
+                added = 2 * self.N
+            self.total += added
+            self.steps.append((self.N, total_before, added, self.total))
+            self.N = self.N - 1
+        self.answer = self.total
+
+        self.description = f"A flowchart for a program is given in the image below. What is the final value of total, if input N is {self.N_copy}?"
+        self.topic = "Algorithm design and problem-solving"
+        self.subtopic = "Understand standard methods of solution"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Input }} N &= {self.N_copy}\\\\"
+            f"\\text{{Initial }} \\text{{total}} &= 0\\\\"
+            f"\\text{{The program executes a loop while }} N > 0: \\\\"
+            + "\\\\".join(
+                [
+                    f"\\text{{Iteration }} {i}: \\\\"
+                    f"N &= {n}\\\\"
+                    f"\\text{{Condition: }} {n} \\% 2 == 0 \\rightarrow "
+                    + ("\\text{{True}}" if n % 2 == 0 else "\\text{{False}}") + "\\\\"
+                    f"\\text{{Update: }} \\text{{total}} = {t_before} + "
+                    + (f"{n}" if n % 2 == 0 else f"2 \\times {n}")
+                    + f" = {t_after}\\\\"
+                    f"\\text{{Next }} N &= {n} - 1 = {n-1}"
+                    for i, (n, t_before, added, t_after) in enumerate(self.steps, 1)
+                ]
+            )
+            + f"\\\\\\text{{Final }} \\text{{total}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com010temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
