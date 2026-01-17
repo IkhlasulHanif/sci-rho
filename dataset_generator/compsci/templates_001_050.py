@@ -697,3 +697,116 @@ class Com010:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com011:
+
+    def __init__(self):
+        self.elements = 16
+        self.array = [rnd.randint(20, 99) for _ in range(self.elements)]
+        self.current_idx = rnd.randint(0, 7)
+        self.target_idx = rnd.randint(8, 15)
+        self.current = self.array[self.current_idx]
+        self.target = self.array[self.target_idx]
+        self.found = False
+        index = self.current_idx + 1
+        compare_counter = 0
+        while (index < self.elements) and self.found == False:
+            compare_counter += 1
+            if self.array[index] == self.target:
+                self.found = True
+            else:
+                index = index + 1
+        self.answer = compare_counter
+
+        self.description = f"A searching algorithm is used to find a target value (y) in an array (x). The pseudocode for the algorithm is shown in the image below. If we start the next comparison from the current position, how many comparisons are made including the comparison where the target value is found?"
+        self.topic = "Algorithm design and problem-solving"
+        self.subtopic = "Understand standard methods of solution"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial search index}} &= i = {self.current_idx + 1}\\\\"
+            f"\\text{{Target value to find}} &= T = {self.target}\\\\"
+            "\\text{{Step-by-step comparisons:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Step {c+1}: Compare Array}}[{self.current_idx + 1 + c}] ({self.array[self.current_idx + 1 + c]}) \\text{{ with }} {self.target} \\rightarrow " + 
+                (f"\\text{{Match!}}" if self.array[self.current_idx + 1 + c] == self.target else f"\\text{{No match}}")
+                for c in range(self.answer)
+            ]) + "\\\\"
+            f"\\text{{Total comparisons made}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.set_xlim(0, 1000)
+        ax.set_ylim(0, 1000)
+        plt.axis('off')
+
+        ax.plot([20, 980], [970, 970], color='black', lw=3)
+        ax.plot([20, 980], [880, 880], color='black', lw=3)
+        ax.plot([20, 20], [880, 970], color='black', lw=3)
+
+        gap = 0
+        for i, value in enumerate(self.array):
+            x = 36 + gap
+
+            is_current = (i == self.current_idx)
+            is_target  = (i == self.target_idx)
+
+            color = 'red' if (is_current or is_target) else 'black'
+
+            if is_current:
+                ax.text(x - 17, 835, "current", fontsize=11, color='red', weight='bold')
+            elif is_target:
+                ax.text(x - 12, 835, "target", fontsize=11, color='red', weight='bold')
+
+            ax.text(x, 910, str(value), fontsize=16, color=color)
+            ax.plot([x + 45, x + 45], [880, 970], color='black', lw=3)
+            gap += 60
+
+        pseudocode = [
+            f"DECLARE Numbers : ARRAY[0:{self.elements}] OF INTEGER",
+            "DECLARE Target : INTEGER",
+            "DECLARE Index : INTEGER",
+            "DECLARE CompareCounter : INTEGER",
+            "DECLARE Found : BOOLEAN",
+            "",
+            "Numbers <- x",
+            "Target <- y",
+            "",
+            "Found <- FALSE",
+            "Index <- StartIndex + 1",
+            "CompareCounter <- 0",
+            "",
+            f"WHILE Index < {self.elements} AND Found = FALSE",
+            "    CompareCounter <- CompareCounter + 1",
+            "    IF Numbers[Index] = Target THEN",
+            "        Found <- TRUE",
+            "    ELSE",
+            "        Index <- Index + 1",
+            "    END IF",
+            "END WHILE",
+            "",
+            "OUTPUT CompareCounter"
+        ]
+
+        y_pos = 780
+        line_height = 40
+                
+        for line in pseudocode:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(30, y_pos, line, 
+                    fontsize=12, 
+                    family='monospace', 
+                    verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
