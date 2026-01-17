@@ -489,3 +489,130 @@ class Com008:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com009:
+
+    def __init__(self):
+        self.elements = 6
+        self.array = [rnd.randint(20, 150) for _ in range(self.elements)]
+        self.array_copy = self.array.copy()
+        self.swap_count = 0
+        self.steps = []
+        for i in range(self.elements-1):
+            for j in range(0, self.elements - i - 1):
+                a = self.array[j]
+                b = self.array[j + 1]
+
+                did_swap = False
+                if a > b:
+                    self.array[j], self.array[j + 1] = self.array[j + 1], self.array[j]
+                    self.swap_count += 1
+                    did_swap = True
+
+                self.steps.append({
+                    "pass": i + 1,
+                    "j": j,
+                    "a": a,
+                    "b": b,
+                    "swap": did_swap,
+                    "array": self.array.copy()
+                })
+        self.answer = self.swap_count
+
+        self.description = f"This image is showing a pseudocode for a bubble sort algorithm. Given the unsorted array of numbers, how many swaps will it take to sort the array?"
+        self.topic = "Algorithm design and problem-solving"
+        self.subtopic = "Understand standard methods of solution"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial array}} &= [{', '.join(map(str, self.array_copy))}]\\\\"
+            "\\text{The bubble sort algorithm compares adjacent elements and swaps them if they are in the wrong order.}\\\\"
+            + "\\\\".join(
+                (f"\\text{{Pass }} {p}: &\\\\"
+                + "\\\\".join(
+                    f"\\text{{Compare }} {s['a']} \\text{{ and }} {s['b']} \\rightarrow "
+                    + (
+                        f"\\text{{Swap! Array: }} [{', '.join(map(str, s['array']))}]"
+                        if s["swap"] else "\\text{{No swap}}"
+                    )
+                    for s in self.steps if s["pass"] == p
+                )
+                for p in range(1, self.elements))
+            ) + "\\\\"
+            f"\\text{{Total number of swaps performed}} &= {self.answer}\\\\"
+            f"\\text{{Final sorted array}} &= [{', '.join(map(str, self.array))}]\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com009temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        pseudocode = [
+            f"DECLARE Data : ARRAY[0:{self.elements}] OF INTEGER",
+            "DECLARE N, I, J, Temp, SwapCount : INTEGER",
+            "",
+            f"Data <- {self.array_copy}",
+            f"N <- {self.elements}",
+            "SwapCount <- 0",
+            "",
+            "FOR I <- 0 TO N - 2",
+            "    FOR J <- 0 TO N - I - 2",
+            "        IF Data[J] > Data[J + 1] THEN",
+            "            Temp <- Data[J]",
+            "            Data[J] <- Data[J + 1]",
+            "            Data[J + 1] <- Temp",
+            "            ",
+            "            SwapCount <- SwapCount + 1",
+            "        END IF",
+            "    NEXT J",
+            "NEXT I",
+            "",
+            "OUTPUT \"Sorted array: \", Data",
+            "OUTPUT \"Total swaps: \", SwapCount"
+        ]
+        
+        y_pos = 0.96
+        line_height = 0.042
+                
+        keywords = ["DECLARE", "ARRAY", "OF", "INTEGER", "<-", "FOR", "TO", "IF", "THEN", "ENDIF", "NEXT", "OUTPUT"]
+        for line in pseudocode:
+            words = line.split(' ')
+            x_pos = 0.07
+            char_width = 0.011
+            
+            for word in words:
+                if word == "":
+                    x_pos += char_width 
+                    continue
+                    
+                clean_word = word.strip("[]:,")
+                
+                if clean_word in keywords:
+                    word_color = 'red'
+                else:
+                    word_color = 'white'
+
+                word_weight = 'normal'
+
+                ax.text(x_pos, y_pos, word, 
+                        fontsize=5.8, 
+                        family='monospace', 
+                        verticalalignment='top', 
+                        color=word_color, 
+                        weight=word_weight,
+                        transform=ax.transAxes)
+                
+                x_pos += (len(word) + 1) * char_width
+
+            y_pos -= line_height    
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+        plt.axis("off")
