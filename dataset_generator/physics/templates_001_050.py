@@ -1162,3 +1162,148 @@ class Phy025:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
+
+class Phy026:
+
+    def __init__(self):
+        self.heat_in = rnd.randint(100, 1000) / 100
+        self.heat_out = self.heat_in
+        self.answer = self.heat_out
+        self.description = (
+            "A conductor is placed between two reservoirs. "
+            "If the conductor is maintained at a constant temperature, "
+            "it emits heat at a rate of ... kJ/s (assume that no energy transfer occurs other than heat)."
+        )
+        self.topic = "Thermal physics"
+        self.subtopic = "Transfer of thermal energy"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Rate of heat input (}} Q_{{in}} \\text{{)}} &= {round(self.heat_in, 10)}\\,\\text{{kJ/s}}\\\\"
+            "\\text{{Condition for constant temperature:}} &\\\\"
+            "\\Delta U &= 0 \\implies Q_{{in}} = Q_{{out}}\\\\"
+            "\\text{{Rate of heat output (}} Q_{{out}} \\text{{)}} &= Q_{{in}}\\\\"
+            f"&= {self.answer}\\,\\text{{kJ/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy026temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(307, 451, f"Rate = {self.heat_in} kJ/s", fontsize=8)
+        ax.text(1100, 451, f"Rate = ... kJ/s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy027:
+
+    def __init__(self):
+        self.lambda_ = rnd.randint(1, 10) * 10
+        self.frequency = rnd.randint(10, 100)
+        self.amplitude = rnd.randint(1, 5)
+        self.speed = self.lambda_ * self.frequency
+        self.answer = self.speed
+
+        self.description = (
+            f"The diagram shows a wave of certain wavelength. "
+            f"If the frequency is {self.frequency} Hz, the speed of the wave is ... cm/s"
+        )
+        self.topic = "Waves"
+        self.subtopic = "General properties of waves"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Wavelength (}} \\lambda \\text{{)}} &= {round(self.lambda_, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Frequency (}} f \\text{{)}} &= {round(self.frequency, 10)}\\,\\text{{Hz}}\\\\"
+            "\\text{{The wave speed (}} v \\text{{)}} &\\text{{ is calculated using:}}\\\\"
+            "v &= f \\cdot \\lambda \\\\"
+            f"&= {round(self.frequency, 10)} \\cdot {round(self.lambda_, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        x_max = int(5 * self.lambda_)
+        xtickrange = int(x_max / 5)
+        y_max = int(1.5 * self.amplitude)
+        ytickrange = 1
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=-y_max,
+            xmax=x_max,
+            ymax=y_max,
+            xtickrange=xtickrange,
+            ytickrange=ytickrange,
+            xlabel="distance (cm)",
+            ylabel="distance (cm)"
+        )
+        x = np.linspace(0, 5 * self.lambda_, 400)
+        y = self.amplitude * np.sin(2 * np.pi * x / self.lambda_)
+        ax.plot(x, y)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy028:
+
+    def __init__(self):
+        self.lambda_ = rnd.randint(1, 10) * 10
+        self.frequency = rnd.randint(10, 100)
+        self.amplitude = rnd.randint(1, 5)
+        self.speed = self.lambda_ * self.frequency
+        self.answer = self.frequency
+
+        self.description = (
+            f"The diagram shows a wave of certain wavelength. "
+            f"If the speed of the wave is {self.speed} cm/s, its frequency is ... Hz"
+        )
+        self.topic = "Waves"
+        self.subtopic = "General properties of waves"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Wave speed (}} v \\text{{)}} &= {round(self.speed, 10)}\\,\\text{{cm/s}}\\\\"
+            f"\\text{{Wavelength (}} \\lambda \\text{{)}} &= {round(self.lambda_, 10)}\\,\\text{{cm}}\\\\"
+            "\\text{{The relationship between speed, frequency, and wavelength is:}} &\\\\"
+            "v &= f \\cdot \\lambda \\\\"
+            "\\text{{Rearranging for frequency (}} f \\text{{):}} &\\\\"
+            "f &= \\frac{v}{\\lambda} \\\\"
+            f"&= \\frac{{{round(self.speed, 10)}}}{{{round(self.lambda_, 10)}}} \\\\"
+            f"&= {self.answer}\\,\\text{{Hz}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        x_max = int(5 * self.lambda_)
+        xtickrange = int(x_max / 5)
+        y_max = int(1.5 * self.amplitude)
+        ytickrange = 1
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=-y_max,
+            xmax=x_max,
+            ymax=y_max,
+            xtickrange=xtickrange,
+            ytickrange=ytickrange,
+            xlabel="distance (cm)",
+            ylabel="distance (cm)"
+        )
+        x = np.linspace(0, 5 * self.lambda_, 400)
+        y = self.amplitude * np.sin(2 * np.pi * x / self.lambda_)
+        ax.plot(x, y)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
