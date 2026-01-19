@@ -1307,3 +1307,93 @@ class Phy028:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
+
+class Phy029:
+
+    def __init__(self):
+        self.c = 3 * (10**8) # speed of light in vacuum
+        self.frac_med_a = rnd.randint(80, 99) / 100
+        self.speed_medium_a = int(self.frac_med_a * self.c)
+        self.frac_med_b = rnd.randint(80, 99) / 100
+        self.speed_medium_b = int(self.frac_med_b * self.c)
+        self.answer = self.frac_med_a / self.frac_med_b
+        self.description = (
+            "Light travels through two different media, A and B. "
+            "The speed of light in each medium is given. "
+            "Calculate the ratio of refractive index of B to A!"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of light in medium A (}} v_A \\text{{)}} &= {round(self.speed_medium_a, 10)}\\,\\text{{m/s}}\\\\"
+            f"\\text{{Speed of light in medium B (}} v_B \\text{{)}} &= {round(self.speed_medium_b, 10)}\\,\\text{{m/s}}\\\\"
+            "\\text{{Refractive index is defined as:}} &\\\\"
+            "n &= \\frac{c}{v} \\\\"
+            "\\text{{Therefore, the ratio of }} n_B \\text{{ to }} n_A \\text{{ is:}} &\\\\"
+            "\\frac{n_B}{n_A} &= \\frac{c/v_B}{c/v_A} \\\\"
+            "\\frac{n_B}{n_A} &= \\frac{v_A}{v_B} \\\\"
+            f"&= \\frac{{{round(self.speed_medium_a, 10)}}}{{{round(self.speed_medium_b, 10)}}} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy029temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(200, 376, f"v = {format(self.speed_medium_a, ",").replace(",", ".")} m/s", fontsize=8)
+        ax.text(900, 376, f"v = {format(self.speed_medium_b, ",").replace(",", ".")} m/s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy030:
+
+    def __init__(self):
+        self.c = 3 * (10**8) # speed of light in vacuum
+        self.frac_med_a = rnd.randint(80, 99) / 100
+        self.speed_medium_a = int(self.frac_med_a * self.c)
+        self.frac_med_b = rnd.randint(80, 99) / 100
+        self.speed_medium_b = int(self.frac_med_b * self.c)
+        self.b_to_a_ratio = self.frac_med_a / self.frac_med_b
+        self.answer = self.speed_medium_b
+        self.description = (
+            "Light travels through two different media, A and B. "
+            f"The speed of light in medium A is given. If the ratio of refractive index of medium B to A is {self.b_to_a_ratio}, "
+            "calculate the speed of light in medium B!"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of light in medium A (}} v_A \\text{{)}} &= {round(self.speed_medium_a, 10)}\\,\\text{{m/s}}\\\\"
+            f"\\text{{Ratio of refractive indices (}} n_B / n_A \\text{{)}} &= {self.b_to_a_ratio}\\\\"
+            "\\text{{Refractive index (}} n \\text{{) is related to speed (}} v \\text{{) by:}} &\\\\"
+            "n &= \\frac{c}{v} \\\\"
+            "\\text{{Therefore, the ratio is:}} &\\\\"
+            "\\frac{n_B}{n_A} &= \\frac{c/v_B}{c/v_A} = \\frac{v_A}{v_B} \\\\"
+            "\\text{{Rearranging for the speed in medium B (}} v_B \\text{{):}} &\\\\"
+            "v_B &= \\frac{v_A}{n_B / n_A} \\\\"
+            f"&= \\frac{{{round(self.speed_medium_a, 10)}}}{{{round(self.b_to_a_ratio, 10)}}} \\\\"
+            f"&= {self.answer}\\,\\text{{m/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy030temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(200, 376, f"v = {format(self.speed_medium_a, ",").replace(",", ".")} m/s", fontsize=8)
+        ax.text(1000, 376, f"v = ... m/s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
