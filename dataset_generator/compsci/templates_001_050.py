@@ -381,7 +381,7 @@ class Com007:
             f"\\text{{Linear Search Logic:}} &\\\\"
             + "\\\\".join([
                 f"\\text{{Step {i+1}: Check index }} {i} \\text{{ (Value: }} {self.array[i]} \\text{{)}} &\\rightarrow " + 
-                (f"\\text{{Match found!}}" if self.array[i] == self.target else f"\\text{{No match, move to index }} {i+1}")
+                (f"\\text{{Match found! (Stop searching)}}" if self.array[i] == self.target else f"\\text{{No match, move to index }} {i+1}")
                 for i in range(self.answer + 1 if self.found else self.elements)
             ]) + "\\\\"
             f"\\text{{Search Outcome:}} &\\\\"
@@ -476,7 +476,7 @@ class Com008:
                 for i in range(self.days)
             ]) + "\\\\"
             f"\\text{{4. Final Count:}} &\\\\"
-            f"\\text{{Count}} &= {self.answer}\\\\"
+            f"\\text{{CountAbove}} &= {self.answer}\\\\"
             f"\\text{{Final Result}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -527,7 +527,7 @@ class Com009:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Initial array}} &= [{', '.join(map(str, self.array_copy))}]\\\\"
+            f"\\text{{Initial array (Data)}} &= [{', '.join(map(str, self.array_copy))}]\\\\"
             "\\text{The bubble sort algorithm compares adjacent elements and swaps them if they are in the wrong order.}\\\\"
             + "\\\\".join(
                 (f"\\text{{Pass }} {p}: &\\\\"
@@ -541,7 +541,7 @@ class Com009:
                 )
                 for p in range(1, self.elements))
             ) + "\\\\"
-            f"\\text{{Total number of swaps performed}} &= {self.answer}\\\\"
+            f"\\text{{Total number of swaps performed (SwapCount)}} &= {self.answer}\\\\"
             f"\\text{{Final sorted array}} &= [{', '.join(map(str, self.array))}]\\\\"
             f"\\text{{Final Result}} &= {self.answer}"
             "\\end{aligned}\\]"
@@ -702,7 +702,7 @@ class Com011:
 
     def __init__(self):
         self.elements = 16
-        self.array = [rnd.randint(20, 99) for _ in range(self.elements)]
+        self.array = rnd.sample(range(20, 100), self.elements)
         self.current_idx = rnd.randint(0, 7)
         self.target_idx = rnd.randint(8, 15)
         self.current = self.array[self.current_idx]
@@ -739,6 +739,9 @@ class Com011:
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(12, 8))
+        bg_color = "#fcfaef"
+        fig.patch.set_facecolor(bg_color)
+        ax.set_facecolor(bg_color)
         ax.set_xlim(0, 1000)
         ax.set_ylim(0, 1000)
         plt.axis('off')
@@ -776,7 +779,7 @@ class Com011:
             "Target <- y",
             "",
             "Found <- FALSE",
-            "Index <- StartIndex + 1",
+            "Index <- CurrentIndex + 1",
             "CompareCounter <- 0",
             "",
             f"WHILE Index < {self.elements} AND Found = FALSE",
@@ -808,5 +811,5 @@ class Com011:
             y_pos -= line_height
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", facecolor=fig.get_facecolor())
         plt.close()
