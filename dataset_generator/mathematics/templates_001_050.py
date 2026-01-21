@@ -2699,3 +2699,97 @@ class Mat049:
         tx = p_vertex[0] + (radius + 0.15) * np.cos(mid_ang)
         ty = p_vertex[1] + (radius + 0.15) * np.sin(mid_ang)
         ax.text(tx, ty, text, fontsize=14, ha='center', va='center')
+        
+class Mat050:
+    def __init__(self):
+        self.r = randrange_float(10.0, 20.0, 0.01)
+        # Ensure chord length is logically valid (less than diameter)
+        self.chord_len = randrange_float(12.0, self.r * 1.8, 0.01)
+        
+        # d = sqrt(r^2 - (chord_len/2)^2)
+        half_chord = self.chord_len / 2
+        self.answer = round(math.sqrt(self.r**2 - half_chord**2), 2)
+
+        self.description = (
+            f"The diagram shows a circle with center $O$, radius , and chord AB has length as shown in the image. "
+            f"Calculate the shortest distance from the center of the circle to the chord."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems II"
+        self.source = "Original" # Complies with syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Radius, }} r &= {round(self.r, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Chord length, }} AB &= {round(self.chord_len, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Let }} d \\text{{ be the shortest distance from the center }} O \\text{{ to the chord }} AB. &\\\\"
+            f"\\text{{The perpendicular bisector of a chord passes through the center:}} &\\\\"
+            f"\\text{{Half-chord length, }} h &= \\frac{{AB}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.chord_len, 10)}}}{{2}}\\\\"
+            f"&= {round(self.chord_len / 2, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Using Pythagoras' Theorem in the resulting right-angled triangle:}} &\\\\"
+            f"r^2 &= d^2 + h^2\\\\"
+            f"d &= \\sqrt{{r^2 - h^2}}\\\\"
+            f"&= \\sqrt{{{round(self.r, 10)}^2 - {round(self.chord_len / 2, 10)}^2}}\\\\"
+            f"&= \\sqrt{{{round(self.r**2, 10)} - {round((self.chord_len / 2)**2, 10)}}}\\\\"
+            f"&= \\sqrt{{{round(self.r**2 - (self.chord_len / 2)**2, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        limit = 1.3
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        vis_r = 1.0
+        circle = plt.Circle((0, 0), vis_r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        rotation = rnd.uniform(0, 360)
+        rad = np.radians(rotation)
+        rot_mat = np.array([[np.cos(rad), -np.sin(rad)], [np.sin(rad), np.cos(rad)]])
+
+        d_plot = (self.answer / self.r) * vis_r
+        h = math.sqrt(max(0, vis_r**2 - d_plot**2))
+        
+        p1_local = np.array([h, d_plot])
+        p2_local = np.array([-h, d_plot])
+        
+        # Apply rotation to chord endpoints
+        p1 = rot_mat @ p1_local
+        p2 = rot_mat @ p2_local
+
+        rand_ang_r = np.radians(rnd.uniform(0, 360))
+        pr_local = np.array([vis_r * np.cos(rand_ang_r), vis_r * np.sin(rand_ang_r)])
+        pr = rot_mat @ pr_local
+
+        ax.plot([p1[0], p2[0]], [p1[1], p2[1]], color='black', lw=2) # Chord AB
+        ax.plot([0, pr[0]], [0, pr[1]], color='black', lw=1.5)
+
+        centroid = np.array([0, 0])
+        put_vertex_label(ax, centroid, "O", pr, 0.12) # Offset O away from the radius line
+        put_vertex_label(ax, p1, "A", centroid, 0.12)
+        put_vertex_label(ax, p2, "B", centroid, 0.12)
+
+        # Radius label
+        r_mid = pr * 0.5
+        ax.text(r_mid[0], r_mid[1] + 0.05, f"{self.r:.1f} cm", fontsize=14, fontweight='bold')
+        
+        # Chord label (offset from midpoint of chord)
+        mid_chord = (p1 + p2) / 2
+        # Offset label outward from the center
+        c_label_offset = mid_chord / np.linalg.norm(mid_chord) * 0.15 if np.linalg.norm(mid_chord) > 0 else [0, 0.15]
+        c_label_pos = mid_chord + c_label_offset
+        ax.text(c_label_pos[0], c_label_pos[1], f"{self.chord_len:.1f} cm", 
+                fontsize=14, ha='center', fontweight='bold')
+
+        plt.text(1.1, 1.1, "NOT TO\nSCALE", fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
