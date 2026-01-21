@@ -2957,8 +2957,6 @@ class Mat081:
             "\\end{aligned}\\]"
         )
                 
-        print(self.reasoning)
-
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 6))
         
