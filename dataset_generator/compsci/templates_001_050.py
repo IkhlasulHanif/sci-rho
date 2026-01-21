@@ -983,3 +983,109 @@ class Com014:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com015:
+
+    def __init__(self):
+        self.length = 12
+        self.items_threshold = rnd.randint(3, 5)
+        self.total_threshold = rnd.randrange(30, 60, 5)
+        self.items = [1, 4, 3, 2, 5, 2, 6, 1, 3, 2, 4, 2]
+        self.totals = [25, 80, 45, 60, 110, 40, 150, 15, 75, 35, 95, 55]
+        count = 0
+        for i in range(self.length):
+            if (self.items[i] < self.items_threshold) and (self.totals[i] >= self.total_threshold):
+                count += 1
+        self.answer = count
+
+        self.description = f"Sales data from an online shop is stored in a table called Orders, as shown in the image. The owner runs the query: SELECT COUNT(OrderID) FROM Orders WHERE Items < {self.items_threshold} AND Total >= {self.total_threshold};. What should be the output?"
+        self.topic = "Databases"
+        self.subtopic = ""
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Query conditions: Items}} &< {self.items_threshold} \\text{{ AND Total}} \\ge {self.total_threshold}\\\\"
+            f"\\text{{Thresholds: Items threshold}} &= {self.items_threshold}, \\text{{ Total threshold}} = {self.total_threshold}\\\\"
+            f"\\text{{Evaluating each row:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Row {i+1}: (Items={self.items[i]}, Total={self.totals[i]})}} \\rightarrow "
+                f"({self.items[i]} < {self.items_threshold}) \\text{{ AND }} ({self.totals[i]} \\ge {self.total_threshold}) \\rightarrow "
+                f"({'True' if self.items[i] < self.items_threshold else 'False'}) \\text{{ AND }} ({'True' if self.totals[i] >= self.total_threshold else 'False'}) \\rightarrow "
+                f"\\text{{{'Match' if (self.items[i] < self.items_threshold and self.totals[i] >= self.total_threshold) else 'No Match'}}}"
+                for i in range(self.length)
+            ]) + "\\\\"
+            f"\\text{{Total matching records (COUNT)}} &= {self.answer}\\\\"
+            f"\\text{{Final result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com015temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com016:
+
+    def __init__(self):
+        self.length = 12
+        self.query_type = rnd.choice(['L0456', 'L0457', 'L0458'])
+        self.types = ['L0456', 'L0457', 'L0458', 'L0456', 'L0457', 'L0458', 'L0456', 'L0457', 'L0458', 'L0456', 'L0458', 'L0456']
+        self.quantities = [rnd.randint(2, 9) for _ in range(self.length)]
+        sum = 0
+        for i in range(self.length):
+            if self.types[i] == self.query_type:
+                sum += self.quantities[i]
+        self.answer = sum
+
+        self.description = f"The following table in the image shows laptop sales made in January 2025. What value is output by the SQL statement below it, if x is {self.query_type}?"
+        self.topic = "Databases"
+        self.subtopic = ""
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Query Condition: LaptopType}} &= \\text{{{self.query_type}}}\\\\"
+            f"\\text{{SQL Operation: }} & \\text{{SUM(Quantity)}}\\\\"
+            f"\\text{{Evaluating records in table:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Row {i+1}: }} ({self.types[i]}, {self.quantities[i]}) \\rightarrow " + 
+                (f"\\text{{Match! Add }} {self.quantities[i]}" if self.types[i] == self.query_type else "\\text{{No Match}}")
+                for i in range(self.length)
+            ]) + "\\\\"
+            f"\\text{{Summation calculation:}} &\\\\"
+            f"\\text{{Total}} &= " + " + ".join([str(self.quantities[i]) for i in range(self.length) if self.types[i] == self.query_type]) + f"\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com016temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        y_pos = 100
+        line_height = 35
+                
+        for qty in self.quantities:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(512, y_pos, str(qty), 
+                    fontsize=10, 
+                    color=color,
+                    family="sans-serif",
+                    weight=weight)
+            
+            y_pos += line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
