@@ -19,6 +19,130 @@ DESTINATION_FOLDER = os.path.join(
 )
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
 
+class Mat051:
+    def __init__(self):
+        # r is radius, c_len is the length of both chords
+        self.r = randrange_float(10.0, 15.0, 0.01)
+        self.c_len = randrange_float(8.0, self.r * 1.5, 0.01)
+        
+        # d is the fixed distance from center for both chords
+        # d = sqrt(r^2 - (c_len/2)^2)
+        self.d = math.sqrt(self.r**2 - (self.c_len / 2)**2)
+        
+        # Create algebraic expression: distance = ax + b
+        # Let's solve for x
+        self.x_val = rnd.randint(2, 10)
+        self.a = rnd.randint(1, 5)
+        # b = distance - a*x
+        self.b = self.d - (self.a * self.x_val)
+        
+        self.answer = self.x_val
+        
+        # Format the expression for the description
+        self.expr = fmt_poly(self.a, "x", is_leading=True) + fmt_poly(round(self.b, 2), "")
+        
+        self.description = (
+            f"The diagram shows a circle with center $O$. Two chords, $AB$ and $CD$, "
+            f"each have a length of ${round(self.c_len, 2)}$ cm. "
+            f"Chord $AB$ is ${round(self.d, 2)}$ cm from the center. "
+            f"The distance from the center to chord $CD$ is $({self.expr.strip()})$ cm. "
+            f"Find the value of $x$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems II"
+        self.source = "Original" # Complies with syllabus
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Length of chord }} AB &= {round(self.c_len, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Length of chord }} CD &= {round(self.c_len, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Since }} AB = CD, \\text{{ the chords are equidistant from the center }} O. &\\\\"
+            f"\\text{{Distance to }} AB &= \\text{{Distance to }} CD \\\\"
+            f"{round(self.d, 10)} &= {self.a}x + ({round(self.b, 10)})\\\\"
+            f"{self.a}x &= {round(self.d, 10)} - ({round(self.b, 10)})\\\\"
+            f"{self.a}x &= {round(self.d - self.b, 10)}\\\\"
+            f"x &= \\frac{{{round(self.d - self.b, 10)}}}{{{self.a}}}\\\\"
+            f"x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        limit = 1.3
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        vis_r = 1.0
+        circle = plt.Circle((0, 0), vis_r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Plot a point at the center O
+        ax.plot(0, 0, 'ko', markersize=6)
+
+        # Geometric distance for plotting
+        d_plot = (self.d / self.r) * vis_r
+        h = math.sqrt(max(0, vis_r**2 - d_plot**2))
+
+        # Randomize positions of the two chords
+        rot1 = rnd.uniform(0, 360)
+        rot2 = rot1 + rnd.uniform(90, 270) 
+
+        def get_chord_pts(rotation, dist, half_len):
+            rad = np.radians(rotation)
+            rot_mat = np.array([[np.cos(rad), -np.sin(rad)], [np.sin(rad), np.cos(rad)]])
+            
+            # The chord is horizontal in local space at y = dist
+            p1_local = np.array([half_len, dist])
+            p2_local = np.array([-half_len, dist])
+            mid_local = np.array([0, dist])
+            
+            p1 = rot_mat @ p1_local
+            p2 = rot_mat @ p2_local
+            mid = rot_mat @ mid_local
+            
+            return p1, p2, mid
+
+        pA, pB, midAB = get_chord_pts(rot1, d_plot, h)
+        pC, pD, midCD = get_chord_pts(rot2, d_plot, h)
+
+        # Draw Chords
+        ax.plot([pA[0], pB[0]], [pA[1], pB[1]], color='black', lw=2)
+        ax.plot([pC[0], pD[0]], [pC[1], pD[1]], color='black', lw=2)
+
+        # Draw Dashed Distance Lines (precise from 0,0 to midpoints)
+        ax.plot([0, midAB[0]], [0, midAB[1]], 'k--', lw=1.5)
+        ax.plot([0, midCD[0]], [0, midCD[1]], 'k--', lw=1.5)
+
+        # Labels for vertices
+        centroid = np.array([0, 0])
+        # Position 'O' label away from both dashed lines
+        o_label_dir = -(midAB + midCD)
+        if np.linalg.norm(o_label_dir) > 0:
+            o_label_dir = o_label_dir / np.linalg.norm(o_label_dir)
+        else:
+            o_label_dir = np.array([0, -1])
+            
+        put_vertex_label(ax, centroid, "O", centroid + o_label_dir, 0.12)
+        
+        put_vertex_label(ax, pA, "A", centroid, 0.12)
+        put_vertex_label(ax, pB, "B", centroid, 0.12)
+        put_vertex_label(ax, pC, "C", centroid, 0.12)
+        put_vertex_label(ax, pD, "D", centroid, 0.12)
+
+        # Expressions with white background for clarity
+        props = dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='none', alpha=0.8)
+        ax.text(midAB[0]*0.5, midAB[1]*0.5, f"{self.d:.2f}", fontsize=12, fontweight='bold', ha='center', bbox=props)
+        ax.text(midCD[0]*0.5, midCD[1]*0.5, f"{self.expr}", fontsize=12, fontweight='bold', ha='center', bbox=props)
+
+        plt.text(1.1, 1.1, "NOT TO\nSCALE", fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat054:
     
     def __init__(self):
