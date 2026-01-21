@@ -448,11 +448,11 @@ class Com008:
         for day in range(self.days):
             self.total_steps += self.steps[day]
         self.average = self.total_steps / self.days
-        self.count_above_avg = 0
+        count_above_avg = 0
         for day in range(self.days):
             if self.steps[day] > self.average:
-                self.count_above_avg += 1
-        self.answer = self.count_above_avg
+                count_above_avg += 1
+        self.answer = count_above_avg
 
         self.description = f"A person is measuring the number of their walking steps for each day of the week: {self.steps}. According to this pseudocode shown below, what is the final output displayed?"
         self.topic = "Algorithm design and problem-solving"
@@ -497,8 +497,8 @@ class Com009:
         self.elements = 6
         self.array = [rnd.randint(20, 150) for _ in range(self.elements)]
         self.array_copy = self.array.copy()
-        self.swap_count = 0
         self.steps = []
+        swap_count = 0
         for i in range(self.elements-1):
             for j in range(0, self.elements - i - 1):
                 a = self.array[j]
@@ -507,7 +507,7 @@ class Com009:
                 did_swap = False
                 if a > b:
                     self.array[j], self.array[j + 1] = self.array[j + 1], self.array[j]
-                    self.swap_count += 1
+                    swap_count += 1
                     did_swap = True
 
                 self.steps.append({
@@ -518,7 +518,7 @@ class Com009:
                     "swap": did_swap,
                     "array": self.array.copy()
                 })
-        self.answer = self.swap_count
+        self.answer = swap_count
 
         self.description = f"This image is showing a pseudocode for a sorting algorithm. Given the unsorted array of numbers, how many swaps will it take to sort the data?"
         self.topic = "Algorithm design and problem-solving"
@@ -647,19 +647,19 @@ class Com010:
     def __init__(self):
         self.N = rnd.randint(5, 8)
         self.N_copy = self.N
-        self.total = 0
         self.steps = []
+        total = 0
         
         while (self.N > 0):
-            total_before = self.total
+            total_before = total
             if self.N % 2 == 0:
                 added = self.N
             else:
                 added = 2 * self.N
-            self.total += added
-            self.steps.append((self.N, total_before, added, self.total))
+            total += added
+            self.steps.append((self.N, total_before, added, total))
             self.N = self.N - 1
-        self.answer = self.total
+        self.answer = total
 
         self.description = f"A flowchart for a program is given in the image below. What is the final value of total, if input N is {self.N_copy}?"
         self.topic = "Algorithm design and problem-solving"
@@ -812,4 +812,174 @@ class Com011:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", facecolor=fig.get_facecolor())
+        plt.close()
+
+class Com012:
+    
+    def __init__(self):
+        self.n = rnd.randint(6, 12)
+        total = 0
+        for i in range(1, self.n + 1):
+            if i % 2 == 0:
+                if i % 3 == 0:
+                    total = total + 3
+                else:
+                    total = total + 1
+            else:
+                if i > 5:
+                    total = total + 2
+        self.answer = total
+
+        self.description = f"Here is an image showing a simple Python program. If we give the input = {self.n}, what will be the printed total value?"
+        self.topic = "Programming"
+        self.subtopic = "Programming concepts"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input }} n &= {self.n}\\\\"
+            f"\\text{{Initial total}} &= 0\\\\"
+            f"\\text{{Iterating through }} i \\text{{ from 1 to }} {self.n}:\\\\"
+            + "\\\\".join([
+                f"i = {i}: & \\quad " + (
+                    f"i \\text{{ is even, }}" + (
+                        f"i \\text{{ is divisible by 3}} \\rightarrow \\text{{total}} = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])} + 3 = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i+1)])}"
+                        if i % 3 == 0 else
+                        f"i \\text{{ is not divisible by 3}} \\rightarrow \\text{{total}} = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])} + 1 = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i+1)])}"
+                    ) if i % 2 == 0 else
+                    f"i \\text{{ is odd, }}" + (
+                        f"i > 5 \\rightarrow \\text{{total}} = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])} + 2 = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i+1)])}"
+                        if i > 5 else
+                        f"i \\leq 5 \\rightarrow \\text{{total stays }} {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])}"
+                    )
+                )
+                for i in range(1, self.n + 1)
+            ]) +
+            f"\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com012temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com013:
+
+    def __init__(self):
+        self.length = rnd.randint(5, 10)
+        self.input_text = ''.join(chr(rnd.randint(65, 75)) for _ in range(self.length))
+        self.input_ch = chr(rnd.randint(66, 75))
+        self.text = self.input_text.lower()
+        self.ch = self.input_ch.lower()
+        self.steps = []
+        count = 0
+        for i in range(self.length):
+            char = self.text[i]
+            total_before = count
+            if char == self.ch or char == "a":
+                change = 6
+                is_match = True
+            else:
+                change = -2
+                is_match = False
+            count += change
+            self.steps.append((i, char, is_match, total_before, change, count))
+        self.answer = count
+
+        self.description = f"This image is showing a simple string handling code. If input s is \"{self.text}\" and input c is \"{self.ch}\", what will be printed as the output of this code?"
+        self.topic = "Programming"
+        self.subtopic = "Programming concepts"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original Input: }} s &= \"{self.input_text}\",\\, c = '{self.input_ch}'\\\\"
+            f"\\text{{Processed (Lowercase): }} s &= \"{self.text}\",\\, c = '{self.ch}'\\\\"
+            f"\\text{{Initial count}} &= 0\\\\"
+            "\\text{{Condition: }} (\\text{{char}} == '{self.ch}') \\lor (\\text{{char}} == 'a')\\\\"
+            "\\text{{Iterating through the string:}}\\\\"
+            + "\\\\".join(
+                [
+                    f"\\text{{Step }} {idx+1}: \\text{{ char }} '{char}' \\\\"
+                    f"('{char}' == '{self.ch}') \\lor ('{char}' == 'a') &\\rightarrow "
+                    + ("\\text{{True (+6)}}" if match else "\\text{{False (-2)}}") + "\\\\"
+                    f"\\text{{count}} &= {t_before} + ({change}) = {t_after}"
+                    for idx, char, match, t_before, change, t_after in self.steps
+                ]
+            )
+            + f"\\\\\\text{{Final Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com013temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com014:
+
+    def __init__(self):
+        self.length = 9
+        self.input = [rnd.randint(2, 11) for _ in range(self.length)]
+        self.grid = []
+        i = 0
+        for r in range(3):
+            row = []
+            for c in range(3):
+                row.append(self.input[i])
+                i += 1
+            self.grid.append(row)
+
+        result = 0
+        for r in range(3):
+            for c in range(3):
+                if r == c:
+                    result += self.grid[r][c] * 2
+
+        self.answer = result
+
+        self.description = f"The given image contains a Python code involving two-dimensional array. What will the final result be, if the input is {self.input}?"
+        self.topic = "Programming"
+        self.subtopic = "Arrays"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The program reads 9 integers to fill a }} 3 \\times 3 \\text{{ grid.}}\\\\"
+            f"\\text{{Input list (read in order): }} [a_1, a_2, \\dots, a_9] = {self.input}\\\\"
+            f"\\text{{Grid mapping:}}\\\\"
+            f"\\begin{{bmatrix}} g_{{0,0}} & g_{{0,1}} & g_{{0,2}} \\\\ g_{{1,0}} & g_{{1,1}} & g_{{1,2}} \\\\ g_{{2,0}} & g_{{2,1}} & g_{{2,2}} \\end{{bmatrix}} &= "
+            f"\\begin{{bmatrix}} {self.input[0]} & {self.input[1]} & {self.input[2]} \\\\ {self.input[3]} & {self.input[4]} & {self.input[5]} \\\\ {self.input[6]} & {self.input[7]} & {self.input[8]} \\end{{bmatrix}}\\\\"
+            f"\\text{{The code adds only diagonal entries (where }} r=c \\text{{), each multiplied by 2.}}\\\\"
+            f"\\text{{So the accumulated result is:}}\\\\"
+            f"\\text{{result}} &= \\sum_{{r=0}}^2 \\sum_{{c=0}}^2 \\mathbf{{1}}_{{r=c}}\\,(2\\,g_{{r,c}})\\\\"
+            f"&= 2\\,(g_{{0,0}} + g_{{1,1}} + g_{{2,2}})\\\\"
+            f"&= 2\\,(a_1 + a_5 + a_9)\\\\"
+            f"&= 2\\,({self.input[0]} + {self.input[4]} + {self.input[8]})\\\\"
+            f"&= 2\\,({round(self.input[0] + self.input[4] + self.input[8], 10)})\\\\"
+            f"&= {round(2 * (self.input[0] + self.input[4] + self.input[8]), 10)}\\\\"
+            f"\\text{{Final result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com014temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
