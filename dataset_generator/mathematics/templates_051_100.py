@@ -244,13 +244,149 @@ class Mat052:
                             theta2=ang_p + (self.angle_apb/2), color='black', lw=1)
         ax.add_patch(arc_p)
         
-        # FIX: Changed :.0f to :.1f to show decimals
         t_pos = P + (O - P) / np.linalg.norm(O - P) * 0.5
         ax.text(t_pos[0], t_pos[1], f"{self.angle_apb}°", 
                 fontsize=14, ha='center', fontweight='bold',
                 bbox=dict(facecolor='white', edgecolor='none', alpha=0.8))
 
         plt.text(limit*0.8, limit*0.8, "NOT TO\nSCALE", fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat053:
+    def __init__(self):
+        # Property: Tangents from an external point are equal in length.
+        # AR=AQ (x), BR=BP (y), CP=CQ (z)
+        self.x = randrange_float(4.0, 7.0, 0.1)
+        self.y = randrange_float(5.0, 8.0, 0.1)
+        self.z = randrange_float(3.0, 6.0, 0.1)
+        
+        # Calculate full side lengths
+        self.side_ab = self.x + self.y
+        self.side_bc = self.y + self.z
+        self.side_ac = self.x + self.z
+        
+        # Calculate Perimeter
+        self.perimeter = self.side_ab + self.side_bc + self.side_ac
+        
+        # Problem setup: Known perimeter, known AR and BP, find side AC
+        self.answer = self.side_ac
+
+        self.description = (
+            f"The diagram shows a circle inscribed in triangle $ABC$, touching the sides at $P$, $Q$, and $R$. "
+            f"The perimeter of triangle $ABC$ is ${self.perimeter:.1f}$ cm. "
+            f"Given that the tangent segments $AR = {self.x:.1f}$ cm and $BP = {self.y:.1f}$ cm, "
+            f"calculate the length of the side $AC$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems II"
+        self.source = "Original" # Complies with syllabus
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Perimeter of triangle }} ABC &= {round(self.perimeter, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Tangents from the same external point are equal in length:}} &\\\\"
+            f"AQ &= AR = {round(self.x, 10)}\\,\\text{{cm}}\\\\"
+            f"BR &= BP = {round(self.y, 10)}\\,\\text{{cm}}\\\\"
+            f"CP &= CQ = z\\\\"
+            f"\\text{{The perimeter is the sum of all tangent segments:}} &\\\\"
+            f"P &= 2(AR + BP + CQ)\\\\"
+            f"{round(self.perimeter, 10)} &= 2({round(self.x, 10)} + {round(self.y, 10)} + z)\\\\"
+            f"\\frac{{{round(self.perimeter, 10)}}}{{2}} &= {round(self.x + self.y, 10)} + z\\\\"
+            f"{round(self.perimeter / 2, 10)} &= {round(self.x + self.y, 10)} + z\\\\"
+            f"z &= {round(self.perimeter / 2, 10)} - {round(self.x + self.y, 10)}\\\\"
+            f"z &= {round(self.z, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Side }} AC \\text{{ is the sum of segments }} AQ \\text{{ and }} QC: &\\\\"
+            f"AC &= AQ + QC = AR + CQ\\\\"
+            f"&= {round(self.x, 10)} + {round(self.z, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        # --- Mathematical Accuracy for Incircle Plotting ---
+        a, b, c = self.side_bc, self.side_ac, self.side_ab
+        s = self.perimeter / 2
+        area = math.sqrt(s * (s - a) * (s - b) * (s - c))
+        r_in = area / s
+        
+        # Base Coordinates (Local Space)
+        B_local = np.array([0, 0])
+        C_local = np.array([a, 0])
+        cos_B = (a**2 + c**2 - b**2) / (2 * a * c)
+        sin_B = math.sqrt(1 - cos_B**2)
+        A_local = np.array([c * cos_B, c * sin_B])
+        incenter_local = (a*A_local + b*B_local + c*C_local) / (self.perimeter)
+
+        # Apply Global Random Rotation for Variety
+        rotation_deg = rnd.uniform(0, 360)
+        rad = np.radians(rotation_deg)
+        rot_mat = np.array([[np.cos(rad), -np.sin(rad)], 
+                            [np.sin(rad), np.cos(rad)]])
+
+        A_coord = rot_mat @ A_local
+        B_coord = rot_mat @ B_local
+        C_coord = rot_mat @ C_local
+        incenter = rot_mat @ incenter_local
+
+        # Mathematically Derived Tangency Points
+        P_coord = B_coord + (self.y / a) * (C_coord - B_coord)
+        R_coord = B_coord + (self.y / c) * (A_coord - B_coord)
+        Q_coord = A_coord + (self.x / b) * (C_coord - A_coord)
+
+        # Draw Geometry
+        triangle = plt.Polygon([A_coord, B_coord, C_coord], fill=False, lw=2, edgecolor='black')
+        ax.add_patch(triangle)
+        circle = plt.Circle(incenter, r_in, color='black', fill=False, lw=1.5)
+        ax.add_artist(circle)
+        
+        all_pts = np.array([A_coord, B_coord, C_coord])
+        min_x, min_y = np.min(all_pts, axis=0) - 1.5
+        max_x, max_y = np.max(all_pts, axis=0) + 1.5
+        ax.set_xlim(min_x, max_x)
+        ax.set_ylim(min_y, max_y)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Labels
+        put_vertex_label(ax, A_coord, "A", incenter, 0.4)
+        put_vertex_label(ax, B_coord, "B", incenter, 0.4)
+        put_vertex_label(ax, C_coord, "C", incenter, 0.4)
+        put_vertex_label(ax, P_coord, "P", incenter, -0.3)
+        put_vertex_label(ax, Q_coord, "Q", incenter, -0.3)
+        put_vertex_label(ax, R_coord, "R", incenter, -0.3)
+
+        # Annotations
+        def get_outside_pos(p1, p2, offset=0.4):
+            mid = (p1 + p2) / 2
+            vec = p2 - p1
+            perp = np.array([-vec[1], vec[0]])
+            # Ensure perp vector points away from incenter
+            if np.dot(perp, mid - incenter) < 0:
+                perp = -perp
+            return mid + (perp / np.linalg.norm(perp)) * offset
+
+        # Numeric Labels for AR and BP
+        pos_ar = get_outside_pos(A_coord, R_coord, 0.3)
+        ax.text(pos_ar[0], pos_ar[1], f"{self.x:.1f} cm", fontsize=11, fontweight='bold', ha='center')
+        
+        pos_bp = get_outside_pos(B_coord, P_coord, 0.3)
+        ax.text(pos_bp[0], pos_bp[1], f"{self.y:.1f} cm", fontsize=11, fontweight='bold', ha='center')
+
+        # Question Mark for Asked Side AC
+        pos_ac = get_outside_pos(A_coord, C_coord, 0.5)
+        ax.text(pos_ac[0], pos_ac[1], "?", fontsize=18, fontweight='bold', ha='center')
+
+        # Perimeter and Scale Labels
+        plt.text(min_x + 0.5, max_y - 0.5, f"Perimeter = {self.perimeter:.1f} cm", 
+                 fontsize=13, fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
+        plt.text(max_x - 1.0, max_y - 0.5, "NOT TO\nSCALE", fontsize=11, ha='center')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
