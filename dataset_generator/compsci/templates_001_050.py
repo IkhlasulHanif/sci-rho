@@ -1089,3 +1089,211 @@ class Com016:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com017:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.answer = int(not(not self.input_1 and not self.input_2))
+        
+        self.description = f"Given this image of a logic circuit, determine the output of OUT1 if IN1 is {self.input_1} and IN2 is {self.input_2}."
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input 1 (IN1)}} &= {self.input_1}\\\\"
+            f"\\text{{Input 2 (IN2)}} &= {self.input_2}\\\\"
+            f"\\text{{1. Process through first layer (NOT gates):}} &\\\\"
+            f"A &= \\neg \\text{{IN1}} = {int(not self.input_1)}\\\\"
+            f"B &= \\neg \\text{{IN2}} = {int(not self.input_2)}\\\\"
+            f"\\text{{2. Process through second layer (AND gate):}} &\\\\"
+            f"C &= A \\wedge B = {int(not self.input_1)} \\wedge {int(not self.input_2)} = {int(not self.input_1 and not self.input_2)}\\\\"
+            f"\\text{{3. Process through final layer (NOT gate):}} &\\\\"
+            f"\\text{{OUT1}} &= \\neg C = \\neg({int(not self.input_1 and not self.input_2)})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com017temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com018:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.answer = int(not((not(self.input_1 or self.input_1)) or (not(self.input_2 or self.input_2))))
+        
+        self.description = f"Given this image of a logic circuit, determine the output of Z if Input A is {self.input_1} and B is {self.input_2}."
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input A}} &= {self.input_1}\\\\"
+            f"\\text{{Input B}} &= {self.input_2}\\\\"
+            f"\\text{{1. Analyze the first stage (NOR gates acting as NOT gates):}} &\\\\"
+            f"\\text{{NOT A}} &= \\neg(A \\lor A) = \\neg({self.input_1} \\lor {self.input_1}) = {int(not self.input_1)}\\\\"
+            f"\\text{{NOT B}} &= \\neg(B \\lor B) = \\neg({self.input_2} \\lor {self.input_2}) = {int(not self.input_2)}\\\\"
+            f"\\text{{2. Analyze the second stage (NOR gate):}} &\\\\"
+            f"\\text{{Output Z}} &= \\neg(\\text{{NOT A}} \\lor \\text{{NOT B}})\\\\"
+            f"&= \\neg({int(not self.input_1)} \\lor {int(not self.input_2)})\\\\"
+            f"&= \\neg({int(not self.input_1 or not self.input_2)})\\\\"
+            f"&= {int(self.answer)}\\\\"
+            f"\\text{{Note: By De Morgan's Law, }} \\neg(\\neg A \\lor \\neg B) \\iff A \\land B &\\\\"
+            f"\\text{{Final result Z}} &= {int(self.answer)}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com018temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com019:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.answer = int(not((not(self.input_1 or self.input_2)) or (not(self.input_1 or self.input_2))))
+        
+        self.description = f"Given this image of a logic circuit, what is the output of Z if Input X is {self.input_1} and Y is {self.input_2}?"
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input X}} &= {self.input_1}\\\\"
+            f"\\text{{Input Y}} &= {self.input_2}\\\\"
+            f"\\text{{1. Analyze the first stage (NOR gate):}} &\\\\"
+            f"\\text{{Intermediate Output (A)}} &= \\neg(X \\lor Y)\\\\"
+            f"&= \\neg({self.input_1} \\lor {self.input_2})\\\\"
+            f"&= {int(not(self.input_1 or self.input_2))}\\\\"
+            f"\\text{{2. Analyze the second stage (NOR gate acting as a NOT gate):}} &\\\\"
+            f"\\text{{Output Z}} &= \\neg(A \\lor A)\\\\"
+            f"&= \\neg({int(not(self.input_1 or self.input_2))} \\lor {int(not(self.input_1 or self.input_2))})\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Summary: The circuit simplifies to (X OR Y) using two NOR gates.}} &\\\\"
+            f"\\text{{Final Result Z}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com019temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com020:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.answer = int(((self.input_1 or self.input_2) and self.input_3) or (self.input_1 and self.input_2))
+        
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, and C is {self.input_3}?"
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
+            f"\\text{{1. Analyze the first OR gate (A OR B):}} & \\\\"
+            f"G_1 &= A \\lor B \\\\"
+            f"&= {self.input_1} \\lor {self.input_2} \\\\"
+            f"&= {int(self.input_1 or self.input_2)} \\\\"
+            f"\\text{{2. Analyze the first AND gate (G1 AND C):}} & \\\\"
+            f"G_2 &= G_1 \\land C \\\\"
+            f"&= {int(self.input_1 or self.input_2)} \\land {self.input_3} \\\\"
+            f"&= {int((self.input_1 or self.input_2) and self.input_3)} \\\\"
+            f"\\text{{3. Analyze the second AND gate (A AND B):}} & \\\\"
+            f"G_3 &= A \\land B \\\\"
+            f"&= {self.input_1} \\land {self.input_2} \\\\"
+            f"&= {int(self.input_1 and self.input_2)} \\\\"
+            f"\\text{{4. Analyze the final OR gate (G2 OR G3):}} & \\\\"
+            f"F &= G_2 \\lor G_3 \\\\"
+            f"&= {int((self.input_1 or self.input_2) and self.input_3)} \\lor {int(self.input_1 and self.input_2)} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Output F}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com020temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com021:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.answer = int((not((not self.input_1) and self.input_2)) or ((not self.input_2) and self.input_3))
+        
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, and C is {self.input_3}?"
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
+            f"\\text{{1. Analyze the first branch:}} & \\\\"
+            f"\\text{{Let }} G_1 &= \\neg A \\land B \\\\"
+            f"&= \\neg({self.input_1}) \\land {self.input_2} \\\\"
+            f"&= {int(not self.input_1)} \\land {self.input_2} \\\\"
+            f"&= {int((not self.input_1) and self.input_2)} \\\\"
+            f"G_2 &= \\neg G_1 \\\\"
+            f"&= \\neg({int((not self.input_1) and self.input_2)}) \\\\"
+            f"&= {int(not((not self.input_1) and self.input_2))} \\\\"
+            f"\\text{{2. Analyze the second branch (Lower logic):}} & \\\\"
+            f"G_3 &= \\neg B \\land C \\\\"
+            f"&= \\neg({self.input_2}) \\land {self.input_3} \\\\"
+            f"&= {int(not self.input_2)} \\land {self.input_3} \\\\"
+            f"&= {int((not self.input_2) and self.input_3)} \\\\"
+            f"\\text{{3. Final Output (OR operation):}} & \\\\"
+            f"F &= G_2 \\lor G_3 \\\\"
+            f"&= {int(not((not self.input_1) and self.input_2))} \\lor {int((not self.input_2) and self.input_3)} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result }} F &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com021temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
