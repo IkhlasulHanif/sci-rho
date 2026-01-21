@@ -1000,7 +1000,7 @@ class Com015:
 
         self.description = f"Sales data from an online shop is stored in a table called Orders, as shown in the image. The owner runs the query: SELECT COUNT(OrderID) FROM Orders WHERE Items < {self.items_threshold} AND Total >= {self.total_threshold};. What should be the output?"
         self.topic = "Databases"
-        self.subtopic = ""
+        self.subtopic = "Understand structured query language scripts (custom subtopic)"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
@@ -1045,7 +1045,7 @@ class Com016:
 
         self.description = f"The following table in the image shows laptop sales made in January 2025. What value is output by the SQL statement below it, if x is {self.query_type}?"
         self.topic = "Databases"
-        self.subtopic = ""
+        self.subtopic = "Understand structured query language scripts (custom subtopic)"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
