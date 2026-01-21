@@ -143,6 +143,119 @@ class Mat051:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat052:
+    def __init__(self):
+        # Property: Tangents from an external point are equal in length
+        # They form two congruent right-angled triangles (OAP and OBP)
+        self.radius = randrange_float(5.0, 10.0, 0.01)
+        self.angle_apb = randrange_float(40.0, 70.0, 0.01)
+        
+        half_angle = self.angle_apb / 2
+        # tan(half_angle) = radius / tangent_length
+        self.tan_len = self.radius / math.tan(math.radians(half_angle))
+        self.answer = round(self.tan_len, 2)
+
+        self.description = (
+            f"The diagram shows a circle with center $O$. $PA$ and $PB$ are tangents to the circle "
+            f"from an external point $P$, touching the circle at $A$ and $B$. "
+            f"The radius of the circle is ${self.radius} cm and angle $\\angle APB = {self.angle_apb}^\\circ$. "
+            f"Calculate the length of the tangent $PA$."
+        )
+        
+        self.topic = "Geometry"
+        self.subtopic = "Circle theorems II"
+        self.source = "Original" # Complies with syllabus
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Angle }} \\angle APB &= {round(self.angle_apb, 10)}^\\circ\\\\"
+            f"\\text{{Radius, }} r &= {round(self.radius, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Since tangents from an external point are equal, }} PA &= PB. &\\\\"
+            f"\\text{{The line }} OP \\text{{ bisects }} \\angle APB: &\\\\"
+            f"\\angle APO &= \\frac{{\\angle APB}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.angle_apb, 10)}^\\circ}}{{2}}\\\\"
+            f"&= {round(self.angle_apb / 2, 10)}^\\circ\\\\"
+            f"\\text{{The radius }} OA \\text{{ is perpendicular to the tangent }} PA: &\\\\"
+            f"\\angle OAP &= 90^\\circ\\\\"
+            f"\\text{{In right-angled triangle }} OAP: &\\\\"
+            f"\\tan(\\angle APO) &= \\frac{{OA}}{{PA}}\\\\"
+            f"\\tan({round(self.angle_apb / 2, 10)}^\\circ) &= \\frac{{{round(self.radius, 10)}}}{{PA}}\\\\"
+            f"PA &= \\frac{{{round(self.radius, 10)}}}{{\\tan({round(self.angle_apb / 2, 10)}^\\circ)}}\\\\"
+            f"PA &= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        # Calculate geometric distance for plotting
+        half_ang_rad = np.radians(self.angle_apb / 2)
+        # Scale the plot so P fits in the frame
+        vis_r = 0.5
+        dist_op = vis_r / np.sin(half_ang_rad)
+        
+        limit = dist_op * 1.3
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Global rotation for variety
+        rotation = rnd.uniform(0, 360)
+        rad_rot = np.radians(rotation)
+        rot_mat = np.array([[np.cos(rad_rot), -np.sin(rad_rot)], [np.sin(rad_rot), np.cos(rad_rot)]])
+
+        # Define points in local space
+        p_local = np.array([dist_op, 0])
+        ang_aop = np.pi/2 - half_ang_rad
+        a_local = np.array([vis_r * np.cos(ang_aop), vis_r * np.sin(ang_aop)])
+        b_local = np.array([vis_r * np.cos(ang_aop), -vis_r * np.sin(ang_aop)])
+        o_local = np.array([0, 0])
+
+        # Apply rotation
+        P = rot_mat @ p_local
+        A = rot_mat @ a_local
+        B = rot_mat @ b_local
+        O = o_local
+
+        # Draw Geometry
+        circle = plt.Circle(O, vis_r, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+        ax.plot(O[0], O[1], 'ko', markersize=6) # Center O point
+        
+        # Draw tangents and radii
+        ax.plot([P[0], A[0]], [P[1], A[1]], color='black', lw=2) # Tangent PA
+        ax.plot([P[0], B[0]], [P[1], B[1]], color='black', lw=2) # Tangent PB
+        ax.plot([O[0], A[0]], [O[1], A[1]], color='black', lw=1.5) # Radius OA
+        ax.plot([O[0], B[0]], [O[1], B[1]], color='black', lw=1.5) # Radius OB
+        ax.plot([O[0], P[0]], [O[1], P[1]], color='black', lw=1, linestyle='--') # Line OP
+
+        # Labels
+        centroid = (O + A + B + P) / 4
+        put_vertex_label(ax, O, "O", P, 0.1)
+        put_vertex_label(ax, P, "P", O, 0.1)
+        put_vertex_label(ax, A, "A", O, 0.12)
+        put_vertex_label(ax, B, "B", O, 0.12)
+
+        # Angle APB marking
+        ang_p = get_angle(P, O) 
+        arc_p = patches.Arc(P, 0.4, 0.4, theta1=ang_p - (self.angle_apb/2), 
+                            theta2=ang_p + (self.angle_apb/2), color='black', lw=1)
+        ax.add_patch(arc_p)
+        
+        # FIX: Changed :.0f to :.1f to show decimals
+        t_pos = P + (O - P) / np.linalg.norm(O - P) * 0.5
+        ax.text(t_pos[0], t_pos[1], f"{self.angle_apb}°", 
+                fontsize=14, ha='center', fontweight='bold',
+                bbox=dict(facecolor='white', edgecolor='none', alpha=0.8))
+
+        plt.text(limit*0.8, limit*0.8, "NOT TO\nSCALE", fontsize=12, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat054:
     
     def __init__(self):
