@@ -3622,8 +3622,167 @@ class Mat083:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
-        plt.close()        
+        plt.close()
+    
+class Mat084:
+    def __init__(self):
+        # Triangles share side BD
+        self.bd = randrange_float(10.0, 15.0, 0.01)
         
+        # Right-angled triangle ABD (angle DBA = 90)
+        self.angle_adb = randrange_float(30.0, 45.0, 0.01)
+        # AB = BD * tan(ADB)
+        self.ab = self.bd * math.tan(math.radians(self.angle_adb))
+        self.area_abd = 0.5 * self.ab * self.bd
+        
+        # Non-right-angled triangle BCD
+        self.cd = randrange_float(8.0, 12.0, 0.01)
+        self.angle_cdb = randrange_float(50.0, 70.0, 0.01)
+        # Area = 0.5 * CD * DB * sin(CDB)
+        self.area_bcd = 0.5 * self.cd * self.bd * math.sin(math.radians(self.angle_cdb))
+        
+        # Total Area
+        self.answer = self.area_abd + self.area_bcd
+
+        self.description = (
+            "The diagram shows a quadrilateral $ABCD$. "
+            "Calculate the area of the quadrilateral $ABCD$ based on the information provided in the figure."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Non-right-angled triangles"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 42"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The area of quadrilateral }} ABCD \\text{{ is the sum of the areas of }} \\triangle ABD \\text{{ and }} \\triangle BCD. \\\\"
+            f"\\text{{1. Find the area of }} \\triangle ABD: \\\\"
+            f"\\text{{In right-angled }} \\triangle ABD, \\angle DBA = 90^\\circ, \\text{{ so:}} \\\\"
+            f"AB &= BD \\times \\tan(\\angle ADB) \\\\"
+            f"&= {round(self.bd, 10)} \\times \\tan({round(self.angle_adb, 10)}^\\circ) \\\\"
+            f"&= {round(self.ab, 10)}\\,\\text{{m}} \\\\"
+            f"\\text{{Area}}_{{ABD}} &= \\frac{{1}}{{2}} \\times AB \\times BD \\\\"
+            f"&= \\frac{{1}}{{2}} \\times {round(self.ab, 10)} \\times {round(self.bd, 10)} \\\\"
+            f"&= {round(self.area_abd, 10)}\\,\\text{{m}}^2 \\\\"
+            f"\\text{{2. Find the area of }} \\triangle BCD: \\\\"
+            f"\\text{{Using the sine area formula:}} \\\\"
+            f"\\text{{Area}}_{{BCD}} &= \\frac{{1}}{{2}} \\times CD \\times BD \\times \\sin(\\angle CDB) \\\\"
+            f"&= \\frac{{1}}{{2}} \\times {round(self.cd, 10)} \\times {round(self.bd, 10)} \\times \\sin({round(self.angle_cdb, 10)}^\\circ) \\\\"
+            f"&= {round(self.area_bcd, 10)}\\,\\text{{m}}^2 \\\\"
+            f"\\text{{3. Find the total area:}} \\\\"
+            f"\\text{{Total Area}} &= \\text{{Area}}_{{ABD}} + \\text{{Area}}_{{BCD}} \\\\"
+            f"&= {round(self.area_abd, 10)} + {round(self.area_bcd, 10)} \\\\"
+            f"&= {self.answer}\\,\\text{{m}}^2"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Local Coordinates
+        # D at origin (0,0)
+        # B on x-axis (bd, 0)
+        p_d = np.array([0, 0])
+        p_b = np.array([self.bd, 0])
+        
+        # A such that angle DBA = 90
+        p_a = np.array([self.bd, -self.ab])
+        
+        # C such that angle CDB is given
+        p_c = np.array([
+            self.cd * math.cos(math.radians(self.angle_cdb)),
+            self.cd * math.sin(math.radians(self.angle_cdb))
+        ])
+
+        # Random global rotation
+        rot_angle = rnd.uniform(0, 360)
+        rot_rad = math.radians(rot_angle)
+        rot_mat = np.array([
+            [math.cos(rot_rad), -math.sin(rot_rad)],
+            [math.sin(rot_rad), math.cos(rot_rad)]
+        ])
+
+        pts = {
+            'A': p_a @ rot_mat.T,
+            'B': p_b @ rot_mat.T,
+            'C': p_c @ rot_mat.T,
+            'D': p_d @ rot_mat.T
+        }
+
+        # Draw Quadrilateral
+        quad = plt.Polygon([pts['A'], pts['B'], pts['C'], pts['D']], fill=False, lw=2, edgecolor='black')
+        ax.add_patch(quad)
+        # Draw diagonal BD
+        ax.plot([pts['B'][0], pts['D'][0]], [pts['B'][1], pts['D'][1]], color='black', lw=1.5)
+
+        # Labels for vertices
+        for label, pt in pts.items():
+            centroid = (pts['A'] + pts['B'] + pts['C'] + pts['D']) / 4
+            vec = pt - centroid
+            vec = vec / np.linalg.norm(vec) * (self.bd * 0.1)
+            ax.text(pt[0] + vec[0], pt[1] + vec[1], label, fontsize=16, ha='center', va='center', fontweight='bold')
+
+        # Dimension labels
+        # CD
+        mid_cd = (pts['C'] + pts['D']) / 2
+        perp_cd = np.array([-(pts['C'][1]-pts['D'][1]), pts['C'][0]-pts['D'][0]])
+        perp_cd = perp_cd / np.linalg.norm(perp_cd) * (self.bd * 0.08)
+        ax.text(mid_cd[0] + perp_cd[0], mid_cd[1] + perp_cd[1], f"{round(self.cd, 2)} m", ha='center', va='center', fontsize=12)
+
+        # DB
+        mid_db = (pts['D'] + pts['B']) / 2
+        ax.text(mid_db[0], mid_db[1] + (self.bd * 0.05), f"{round(self.bd, 2)} m", ha='center', va='center', fontsize=12)
+
+        # Angle Markings
+        # Right angle at B (DBA)
+        # In local coords, B=(bd,0), D=(0,0), A=(bd,-ab). Segment BD is on x-axis, BA is vertical.
+        # Needs to be rotated.
+        square_size = self.bd * 0.05
+        # Directions: B to D, B to A
+        vec_bd = (pts['D'] - pts['B']) / np.linalg.norm(pts['D'] - pts['B'])
+        vec_ba = (pts['A'] - pts['B']) / np.linalg.norm(pts['A'] - pts['B'])
+        corner_pts = [
+            pts['B'] + vec_bd * square_size,
+            pts['B'] + vec_bd * square_size + vec_ba * square_size,
+            pts['B'] + vec_ba * square_size
+        ]
+        ax.plot([corner_pts[0][0], corner_pts[1][0], corner_pts[2][0]], 
+                [corner_pts[0][1], corner_pts[1][1], corner_pts[2][1]], color='black', lw=1.5)
+
+        # Angle CDB
+        ang_start = get_angle(pts['D'], p_b @ rot_mat.T) # B direction
+        ang_end = get_angle(pts['D'], p_c @ rot_mat.T)   # C direction
+        arc_cdb = patches.Arc(pts['D'], self.bd*0.3, self.bd*0.3, theta1=ang_start, theta2=ang_end, color='black', lw=1.5)
+        ax.add_patch(arc_cdb)
+        mid_c_ang = math.radians((ang_start + ang_end) / 2)
+        ax.text(pts['D'][0] + self.bd*0.22*math.cos(mid_c_ang), pts['D'][1] + self.bd*0.22*math.sin(mid_c_ang), 
+                f"{round(self.angle_cdb, 2)}°", ha='center', va='center', fontsize=11)
+
+        # Angle ADB
+        ang_start2 = get_angle(pts['D'], p_a @ rot_mat.T) # A direction
+        ang_end2 = get_angle(pts['D'], p_b @ rot_mat.T)   # B direction
+        # Adjust for crossing 0/360
+        if (ang_end2 - ang_start2) % 360 > 180: ang_start2, ang_end2 = ang_end2, ang_start2
+        arc_adb = patches.Arc(pts['D'], self.bd*0.4, self.bd*0.4, theta1=ang_start2, theta2=ang_end2, color='black', lw=1.5)
+        ax.add_patch(arc_adb)
+        mid_a_ang = math.radians((ang_start2 + ang_end2) / 2)
+        ax.text(pts['D'][0] + self.bd*0.3*math.cos(mid_a_ang), pts['D'][1] + self.bd*0.3*math.sin(mid_a_ang), 
+                f"{round(self.angle_adb, 2)}°", ha='center', va='center', fontsize=11)
+
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center', fontweight='bold')
+
+        # Auto-limits
+        all_x = [pt[0] for pt in pts.values()]
+        all_y = [pt[1] for pt in pts.values()]
+        ax.set_xlim(min(all_x) - self.bd*0.2, max(all_x) + self.bd*0.2)
+        ax.set_ylim(min(all_y) - self.bd*0.2, max(all_y) + self.bd*0.2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close() 
+
 class Mat089:
     
     def __init__(self):
