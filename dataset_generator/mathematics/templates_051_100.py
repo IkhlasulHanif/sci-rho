@@ -3359,6 +3359,123 @@ class Mat081:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=150)
         plt.close()
         
+class Mat082:
+    def __init__(self):
+        # Generate side lengths and area
+        self.side_a = randrange_float(10.0, 20.0, 0.01)
+        self.side_b = randrange_float(10.0, 20.0, 0.01)
+        
+        # Ensure sin(x) is valid (0 < sin(x) <= 1)
+        # Area = 0.5 * a * b * sin(x) -> sin(x) = (2 * Area) / (a * b)
+        # Max possible area for these sides is when sin(x) = 1
+        max_area = 0.5 * self.side_a * self.side_b
+        self.area = randrange_float(max_area * 0.4, max_area * 0.9, 0.01)
+        
+        # Calculate sin(x) as the answer
+        self.answer = (2 * self.area) / (self.side_a * self.side_b)
+
+        self.description = (
+            f"Based on the image, calculate the value of $\\sin x$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Non-right-angled triangles"
+        self.source = "Adapted from 2025-specimen-paper-4"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The formula for the area of a triangle is:}} &\\\\"
+            f"\\text{{Area}} &= \\frac{{1}}{{2}}ab \\sin C \\\\"
+            f"\\text{{Given:}} &\\\\"
+            f"\\text{{Area}} &= {round(self.area, 10)}\\,\\text{{cm}}^2 \\\\"
+            f"\\text{{Side }} a &= {round(self.side_a, 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{Side }} b &= {round(self.side_b, 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{Substitute the values into the formula:}} &\\\\"
+            f"{round(self.area, 10)} &= \\frac{{1}}{{2}} \\times {round(self.side_a, 10)} \\times {round(self.side_b, 10)} \\times \\sin x \\\\"
+            f"{round(self.area, 10)} &= {round(0.5 * self.side_a * self.side_b, 10)} \\times \\sin x \\\\"
+            f"\\sin x &= \\frac{{{round(self.area, 10)}}}{{{round(0.5 * self.side_a * self.side_b, 10)}}} \\\\"
+            f"\\sin x &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        print(self.reasoning)
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Calculate the angle x for drawing purposes
+        angle_x_rad = math.asin(self.answer)
+        
+        # Define vertices
+        # V1 is at origin (where angle x is)
+        # V2 is along the x-axis (length side_a)
+        # V3 is at (side_b * cos(x), side_b * sin(x))
+        p1 = np.array([0, 0])
+        p2 = np.array([self.side_a, 0])
+        p3 = np.array([self.side_b * math.cos(angle_x_rad), self.side_b * math.sin(angle_x_rad)])
+
+        # Random rotation and translation for variation
+        rot_angle = rnd.uniform(0, 2 * math.pi)
+        rot_matrix = np.array([
+            [math.cos(rot_angle), -math.sin(rot_angle)],
+            [math.sin(rot_angle), math.cos(rot_angle)]
+        ])
+        
+        pts = np.array([p1, p2, p3]) @ rot_matrix.T
+        
+        # Draw triangle
+        triangle = plt.Polygon(pts, fill=False, lw=2, edgecolor='black')
+        ax.add_patch(triangle)
+
+        # Re-extract rotated points
+        rp1, rp2, rp3 = pts[0], pts[1], pts[2]
+
+        # Labels for sides
+        # Side a (between p1 and p2)
+        mid_12 = (rp1 + rp2) / 2
+        offset_12 = 0.5 * np.array([-(rp2[1]-rp1[1]), rp2[0]-rp1[0]]) / np.linalg.norm(rp2-rp1)
+        ax.text(mid_12[0] + offset_12[0], mid_12[1] + offset_12[1], 
+                f"{round(self.side_a, 2)} cm", fontsize=12, ha='center', va='center')
+
+        # Side b (between p1 and p3)
+        mid_13 = (rp1 + rp3) / 2
+        offset_13 = 0.5 * np.array([rp3[1]-rp1[1], -(rp3[0]-rp1[0])]) / np.linalg.norm(rp3-rp1)
+        ax.text(mid_13[0] + offset_13[0], mid_13[1] + offset_13[1], 
+                f"{round(self.side_b, 2)} cm", fontsize=12, ha='center', va='center')
+
+        # Label for angle x at p1
+        ang_start = get_angle(rp1, rp2)
+        ang_end = get_angle(rp1, rp3)
+        
+        # Adjust arc angles to ensure it's drawn correctly
+        if (ang_end - ang_start) % 360 > 180:
+            ang_start, ang_end = ang_end, ang_start
+            
+        arc_radius = min(self.side_a, self.side_b) * 0.2
+        arc = patches.Arc(rp1, arc_radius*2, arc_radius*2, theta1=ang_start, theta2=ang_end, color='black', lw=1.5)
+        ax.add_patch(arc)
+        
+        mid_angle = math.radians((ang_start + ang_end) / 2)
+        if abs(ang_end - ang_start) > 180: mid_angle += math.pi
+            
+        tx = rp1[0] + arc_radius * 1.5 * math.cos(mid_angle)
+        ty = rp1[1] + arc_radius * 1.5 * math.sin(mid_angle)
+        ax.text(tx, ty, "$x^\\circ$", fontsize=14, ha='center', va='center')
+
+        # Add metadata text
+        ax.text(0.95, 0.95, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=10, ha='right', va='top')
+        ax.text(0.05, 0.05, f"Area = {round(self.area, 2)} $cm^2$", transform=ax.transAxes, fontsize=12)
+
+        # Set limits
+        all_x, all_y = pts[:, 0], pts[:, 1]
+        ax.set_xlim(min(all_x) - 2, max(all_x) + 2)
+        ax.set_ylim(min(all_y) - 2, max(all_y) + 2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
 class Mat089:
     
     def __init__(self):
