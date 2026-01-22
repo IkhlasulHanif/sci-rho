@@ -3397,7 +3397,6 @@ class Mat082:
             f"\\sin x &= {self.answer}"
             "\\end{aligned}\\]"
         )
-        print(self.reasoning)
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -3475,6 +3474,155 @@ class Mat082:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat083:
+    def __init__(self):
+        # Using Cosine Rule: a^2 = b^2 + c^2 - 2bc cos(A)
+        # Side b (AC), side c (BC), Angle C (ACB)
+        self.side_ac = randrange_float(50.0, 80.0, 0.01)
+        self.side_bc = randrange_float(85.0, 110.0, 0.01)
+        self.angle_c = randrange_float(30.0, 50.0, 0.01)
+        
+        # Calculate AB
+        self.answer = math.sqrt(
+            self.side_ac**2 + self.side_bc**2 - 
+            2 * self.side_ac * self.side_bc * math.cos(math.radians(self.angle_c))
+        )
+
+        self.description = (
+            "The diagram shows the positions of three points $A$, $B$ and $C$. "
+            "Based on the information in the figure, calculate the distance $AB$."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Non-right-angled triangles"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 42"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the given values in }} \\triangle ABC: &\\\\"
+            f"b = AC &= {round(self.side_ac, 10)}\\,\\text{{m}}\\\\"
+            f"a = BC &= {round(self.side_bc, 10)}\\,\\text{{m}}\\\\"
+            f"C = \\angle ACB &= {round(self.angle_c, 10)}^\\circ\\\\"
+            f"\\text{{To find the distance }} AB \\text{{ (side }} c \\text{{), use the Cosine Rule:}} &\\\\"
+            f"c^2 &= a^2 + b^2 - 2ab \\cos(C)\\\\"
+            f"c^2 &= ({round(self.side_bc, 10)})^2 + ({round(self.side_ac, 10)})^2 - 2({round(self.side_bc, 10)})({round(self.side_ac, 10)}) \\cos({round(self.angle_c, 10)}^\\circ)\\\\"
+            f"c^2 &= {round(self.side_bc**2, 10)} + {round(self.side_ac**2, 10)} - {round(2 * self.side_bc * self.side_ac, 10)} \\cos({round(self.angle_c, 10)}^\\circ)\\\\"
+            f"c &= \\sqrt{{{round(self.side_bc**2 + self.side_ac**2, 10)} - {round(2 * self.side_bc * self.side_ac * math.cos(math.radians(self.angle_c)), 10)}}}\\\\"
+            f"c &= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Triangle construction in local space
+        # C is at origin
+        # B is on x-axis
+        # A is at (ac*cos(c), ac*sin(c))
+        p_c = np.array([0, 0])
+        p_b = np.array([self.side_bc, 0])
+        p_a = np.array([
+            self.side_ac * math.cos(math.radians(self.angle_c)),
+            self.side_ac * math.sin(math.radians(self.angle_c))
+        ])
+
+        # Random global rotation
+        rot_angle = rnd.uniform(0, 360)
+        rot_rad = math.radians(rot_angle)
+        rot_mat = np.array([
+            [math.cos(rot_rad), -math.sin(rot_rad)],
+            [math.sin(rot_rad), math.cos(rot_rad)]
+        ])
+
+        pts = {
+            'A': p_a @ rot_mat.T,
+            'B': p_b @ rot_mat.T,
+            'C': p_c @ rot_mat.T
+        }
+
+        # Draw triangle
+        triangle = plt.Polygon([pts['A'], pts['B'], pts['C']], fill=False, lw=1, edgecolor='black')
+        ax.add_patch(triangle)
+
+        # Draw North arrow at A
+        arrow_dirs = ["North", "East", "South", "West"]
+        arrow_label = rnd.choice(arrow_dirs)
+        # Randomize north arrow direction (0: Up, 90: Right, etc)
+        arrow_rot = {"North": 90, "East": 0, "South": 270, "West": 180}[arrow_label]
+        
+        arrow_len = self.side_ac * 0.4
+        arrow_end = pts['A'] + np.array([
+            arrow_len * math.cos(math.radians(arrow_rot)),
+            arrow_len * math.sin(math.radians(arrow_rot))
+        ])
+        
+        ax.annotate('', xy=arrow_end, xytext=pts['A'],
+                    arrowprops=dict(arrowstyle='->', lw=2, color='black'))
+        ax.text(arrow_end[0], arrow_end[1] + (arrow_len*0.1), arrow_label, 
+                ha='center', va='bottom', fontsize=14)
+
+        # Labels for points
+        label_dist = self.side_ac * 0.1
+        for label, pt in pts.items():
+            # simple outward vector from centroid
+            centroid = (pts['A'] + pts['B'] + pts['C']) / 3
+            vec = pt - centroid
+            vec = vec / np.linalg.norm(vec) * label_dist
+            ax.text(pt[0] + vec[0], pt[1] + vec[1], label, 
+                    fontsize=16, ha='center', va='center', fontweight='bold', style='italic')
+
+        # Side labels
+        # AC
+        mid_ac = (pts['A'] + pts['C']) / 2
+        perp_ac = np.array([-(pts['A'][1]-pts['C'][1]), pts['A'][0]-pts['C'][0]])
+        perp_ac = perp_ac / np.linalg.norm(perp_ac) * label_dist
+        ax.text(mid_ac[0] + perp_ac[0], mid_ac[1] + perp_ac[1], f"{round(self.side_ac, 2)} m", 
+                ha='center', va='center', fontsize=12)
+
+        # BC
+        mid_bc = (pts['B'] + pts['C']) / 2
+        perp_bc = np.array([-(pts['B'][1]-pts['C'][1]), pts['B'][0]-pts['C'][0]])
+        perp_bc = perp_bc / np.linalg.norm(perp_bc) * label_dist
+        # Flip if it goes inside
+        centroid = (pts['A'] + pts['B'] + pts['C']) / 3
+        if np.linalg.norm((mid_bc + perp_bc) - centroid) < np.linalg.norm(mid_bc - centroid):
+            perp_bc = -perp_bc
+        ax.text(mid_bc[0] + perp_bc[0], mid_bc[1] + perp_bc[1], f"{round(self.side_bc, 2)} m", 
+                ha='center', va='center', fontsize=12)
+
+        # Angle marking at C
+        ang_start = get_angle(pts['C'], pts['B'])
+        ang_end = get_angle(pts['C'], pts['A'])
+        
+        # Ensure counter-clockwise arc
+        if (ang_end - ang_start) % 360 > 180:
+            ang_start, ang_end = ang_end, ang_start
+            
+        arc_r = self.side_ac * 0.25
+        arc = patches.Arc(pts['C'], arc_r, arc_r, theta1=ang_start, theta2=ang_end, color='black', lw=1)
+        ax.add_patch(arc)
+        
+        mid_ang = math.radians((ang_start + ang_end) / 2)
+        tx = pts['C'][0] + arc_r * 0.8 * math.cos(mid_ang)
+        ty = pts['C'][1] + arc_r * 0.8 * math.sin(mid_ang)
+        ax.text(tx, ty, f"{round(self.angle_c, 2)}°", ha='center', va='center', fontsize=12)
+
+        plt.text(0.9, 0.9, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=12, ha='center', bbox=dict(facecolor='white', alpha=0.5, edgecolor='none'))
+
+        # Set limits
+        all_pts = np.array(list(pts.values()))
+        x_min, x_max = all_pts[:, 0].min(), all_pts[:, 0].max()
+        y_min, y_max = all_pts[:, 1].min(), all_pts[:, 1].max()
+        pad = self.side_bc * 0.3
+        ax.set_xlim(x_min - pad, x_max + pad)
+        ax.set_ylim(y_min - pad, y_max + pad)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()        
         
 class Mat089:
     
