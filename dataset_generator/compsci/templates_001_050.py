@@ -1,7 +1,8 @@
 import random as rnd
 import os
+import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+import matplotlib.patches as patches
 from PIL import Image
 from compsci.helper import *
 
@@ -1294,6 +1295,125 @@ class Com021:
         ax.imshow(img)
         plt.axis('off')
 
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com022:
+
+    def __init__(self):
+        self.BCD = [bin(rnd.randint(0, 9))[2:].zfill(4) for _ in range(3)]
+        self.digits = [int(b, 2) for b in self.BCD] 
+        self.answer = int("".join(map(str, self.digits)))  
+
+        self.description = f"This image is displaying a BCD (Binary Coded Decimal). Convert the BCD to its decimal representation."
+        self.topic = "Information representation"
+        self.subtopic = "Data representation"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{BCD Input Sequence:}} & \\text{{ [{', '.join([b.zfill(4) for b in self.BCD])}]}} \\\\"
+            f"\\text{{1. Convert each 4-bit Binary group to a Decimal digit:}} & \\\\"
+            + "\\\\".join([
+                f"\\text{{Group {i+1} (}}{self.BCD[i].zfill(4)}\\text{{)}} &= " + 
+                " + ".join([f"({self.BCD[i].zfill(4)[j]} \\times 2^{3-j})" for j in range(4)]) + 
+                f" = {self.digits[i]}"
+                for i in range(len(self.BCD))
+            ]) + "\\\\"
+            f"\\text{{2. Concatenate the decimal digits:}} & \\\\"
+            f"\\text{{Decimal}} &= " + "".join(map(str, self.digits)) + " \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots()
+        plt.axis('off')
+        ax.set_xlim(0, 1000)
+        ax.set_ylim(0, 1000)
+
+        ax.text(180, 600, f"{self.BCD[0]} {self.BCD[1]} {self.BCD[2]}", fontsize=25, color='green', fontweight='bold')
+        arrow_x_coords = [250, 470, 690]
+        for x in arrow_x_coords:
+            ax.text(x, 490, "↓", fontsize=28, color='green', fontweight='bold')
+        
+        box_width = 80
+        box_height = 110
+        top_y = 345
+
+        for x in arrow_x_coords:
+            rect = patches.Rectangle(
+                (x-10, top_y),
+                box_width, 
+                box_height, 
+                linewidth=2, 
+                edgecolor='green', 
+                facecolor='none'
+            )
+            ax.add_patch(rect)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com023:
+
+    def __init__(self):
+        self.length = 8
+        self.decimal_1 = rnd.randint(150, 255)
+        self.decimal_2 = rnd.randint(1, 149)
+        self.binary_1 = bin(self.decimal_1)[2:]
+        self.binary_2 = bin(self.decimal_2)[2:]
+        self.total_decimal = self.decimal_1 - self.decimal_2
+        self.total_binary = format(self.total_decimal, '08b')
+        self.answer = self.total_decimal
+
+        self.description = f"Find the subtraction of these two 8-bit numbers (shown in the image) in the form of decimal value."
+        self.topic = "Information representation"
+        self.subtopic = "Data representation"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Binary 1 (Minuend)}} &= {self.binary_1.zfill(8)}_2 ({self.decimal_1}_{{10}})\\\\"
+            f"\\text{{Binary 2 (Subtrahend)}} &= {self.binary_2.zfill(8)}_2 ({self.decimal_2}_{{10}})\\\\"
+            f"\\text{{Binary Subtraction Rules:}} &\\\\"
+            f"0 - 0 &= 0\\\\"
+            f"1 - 0 &= 1\\\\"
+            f"1 - 1 &= 0\\\\"
+            f"0 - 1 &= 1 \\text{{ (with a borrow of 1 from the next column)}}\\\\"
+            f"\\text{{Step-by-step subtraction (from right to left):}} &\\\\"
+            f"\\begin{{array}}{{rcc}} & \\text{{Borrow In}} & \\text{{Calculation (Bit1 - Bit2 - Borrow)}} \\\\ \\hline"
+            + "\\\\".join([
+                f"\\text{{Column }} {i+1} & "
+                f"{(1 if (self.decimal_1 % (2**(i+1))) < (self.decimal_2 % (2**(i+1))) else 0)} & "
+                f"({self.binary_1.zfill(8)[7-i]} - {self.binary_2.zfill(8)[7-i]} - "
+                f"{(1 if (self.decimal_1 % (2**i)) < (self.decimal_2 % (2**i)) else 0)}) "
+                f"\\rightarrow \\text{{Bit }} {self.total_binary[7-i]}"
+                for i in range(8)
+            ]) +
+            f"\\end{{array}} &\\\\"
+            f"\\text{{Final Binary Result}} &= {self.total_binary}_2\\\\"
+            f"\\text{{Convert binary to decimal:}} &\\\\"
+            f"\\text{{Value}} &= " + " + ".join([f"({self.total_binary[i]} \\times 2^{7-i})" for i in range(8)]) + f"\\\\"
+            f"&= {round(float(self.total_decimal), 10)}\\\\"
+            f"\\text{{The final answer is }} {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots()
+        ax.set_xlim(0, 1000)
+        ax.set_ylim(0, 1000)
+        plt.axis('off')
+
+        ax.text(700, 530, self.binary_1.zfill(8), fontsize=26, ha='right')
+        ax.text(700, 450, self.binary_2.zfill(8), fontsize=26, ha='right')
+        ax.text(280, 450, "-", fontsize=26, ha='right')
+        
+        ax.plot([220, 740], [420, 420], color='black', lw=3)
+       
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
