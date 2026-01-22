@@ -448,11 +448,11 @@ class Com008:
         for day in range(self.days):
             self.total_steps += self.steps[day]
         self.average = self.total_steps / self.days
-        self.count_above_avg = 0
+        count_above_avg = 0
         for day in range(self.days):
             if self.steps[day] > self.average:
-                self.count_above_avg += 1
-        self.answer = self.count_above_avg
+                count_above_avg += 1
+        self.answer = count_above_avg
 
         self.description = f"A person is measuring the number of their walking steps for each day of the week: {self.steps}. According to this pseudocode shown below, what is the final output displayed?"
         self.topic = "Algorithm design and problem-solving"
@@ -497,8 +497,8 @@ class Com009:
         self.elements = 6
         self.array = [rnd.randint(20, 150) for _ in range(self.elements)]
         self.array_copy = self.array.copy()
-        self.swap_count = 0
         self.steps = []
+        swap_count = 0
         for i in range(self.elements-1):
             for j in range(0, self.elements - i - 1):
                 a = self.array[j]
@@ -507,7 +507,7 @@ class Com009:
                 did_swap = False
                 if a > b:
                     self.array[j], self.array[j + 1] = self.array[j + 1], self.array[j]
-                    self.swap_count += 1
+                    swap_count += 1
                     did_swap = True
 
                 self.steps.append({
@@ -518,7 +518,7 @@ class Com009:
                     "swap": did_swap,
                     "array": self.array.copy()
                 })
-        self.answer = self.swap_count
+        self.answer = swap_count
 
         self.description = f"This image is showing a pseudocode for a sorting algorithm. Given the unsorted array of numbers, how many swaps will it take to sort the data?"
         self.topic = "Algorithm design and problem-solving"
@@ -647,19 +647,19 @@ class Com010:
     def __init__(self):
         self.N = rnd.randint(5, 8)
         self.N_copy = self.N
-        self.total = 0
         self.steps = []
+        total = 0
         
         while (self.N > 0):
-            total_before = self.total
+            total_before = total
             if self.N % 2 == 0:
                 added = self.N
             else:
                 added = 2 * self.N
-            self.total += added
-            self.steps.append((self.N, total_before, added, self.total))
+            total += added
+            self.steps.append((self.N, total_before, added, total))
             self.N = self.N - 1
-        self.answer = self.total
+        self.answer = total
 
         self.description = f"A flowchart for a program is given in the image below. What is the final value of total, if input N is {self.N_copy}?"
         self.topic = "Algorithm design and problem-solving"
@@ -812,4 +812,488 @@ class Com011:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", facecolor=fig.get_facecolor())
+        plt.close()
+
+class Com012:
+    
+    def __init__(self):
+        self.n = rnd.randint(6, 12)
+        total = 0
+        for i in range(1, self.n + 1):
+            if i % 2 == 0:
+                if i % 3 == 0:
+                    total = total + 3
+                else:
+                    total = total + 1
+            else:
+                if i > 5:
+                    total = total + 2
+        self.answer = total
+
+        self.description = f"Here is an image showing a simple Python program. If we give the input = {self.n}, what will be the printed total value?"
+        self.topic = "Programming"
+        self.subtopic = "Programming concepts"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input }} n &= {self.n}\\\\"
+            f"\\text{{Initial total}} &= 0\\\\"
+            f"\\text{{Iterating through }} i \\text{{ from 1 to }} {self.n}:\\\\"
+            + "\\\\".join([
+                f"i = {i}: & \\quad " + (
+                    f"i \\text{{ is even, }}" + (
+                        f"i \\text{{ is divisible by 3}} \\rightarrow \\text{{total}} = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])} + 3 = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i+1)])}"
+                        if i % 3 == 0 else
+                        f"i \\text{{ is not divisible by 3}} \\rightarrow \\text{{total}} = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])} + 1 = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i+1)])}"
+                    ) if i % 2 == 0 else
+                    f"i \\text{{ is odd, }}" + (
+                        f"i > 5 \\rightarrow \\text{{total}} = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])} + 2 = {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i+1)])}"
+                        if i > 5 else
+                        f"i \\leq 5 \\rightarrow \\text{{total stays }} {sum([ (3 if j % 6 == 0 else 1) if j % 2 == 0 else (2 if j > 5 else 0) for j in range(1, i)])}"
+                    )
+                )
+                for i in range(1, self.n + 1)
+            ]) +
+            f"\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com012temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com013:
+
+    def __init__(self):
+        self.length = rnd.randint(5, 10)
+        self.input_text = ''.join(chr(rnd.randint(65, 75)) for _ in range(self.length))
+        self.input_ch = chr(rnd.randint(66, 75))
+        self.text = self.input_text.lower()
+        self.ch = self.input_ch.lower()
+        self.steps = []
+        count = 0
+        for i in range(self.length):
+            char = self.text[i]
+            total_before = count
+            if char == self.ch or char == "a":
+                change = 6
+                is_match = True
+            else:
+                change = -2
+                is_match = False
+            count += change
+            self.steps.append((i, char, is_match, total_before, change, count))
+        self.answer = count
+
+        self.description = f"This image is showing a simple string handling code. If input s is \"{self.text}\" and input c is \"{self.ch}\", what will be printed as the output of this code?"
+        self.topic = "Programming"
+        self.subtopic = "Programming concepts"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original Input: }} s &= \"{self.input_text}\",\\, c = '{self.input_ch}'\\\\"
+            f"\\text{{Processed (Lowercase): }} s &= \"{self.text}\",\\, c = '{self.ch}'\\\\"
+            f"\\text{{Initial count}} &= 0\\\\"
+            "\\text{{Condition: }} (\\text{{char}} == '{self.ch}') \\lor (\\text{{char}} == 'a')\\\\"
+            "\\text{{Iterating through the string:}}\\\\"
+            + "\\\\".join(
+                [
+                    f"\\text{{Step }} {idx+1}: \\text{{ char }} '{char}' \\\\"
+                    f"('{char}' == '{self.ch}') \\lor ('{char}' == 'a') &\\rightarrow "
+                    + ("\\text{{True (+6)}}" if match else "\\text{{False (-2)}}") + "\\\\"
+                    f"\\text{{count}} &= {t_before} + ({change}) = {t_after}"
+                    for idx, char, match, t_before, change, t_after in self.steps
+                ]
+            )
+            + f"\\\\\\text{{Final Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com013temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com014:
+
+    def __init__(self):
+        self.length = 9
+        self.input = [rnd.randint(2, 11) for _ in range(self.length)]
+        self.grid = []
+        i = 0
+        for r in range(3):
+            row = []
+            for c in range(3):
+                row.append(self.input[i])
+                i += 1
+            self.grid.append(row)
+
+        result = 0
+        for r in range(3):
+            for c in range(3):
+                if r == c:
+                    result += self.grid[r][c] * 2
+
+        self.answer = result
+
+        self.description = f"The given image contains a Python code involving two-dimensional array. What will the final result be, if the input is {self.input}?"
+        self.topic = "Programming"
+        self.subtopic = "Arrays"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The program reads 9 integers to fill a }} 3 \\times 3 \\text{{ grid.}}\\\\"
+            f"\\text{{Input list (read in order): }} [a_1, a_2, \\dots, a_9] = {self.input}\\\\"
+            f"\\text{{Grid mapping:}}\\\\"
+            f"\\begin{{bmatrix}} g_{{0,0}} & g_{{0,1}} & g_{{0,2}} \\\\ g_{{1,0}} & g_{{1,1}} & g_{{1,2}} \\\\ g_{{2,0}} & g_{{2,1}} & g_{{2,2}} \\end{{bmatrix}} &= "
+            f"\\begin{{bmatrix}} {self.input[0]} & {self.input[1]} & {self.input[2]} \\\\ {self.input[3]} & {self.input[4]} & {self.input[5]} \\\\ {self.input[6]} & {self.input[7]} & {self.input[8]} \\end{{bmatrix}}\\\\"
+            f"\\text{{The code adds only diagonal entries (where }} r=c \\text{{), each multiplied by 2.}}\\\\"
+            f"\\text{{So the accumulated result is:}}\\\\"
+            f"\\text{{result}} &= \\sum_{{r=0}}^2 \\sum_{{c=0}}^2 \\mathbf{{1}}_{{r=c}}\\,(2\\,g_{{r,c}})\\\\"
+            f"&= 2\\,(g_{{0,0}} + g_{{1,1}} + g_{{2,2}})\\\\"
+            f"&= 2\\,(a_1 + a_5 + a_9)\\\\"
+            f"&= 2\\,({self.input[0]} + {self.input[4]} + {self.input[8]})\\\\"
+            f"&= 2\\,({round(self.input[0] + self.input[4] + self.input[8], 10)})\\\\"
+            f"&= {round(2 * (self.input[0] + self.input[4] + self.input[8]), 10)}\\\\"
+            f"\\text{{Final result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com014temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com015:
+
+    def __init__(self):
+        self.length = 12
+        self.items_threshold = rnd.randint(3, 5)
+        self.total_threshold = rnd.randrange(30, 60, 5)
+        self.items = [1, 4, 3, 2, 5, 2, 6, 1, 3, 2, 4, 2]
+        self.totals = [25, 80, 45, 60, 110, 40, 150, 15, 75, 35, 95, 55]
+        count = 0
+        for i in range(self.length):
+            if (self.items[i] < self.items_threshold) and (self.totals[i] >= self.total_threshold):
+                count += 1
+        self.answer = count
+
+        self.description = f"Sales data from an online shop is stored in a table called Orders, as shown in the image. The owner runs the query: SELECT COUNT(OrderID) FROM Orders WHERE Items < {self.items_threshold} AND Total >= {self.total_threshold};. What should be the output?"
+        self.topic = "Databases"
+        self.subtopic = "Understand structured query language scripts (custom subtopic)"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Query conditions: Items}} &< {self.items_threshold} \\text{{ AND Total}} \\ge {self.total_threshold}\\\\"
+            f"\\text{{Thresholds: Items threshold}} &= {self.items_threshold}, \\text{{ Total threshold}} = {self.total_threshold}\\\\"
+            f"\\text{{Evaluating each row:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Row {i+1}: (Items={self.items[i]}, Total={self.totals[i]})}} \\rightarrow "
+                f"({self.items[i]} < {self.items_threshold}) \\text{{ AND }} ({self.totals[i]} \\ge {self.total_threshold}) \\rightarrow "
+                f"({'True' if self.items[i] < self.items_threshold else 'False'}) \\text{{ AND }} ({'True' if self.totals[i] >= self.total_threshold else 'False'}) \\rightarrow "
+                f"\\text{{{'Match' if (self.items[i] < self.items_threshold and self.totals[i] >= self.total_threshold) else 'No Match'}}}"
+                for i in range(self.length)
+            ]) + "\\\\"
+            f"\\text{{Total matching records (COUNT)}} &= {self.answer}\\\\"
+            f"\\text{{Final result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com015temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com016:
+
+    def __init__(self):
+        self.length = 12
+        self.query_type = rnd.choice(['L0456', 'L0457', 'L0458'])
+        self.types = ['L0456', 'L0457', 'L0458', 'L0456', 'L0457', 'L0458', 'L0456', 'L0457', 'L0458', 'L0456', 'L0458', 'L0456']
+        self.quantities = [rnd.randint(2, 9) for _ in range(self.length)]
+        sum = 0
+        for i in range(self.length):
+            if self.types[i] == self.query_type:
+                sum += self.quantities[i]
+        self.answer = sum
+
+        self.description = f"The following table in the image shows laptop sales made in January 2025. What value is output by the SQL statement below it, if x is {self.query_type}?"
+        self.topic = "Databases"
+        self.subtopic = "Understand structured query language scripts (custom subtopic)"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Query Condition: LaptopType}} &= \\text{{{self.query_type}}}\\\\"
+            f"\\text{{SQL Operation: }} & \\text{{SUM(Quantity)}}\\\\"
+            f"\\text{{Evaluating records in table:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Row {i+1}: }} ({self.types[i]}, {self.quantities[i]}) \\rightarrow " + 
+                (f"\\text{{Match! Add }} {self.quantities[i]}" if self.types[i] == self.query_type else "\\text{{No Match}}")
+                for i in range(self.length)
+            ]) + "\\\\"
+            f"\\text{{Summation calculation:}} &\\\\"
+            f"\\text{{Total}} &= " + " + ".join([str(self.quantities[i]) for i in range(self.length) if self.types[i] == self.query_type]) + f"\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com016temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        y_pos = 100
+        line_height = 35
+                
+        for qty in self.quantities:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(512, y_pos, str(qty), 
+                    fontsize=10, 
+                    color=color,
+                    family="sans-serif",
+                    weight=weight)
+            
+            y_pos += line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com017:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.answer = int(not(not self.input_1 and not self.input_2))
+        
+        self.description = f"Given this image of a logic circuit, determine the output of OUT1 if IN1 is {self.input_1} and IN2 is {self.input_2}."
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input 1 (IN1)}} &= {self.input_1}\\\\"
+            f"\\text{{Input 2 (IN2)}} &= {self.input_2}\\\\"
+            f"\\text{{1. Process through first layer (NOT gates):}} &\\\\"
+            f"A &= \\neg \\text{{IN1}} = {int(not self.input_1)}\\\\"
+            f"B &= \\neg \\text{{IN2}} = {int(not self.input_2)}\\\\"
+            f"\\text{{2. Process through second layer (AND gate):}} &\\\\"
+            f"C &= A \\wedge B = {int(not self.input_1)} \\wedge {int(not self.input_2)} = {int(not self.input_1 and not self.input_2)}\\\\"
+            f"\\text{{3. Process through final layer (NOT gate):}} &\\\\"
+            f"\\text{{OUT1}} &= \\neg C = \\neg({int(not self.input_1 and not self.input_2)})\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com017temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com018:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.answer = int(not((not(self.input_1 or self.input_1)) or (not(self.input_2 or self.input_2))))
+        
+        self.description = f"Given this image of a logic circuit, determine the output of Z if Input A is {self.input_1} and B is {self.input_2}."
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input A}} &= {self.input_1}\\\\"
+            f"\\text{{Input B}} &= {self.input_2}\\\\"
+            f"\\text{{1. Analyze the first stage (NOR gates acting as NOT gates):}} &\\\\"
+            f"\\text{{NOT A}} &= \\neg(A \\lor A) = \\neg({self.input_1} \\lor {self.input_1}) = {int(not self.input_1)}\\\\"
+            f"\\text{{NOT B}} &= \\neg(B \\lor B) = \\neg({self.input_2} \\lor {self.input_2}) = {int(not self.input_2)}\\\\"
+            f"\\text{{2. Analyze the second stage (NOR gate):}} &\\\\"
+            f"\\text{{Output Z}} &= \\neg(\\text{{NOT A}} \\lor \\text{{NOT B}})\\\\"
+            f"&= \\neg({int(not self.input_1)} \\lor {int(not self.input_2)})\\\\"
+            f"&= \\neg({int(not self.input_1 or not self.input_2)})\\\\"
+            f"&= {int(self.answer)}\\\\"
+            f"\\text{{Note: By De Morgan's Law, }} \\neg(\\neg A \\lor \\neg B) \\iff A \\land B &\\\\"
+            f"\\text{{Final result Z}} &= {int(self.answer)}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com018temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com019:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.answer = int(not((not(self.input_1 or self.input_2)) or (not(self.input_1 or self.input_2))))
+        
+        self.description = f"Given this image of a logic circuit, what is the output of Z if Input X is {self.input_1} and Y is {self.input_2}?"
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input X}} &= {self.input_1}\\\\"
+            f"\\text{{Input Y}} &= {self.input_2}\\\\"
+            f"\\text{{1. Analyze the first stage (NOR gate):}} &\\\\"
+            f"\\text{{Intermediate Output (A)}} &= \\neg(X \\lor Y)\\\\"
+            f"&= \\neg({self.input_1} \\lor {self.input_2})\\\\"
+            f"&= {int(not(self.input_1 or self.input_2))}\\\\"
+            f"\\text{{2. Analyze the second stage (NOR gate acting as a NOT gate):}} &\\\\"
+            f"\\text{{Output Z}} &= \\neg(A \\lor A)\\\\"
+            f"&= \\neg({int(not(self.input_1 or self.input_2))} \\lor {int(not(self.input_1 or self.input_2))})\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Summary: The circuit simplifies to (X OR Y) using two NOR gates.}} &\\\\"
+            f"\\text{{Final Result Z}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com019temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com020:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.answer = int(((self.input_1 or self.input_2) and self.input_3) or (self.input_1 and self.input_2))
+        
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, and C is {self.input_3}?"
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
+            f"\\text{{1. Analyze the first OR gate (A OR B):}} & \\\\"
+            f"G_1 &= A \\lor B \\\\"
+            f"&= {self.input_1} \\lor {self.input_2} \\\\"
+            f"&= {int(self.input_1 or self.input_2)} \\\\"
+            f"\\text{{2. Analyze the first AND gate (G1 AND C):}} & \\\\"
+            f"G_2 &= G_1 \\land C \\\\"
+            f"&= {int(self.input_1 or self.input_2)} \\land {self.input_3} \\\\"
+            f"&= {int((self.input_1 or self.input_2) and self.input_3)} \\\\"
+            f"\\text{{3. Analyze the second AND gate (A AND B):}} & \\\\"
+            f"G_3 &= A \\land B \\\\"
+            f"&= {self.input_1} \\land {self.input_2} \\\\"
+            f"&= {int(self.input_1 and self.input_2)} \\\\"
+            f"\\text{{4. Analyze the final OR gate (G2 OR G3):}} & \\\\"
+            f"F &= G_2 \\lor G_3 \\\\"
+            f"&= {int((self.input_1 or self.input_2) and self.input_3)} \\lor {int(self.input_1 and self.input_2)} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Output F}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com020temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com021:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.answer = int((not((not self.input_1) and self.input_2)) or ((not self.input_2) and self.input_3))
+        
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, and C is {self.input_3}?"
+        self.topic = "Boolean logic"
+        self.subtopic = "Logic circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
+            f"\\text{{1. Analyze the first branch:}} & \\\\"
+            f"\\text{{Let }} G_1 &= \\neg A \\land B \\\\"
+            f"&= \\neg({self.input_1}) \\land {self.input_2} \\\\"
+            f"&= {int(not self.input_1)} \\land {self.input_2} \\\\"
+            f"&= {int((not self.input_1) and self.input_2)} \\\\"
+            f"G_2 &= \\neg G_1 \\\\"
+            f"&= \\neg({int((not self.input_1) and self.input_2)}) \\\\"
+            f"&= {int(not((not self.input_1) and self.input_2))} \\\\"
+            f"\\text{{2. Analyze the second branch (Lower logic):}} & \\\\"
+            f"G_3 &= \\neg B \\land C \\\\"
+            f"&= \\neg({self.input_2}) \\land {self.input_3} \\\\"
+            f"&= {int(not self.input_2)} \\land {self.input_3} \\\\"
+            f"&= {int((not self.input_2) and self.input_3)} \\\\"
+            f"\\text{{3. Final Output (OR operation):}} & \\\\"
+            f"F &= G_2 \\lor G_3 \\\\"
+            f"&= {int(not((not self.input_1) and self.input_2))} \\lor {int((not self.input_2) and self.input_3)} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result }} F &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com021temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
