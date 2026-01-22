@@ -3783,6 +3783,144 @@ class Mat084:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close() 
 
+class Mat085:
+    def __init__(self):
+        # We focus on the obtuse angle BDC in triangle BCD (Ambiguous Case)
+        # To ensure an ambiguous case where an obtuse angle exists:
+        # Side opposite given angle (BD) < Side adjacent (BC)
+        # And BD > BC * sin(angle BCD)
+        
+        self.angle_bcd = randrange_float(40.0, 50.0, 0.01)
+        self.side_bc = randrange_float(14.0, 16.5, 0.01)
+        
+        # Calculate altitude to ensure triangle exists
+        altitude = self.side_bc * math.sin(math.radians(self.angle_bcd))
+        # BD must be between altitude and BC for ambiguity
+        self.side_bd = randrange_float(altitude + 0.5, self.side_bc - 1.0, 0.01)
+        
+        # Sine Rule: sin(BDC) / BC = sin(BCD) / BD
+        sin_bdc = (self.side_bc * math.sin(math.radians(self.angle_bcd))) / self.side_bd
+        acute_bdc = math.degrees(math.asin(sin_bdc))
+        
+        # The question specifically asks for the obtuse version
+        self.answer = 180.0 - acute_bdc
+
+        self.description = "Based on the figure, calculate the obtuse angle $BDC$."
+        self.topic = "Trigonometry"
+        self.subtopic = "Non-right-angled triangles"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 41"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{In }} \\triangle BCD, \\text{{ we use the Sine Rule:}} &\\\\"
+            f"\\frac{{\\sin(\\angle BDC)}}{{BC}} &= \\frac{{\\sin(\\angle BCD)}}{{BD}} \\\\"
+            f"\\sin(\\angle BDC) &= \\frac{{BC \\cdot \\sin(\\angle BCD)}}{{BD}} \\\\"
+            f"\\sin(\\angle BDC) &= \\frac{{{round(self.side_bc, 10)} \\cdot \\sin({round(self.angle_bcd, 10)}^\\circ)}}{{{round(self.side_bd, 10)}}} \\\\"
+            f"\\sin(\\angle BDC) &= {round((self.side_bc * math.sin(math.radians(self.angle_bcd))) / self.side_bd, 10)} \\\\"
+            f"\\text{{The acute angle is:}} &\\\\"
+            f"\\angle BDC_{{acute}} &= \\arcsin({round((self.side_bc * math.sin(math.radians(self.angle_bcd))) / self.side_bd, 10)}) \\\\"
+            f"&= {round(180.0 - self.answer, 10)}^\\circ \\\\"
+            f"\\text{{Since }} \\angle BDC \\text{{ is obtuse, we find the supplementary angle:}} &\\\\"
+            f"\\angle BDC &= 180^\\circ - \\angle BDC_{{acute}} \\\\"
+            f"&= 180^\\circ - {round(180.0 - self.answer, 10)}^\\circ \\\\"
+            f"&= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Triangle BCD Geometry construction
+        # C at (0,0), D on positive x-axis
+        # B at (BC*cos(C), BC*sin(C))
+        c_rad = math.radians(self.angle_bcd)
+        p_c = np.array([0, 0])
+        p_b = np.array([self.side_bc * math.cos(c_rad), self.side_bc * math.sin(c_rad)])
+        
+        # Find side CD using Sine Rule in triangle BCD
+        # Angle CBD = 180 - angle BCD - angle BDC (obtuse)
+        angle_cbd = 180.0 - self.angle_bcd - self.answer
+        side_cd = (self.side_bd * math.sin(math.radians(angle_cbd))) / math.sin(c_rad)
+        p_d = np.array([side_cd, 0])
+
+        # Add point A to form quadrilateral ABCD similar to reference
+        # Angle ABD and side AB can vary
+        self.side_ab = randrange_float(8.5, 11.0, 0.01)
+        self.angle_abd = randrange_float(50.0, 60.0, 0.01)
+        
+        # Vector B->D
+        vec_bd = p_d - p_b
+        angle_bd_vec = math.atan2(vec_bd[1], vec_bd[0])
+        # Vector B->A is rotated relative to B->D
+        angle_ba_vec = angle_bd_vec + math.radians(self.angle_abd)
+        p_a = p_b + np.array([self.side_ab * math.cos(angle_ba_vec), self.side_ab * math.sin(angle_ba_vec)])
+
+        # Random global rotation and shifting
+        pts_local = [p_a, p_b, p_c, p_d]
+        rot_rad = math.radians(rnd.uniform(0, 360))
+        rot_mat = np.array([[math.cos(rot_rad), -math.sin(rot_rad)], [math.sin(rot_rad), math.cos(rot_rad)]])
+        rot_pts = [p @ rot_mat.T for p in pts_local]
+        
+        pts = {'A': rot_pts[0], 'B': rot_pts[1], 'C': rot_pts[2], 'D': rot_pts[3]}
+
+        # Draw Quadrilateral and diagonal
+        quad = plt.Polygon([pts['A'], pts['B'], pts['C'], pts['D']], fill=False, lw=1.5, edgecolor='black')
+        ax.add_patch(quad)
+        ax.plot([pts['B'][0], pts['D'][0]], [pts['B'][1], pts['D'][1]], color='black', lw=1.2, linestyle='-')
+
+        # Vertex Labels
+        centroid = sum(rot_pts) / 4
+        for label, pt in pts.items():
+            offset = (pt - centroid) / np.linalg.norm(pt - centroid) * 0.8
+            ax.text(pt[0] + offset[0], pt[1] + offset[1], label, fontsize=16, ha='center', va='center', fontweight='bold')
+
+        # Dimension Labels
+        def add_side_label(p1, p2, val, dist=0.6):
+            mid = (p1 + p2) / 2
+            perp = np.array([-(p2[1]-p1[1]), p2[0]-p1[0]])
+            perp = perp / np.linalg.norm(perp) * dist
+            # Adjust to be outside
+            if np.linalg.norm((mid + perp) - centroid) < np.linalg.norm(mid - centroid):
+                perp = -perp
+            ax.text(mid[0] + perp[0], mid[1] + perp[1], f"{round(val, 1)} cm", fontsize=11, ha='center', va='center')
+
+        add_side_label(pts['A'], pts['B'], self.side_ab)
+        add_side_label(pts['B'], pts['C'], self.side_bc)
+        # Diagonal label (place slightly offset)
+        mid_diag = (pts['B'] + pts['D']) / 2
+        ax.text(mid_diag[0] + 0.3, mid_diag[1] + 0.3, f"{round(self.side_bd, 1)} cm", fontsize=11)
+
+        # Angle arcs
+        # Angle ABD
+        ang_bd = get_angle(pts['B'], pts['D'])
+        ang_ba = get_angle(pts['B'], pts['A'])
+        if (ang_ba - ang_bd) % 360 > 180: ang_bd, ang_ba = ang_ba, ang_bd
+        ax.add_patch(patches.Arc(pts['B'], 2.5, 2.5, theta1=ang_bd, theta2=ang_ba, color='black'))
+        mid_abd = math.radians((ang_bd + ang_ba) / 2)
+        ax.text(pts['B'][0] + 1.8 * math.cos(mid_abd), pts['B'][1] + 1.8 * math.sin(mid_abd), f"{round(self.angle_abd, 1)}°", fontsize=10)
+
+        # Angle BCD
+        ang_cb = get_angle(pts['C'], pts['B'])
+        ang_cd = get_angle(pts['C'], pts['D'])
+        if (ang_cd - ang_cb) % 360 > 180: ang_cb, ang_cd = ang_cd, ang_cb
+        ax.add_patch(patches.Arc(pts['C'], 3.0, 3.0, theta1=ang_cb, theta2=ang_cd, color='black'))
+        mid_bcd = math.radians((ang_cb + ang_cd) / 2)
+        ax.text(pts['C'][0] + 2.2 * math.cos(mid_bcd), pts['C'][1] + 2.2 * math.sin(mid_bcd), f"{round(self.angle_bcd, 1)}°", fontsize=10)
+
+        ax.text(0.95, 0.85, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=10, ha='center', fontweight='bold')
+
+        # Final Plotting
+        all_pts = np.array(rot_pts)
+        margin = 2.5
+        ax.set_xlim(all_pts[:, 0].min() - margin, all_pts[:, 0].max() + margin)
+        ax.set_ylim(all_pts[:, 1].min() - margin, all_pts[:, 1].max() + margin)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat089:
     
     def __init__(self):
