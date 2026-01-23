@@ -4033,6 +4033,130 @@ class Mat086:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat087:
+    def __init__(self):
+        # Pyramid with square base ABCD, vertex O above centre M
+        self.base_side = round(randrange_float(8.0, 15.0, 0.01), 2)
+        self.height = round(randrange_float(15.0, 25.0, 0.01), 2)
+        
+        # Calculation for angle OA makes with base
+        # M is centre. distance AM = half of diagonal of square base
+        # AM = sqrt(base_side^2 + base_side^2) / 2 = (base_side * sqrt(2)) / 2
+        am = (self.base_side * math.sqrt(2)) / 2
+        # tan(angle) = height / AM
+        self.answer = math.degrees(math.atan(self.height / am))
+
+        self.description = (
+            "The diagram shows a pyramid $OABCD$ with a square base $ABCD$. "
+            "The vertex $O$ is vertically above the centre of the base, $M$. "
+            "Calculate the angle that $OA$ makes with the base."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Pythagoras’ theorem and trigonometry Notes and examples in 3D"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 41"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            rf"\[\begin{{aligned}}"
+            f"\\text{{Let the square base side be }} s = {round(self.base_side, 10)}\\,\\text{{cm}} \\text{{ and the pyramid height be }} h = {round(self.height, 10)}\\,\\text{{cm}}.\\\\"
+            f"\\text{{The centre of the square base is }} M. \\text{{ The distance }} AM \\text{{ is half of the diagonal of the base:}}\\\\"
+            rf"AM &= \frac{{\sqrt{{s^2 + s^2}}}}{{2}} = \frac{{s\sqrt{{2}}}}{{2}}\\\\"
+            f"&= \\frac{{({round(self.base_side, 10)}) \\times \\sqrt{{2}}}}{{2}}\\\\"
+            f"&= {round((self.base_side * math.sqrt(2)) / 2, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{In the right-angled triangle }} OMA, \\text{{ let }} \\theta \\text{{ be the angle }} OA \\text{{ makes with the base:}}\\\\"
+            f"\\tan(\\theta) &= \\frac{{OM}}{{AM}}\\\\"
+            f"\\tan(\\theta) &= \\frac{{{round(self.height, 10)}}}{{{round((self.base_side * math.sqrt(2)) / 2, 10)}}}\\\\"
+            f"\\theta &= \\arctan\\left(\\frac{{{round(self.height, 10)}}}{{{round((self.base_side * math.sqrt(2)) / 2, 10)}}}\\right)\\\\"
+            f"\\theta &= {self.answer}^\circ"
+            rf"\end{{aligned}}\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Projection parameters for 3D effect
+        # Oblique projection
+        angle_proj = math.radians(25)
+        ratio_proj = 0.5
+
+        def project(x, y, z):
+            px = x + y * ratio_proj * math.cos(angle_proj)
+            py = z + y * ratio_proj * math.sin(angle_proj)
+            return px, py
+
+        # Vertices in 3D (x, y, z)
+        # Base ABCD centered at (0,0,0) in x-y plane
+        half = self.base_side / 2
+        v_a = (-half, -half, 0)
+        v_b = (half, -half, 0)
+        v_c = (half, half, 0)
+        v_d = (-half, half, 0)
+        v_m = (0, 0, 0)
+        v_o = (0, 0, self.height)
+
+        # Projected coordinates
+        pa = project(*v_a)
+        pb = project(*v_b)
+        pc = project(*v_c)
+        pd = project(*v_d)
+        pm = project(*v_m)
+        po = project(*v_o)
+
+        # Draw Base
+        # Visible front edges
+        ax.plot([pa[0], pb[0]], [pa[1], pb[1]], color='black', lw=2)
+        ax.plot([pb[0], pc[0]], [pb[1], pc[1]], color='black', lw=2)
+        # Hidden back edges
+        ax.plot([pc[0], pd[0]], [pc[1], pd[1]], color='black', lw=1.5, linestyle='--')
+        ax.plot([pd[0], pa[0]], [pd[1], pa[1]], color='black', lw=1.5, linestyle='--')
+
+        # Draw Vertices to Apex
+        ax.plot([pa[0], po[0]], [pa[1], po[1]], color='black', lw=2) # OA
+        ax.plot([pb[0], po[0]], [pb[1], po[1]], color='black', lw=2) # OB
+        ax.plot([pc[0], po[0]], [pc[1], po[1]], color='black', lw=2) # OC
+        ax.plot([pd[0], po[0]], [pd[1], po[1]], color='black', lw=1.5, linestyle='--') # OD
+
+        # Vertical line OM
+        ax.plot([pm[0], po[0]], [pm[1], po[1]], color='black', lw=1, linestyle=':')
+        # Base diagonals for M
+        ax.plot([pa[0], pc[0]], [pa[1], pc[1]], color='black', lw=0.8, linestyle=':')
+        ax.plot([pb[0], pd[0]], [pb[1], pd[1]], color='black', lw=0.8, linestyle=':')
+
+        # Labels
+        label_offset = 0.8
+        ax.text(pa[0] - label_offset, pa[1] - label_offset, "A", fontsize=15, fontweight='bold', ha='right')
+        ax.text(pb[0] + label_offset, pb[1] - label_offset, "B", fontsize=15, fontweight='bold', ha='left')
+        ax.text(pc[0] + label_offset, pc[1] + label_offset, "C", fontsize=15, fontweight='bold', ha='left')
+        ax.text(pd[0] - label_offset, pd[1] + label_offset, "D", fontsize=15, fontweight='bold', ha='right')
+        ax.text(po[0], po[1] + label_offset, "O", fontsize=15, fontweight='bold', ha='center')
+        ax.text(pm[0], pm[1] - label_offset, "M", fontsize=15, fontweight='bold', ha='center')
+
+        # Dimension labels
+        ax.text((pa[0]+pb[0])/2, pa[1]-1.2, f"{self.base_side} cm", fontsize=12, ha='center')
+        ax.text(pc[0]+1.5, (pb[1]+pc[1])/2, f"{self.base_side} cm", fontsize=12, rotation=math.degrees(angle_proj))
+        ax.text(po[0]-1.5, (po[1]+pm[1])/2, f"{self.height} cm", fontsize=12, ha='right')
+
+        # Right angle symbol at M
+        # Simple square marker for 3D right angle
+        sq = 0.4
+        ax.plot([pm[0], pm[0], pm[0]+sq], [pm[1]+sq, pm[1]+sq, pm[1]], color='black', lw=1)
+
+        # Not to scale
+        ax.text(max(pa[0], pb[0], pc[0], pd[0]) + 3, max(pa[1], pb[1], pc[1], pd[1], po[1]) + 3, 
+                "NOT TO\nSCALE", fontsize=12, ha='center', va='center', fontweight='bold')
+
+        # Limits
+        all_x = [pa[0], pb[0], pc[0], pd[0], po[0]]
+        all_y = [pa[1], pb[1], pc[1], pd[1], po[1]]
+        ax.set_xlim(min(all_x) - 4, max(all_x) + 6)
+        ax.set_ylim(min(all_y) - 4, max(all_y) + 6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat089:
     
     def __init__(self):
