@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import random as rnd
 import os
+import math
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge, Circle, FancyArrowPatch
 from scipy.interpolate import PchipInterpolator
@@ -3749,4 +3750,89 @@ class Mat140:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
+        plt.close()
+        
+class Mat141:
+    def __init__(self):
+        # Relationship: y = k * a^x
+        # Linearized: ln(y) = ln(k) + x * ln(a)
+        # We define a slope (ln_a) and intercept (ln_k)
+        self.ln_k = round(randrange_float(0.5, 1.5, 0.01), 2)
+        self.ln_a = round(randrange_float(0.3, 0.8, 0.01), 2)
+        
+        # x-values for points in the diagram
+        self.x1 = 0
+        self.x2 = round(randrange_float(2.0, 4.0, 0.01), 2)
+        
+        # ln(y) values
+        self.lny1 = self.ln_k
+        self.lny2 = round(self.ln_k + self.ln_a * self.x2, 2)
+        
+        self.answer = math.exp(self.ln_a)
+
+        self.description = (
+            f"The variables $x$ and $y$ satisfy the relationship $y = k a^x$, where $k$ and $a$ are constants. "
+            f"As shown in the figure, the graph of $\\ln y$ against $x$ is a straight line passing through "
+            f"the points $({self.x1}, {self.lny1})$ and $({self.x2}, {self.lny2})$. "
+            f"Find the value of $a$."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Logarithmic and exponential functions"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The given relationship is: }} y &= k a^x \\\\"
+            f"\\text{{Taking the natural logarithm of both sides: }} \\ln y &= \\ln(k a^x) \\\\"
+            f"\\ln y &= \\ln k + \\ln(a^x) \\\\"
+            f"\\ln y &= \\ln k + x \\ln a \\\\"
+            f"\\text{{This is in the form }} Y = mX + c, \\text{{ where }} Y = \\ln y, X = x, \\text{{ and gradient }} m = \\ln a. \\\\"
+            f"\\text{{The gradient }} m \\text{{ can be calculated from the two points }} ({self.x1}, {self.lny1}) \\text{{ and }} ({self.x2}, {self.lny2}): \\\\"
+            f"m &= \\frac{{\\ln y_2 - \\ln y_1}}{{x_2 - x_1}} \\\\"
+            f"&= \\frac{{{self.lny2} - {self.lny1}}}{{{self.x2} - {self.x1}}} \\\\"
+            f"&= \\frac{{{round(self.lny2 - self.lny1, 10)}}}{{{round(self.x2 - self.x1, 10)}}} \\\\"
+            f"&= {round((self.lny2 - self.lny1) / (self.x2 - self.x1), 10)} \\\\"
+            f"\\text{{Since }} m = \\ln a: \\\\"
+            f"\\ln a &= {round(self.ln_a, 10)} \\\\"
+            f"a &= e^{{{round(self.ln_a, 10)}}} \\\\"
+            f"a &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plotting range
+        x_min, x_max = -0.5, self.x2 + 1
+        y_min, y_max = 0, self.lny2 + 1
+        
+        # Draw axes
+        ax.spines['left'].set_position('zero')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        
+        # Plot the line
+        x_vals = np.array([0, self.x2])
+        y_vals = np.array([self.lny1, self.lny2])
+        ax.plot([x_min, x_max], [self.ln_k + self.ln_a * x_min, self.ln_k + self.ln_a * x_max], color='black', lw=2)
+        
+        # Plot points and labels
+        ax.scatter(x_vals, y_vals, color='black', s=50, zorder=5)
+        ax.text(self.x1 + 0.1, self.lny1, f"({self.x1}, {self.lny1})", fontsize=12, va='bottom')
+        ax.text(self.x2 + 0.1, self.lny2, f"({self.x2}, {self.lny2})", fontsize=12, va='bottom')
+        
+        # Axis labels
+        ax.set_xlabel('$x$', loc='right', fontsize=14)
+        ax.set_ylabel('$\\ln y$', loc='top', fontsize=14, rotation=0)
+        
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
+        ax.grid(True, linestyle='--', alpha=0.6)
+        
+        plt.text(x_max*0.8, y_max*0.1, "NOT TO\nSCALE", fontsize=10, ha='center', bbox=dict(facecolor='white', alpha=0.5))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
