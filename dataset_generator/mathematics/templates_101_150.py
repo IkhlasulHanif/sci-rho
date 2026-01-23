@@ -4277,3 +4277,102 @@ class Mat146:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat147:
+    def __init__(self):
+        # Function: f(x) = k * sin^2(ax)
+        # Using double angle formula: sin^2(theta) = 0.5 * (1 - cos(2*theta))
+        # Integral of sin^2(ax) from 0 to L is: [0.5x - (1/(4a))sin(2ax)] from 0 to L
+        self.k = round(randrange_float(2.0, 5.0, 0.01), 2)
+        self.a = rnd.choice([1, 2, 3])
+        
+        # We integrate over a half-cycle of the sin^2(ax) function
+        # The period of sin^2(ax) is pi/a. Half cycle is L = pi / (2a)
+        self.limit_val = Fraction(1, 2 * self.a)
+        L = math.pi / (2 * self.a)
+        
+        # Calculation: k * [0.5x - (1/(4a))sin(2ax)] evaluated at L and 0
+        # sin(2*a*L) = sin(2*a*(pi/(2a))) = sin(pi) = 0
+        # At x=0, everything is 0.
+        # So Area = k * (0.5 * L) = k * pi / (4a)
+        self.answer = self.k * math.pi / (4 * self.a)
+
+        self.description = (
+            f"The figure shows the graph of a periodic function $y = f(x)$ for $x \\ge 0$. "
+            f"Calculate the area of the shaded region bounded by the curve and the $x$-axis from $x = 0$ to the indicated limit."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The function is given by: }} y &= {self.k}\\sin^2({self.a}x)\\\\"
+            f"\\text{{The area }} A \\text{{ is the definite integral from }} x = 0 \\text{{ to }} x = \\frac{{\\pi}}{{{2 * self.a}}}: &\\\\"
+            f"A &= \\int_{{0}}^{{\\frac{{\\pi}}{{{2 * self.a}}}}} {self.k}\\sin^2({self.a}x) \\, dx\\\\"
+            f"\\text{{Using the identity }} \\sin^2(\\theta) = \\frac{{1 - \\cos(2\\theta)}}{{2}}: &\\\\"
+            f"A &= {self.k} \\int_{{0}}^{{\\frac{{\\pi}}{{{2 * self.a}}}}} \\frac{{1 - \\cos({2 * self.a}x)}}{{2}} \\, dx\\\\"
+            f"A &= \\frac{{{self.k}}}{{2}} \\left[ x - \\frac{{\\sin({2 * self.a}x)}}{{{2 * self.a}}} \\right]_{{0}}^{{\\frac{{\\pi}}{{{2 * self.a}}}}}\\\\"
+            f"\\text{{Substitute the upper limit:}} &\\\\"
+            f"\\text{{Term 1}} &= \\frac{{\\pi}}{{{2 * self.a}}} - \\frac{{\\sin(2 \\cdot {self.a} \\cdot \\frac{{\\pi}}{{{2 * self.a}}})}}{{{2 * self.a}}}\\\\"
+            f"&= \\frac{{\\pi}}{{{2 * self.a}}} - \\frac{{\\sin(\\pi)}}{{{2 * self.a}}} = \\frac{{\\pi}}{{{2 * self.a}}} - 0 = {round(math.pi / (2 * self.a), 10)}\\\\"
+            f"\\text{{Substitute the lower limit:}} &\\\\"
+            f"\\text{{Term 2}} &= 0 - \\frac{{\\sin(0)}}{{{2 * self.a}}} = 0\\\\"
+            f"\\text{{Final calculation:}} &\\\\"
+            f"A &= \\frac{{{self.k}}}{{2}} \\left( {round(math.pi / (2 * self.a), 10)} - 0 \\right)\\\\"
+            f"A &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        def f(x):
+            return self.k * (np.sin(self.a * x)**2)
+
+        # Plot range: slightly more than the shaded region
+        L = math.pi / (2 * self.a)
+        x_max = L * 1.5
+        x_plot = np.linspace(0, x_max, 500)
+        y_plot = f(x_plot)
+        
+        ax.plot(x_plot, y_plot, color='black', lw=2)
+        
+        # Shade the region from 0 to L
+        x_shade = np.linspace(0, L, 200)
+        y_shade = f(x_shade)
+        ax.fill_between(x_shade, y_shade, color='gray', alpha=0.3)
+        
+        # Vertical limit line
+        ax.vlines(L, 0, f(L), colors='black', linestyles='--')
+        
+        # Labeling the axes
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        # X-axis markers
+        ax.text(0, -0.15 * self.k, "$0$", ha='center', fontsize=12)
+        
+        # Label the limit point on x-axis
+        if self.limit_val.numerator == 1:
+            label_tex = f"$\\frac{{\\pi}}{{{self.limit_val.denominator}}}$"
+        else:
+            label_tex = f"$\\frac{{{self.limit_val.numerator}\\pi}}{{{self.limit_val.denominator}}}$"
+        ax.text(L, -0.15 * self.k, label_tex, ha='center', fontsize=14)
+        
+        # Equation label
+        mid_x = L / 2
+        ax.text(mid_x, self.k * 1.1, f"$y = {self.k}\\sin^2({self.a}x)$", 
+                ha='center', fontsize=14, fontweight='bold')
+
+        ax.set_xlim(-0.1 * L, x_max)
+        ax.set_ylim(-0.3 * self.k, self.k * 1.3)
+        ax.axis('off')
+
+        plt.text(x_max * 0.9, self.k * 1.1, "NOT TO\nSCALE", fontsize=10, ha='center', color='gray')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
