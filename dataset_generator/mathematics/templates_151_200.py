@@ -2102,3 +2102,100 @@ class Mat171:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat173:
+    def __init__(self):
+        # Varying numeric weights (masses) and speed by step 0.01 and rounding to 2
+        self.mass_p = round(randrange_float(0.4, 0.8, 0.01), 2)
+        self.mass_q = round(randrange_float(0.2, 0.5, 0.01), 2)
+        self.mass_r = round(randrange_float(0.6, 1.0, 0.01), 2)
+        
+        self.speed_p_initial = round(randrange_float(2.0, 5.0, 0.01), 2)
+        self.speed_p_after = round(randrange_float(0.5, 1.8, 0.01), 2)
+        
+        # Part (a): Find speed of Q after first collision (P and Q)
+        # mP * uP + mQ * uQ = mP * vP + mQ * vQ
+        # uQ = 0, so: vQ = (mP * uP - mP * vP) / mQ
+        self.speed_q_after_1 = (self.mass_p * self.speed_p_initial - self.mass_p * self.speed_p_after) / self.mass_q
+        
+        # Part (b): Find speed of coalesced particle after second collision (Q and R)
+        # mQ * vQ + mR * uR = (mQ + mR) * V
+        # uR = 0, so: V = (mQ * vQ) / (mQ + mR)
+        self.answer = (self.mass_q * self.speed_q_after_1) / (self.mass_q + self.mass_r)
+
+        self.description = (
+            "Three particles $P, Q$ and $R$ are at rest in a straight line on a smooth horizontal plane as shown in the figure. "
+            "The mass of $P$ is $m_P$, $Q$ is $m_Q$, and $R$ is $m_R$. $P$ is projected directly towards $Q$ with an initial speed. "
+            "After $P$ and $Q$ collide, $P$ continues to move in the same direction with a reduced speed. "
+            "In the subsequent collision between $Q$ and $R$, these particles coalesce. "
+            "Find the speed of the combined particle after this second collision."
+        )
+        
+        self.topic = "Mechanics"
+        self.subtopic = "Momentum"
+        self.source = "Adapted from AS & A level March 2025 Question Paper"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Collision between }} P \\text{{ and }} Q: &\\\\"
+            f"m_P u_P + m_Q u_Q &= m_P v_P + m_Q v_Q\\\\"
+            f"({self.mass_p})({self.speed_p_initial}) + ({self.mass_q})(0) &= ({self.mass_p})({self.speed_p_after}) + ({self.mass_q})v_Q\\\\"
+            f"{round(self.mass_p * self.speed_p_initial, 10)} &= {round(self.mass_p * self.speed_p_after, 10)} + {self.mass_q} v_Q\\\\"
+            f"v_Q &= \\frac{{{round(self.mass_p * self.speed_p_initial - self.mass_p * self.speed_p_after, 10)}}}{{{self.mass_q}}}\\\\"
+            f"v_Q &= {round(self.speed_q_after_1, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Collision between }} Q \\text{{ and }} R \\text{{ (coalescence):}} &\\\\"
+            f"m_Q v_Q + m_R u_R &= (m_Q + m_R) V\\\\"
+            f"({self.mass_q})({round(self.speed_q_after_1, 10)}) + ({self.mass_r})(0) &= ({self.mass_q} + {self.mass_r}) V\\\\"
+            f"{round(self.mass_q * self.speed_q_after_1, 10)} &= {round(self.mass_q + self.mass_r, 10)} V\\\\"
+            f"V &= \\frac{{{round(self.mass_q * self.speed_q_after_1, 10)}}}{{{round(self.mass_q + self.mass_r, 10)}}}\\\\"
+            f"V &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.set_xlim(-1, 9)
+        ax.set_ylim(-1, 2)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Floor line
+        ax.plot([-0.5, 8.5], [0, 0], color='black', lw=2)
+
+        # Positions
+        pos_p = 1
+        pos_q = 4
+        pos_r = 7
+
+        # Draw particles as circles
+        circle_p = patches.Circle((pos_p, 0.15), 0.15, color='black')
+        circle_q = patches.Circle((pos_q, 0.15), 0.15, color='black')
+        circle_r = patches.Circle((pos_r, 0.15), 0.15, color='black')
+        ax.add_patch(circle_p)
+        ax.add_patch(circle_q)
+        ax.add_patch(circle_r)
+
+        # Labels
+        ax.text(pos_p, 0.45, f"$P$\n{self.mass_p} kg", ha='center', fontsize=12)
+        ax.text(pos_q, 0.45, f"$Q$\n{self.mass_q} kg", ha='center', fontsize=12)
+        ax.text(pos_r, 0.45, f"$R$\n{self.mass_r} kg", ha='center', fontsize=12)
+
+        # Distance markings
+        ax.annotate('', xy=(pos_p, -0.4), xytext=(pos_q, -0.4), arrowprops=dict(arrowstyle='<->'))
+        ax.text((pos_p + pos_q)/2, -0.7, "3 m", ha='center', fontsize=10)
+        
+        ax.annotate('', xy=(pos_q, -0.4), xytext=(pos_r, -0.4), arrowprops=dict(arrowstyle='<->'))
+        ax.text((pos_q + pos_r)/2, -0.7, "3 m", ha='center', fontsize=10)
+
+        # Initial speed arrow for P
+        ax.annotate('', xy=(pos_p + 0.8, 0.15), xytext=(pos_p + 0.2, 0.15), 
+                    arrowprops=dict(arrowstyle='->', lw=1.5))
+        ax.text(pos_p + 0.5, 0.7, f"{self.speed_p_initial} m s$^{{-1}}$", ha='center', fontsize=10)
+        
+        # Text for post-collision speed in diagram
+        ax.text(4, 1.5, f"Speed of $P$ after collision: {self.speed_p_after} m s$^{{-1}}$", ha='center', fontsize=11, fontweight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+    
