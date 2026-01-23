@@ -2023,7 +2023,7 @@ class Mat171:
         
         self.topic = "Mechanics"
         self.subtopic = "Forces and equilibrium"
-        self.source = "Adapted from AS & A level March 2025 Question Paper"
+        self.source = "Adapted from AS & A level March 2025 Question Paper 42"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2133,7 +2133,7 @@ class Mat173:
         
         self.topic = "Mechanics"
         self.subtopic = "Momentum"
-        self.source = "Adapted from AS & A level March 2025 Question Paper"
+        self.source = "Adapted from AS & A level March 2025 Question Paper 42"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2199,6 +2199,128 @@ class Mat173:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
     
+class Mat172:
+    def __init__(self):
+        # Motion parameters
+        # Stage 1: Accelerates from initial_v
+        self.u1 = rnd.randint(4, 8) 
+        self.a1 = round(randrange_float(0.4, 1.2, 0.05), 2)
+        self.t1 = rnd.randint(15, 25)
+        self.v_max = self.u1 + self.a1 * self.t1
+        
+        # Stage 2: Decelerates to zero
+        self.t2_duration = rnd.randint(25, 35)
+        self.t2_end = self.t1 + self.t2_duration
+        self.a2 = -self.v_max / self.t2_duration
+        
+        # Area under graph Stage 1 + 2 (Distance from O)
+        self.dist_out = 0.5 * (self.u1 + self.v_max) * self.t1 + 0.5 * self.v_max * self.t2_duration
+        
+        # Stage 3: Travel back to O
+        # Particle reaches some negative velocity at t3_fixed, then slows to rest at T
+        self.t3_fixed = self.t2_end + rnd.randint(8, 15)
+        self.a3_accel = round(randrange_float(-1.5, -0.5, 0.1), 2)
+        self.v_min = self.a3_accel * (self.t3_fixed - self.t2_end)
+        
+        # Distance Stage 3 (negative area) must equal dist_out to return to O
+        # Area = 0.5 * base * height => Area = 0.5 * (T - t2_end) * v_min
+        # Since area is negative and we want magnitude: dist_out = 0.5 * (T - t2_end) * abs(v_min)
+        self.T_minus_t2 = (2 * self.dist_out) / abs(self.v_min)
+        
+        self.answer = self.t2_end + self.T_minus_t2
+
+        self.description = (
+            "The diagram shows a velocity-time graph which models the motion of a particle. "
+            "The particle leaves $O$ and eventually returns to $O$ at time $T$. "
+            "Based on the figure and the information provided, find the value of $T$."
+        )
+        
+        self.topic = "Mechanics"
+        self.subtopic = "Kinematics of motion in a straight line"
+        self.source = "Adapted from AS & A level June 2025 Question Paper 43"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance traveled away from }} O \\text{{ (Area Stage 1 and 2):}} &\\\\"
+            f"d_{{out}} &= \\text{{Area of trapezium}} + \\text{{Area of triangle}}\\\\"
+            f"d_{{out}} &= \\frac{1}{2}(u_1 + v_{{max}})t_1 + \\frac{1}{2}(v_{{max}})(t_{{2,end}} - t_1)\\\\"
+            f"d_{{out}} &= \\frac{1}{2}({self.u1} + {round(self.v_max, 10)})({self.t1}) + \\frac{1}{2}({round(self.v_max, 10)})({self.t2_duration})\\\\"
+            f"d_{{out}} &= {round(self.dist_out, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{For the particle to return to }} O \\text{{, the area below the }} t\\text{{-axis must equal }} d_{{out}}: &\\\\"
+            f"d_{{out}} &= \\text{Area of triangle Stage 3}\\\\"
+            f"d_{{out}} &= \\frac{1}{2} \\times \\text{{base}} \\times |\\text{{height}}|\\\\"
+            f"{round(self.dist_out, 10)} &= \\frac{1}{2} \\times (T - {self.t2_end}) \\times |{round(self.v_min, 10)}|\\\\"
+            f"T - {self.t2_end} &= \\frac{{2 \\times {round(self.dist_out, 10)}}}{{{round(abs(self.v_min), 10)}}}\\\\"
+            f"T - {self.t2_end} &= {round(self.T_minus_t2, 10)}\\\\"
+            f"T &= {self.t2_end} + {round(self.T_minus_t2, 10)}\\\\"
+            f"T &= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # X and Y data points
+        # (0, u1), (t1, v_max), (t2_end, 0), (t3_fixed, v_min), (answer, 0)
+        t_pts = [0, self.t1, self.t2_end, self.t3_fixed, self.answer]
+        v_pts = [self.u1, self.v_max, 0, self.v_min, 0]
+        
+        ax.plot(t_pts, v_pts, color='black', lw=2)
+        
+        # Axes
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        # Limits
+        ax.set_xlim(-5, self.answer * 1.1)
+        ax.set_ylim(min(v_pts) - 5, max(v_pts) + 5)
+        ax.axis('off')
+
+        # Axis labels
+        ax.text(self.answer * 1.1, 0, '$t$ (s)', ha='left', va='center', fontsize=12)
+        ax.text(0, max(v_pts) + 5, '$v$ (m s$^{-1}$)', ha='center', va='bottom', fontsize=12)
+
+        # Labels for points
+        # Initial velocity
+        ax.text(-1, self.u1, f"{self.u1}", ha='right', va='center', fontsize=11)
+        
+        # Time 20 (t1)
+        ax.plot([self.t1, self.t1], [0, self.v_max], color='black', linestyle='--', lw=1)
+        ax.text(self.t1, -1.5, f"{self.t1}", ha='center', va='top', fontsize=11)
+        
+        # Time 40 (t2_end)
+        ax.text(self.t2_end - 1, 1.5, f"{self.t2_end}", ha='right', va='bottom', fontsize=11)
+        
+        # Time 50 (t3_fixed)
+        ax.plot([self.t3_fixed, self.t3_fixed], [0, self.v_min], color='black', linestyle='--', lw=1)
+        ax.text(self.t3_fixed, 1.5, f"{self.t3_fixed}", ha='center', va='bottom', fontsize=11)
+        
+        # Time T
+        ax.text(self.answer, 1.5, '$T$', ha='center', va='bottom', fontsize=12)
+
+        # Origin
+        ax.text(-1.5, -1.5, '0', ha='right', va='top')
+
+        # Context text in figure
+        context_str = (
+            f"Particle leaves $O$ at $t=0$ with $v={self.u1}$ m s$^{{-1}}$.\n"
+            f"Accelerates at {self.a1} m s$^{{-2}}$ for {self.t1} s.\n"
+            f"Decelerates to rest at $t={self.t2_end}$.\n"
+            f"Returns to $O$ at time $T$."
+        )
+        plt.text(self.answer * 0.7, max(v_pts) * 0.8, context_str, fontsize=10, 
+                 bbox=dict(facecolor='white', alpha=0.5, edgecolor='gray'))
+
+        # Arrows for axes
+        ax.annotate('', xy=(self.answer * 1.15, 0), xytext=(self.answer * 1.1, 0),
+                    arrowprops=dict(arrowstyle='->', color='black'))
+        ax.annotate('', xy=(0, max(v_pts) + 7), xytext=(0, max(v_pts) + 5),
+                    arrowprops=dict(arrowstyle='->', color='black'))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat174:
     def __init__(self):
         # Varying physical properties
@@ -2241,7 +2363,7 @@ class Mat174:
         
         self.topic = "Mechanics"
         self.subtopic = "Newton’s laws of motion"
-        self.source = "Adapted from AS & A level March 2025 Question Paper"
+        self.source = "Adapted from AS & A level March 2025 Question Paper 42"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
