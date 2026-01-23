@@ -3921,6 +3921,118 @@ class Mat085:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat086:
+    def __init__(self):
+        self.length = round(randrange_float(10.0, 20.0, 0.01), 2)
+        self.width = round(randrange_float(4.0, 9.0, 0.01), 2)
+        self.height = round(randrange_float(5.0, 10.0, 0.01), 2)
+
+        # Logic for 3D Trigonometry: Angle between diagonal and horizontal base
+        # Diagonal on base (d_base) = sqrt(length^2 + width^2)
+        # tan(theta) = height / d_base
+        d_base = math.sqrt(self.length**2 + self.width**2)
+        self.answer = math.degrees(math.atan(self.height / d_base))
+
+        self.description = (
+            "The diagram shows a cuboid. "
+            "Calculate the angle between $AB$ and the horizontal base of the cuboid."
+        )
+
+        self.topic = "Trigonometry"
+        self.subtopic = "Pythagoras’ theorem and trigonometry Notes and examples in 3D"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 43"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Let the length, width, and height of the cuboid be }} l, w, \\text{{ and }} h \\text{{ respectively.}} \\\\"
+            f"l &= {round(self.length, 10)}\\,\\text{{cm}} \\\\"
+            f"w &= {round(self.width, 10)}\\,\\text{{cm}} \\\\"
+            f"h &= {round(self.height, 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{The projection of the diagonal }} AB \\text{{ on the horizontal base is the base diagonal }} d_{{base}} : \\\\"
+            f"d_{{base}} &= \\sqrt{{l^2 + w^2}} \\\\"
+            f"&= \\sqrt{{{round(self.length, 10)}^2 + {round(self.width, 10)}^2}} \\\\"
+            f"&= \\sqrt{{{round(self.length**2, 10)} + {round(self.width**2, 10)}}} \\\\"
+            f"&= \\sqrt{{{round(self.length**2 + self.width**2, 10)}}} \\\\"
+            f"&= {round(math.sqrt(self.length**2 + self.width**2), 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{The angle }} \\theta \\text{{ between diagonal }} AB \\text{{ and the base is given by:}} \\\\"
+            f"\\tan(\\theta) &= \\frac{{\\text{{height}}}}{{d_{{base}}}} \\\\"
+            f"\\tan(\\theta) &= \\frac{{{round(self.height, 10)}}}{{{round(math.sqrt(self.length**2 + self.width**2), 10)}}} \\\\"
+            f"\\theta &= \\arctan\\left(\\frac{{{round(self.height, 10)}}}{{{round(math.sqrt(self.length**2 + self.width**2), 10)}}}\\right) \\\\"
+            f"\\theta &= {self.answer}^\\circ"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Oblique projection parameters
+        # Adjust these to vary the figure angle
+        angle_proj = math.radians(rnd.uniform(30, 45))
+        ratio_proj = rnd.uniform(0.4, 0.6)
+
+        def project(x, y, z):
+            # x is length (horizontal), y is width (depth), z is height (vertical)
+            px = x + y * ratio_proj * math.cos(angle_proj)
+            py = z + y * ratio_proj * math.sin(angle_proj)
+            return px, py
+
+        # Vertices: 0-3 Bottom plane, 4-7 Top plane
+        v = [
+            (0, 0, 0), (self.length, 0, 0), (self.length, self.width, 0), (0, self.width, 0),
+            (0, 0, self.height), (self.length, 0, self.height), (self.length, self.width, self.height), (0, self.width, self.height)
+        ]
+        pv = [project(x, y, z) for x, y, z in v]
+
+        # Edges (start_idx, end_idx)
+        # Visible edges (solid)
+        visible_edges = [
+            (0, 1), (1, 5), (5, 4), (4, 0), # Front face
+            (1, 2), (2, 6), (6, 5),         # Right face
+            (4, 7), (7, 6)                  # Top face
+        ]
+        # Hidden edges (dashed)
+        hidden_edges = [
+            (0, 3), (3, 2), (3, 7)
+        ]
+
+        for e in visible_edges:
+            p1, p2 = pv[e[0]], pv[e[1]]
+            ax.plot([p1[0], p2[0]], [p1[1], p2[1]], color='black', lw=2)
+
+        for e in hidden_edges:
+            p1, p2 = pv[e[0]], pv[e[1]]
+            ax.plot([p1[0], p2[0]], [p1[1], p2[1]], color='black', lw=1.5, linestyle='--')
+
+        # Labels for points A and B as per the prompt
+        # A is bottom-left (0,0,0), B is top-right-depth (length, width, height)
+        ax.text(pv[0][0] - 0.5, pv[0][1] - 0.5, "A", fontsize=16, fontweight='bold', ha='right')
+        ax.text(pv[6][0] + 0.5, pv[6][1] + 0.5, "B", fontsize=16, fontweight='bold', ha='left')
+
+        # Dimension labels
+        # Height
+        mid_h = (pv[1][0] + 0.5, (pv[1][1] + pv[5][1]) / 2)
+        ax.text(mid_h[0], mid_h[1], f"{self.height} cm", fontsize=14, va='center', rotation=90)
+        
+        # Length
+        mid_l = (pv[0][0] + self.length / 2, pv[0][1] - 0.8)
+        ax.text(mid_l[0], mid_l[1], f"{self.length} cm", fontsize=14, ha='center')
+
+        # Width (depth)
+        mid_w = (pv[1][0] + (pv[2][0] - pv[1][0]) / 2 + 0.5, pv[1][1] + (pv[2][1] - pv[1][1]) / 2 - 0.5)
+        ax.text(mid_w[0], mid_w[1], f"{self.width} cm", fontsize=14, rotation=math.degrees(angle_proj))
+
+        # Space Diagonal AB
+        xs, ys = zip(*pv)
+        ax.text(max(xs) + 1.5, max(ys) + 1.5, "NOT TO\nSCALE", 
+                fontsize=12, ha='center', va='center', fontweight='bold')
+
+        # Save
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat089:
     
     def __init__(self):
