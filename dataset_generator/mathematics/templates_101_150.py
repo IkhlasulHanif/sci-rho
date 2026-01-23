@@ -4097,3 +4097,97 @@ class Mat144:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat145:
+    def __init__(self):
+        # f(x) = ax^3 + bx^2 + cx + d
+        # Aligns with syllabus section 2.5: Numerical solution of equations and integration
+        self.a = randrange_float(0.1, 0.3, 0.01)
+        self.b = randrange_float(-0.5, 0.5, 0.01)
+        self.c = randrange_float(0.5, 1.5, 0.01)
+        self.d = randrange_float(1.0, 3.0, 1.0)
+        
+        self.x_start = 0
+        self.x_end = 2
+        self.n = 4  # Number of intervals
+        self.h = (self.x_end - self.x_start) / self.n
+        
+        # Calculate ordinates (y-values)
+        self.x_vals = [self.x_start + i * self.h for i in range(self.n + 1)]
+        self.y_vals = [self.a * x**3 + self.b * x**2 + self.c * x + self.d for x in self.x_vals]
+        
+        # Trapezium Rule: (h/2) * [y_0 + y_n + 2*(sum of middle y values)]
+        self.answer = (self.h / 2) * (self.y_vals[0] + self.y_vals[-1] + 2 * sum(self.y_vals[1:-1]))
+
+        self.description = (
+            f"The figure shows the graph of a polynomial function $y = f(x)$ of degree 3. "
+            f"Using the coordinates of the points shown on the graph, use the trapezium rule with "
+            f"{self.n} intervals to estimate the value of the definite integral "
+            f"$\\int_{{{self.x_start}}}^{{{self.x_end}}} f(x) \\, dx$."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the interval parameters:}} &\\\\"
+            f"x_0 &= {self.x_start}, \\quad x_n = {self.x_end}, \\quad n = {self.n}\\\\"
+            f"\\text{{Calculate the width of each interval (h):}} &\\\\"
+            f"h &= \\frac{{x_n - x_0}}{{n}} = \\frac{{{self.x_end} - {self.x_start}}}{{{self.n}}} = {self.h}\\\\"
+            f"\\text{{Identify the ordinates from the graph:}} &\\\\"
+            f"y_0 &= f({round(self.x_vals[0], 10)}) = {round(self.y_vals[0], 10)}\\\\"
+            f"y_1 &= f({round(self.x_vals[1], 10)}) = {round(self.y_vals[1], 10)}\\\\"
+            f"y_2 &= f({round(self.x_vals[2], 10)}) = {round(self.y_vals[2], 10)}\\\\"
+            f"y_3 &= f({round(self.x_vals[3], 10)}) = {round(self.y_vals[3], 10)}\\\\"
+            f"y_4 &= f({round(self.x_vals[4], 10)}) = {round(self.y_vals[4], 10)}\\\\"
+            f"\\text{{Apply the Trapezium Rule formula:}} &\\\\"
+            f"\\text{{Area}} &\\approx \\frac{{h}}{{2}} \\left[ y_0 + y_4 + 2(y_1 + y_2 + y_3) \\right]\\\\"
+            f"&= \\frac{{{self.h}}}{{2}} \\left[ {round(self.y_vals[0], 10)} + {round(self.y_vals[4], 10)} + 2({round(self.y_vals[1], 10)} + {round(self.y_vals[2], 10)} + {round(self.y_vals[3], 10)}) \\right]\\\\"
+            f"&= \\frac{{{self.h}}}{{2}} \\left[ {round(self.y_vals[0] + self.y_vals[4], 10)} + 2({round(self.y_vals[1] + self.y_vals[2] + self.y_vals[3], 10)}) \\right]\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )   
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        
+        # Polynomial function for smooth plotting
+        def f(x):
+            return self.a * x**3 + self.b * x**2 + self.c * x + self.d
+
+        # Plot the curve
+        x_plot = np.linspace(self.x_start - 0.2, self.x_end + 0.3, 200)
+        y_plot = f(x_plot)
+        ax.plot(x_plot, y_plot, color='blue', lw=2)
+        
+        # 
+        # Draw and label the specific partition points
+        for x, y in zip(self.x_vals, self.y_vals):
+            ax.vlines(x, 0, y, colors='gray', linestyles='dashed', alpha=0.5)
+            ax.scatter(x, y, color='red', s=50, zorder=5)
+            ax.text(x, y + 0.1 * max(self.y_vals), f"({round(x, 1)}, {round(y, 4)})", 
+                    fontsize=10, ha='center', fontweight='bold', 
+                    bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
+
+        # Visualise the trapeziums under the curve
+        for i in range(self.n):
+            trap_x = [self.x_vals[i], self.x_vals[i+1], self.x_vals[i+1], self.x_vals[i]]
+            trap_y = [0, 0, self.y_vals[i+1], self.y_vals[i]]
+            ax.fill(trap_x, trap_y, color='skyblue', alpha=0.2, edgecolor='black', lw=1)
+
+        # Formatting
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        ax.set_xlabel('$x$', fontsize=12)
+        ax.set_ylabel('$y$', fontsize=12)
+        ax.set_xlim(self.x_start - 0.5, self.x_end + 0.5)
+        ax.set_ylim(-0.5, max(self.y_vals) + 1.0)
+        ax.grid(True, linestyle=':', alpha=0.4)
+        
+        plt.text(self.x_end + 0.3, -0.2, "NOT TO\nSCALE", fontsize=10, ha='center', color='gray')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
