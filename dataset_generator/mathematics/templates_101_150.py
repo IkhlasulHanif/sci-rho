@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge, Circle, FancyArrowPatch
 from scipy.interpolate import PchipInterpolator
 from mathematics.helper import *
+from fractions import Fraction
 
 # target folder : "root/dataset/mathematics/image"
 DESTINATION_FOLDER = os.path.join(
@@ -4187,6 +4188,91 @@ class Mat145:
         ax.grid(True, linestyle=':', alpha=0.4)
         
         plt.text(self.x_end + 0.3, -0.2, "NOT TO\nSCALE", fontsize=10, ha='center', color='gray')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat146:
+    def __init__(self):
+        # f(x) = k / (ax + b)
+        self.k = round(randrange_float(2.0, 6.0, 0.01), 2)
+        self.a = round(randrange_float(1.0, 3.0, 0.01), 2)
+        self.b = round(randrange_float(1.0, 5.0, 0.01), 2)
+        
+        # Integration limits: x=0 to x=k_val (the unknown k)
+        self.k_val = round(randrange_float(2.0, 5.0, 0.01), 2)
+        
+        # self.answer is the numerical value of k that the student solves for
+        self.answer = self.k_val
+        
+        # Calculate the ratio for the ln(ratio) part of the area
+        # Area = (k/a) * [ln(a*k + b) - ln(b)] = (k/a) * ln((ak + b)/b)
+        ratio = round((self.a * self.k_val + self.b) / self.b, 2)
+        
+        self.description = (
+            f"The figure shows the curve $y = f(x)$. The region $R$ is bounded by the curve, "
+            f"the $x$-axis, and the lines $x=0$ and $x=k$. If the area of region $R$ is "
+            f"exactly $\\frac{{{self.k}}}{{{self.a}}} \\ln({ratio})$, determine the value of $k$."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The area }} R \\text{{ is defined by the integral:}} &\\\\"
+            f"\\text{{Area}} &= \\int_{{0}}^{{k}} \\frac{{{self.k}}}{{{self.a}x + {self.b}}} \\, dx \\\\"
+            f"\\text{{Using the integration rule }} \\int \\frac{{1}}{{cx+d}} \\, dx = \\frac{{1}}{{c}} \\ln|cx+d|: &\\\\"
+            f"\\text{{Area}} &= \\left[ \\frac{{{self.k}}}{{{self.a}}} \\ln|{self.a}x + {self.b}| \\right]_{{0}}^{{k}} \\\\"
+            f"\\text{{Substitute the limits:}} &\\\\"
+            f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln({self.a}k + {self.b}) - \\frac{{{self.k}}}{{{self.a}}} \\ln({self.b}) \\\\"
+            f"\\text{{Apply the property of logarithms }} \\ln(A) - \\ln(B) = \\ln\\left(\\frac{{A}}{{B}}\\right): &\\\\"
+            f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) \\\\"
+            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({round((self.a * self.k_val + self.b) / self.b, 10)}\\right). \\text{{ Equating the two:}} &\\\\"
+            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({round((self.a * self.k_val + self.b) / self.b, 10)}\\right) \\\\"
+            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {round((self.a * self.k_val + self.b) / self.b, 10)} \\\\"
+            f"{self.a}k + {self.b} &= {round(self.a * self.k_val + self.b, 10)} \\\\"
+            f"{self.a}k &= {round(self.a * self.k_val, 10)} \\\\"
+            f"k &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        def func(x):
+            return self.k / (self.a * x + self.b)
+
+        x_plot = np.linspace(0, self.k_val + 2, 200)
+        y_plot = func(x_plot)
+
+        ax.plot(x_plot, y_plot, color='black', lw=2)
+        
+        x_shade = np.linspace(0, self.k_val, 100)
+        y_shade = func(x_shade)
+        ax.fill_between(x_shade, y_shade, color='gray', alpha=0.3)
+        
+        ax.vlines([0, self.k_val], 0, [func(0), func(self.k_val)], colors='black', linestyles='--')
+
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        ax.text(0, -0.1 * max(y_plot), "$x=0$", ha='center', fontsize=12)
+        ax.text(self.k_val, -0.1 * max(y_plot), "$x=k$", ha='center', fontsize=12)
+        ax.text(self.k_val / 2, 0.2 * func(0), "$R$", fontsize=20, ha='center', fontweight='bold')
+        
+        ax.text(self.k_val + 1, func(self.k_val + 1) + 0.1 * max(y_plot), 
+                f"$y = \\frac{{{self.k}}}{{{self.a}x + {self.b}}}$", 
+                ha='center', fontsize=14)
+
+        ax.set_xlim(-0.5, self.k_val + 2)
+        ax.set_ylim(-0.2 * max(y_plot), max(y_plot) * 1.2)
+        ax.axis('off')
+
+        plt.text(self.k_val + 1.5, max(y_plot), "NOT TO\nSCALE", fontsize=10, ha='center')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
