@@ -3916,3 +3916,96 @@ class Mat142:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat143:
+    def __init__(self):
+        # Substance decays according to N = N0 * e^(-lambda * t)
+        # N0 is set to 100% for the percentage remaining model
+        self.n0 = 100
+        # Vary the half-life (t when N = 50)
+        self.half_life = round(randrange_float(20.0, 80.0, 1.0), 2)
+        
+        # Calculate lambda based on half-life: 
+        # 50 = 100 * e^(-lambda * half_life) -> 0.5 = e^(-lambda * half_life)
+        # ln(0.5) = -lambda * half_life -> lambda = -ln(0.5) / half_life
+        self.lambda_val = -math.log(0.5) / self.half_life
+        
+        # The answer is the decay constant lambda
+        self.answer = round(self.lambda_val, 4)
+
+        self.description = (
+            f"As shown in the figure, a radioactive substance decays according to the model $N = 100e^{{-\\lambda t}}$, "
+            f"where $N$ is the percentage of the substance remaining after $t$ years. "
+            f"Based on the coordinate of the indicated point on the curve, find the value of the decay constant $\\lambda$. "
+            f"Give your answer correct to four decimal places."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Logarithmic and exponential functions"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The decay model is given by: }} N &= 100e^{{-\\lambda t}} \\\\"
+            f"\\text{{Based on the graph, when }} t &= {self.half_life}\\,\\text{{years}}, N = 50\\% \\\\"
+            f"\\text{{Substitute these values into the model:}} & \\\\"
+            f"50 &= 100e^{{-\\lambda({self.half_life})}} \\\\"
+            f"\\text{{Divide by 100:}} & \\\\"
+            f"\\frac{{50}}{{100}} &= e^{{-{self.half_life}\\lambda}} \\\\"
+            f"0.5 &= e^{{-{self.half_life}\\lambda}} \\\\"
+            f"\\text{{Take the natural logarithm (ln) of both sides:}} & \\\\"
+            f"\\ln(0.5) &= \\ln(e^{{-{self.half_life}\\lambda}}) \\\\"
+            f"\\ln(0.5) &= -{self.half_life}\\lambda \\\\"
+            f"\\lambda &= \\frac{{\\ln(0.5)}}{{-{self.half_life}}} \\\\"
+            f"\\lambda &= \\frac{{{round(math.log(0.5), 10)}}}{{-{self.half_life}}} \\\\"
+            f"\\lambda &= {round(self.lambda_val, 10)} \\\\"
+            f"\\text{{To four decimal places:}} & \\\\"
+            f"\\lambda &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Time range for plotting: show a bit more than two half-lives
+        t_max = self.half_life * 2.2
+        t_vals = np.linspace(0, t_max, 500)
+        n_vals = self.n0 * np.exp(-self.lambda_val * t_vals)
+        
+        # Draw the exponential decay curve
+        ax.plot(t_vals, n_vals, color='black', lw=2)
+        
+        # Mark the specific point (half-life, 50%)
+        ax.scatter(self.half_life, 50, color='black', s=50, zorder=5)
+        
+        # Draw dashed lines to the axes to make the reading implicit
+        ax.plot([self.half_life, self.half_life], [0, 50], color='gray', linestyle='--', lw=1)
+        ax.plot([0, self.half_life], [50, 50], color='gray', linestyle='--', lw=1)
+        
+        # Label the marked point
+        ax.text(self.half_life + (t_max * 0.02), 52, f"({self.half_life}, 50)", fontsize=12, fontweight='bold')
+        
+        # Axis setup
+        ax.spines['left'].set_position('zero')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+        
+        # Labels and limits
+        ax.set_xlabel('Time $t$ (years)', loc='right', fontsize=12)
+        ax.set_ylabel('Percentage $N$', loc='top', fontsize=12, rotation=0)
+        
+        ax.set_xlim(0, t_max)
+        ax.set_ylim(0, 110)
+        
+        # Highlight initial value
+        ax.text(- (t_max * 0.05), 100, "100", fontsize=10, weight='bold')
+        
+        ax.grid(True, linestyle=':', alpha=0.6)
+        
+        plt.text(t_max * 0.8, 100, "NOT TO\nSCALE", fontsize=10, ha='center', 
+                 bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
