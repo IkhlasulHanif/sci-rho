@@ -5,6 +5,7 @@ import os
 import math
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge, Circle, FancyArrowPatch
+from matplotlib.ticker import MultipleLocator
 from scipy.interpolate import PchipInterpolator
 from mathematics.helper import *
 from fractions import Fraction
@@ -4377,20 +4378,6 @@ class Mat147:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
         
-import numpy as np
-import random as rnd
-import math
-import os
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from mathematics.helper import *
-
-# target folder : "root/dataset/mathematics/image"
-DESTINATION_FOLDER = os.path.join(
-    os.path.dirname(os.getcwd()), "dataset", "mathematics", "image"
-)
-os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-
 class Mat148:
     def __init__(self):
         # Configuration for convergent iteration: x_{n+1} = sqrt(x_n + c)
