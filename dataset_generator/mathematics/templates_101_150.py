@@ -4376,3 +4376,115 @@ class Mat147:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+import numpy as np
+import random as rnd
+import math
+import os
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from mathematics.helper import *
+
+# target folder : "root/dataset/mathematics/image"
+DESTINATION_FOLDER = os.path.join(
+    os.path.dirname(os.getcwd()), "dataset", "mathematics", "image"
+)
+os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+
+class Mat148:
+    def __init__(self):
+        # Configuration for convergent iteration: x_{n+1} = sqrt(x_n + c)
+        # Using specific increments to ensure x2 falls exactly on a grid line (0.1 steps)
+        # Choosing c such that sqrt(x1 + c) is a clean tenth (e.g., 1.2, 1.3, etc.)
+        valid_pairs = [
+            (0.5, 0.94), # x2 = 1.2
+            (0.5, 1.19), # x2 = 1.3
+            (0.5, 1.46), # x2 = 1.4
+            (1.0, 1.25), # x2 = 1.5
+            (1.0, 1.56), # x2 = 1.6
+            (1.5, 1.39), # x2 = 1.7
+            (1.5, 1.74), # x2 = 1.8
+        ]
+        
+        selected = rnd.choice(valid_pairs)
+        self.x1 = selected[0]
+        self.c = selected[1]
+        
+        # Calculate x2 and ensure it is the target for grid extraction
+        self.val_x2 = round(math.sqrt(self.x1 + self.c), 1)
+        self.answer = self.val_x2
+
+        self.description = (
+            "The staircase diagram in the figure illustrates the process of finding a root for an equation "
+            "using an iterative formula $x_{n+1} = F(x_n)$. Starting from the value $x_1$ indicated on the "
+            "horizontal axis, a vertical line is drawn to the curve $y = F(x)$, followed by a horizontal "
+            "line to the line $y = x$ to determine the next approximation. Based on the geometric steps "
+            "shown and the provided grid, identify the numerical value of $x_2$."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Numerical solution of equations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the figure, the starting value is: }} x_1 &= {self.x1}\\\\"
+            f"\\text{{The iterative process follows the path: }} (x_n, 0) \\rightarrow (x_n, F(x_n)) \\rightarrow (x_{{n+1}}, x_{{n+1}})\\\\"
+            f"\\text{{For the first iteration, the vertical line from }} x_1 \\text{{ meets the curve }} y = F(x) \\text{{ at:}} &\\\\"
+            f"y &= F(x_1)\\\\"
+            f"\\text{{The horizontal line from this point meets the line }} y = x \\text{{ where:}} &\\\\"
+            f"x_2 &= F(x_1)\\\\"
+            f"\\text{{Substituting the values from the geometric construction:}} &\\\\"
+            f"x_2 &= \\sqrt{{x_1 + c}}\\\\"
+            f"&= \\sqrt{{{round(self.x1, 10)} + {round(self.c, 10)}}}\\\\"
+            f"&= \\sqrt{{{round(self.x1 + self.c, 10)}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        def F(x): return np.sqrt(x + self.c)
+        
+        # Root calculation for plot limits
+        real_root = (1 + math.sqrt(1 + 4 * self.c)) / 2
+        limit = math.ceil(real_root) + 0.5
+        
+        x_vals = np.linspace(0, limit, 500)
+        
+        # Plot identity line and curve
+        ax.plot(x_vals, x_vals, color='blue', lw=2, label='$y=x$')
+        ax.plot(x_vals, F(x_vals), color='red', lw=2, label='$y=F(x)$')
+        
+        # Draw the first iteration step (Staircase)
+        # Vertical from x1 to curve
+        ax.plot([self.x1, self.x1], [0, self.val_x2], color='black', lw=1.5)
+        # Horizontal from curve to y=x
+        ax.plot([self.x1, self.val_x2], [self.val_x2, self.val_x2], color='black', lw=1.5)
+        # Drop down to x-axis to clearly indicate x2
+        ax.plot([self.val_x2, self.val_x2], [self.val_x2, 0], color='gray', lw=1, linestyle='--')
+
+        # Axis markings
+        ax.text(self.x1, -0.1, '$x_1$', ha='center', fontsize=14, fontweight='bold')
+        ax.text(self.val_x2, -0.1, '$x_2$', ha='center', fontsize=14, fontweight='bold', color='darkgreen')
+
+        # Set dense grid for precise visual extraction
+        ax.set_xticks(np.arange(0, limit + 0.1, 0.1), minor=True)
+        ax.set_xticks(np.arange(0, limit + 0.5, 0.5))
+        ax.set_yticks(np.arange(0, limit + 0.1, 0.1), minor=True)
+        ax.set_yticks(np.arange(0, limit + 0.5, 0.5))
+        
+        ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='gray', alpha=0.5)
+        ax.grid(True, which='minor', linestyle=':', linewidth=0.4, color='gray', alpha=0.3)
+        
+        ax.set_xlim(0, limit)
+        ax.set_ylim(0, limit)
+        ax.set_aspect('equal')
+        ax.set_xlabel("$x$")
+        ax.set_ylabel("$y$")
+        ax.legend(loc='upper left')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
