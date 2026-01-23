@@ -4009,3 +4009,91 @@ class Mat143:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+
+class Mat144:
+    def __init__(self):
+        # f(x) = k * e^(ax + b)
+        self.k = rnd.randint(1, 4)
+        self.a = rnd.randint(1, 2)
+        self.b = rnd.randint(-5, -2)
+        
+        # Integration limits
+        self.x1 = rnd.randint(2, 3)
+        self.x2 = self.x1 + 1
+        
+        # Area = [ (k/a) * e^(ax + b) ] from x1 to x2
+        upper = (self.k / self.a) * math.exp(self.a * self.x2 + self.b)
+        lower = (self.k / self.a) * math.exp(self.a * self.x1 + self.b)
+        
+        self.answer = upper - lower
+
+        self.description = (
+            "The figure shows a region bounded by a curve, the $x$-axis, and two vertical lines. "
+            "Find the exact area of this shaded region."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Integration"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The function is given by: }} y &= {self.k}e^{{{self.a}x {self.b}}}\\\\"
+            f"\\text{{The area }} A \\text{{ is the definite integral from }} x = {self.x1} \\text{{ to }} x = {self.x2}: &\\\\"
+            f"A &= \\int_{{{self.x1}}}^{{{self.x2}}} {self.k}e^{{{self.a}x {self.b}}} \\, dx\\\\"
+            f"\\text{{Using the rule }} \\int e^{{fx+g}} \\, dx = \\frac{{1}}{{f}}e^{{fx+g}}: &\\\\"
+            f"A &= \\left[ \\frac{{{self.k}}}{{{self.a}}} e^{{{self.a}x {self.b}}} \\right]_{{{self.x1}}}^{{{self.x2}}}\\\\"
+            f"\\text{{Substitute the bounds:}} &\\\\"
+            f"A &= \\left( \\frac{{{self.k}}}{{{self.a}}} e^{{{self.a}({self.x2}) {self.b}}} \\right) - \\left( \\frac{{{self.k}}}{{{self.a}}} e^{{{self.a}({self.x1}) {self.b}}} \\right)\\\\"
+            f"A &= \\left( \\frac{{{self.k}}}{{{self.a}}} e^{{{self.a * self.x2 + self.b}}} \\right) - \\left( \\frac{{{self.k}}}{{{self.a}}} e^{{{self.a * self.x1 + self.b}}} \\right)\\\\"
+            f"\\text{{Evaluating the exponential terms:}} &\\\\"
+            f"A &= {round((self.k / self.a) * math.exp(self.a * self.x2 + self.b), 10)} - {round((self.k / self.a) * math.exp(self.a * self.x1 + self.b), 10)}\\\\"
+            f"A &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Define the function
+        def func(x):
+            return self.k * np.exp(self.a * x + self.b)
+
+        # X range for plotting (a bit wider than the shaded region)
+        x_plot = np.linspace(self.x1 - 0.5, self.x2 + 0.5, 200)
+        y_plot = func(x_plot)
+
+        # Plot curve
+        ax.plot(x_plot, y_plot, color='black', lw=2)
+        
+        # Shading
+        x_shade = np.linspace(self.x1, self.x2, 100)
+        y_shade = func(x_shade)
+        ax.fill_between(x_shade, y_shade, color='gray', alpha=0.3)
+        
+        # Vertical boundary lines
+        ax.vlines([self.x1, self.x2], 0, [func(self.x1), func(self.x2)], colors='black', linestyles='--')
+
+        # Formatting axes
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        # Labels
+        ax.text(self.x1, -0.1 * max(y_plot), f"$x={self.x1}$", ha='center', fontsize=12)
+        ax.text(self.x2, -0.1 * max(y_plot), f"$x={self.x2}$", ha='center', fontsize=12)
+        
+        # Equation label
+        mid_x = (self.x1 + self.x2) / 2
+        ax.text(mid_x, func(mid_x) + 0.1 * max(y_plot), 
+                f"$y = {self.k}e^{{{self.a}x {self.b}}}$", 
+                ha='center', fontsize=14, fontweight='bold')
+
+        ax.set_xlim(self.x1 - 1, self.x2 + 1)
+        ax.set_ylim(-0.2 * max(y_plot), max(y_plot) * 1.2)
+        ax.axis('off')
+
+        plt.text(self.x2 + 0.5, max(y_plot), "NOT TO\nSCALE", fontsize=10, ha='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
