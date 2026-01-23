@@ -2199,3 +2199,130 @@ class Mat173:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
     
+class Mat174:
+    def __init__(self):
+        # Varying physical properties
+        self.mass = round(randrange_float(8.0, 15.0, 0.01), 2)
+        # alpha = tan^-1(slope). Using slope values between 0.3 and 0.7
+        self.slope = round(randrange_float(0.3, 0.7, 0.01), 2)
+        self.alpha_deg = math.degrees(math.atan(self.slope))
+        
+        self.force_up = round(randrange_float(15.0, 30.0, 0.01), 2)
+        self.mu = round(randrange_float(0.1, 0.25, 0.01), 2)
+        self.distance = round(randrange_float(1.5, 5.0, 0.01), 2)
+        
+        # Solving for time t
+        g = 10
+        rad = math.atan(self.slope)
+        normal = self.mass * g * math.cos(rad)
+        friction = self.mu * normal
+        weight_parallel = self.mass * g * math.sin(rad)
+        
+        resultant_down = weight_parallel - friction - self.force_up
+        acceleration = resultant_down / self.mass
+        
+        # Ensure acceleration is positive for downward motion from rest
+        if acceleration <= 0:
+            self.mass += 10.0
+            normal = self.mass * g * math.cos(rad)
+            friction = self.mu * normal
+            weight_parallel = self.mass * g * math.sin(rad)
+            resultant_down = weight_parallel - friction - self.force_up
+            acceleration = resultant_down / self.mass
+            
+        # s = 0.5 * a * t^2 => t = sqrt(2s / a)
+        self.answer = math.sqrt((2 * self.distance) / acceleration)
+
+        self.description = (
+            "Based on the figure, a block is placed on a rough plane inclined at an angle $\\alpha$ to the horizontal. "
+            "A constant force is applied to the block directly up the plane. "
+            "Find the time that it takes for the block to move from rest for the specified distance down the plane."
+        )
+        
+        self.topic = "Mechanics"
+        self.subtopic = "Newton’s laws of motion"
+        self.source = "Adapted from AS & A level March 2025 Question Paper"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Normal force (}} R \\text{{) perpendicular to the plane:}} &\\\\"
+            f"R &= m g \\cos \\alpha\\\\"
+            f"&= {self.mass} \\times 10 \\times \\cos(\\arctan({self.slope}))\\\\"
+            f"&= {round(self.mass * 10 * math.cos(math.atan(self.slope)), 10)}\\,\\text{{N}}\\\\"
+            f"\\text{{Frictional force (}} F \\text{{) opposing the motion:}} &\\\\"
+            f"F &= \\mu R\\\\"
+            f"&= {self.mu} \\times {round(self.mass * 10 * math.cos(math.atan(self.slope)), 10)}\\\\"
+            f"&= {round(self.mu * self.mass * 10 * math.cos(math.atan(self.slope)), 10)}\\,\\text{{N}}\\\\"
+            f"\\text{{Net force down the plane:}} &\\\\"
+            f"F_{{net}} &= m g \\sin \\alpha - F - F_{{up}}\\\\"
+            f"&= ({self.mass} \\times 10 \\times \\sin(\\arctan({self.slope}))) - {round(self.mu * self.mass * 10 * math.cos(math.atan(self.slope)), 10)} - {self.force_up}\\\\"
+            f"&= {round(self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up, 10)}\\,\\text{{N}}\\\\"
+            f"\\text{{Acceleration (}} a \\text{{) down the plane:}} &\\\\"
+            f"a &= \\frac{{F_{{net}}}}{{m}}\\\\"
+            f"&= \\frac{{{round(self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up, 10)}}}{{{self.mass}}}\\\\"
+            f"&= {round((self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}\\,\\text{{m s}}^{{-2}}\\\\"
+            f"\\text{{Using }} s = ut + \\frac{{1}}{{2}}at^2 \\text{{ where }} u = 0: &\\\\"
+            f"t &= \\sqrt{{\\frac{{2s}}{{a}}}}\\\\"
+            f"&= \\sqrt{{\\frac{{2 \\times {self.distance}}}{{{round((self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}}}}}\\\\"
+            f"&= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+)
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.set_xlim(-1, 11)
+        ax.set_ylim(-1, 8)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        angle_rad = math.atan(self.slope)
+        
+        # Inclined Plane
+        p_start = np.array([0, 0])
+        p_end = np.array([10, 10 * self.slope])
+        ax.plot([p_start[0], p_end[0]], [p_start[1], p_end[1]], color='black', lw=2)
+        ax.plot([0, 3], [0, 0], color='black', linestyle='--', lw=1)
+        
+        # Angle alpha arc and label
+        arc = patches.Arc((0, 0), 2, 2, theta1=0, theta2=math.degrees(angle_rad), color='black')
+        ax.add_patch(arc)
+        ax.text(1.2, 0.3, r"$\alpha$", fontsize=18)
+
+        # Block
+        b_width = randrange_float(1.5, 2.5, 0.1)
+        b_height = b_width * 0.6
+        c_dist = 6
+        block_center = np.array([c_dist * math.cos(angle_rad), c_dist * math.sin(angle_rad)])
+        
+        rot = np.array([[math.cos(angle_rad), -math.sin(angle_rad)], 
+                        [math.sin(angle_rad), math.cos(angle_rad)]])
+        
+        corners = np.array([[-b_width/2, 0], [b_width/2, 0], [b_width/2, b_height], [-b_width/2, b_height]])
+        block_pts = np.dot(corners, rot.T) + block_center
+        poly = plt.Polygon(block_pts, closed=True, facecolor='lightgray', edgecolor='black', lw=1.5)
+        ax.add_patch(poly)
+
+        # Labels on block
+        ax.text(block_center[0] - 0.5 * math.sin(angle_rad), 
+                block_center[1] + (b_height + 0.3) * math.cos(angle_rad), 
+                f"{self.mass} kg", fontsize=14, ha='center')
+
+        # Upward Force Arrow
+        arrow_start = block_center + np.dot(np.array([b_width/2, b_height/2]), rot.T)
+        arrow_end = arrow_start + np.dot(np.array([2, 0]), rot.T)
+        ax.annotate('', xy=arrow_end, xytext=arrow_start, 
+                    arrowprops=dict(arrowstyle='->', lw=1.5, color='black'))
+        ax.text(arrow_end[0] + 0.2, arrow_end[1], f"{self.force_up} N", fontsize=14)
+
+        # Variable Info (Bottom Right for clarity)
+        info_text = (
+            f"$\\alpha = \\tan^{{-1}}({self.slope})$\n"
+            f"$\\mu = {self.mu}$\n"
+            f"Distance to move: {self.distance} m"
+        )
+        ax.text(9.5, 0.5, info_text, fontsize=13, ha='right', va='bottom', 
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
