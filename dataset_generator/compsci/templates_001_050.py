@@ -1417,3 +1417,238 @@ class Com023:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com024:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.answer = (not(self.input_1 or self.input_2)) ^ self.input_3
+        
+        self.description = f"A computer scientist has created the following logic circuit shown in this image. What is the output of P if Input A is given {self.input_1}, B is given {self.input_2}, and C is given {self.input_3}?"
+        self.topic = "Hardware"
+        self.subtopic = "Logic Gates and Logic Circuits"
+        self.source = "Adapted from OCR H446/01 12 June 2023"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
+            "\\text{{1. Analyze the first stage (NOR gate):}} & \\\\"
+            "Q &= \\neg(A \\lor B) \\\\"
+            f"&= \\neg({self.input_1} \\lor {self.input_2}) \\\\"
+            f"&= \\neg({int(self.input_1 or self.input_2)}) \\\\"
+            f"&= {int(not(self.input_1 or self.input_2))} \\\\"
+            "\\text{{2. Analyze the final stage (XOR gate):}} & \\\\"
+            "P &= Q \\oplus C \\\\"
+            f"&= {int(not(self.input_1 or self.input_2))} \\oplus {self.input_3} \\\\"
+            f"&= {int(self.answer)} \\\\"
+            f"\\text{{Final Result P}} &= {int(self.answer)}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com024temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com025:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.S = self.input_1 ^ self.input_2
+        self.C = self.input_1 and self.input_2
+        self.concatenated = str(self.S) + str(self.C)
+        self.answer = int(self.concatenated, 2)
+        
+        self.description = f"The diagram shows a logic circuit where D0 will be given the input {self.input_1} and D1 will be given the input {self.input_2}. The circuit produces outputs S and C, which are concatenated to form a two-bit binary number with S as the most significant bit. Convert this two-bit binary number into its decimal value and state this as the final answer."
+        self.topic = "Hardware"
+        self.subtopic = "Logic Gates and Logic Circuits"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input }} D_0 &= {self.input_1} \\\\"
+            f"\\text{{Input }} D_1 &= {self.input_2} \\\\"
+            "\\text{{1. Calculate S (Sum) using XOR logic:}} & \\\\"
+            "S &= D_0 \\oplus D_1 \\\\"
+            f"&= {self.input_1} \\oplus {self.input_2} \\\\"
+            f"&= {self.S} \\\\"
+            "\\text{{2. Calculate C (Carry) using AND logic:}} & \\\\"
+            "C &= D_0 \\wedge D_1 \\\\"
+            f"&= {self.input_1} \\wedge {self.input_2} \\\\"
+            f"&= {int(self.C)} \\\\"
+            "\\text{{3. Form the two-bit binary number (S as MSB):}} & \\\\"
+            f"\\text{{Binary}} &= (S, C)_2 \\\\"
+            f"&= ({self.S}{int(self.C)})_2 \\\\"
+            "\\text{{4. Convert binary to decimal:}} & \\\\"
+            f"\\text{{Value}} &= (S \\times 2^1) + (C \\times 2^0) \\\\"
+            f"&= ({self.S} \\times 2) + ({int(self.C)} \\times 1) \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com025temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com026:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.S = (self.input_1 ^ self.input_2) ^ self.input_3
+        self.C = ((self.input_1 ^ self.input_2) and self.input_3) or (self.input_1 and self.input_2)
+        self.concatenated = str(self.S) + str(self.C)
+        self.answer = int(self.concatenated, 2)
+        
+        self.description = f"The diagram shows a logic circuit where X is given the input {self.input_1}, Y is given the input {self.input_2} and Z is given the input {self.input_3}. The circuit produces outputs S and C, which are concatenated to form a two-bit binary number with S as the most significant bit. Convert this two-bit binary number into its decimal value and state this as the final answer."
+        self.topic = "Hardware"
+        self.subtopic = "Logic Gates and Logic Circuits"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} X &= {self.input_1}, Y = {self.input_2}, Z = {self.input_3} \\\\"
+            "\\text{{1. Calculate S (Sum) using XOR logic:}} & \\\\"
+            "S &= (X \\oplus Y) \\oplus Z \\\\"
+            f"&= ({self.input_1} \\oplus {self.input_2}) \\oplus {self.input_3} \\\\"
+            f"&= {int(self.input_1 ^ self.input_2)} \\oplus {self.input_3} \\\\"
+            f"&= {self.S} \\\\"
+            "\\text{{2. Calculate C (Carry) using logic:}} & \\\\"
+            "C &= ((X \\oplus Y) \\land Z) \\lor (X \\land Y) \\\\"
+            f"&= (({self.input_1} \\oplus {self.input_2}) \\land {self.input_3}) \\lor ({self.input_1} \\land {self.input_2}) \\\\"
+            f"&= ({int(self.input_1 ^ self.input_2)} \\land {self.input_3}) \\lor {int(self.input_1 and self.input_2)} \\\\"
+            f"&= {int((self.input_1 ^ self.input_2) and self.input_3)} \\lor {int(self.input_1 and self.input_2)} \\\\"
+            f"&= {int(self.C)} \\\\"
+            "\\text{{3. Form the two-bit binary number (S as MSB):}} & \\\\"
+            "\\text{{Binary}} &= (S, C)_2 \\\\"
+            f"&= ({self.S}{int(self.C)})_2 \\\\"
+            "\\text{{4. Convert binary to decimal:}} & \\\\"
+            "\\text{{Value}} &= (S \\times 2^1) + (C \\times 2^0) \\\\"
+            f"&= ({self.S} \\times 2) + ({int(self.C)} \\times 1) \\\\"
+            f"&= {int(str(self.S) + str(int(self.C)), 2)} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com026temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com027:
+
+    def __init__(self):
+        self.temp_threshold = 80
+        self.pressure_threshold = 200
+        self.RPM_threshold = 5000
+        self.temp = rnd.randint(70, 90)
+        self.pressure = rnd.randint(190, 210)
+        self.RPM = rnd.randint(4900, 5100)
+        self.input_A = 1 if self.temp > self.temp_threshold else 0
+        self.input_B = 1 if self.pressure > self.pressure_threshold else 0
+        self.input_C = 1 if self.RPM > self.RPM_threshold else 0
+        self.answer = int(((not(self.input_C)) or self.input_B) and self.input_A)
+
+        self.description = (f"The figure given below shows a logic circuit that gives a warning light to the pilot of an aircraft depending on the engine conditions. The warning light becomes ON when there is a HIGH (1) level at output W." 
+                            f"The temperature sensor outputs HIGH when temperature > {self.temp_threshold}°C. The pressure sensor outputs HIGH when pressure > {self.pressure_threshold} kPa. The RPM sensor outputs HIGH when RPM > {self.RPM_threshold} rpm. "
+                            f"If the measured values are: Temperature = {self.temp}°C, Pressure = {self.pressure} kPa, RPM = {self.RPM} rpm, determine the state of the warning light W (0 or 1).")
+        self.topic = "Hardware"
+        self.subtopic = "Logic Gates and Logic Circuits"
+        self.source = "Adapted from Chegg"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Determine input states from sensor values:}} &\\\\"
+            f"\\text{{Input A (Temperature)}} &= ({self.temp} > {self.temp_threshold}) \\rightarrow {self.input_A}\\\\"
+            f"\\text{{Input B (Pressure)}} &= ({self.pressure} > {self.pressure_threshold}) \\rightarrow {self.input_B}\\\\"
+            f"\\text{{Input C (RPM)}} &= ({self.RPM} > {self.RPM_threshold}) \\rightarrow {self.input_C}\\\\"
+            f"\\text{{2. Analyze the logic circuit gates:}} &\\\\"
+            f"\\text{{The RPM input (C) passes through a NOT gate:}} &\\\\"
+            f"\\text{{NOT C}} &= \\neg {self.input_C} = {int(not self.input_C)}\\\\"
+            f"\\text{{The output of the NOT gate and Pressure (B) enter an OR gate:}} &\\\\"
+            f"\\text{{OR Output}} &= (\\neg C \\lor B) = ({int(not self.input_C)} \\lor {self.input_B}) = {int(not self.input_C or self.input_B)}\\\\"
+            f"\\text{{The OR output and Temperature (A) enter an AND gate for the final output W:}} &\\\\"
+            f"W &= ((\\neg C \\lor B) \\land A)\\\\"
+            f"&= ({int(not self.input_C or self.input_B)} \\land {self.input_A})\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com027temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com028:
+
+    def __init__(self):
+        self.input_1 = rnd.choice([0, 1])
+        self.input_2 = rnd.choice([0, 1])
+        self.input_3 = rnd.choice([0, 1])
+        self.answer = int((self.input_1 ^ self.input_3) or (not(self.input_2 and (not(self.input_3)))))
+
+        self.description = f"Here is an image of a logic circuit where input A = {self.input_1}, input B = {self.input_2}, and input C = {self.input_3}. Based on the circuit shown, what is the final output X?"
+        self.topic = "Hardware"
+        self.subtopic = "Logic Gates and Logic Circuits"
+        self.source = "Adapted from PapaCambridge 1.3.1 Logic Gates"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
+            "\\text{{1. Analyze the XOR gate (Inputs A and C):}} & \\\\"
+            "G_1 &= A \\oplus C \\\\"
+            f"&= {self.input_1} \\oplus {self.input_3} \\\\"
+            f"&= {int(self.input_1 ^ self.input_3)} \\\\"
+            "\\text{{2. Analyze the lower branch (Inputs B and C):}} & \\\\"
+            f"\\text{{NOT C}} &= \\neg C = \\neg({self.input_3}) = {int(not self.input_3)} \\\\"
+            "G_2 &= B \\land (\\neg C) \\\\"
+            f"&= {self.input_2} \\land {int(not self.input_3)} \\\\"
+            f"&= {int(self.input_2 and (not self.input_3))} \\\\"
+            "\\text{{3. Analyze the NAND logic in the lower branch:}} & \\\\"
+            "G_3 &= \\neg G_2 \\\\"
+            f"&= \\neg({int(self.input_2 and (not self.input_3))}) \\\\"
+            f"&= {int(not (self.input_2 and (not self.input_3)))} \\\\"
+            "\\text{{4. Analyze the final OR gate (G1 or G3):}} & \\\\"
+            "X &= G_1 \\lor G_3 \\\\"
+            f"&= {int(self.input_1 ^ self.input_3)} \\lor {int(not (self.input_2 and (not self.input_3)))} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result X}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com028temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
