@@ -3836,3 +3836,83 @@ class Mat141:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat142:
+    def __init__(self):
+        # Parameters for N = N0 * b^(kt)
+        self.n0 = round(randrange_float(50, 150, 10), 2)
+        self.b = round(randrange_float(2.0, 4.0, 0.1), 2)
+        self.k = round(randrange_float(0.4, 0.6, 0.01), 2)
+        
+        # Threshold for the population
+        self.threshold = round(randrange_float(800, 1200, 50), 2)
+        
+        # Solve N0 * b^(kt) = threshold
+        # kt * ln(b) = ln(threshold / N0)
+        # t = ln(threshold / N0) / (k * ln(b))
+        self.t_exact = math.log(self.threshold / self.n0) / (self.k * math.log(self.b))
+        
+        # The answer is the smallest integer t such that N > threshold
+        self.answer = math.ceil(self.t_exact + 1e-9)
+
+        self.description = (
+            f"As shown in the figure, the growth of a bacterial culture is modeled by $N = {self.n0} \\times {self.b}^{{{self.k}t}}$, "
+            f"where $N$ is the number of bacteria after $t$ hours. "
+            f"Based on the figure, find the smallest integer value of $t$ for which the population exceeds {self.threshold}."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Logarithmic and exponential functions"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The population growth model is given by: }} N &= N_0 \\times b^{{kt}} \\\\"
+            f"\\text{{Substitute the given values: }} {self.threshold} &< {self.n0} \\times {self.b}^{{{self.k}t}} \\\\"
+            f"\\text{{Divide both sides by }} {self.n0}: \\frac{{{self.threshold}}}{{{self.n0}}} &< {self.b}^{{{self.k}t}} \\\\"
+            f"{round(self.threshold / self.n0, 10)} &< {self.b}^{{{self.k}t}} \\\\"
+            f"\\text{{Take the natural logarithm (ln) of both sides: }} \\ln({round(self.threshold / self.n0, 10)}) &< \\ln({self.b}^{{{self.k}t}}) \\\\"
+            f"\\ln({round(self.threshold / self.n0, 10)}) &< {self.k}t \\ln({self.b}) \\\\"
+            f"\\text{{Rearrange to solve for }} t: t &> \\frac{{\\ln({round(self.threshold / self.n0, 10)})}}{{{self.k} \\ln({self.b})}} \\\\"
+            f"t &> \\frac{{{round(math.log(self.threshold / self.n0), 10)}}}{{{round(self.k * math.log(self.b), 10)}}} \\\\"
+            f"t &> {round(self.t_exact, 10)} \\\\"
+            f"\\text{{The smallest integer }} t \\text{{ satisfying this inequality is: }} t &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # t range for plotting
+        t_max = math.ceil(self.t_exact) + 2
+        t_vals = np.linspace(0, t_max, 100)
+        n_vals = self.n0 * (self.b ** (self.k * t_vals))
+        
+        # Plot growth curve
+        ax.plot(t_vals, n_vals, color='black', lw=2, label='Population Growth')
+        
+        # Plot threshold line
+        ax.axhline(y=self.threshold, color='red', linestyle='--', lw=1.5)
+        
+        # Shading the region above threshold
+        t_fill = np.linspace(self.t_exact, t_max, 50)
+        n_fill = self.n0 * (self.b ** (self.k * t_fill))
+        ax.fill_between(t_fill, n_fill, self.threshold, color='gray', alpha=0.3)
+        
+        # Axis labels
+        ax.set_xlabel('Time $t$ (hours)', fontsize=12)
+        ax.set_ylabel('Number of bacteria $N$', fontsize=12)
+        
+        # Threshold label
+        ax.text(0.2, self.threshold + 20, f"$N = {self.threshold}$", color='red', fontsize=10, fontweight='bold')
+        
+        # Limits and styling
+        ax.set_xlim(0, t_max)
+        ax.set_ylim(0, max(n_vals) * 1.1)
+        ax.grid(True, linestyle=':', alpha=0.7)
+        
+        plt.text(t_max * 0.85, max(n_vals) * 0.05, "NOT TO\nSCALE", fontsize=10, ha='center', bbox=dict(facecolor='white', alpha=0.8))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
