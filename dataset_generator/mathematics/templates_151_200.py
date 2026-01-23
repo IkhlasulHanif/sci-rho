@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import random as rnd
 import os
+import math
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from scipy.optimize import brentq
@@ -1998,4 +1999,106 @@ class Mat170:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
+        plt.close()
+        
+class Mat171:
+    def __init__(self):
+        # Varying forces using randrange_float with step 0.01
+        self.force_horizontal = round(randrange_float(35.0, 55.0, 0.01), 2)
+        self.force_vertical = round(randrange_float(25.0, 45.0, 0.01), 2)
+        
+        # Solving for X and theta for equilibrium
+        # X = sqrt(H^2 + V^2)
+        # theta = arctan(V/H)
+        x_val = math.sqrt(self.force_horizontal**2 + self.force_vertical**2)
+        theta_val = math.degrees(math.atan2(self.force_vertical, self.force_horizontal))
+        
+        # Final answer is the product of magnitude and angle
+        self.answer = x_val * theta_val
+
+        self.description = (
+            "Three coplanar forces act at a point in the directions shown in the diagram. "
+            "Given that the forces are in equilibrium, find the value of $X\\theta$ based on the figure."
+        )
+        
+        self.topic = "Mechanics"
+        self.subtopic = "Forces and equilibrium"
+        self.source = "Adapted from AS & A level March 2025 Question Paper"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Resolving forces horizontally (}} \\sum F_x = 0 \\text{{):}} &\\\\"
+            f"X \\cos \\theta - {self.force_horizontal} &= 0\\\\"
+            f"X \\cos \\theta &= {self.force_horizontal} \\quad (1)\\\\"
+            f"\\text{{Resolving forces vertically (}} \\sum F_y = 0 \\text{{):}} &\\\\"
+            f"{self.force_vertical} - X \\sin \\theta &= 0\\\\"
+            f"X \\sin \\theta &= {self.force_vertical} \\quad (2)\\\\"
+            f"\\text{{Dividing equation (2) by (1) to find }} \\theta: &\\\\"
+            f"\\frac{{X \\sin \\theta}}{{X \\cos \\theta}} &= \\frac{{{self.force_vertical}}}{{{self.force_horizontal}}}\\\\"
+            f"\\tan \\theta &= {round(self.force_vertical / self.force_horizontal, 10)}\\\\"
+            f"\\theta &= \\arctan({round(self.force_vertical / self.force_horizontal, 10)})\\\\"
+            f"\\theta &= {round(math.degrees(math.atan2(self.force_vertical, self.force_horizontal)), 10)}^\\circ\\\\"
+            f"\\text{{Finding magnitude }} X \\text{{ using }} X = \\sqrt{{F_x^2 + F_y^2}}: &\\\\"
+            f"X &= \\sqrt{{{self.force_horizontal}^2 + {self.force_vertical}^2}}\\\\"
+            f"X &= \\sqrt{{{round(self.force_horizontal**2, 10)} + {round(self.force_vertical**2, 10)}}}\\\\"
+            f"X &= {round(math.sqrt(self.force_horizontal**2 + self.force_vertical**2), 10)}\\,\\text{{N}}\\\\"
+            f"\\text{{Calculating the product }} X\\theta: &\\\\"
+            f"X\\theta &= {round(math.sqrt(self.force_horizontal**2 + self.force_vertical**2), 10)} \\times {round(math.degrees(math.atan2(self.force_vertical, self.force_horizontal)), 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_xlim(-1.6, 1.6)
+        ax.set_ylim(-1.6, 1.6)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        origin = np.array([0, 0])
+        
+        # Proportional scaling: longest vector will be approx 1.3 units
+        x_mag = math.sqrt(self.force_horizontal**2 + self.force_vertical**2)
+        max_f = max(self.force_horizontal, self.force_vertical, x_mag)
+        scale = 1.3 / max_f
+
+        # Force 1: Horizontal to the left (length proportional to self.force_horizontal)
+        len1 = self.force_horizontal * scale
+        p1 = np.array([-len1, 0])
+        ax.annotate('', xy=p1, xytext=origin, arrowprops=dict(arrowstyle='->', lw=2))
+        ax.text(p1[0] - 0.1, p1[1], f"{self.force_horizontal} N", ha='right', va='center', fontsize=16)
+
+        # Force 2: Vertical upwards (length proportional to self.force_vertical)
+        len2 = self.force_vertical * scale
+        p2 = np.array([0, len2])
+        ax.annotate('', xy=p2, xytext=origin, arrowprops=dict(arrowstyle='->', lw=2))
+        ax.text(p2[0], p2[1] + 0.1, f"{self.force_vertical} N", ha='center', va='bottom', fontsize=16)
+
+        # Force 3: Vector X (length proportional to magnitude x_mag)
+        len3 = x_mag * scale
+        draw_theta = math.degrees(math.atan2(self.force_vertical, self.force_horizontal))
+        rad_theta = np.radians(-draw_theta)
+        p3 = np.array([len3 * np.cos(rad_theta), len3 * np.sin(rad_theta)])
+        ax.annotate('', xy=p3, xytext=origin, arrowprops=dict(arrowstyle='->', lw=2))
+        ax.text(p3[0] + 0.05, p3[1] - 0.05, "$X$ N", ha='left', va='top', fontsize=16)
+
+        # Reference dotted line
+        ax.plot([0, 1.3], [0, 0], color='black', linestyle='--', lw=1)
+        
+        # Right angle box
+        rect = patches.Rectangle((-0.15, 0), 0.15, 0.15, linewidth=1, edgecolor='black', facecolor='none')
+        ax.add_patch(rect)
+
+        # Angle arc
+        arc = patches.Arc(origin, 0.6, 0.6, theta1=-draw_theta, theta2=0, color='black', lw=1)
+        ax.add_patch(arc)
+        
+        # Theta label
+        mid_angle = -draw_theta / 2
+        tx = 0.45 * np.cos(np.radians(mid_angle))
+        ty = 0.45 * np.sin(np.radians(mid_angle))
+        ax.text(tx + 0.1, ty, "$\\theta^\\circ$", fontsize=16, va='center')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
