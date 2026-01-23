@@ -4157,6 +4157,107 @@ class Mat087:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat088:
+    def __init__(self):
+        # vary radius and sloping edge s for the cone/hemisphere solid
+        self.r = round(randrange_float(4.0, 8.0, 0.01), 2)
+        # ensure s > r to have a valid real height for the cone
+        self.s = round(randrange_float(self.r + 2.0, self.r + 6.0, 0.01), 2)
+        
+        # Calculations for volume
+        # height of cone h_cone = sqrt(s^2 - r^2)
+        h_cone = math.sqrt(self.s**2 - self.r**2)
+        # Volume = Vol_hemisphere + Vol_cone
+        # Vol = (2/3)*pi*r^3 + (1/3)*pi*r^2*h_cone
+        vol_hemisphere = (2/3) * math.pi * (self.r**3)
+        vol_cone = (1/3) * math.pi * (self.r**2) * h_cone
+        
+        self.answer = vol_hemisphere + vol_cone
+
+        self.description = (
+            "The diagram shows a solid made from a hemisphere and a cone, both with the same radius. "
+            "Based on the measurements shown in the figure, calculate the total volume of the solid."
+        )
+        
+        self.topic = "Trigonometry"
+        self.subtopic = "Pythagoras’ theorem and trigonometry Notes and examples in 3D"
+        self.source = "Adapted from IGCSE June 2025 Question Paper 41"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Radius, }} r &= {round(self.r, 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{Sloping edge, }} s &= {round(self.s, 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{1. Find the height of the cone, }} h_{{cone}} \\text{{ using Pythagoras' theorem:}} & \\\\"
+            f"h_{{cone}} &= \\sqrt{{s^2 - r^2}} \\\\"
+            f"&= \\sqrt{{{round(self.s, 10)}^2 - {round(self.r, 10)}^2}} \\\\"
+            f"&= \\sqrt{{{round(self.s**2, 10)} - {round(self.r**2, 10)}}} \\\\"
+            f"&= {round(math.sqrt(self.s**2 - self.r**2), 10)}\\,\\text{{cm}} \\\\"
+            f"\\text{{2. Calculate the volume of the hemisphere, }} V_{{h}}: & \\\\"
+            f"V_{{h}} &= \\frac{2}{3} \\pi r^3 \\\\"
+            f"&= \\frac{2}{3} \\times \\pi \\times {round(self.r, 10)}^3 \\\\"
+            f"&= {round((2/3) * math.pi * (self.r**3), 10)}\\,\\text{{cm}}^3 \\\\"
+            f"\\text{{3. Calculate the volume of the cone, }} V_{{c}}: & \\\\"
+            f"V_{{c}} &= \\frac{1}{3} \\pi r^2 h_{{cone}} \\\\"
+            f"&= \\frac{1}{3} \\times \\pi \\times {round(self.r, 10)}^2 \\times {round(math.sqrt(self.s**2 - self.r**2), 10)} \\\\"
+            f"&= {round((1/3) * math.pi * (self.r**2) * math.sqrt(self.s**2 - self.r**2), 10)}\\,\\text{{cm}}^3 \\\\"
+            f"\\text{{Total Volume}} &= V_{{h}} + V_{{c}} \\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^3"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_xlim(-10, 10)
+        ax.set_ylim(-12, 12)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Geometry parameters
+        # Scale drawing for visual representation (normalized)
+        scale = 6.0 / self.r
+        r_draw = self.r * scale
+        h_cone_val = math.sqrt(self.s**2 - self.r**2)
+        h_draw = h_cone_val * scale
+        
+        # Center of base is at (0,0)
+        # Draw Hemisphere (bottom)
+        # Ellipse for the interface
+        interface = patches.Ellipse((0, 0), 2 * r_draw, 0.6 * r_draw, color='black', fill=False, lw=2)
+        ax.add_patch(interface)
+        # Dotted back of ellipse
+        dotted_back = patches.Arc((0, 0), 2 * r_draw, 0.6 * r_draw, theta1=0, theta2=180, color='black', lw=1, ls='--')
+        ax.add_patch(dotted_back)
+        
+        # Lower arc of hemisphere
+        hemisphere_arc = patches.Arc((0, 0), 2 * r_draw, 2 * r_draw, theta1=180, theta2=360, color='black', lw=2)
+        ax.add_patch(hemisphere_arc)
+        
+        # Draw Cone (top)
+        # Apex is at (0, h_draw)
+        ax.plot([-r_draw, 0], [0, h_draw], color='black', lw=2)
+        ax.plot([r_draw, 0], [0, h_draw], color='black', lw=2)
+        
+        # Radius line and label
+        ax.plot([0, r_draw], [0, 0], color='black', lw=1, ls='--')
+        ax.scatter([0], [0], color='black', s=20)
+        ax.text(r_draw/2, -0.8, f"{self.r} cm", fontsize=12, ha='center')
+        
+        # Sloping edge label
+        # Draw a dimension arrow for s
+        mid_s_x = r_draw / 2 + 1.5
+        mid_s_y = h_draw / 2
+        ax.annotate('', xy=(r_draw + 0.5, 0.2), xytext=(0.5, h_draw + 0.2),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1))
+        ax.text(mid_s_x + 1, mid_s_y, f"{self.s} cm", fontsize=12, va='center', rotation=-math.degrees(math.atan(h_draw/r_draw)))
+
+        # "NOT TO SCALE" and Label
+        ax.text(8, 8, "NOT TO\nSCALE", fontsize=12, ha='center', fontweight='bold')
+        ax.text(0, -r_draw - 2, "Solid A", fontsize=14, ha='center', fontweight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat089:
     
     def __init__(self):
