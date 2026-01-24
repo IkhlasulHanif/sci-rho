@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from matplotlib.ticker import MultipleLocator, AutoMinorLocator
 from scipy.optimize import brentq
-from scipy.stats import binom
+from scipy.stats import binom, norm
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -3652,6 +3652,270 @@ class Mat187:
 
         plt.text(self.n, max(y) * 1.1, "NOT TO SCALE", fontsize=9, ha='right', style='italic')
 
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+class Mat188:
+    def __init__(self):
+        # Parameters for X ~ N(mu, sigma^2)
+        # Using large ranges for variation
+        self.mu = rnd.randint(50, 150)
+        self.sigma = randrange_float(5.0, 20.0, 0.5)
+        self.variance = round(self.sigma ** 2, 2)
+        
+        # Choosing a z-score to calculate x1
+        self.z = randrange_float(0.5, 2.5, 0.01)
+        self.x1 = round(self.mu + (self.z * self.sigma), 2)
+        
+        # Calculate P(X > x1) using real cumulative distribution function
+        # P(X > x1) = 1 - Phi(z)
+        self.answer = round(1 - norm.cdf(self.z), 4)
+
+        # Implicit description 
+        self.description = (
+            "The figure illustrates a continuous random variable $X$ that follows a normal distribution. "
+            "Based on the parameters and the shaded region shown in the diagram, calculate the value of the "
+            "indicated probability."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "The normal distribution"
+        self.source = "Cambridge International AS & A Level Mathematics Probability & Statistics 1 Coursebook (Chapter on Normal Distribution)."
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given distribution: }} X &\\sim N(\\mu, \\sigma^2) = N({self.mu}, {self.variance})\\\\"
+            f"\\text{{Identify parameters from figure: }} \\mu &= {self.mu}, \\sigma^2 = {self.variance}, x_1 = {self.x1}\\\\"
+            f"\\text{{Calculate standard deviation }} \\sigma: \\sigma &= \\sqrt{{{self.variance}}} = {round(self.sigma, 10)}\\\\"
+            f"\\text{{Standardize }} x_1 \\text{{ to find the }} z\\text{{-score:}} &\\\\"
+            f"z &= \\frac{{x_1 - \\mu}}{{\\sigma}}\\\\"
+            f"&= \\frac{{{self.x1} - {self.mu}}}{{{round(self.sigma, 10)}}}\\\\"
+            f"&= {round(self.z, 10)}\\\\"
+            f"\\text{{The required probability is }} P(X > x_1): &\\\\"
+            f"P(X > {self.x1}) &= P(Z > {round(self.z, 10)})\\\\"
+            f"&= 1 - \\Phi({round(self.z, 10)})\\\\"
+            f"&= 1 - {round(norm.cdf(self.z), 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Generate Normal Curve Data for the specific distribution X
+        x_min = self.mu - 4 * self.sigma
+        x_max = self.mu + 4 * self.sigma
+        x = np.linspace(x_min, x_max, 1000)
+        y = (1 / (self.sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - self.mu) / self.sigma)**2)
+        
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Shading the area P(X > x1)
+        x_fill = np.linspace(self.x1, x_max, 500)
+        y_fill = (1 / (self.sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x_fill - self.mu) / self.sigma)**2)
+        ax.fill_between(x_fill, y_fill, color='gray', alpha=0.4)
+        
+        # Displaying Parameters in the Figure
+        # X ~ N(mu, sigma^2) notation
+        ax.text(x_min, max(y) * 0.9, f"$X \\sim N({self.mu}, {self.variance})$", fontsize=16, fontweight='bold')
+        
+        # Boundary line and label for x1
+        ax.axvline(self.x1, color='red', linestyle='--', lw=1.5)
+        ax.text(self.x1, -max(y)*0.05, f"$x_1 = {self.x1}$", fontsize=14, ha='center', color='red')
+        
+        # Probability notation for the shaded area
+        ax.text(self.x1 + 0.5 * self.sigma, max(y) * 0.2, "$P(X > x_1)$", fontsize=14, ha='center')
+
+        # Clean up axes
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.set_xticks([self.mu])
+        ax.set_xticklabels([f"$\mu = {self.mu}$"], fontsize=12)
+        
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(-max(y)*0.1, max(y)*1.1)
+        
+        # Save image
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat189:
+    def __init__(self):
+        self.mu = rnd.randint(80, 200)
+        self.z_val = randrange_float(-2.5, -0.5, 0.01)
+        self.sigma = float(rnd.randint(4, 25))
+        self.x_val = round(self.mu + (self.z_val * self.sigma), 2)
+        self.prob = round(norm.cdf(self.z_val), 4)
+        self.answer = self.sigma
+
+        self.description = (
+            "A random variable $X$ follows a normal distribution with the mean shown in the figure. "
+            "Given the probability represented by the shaded area, calculate the value of the standard deviation $\\sigma$."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "The normal distribution"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify parameters from the figure:}} &\\\\"
+            f"\\mu &= {self.mu}\\\\"
+            f"x &= {self.x_val}\\\\"
+            f"P(X < {self.x_val}) &= {self.prob}\\\\"
+            f"\\text{{The formula for standardizing }} X \\text{{ is:}} &\\\\"
+            f"Z &= \\frac{{X - \\mu}}{{\\sigma}}\\\\"
+            f"\\text{{Using the given probability, find the corresponding }} z\\text{{-score:}} &\\\\"
+            f"P(Z < z) &= {self.prob}\\\\"
+            f"z &= \\Phi^{{-1}}({self.prob})\\\\"
+            f"z &= {round(self.z_val, 10)}\\\\"
+            f"\\text{{Substitute }} \\mu, x, \\text{{ and }} z \\text{{ into the standardization formula:}} &\\\\"
+            f"{round(self.z_val, 10)} &= \\frac{{{self.x_val} - {self.mu}}}{{\\sigma}}\\\\"
+            f"{round(self.z_val, 10)} &= \\frac{{{round(self.x_val - self.mu, 10)}}}{{\\sigma}}\\\\"
+            f"\\sigma &= \\frac{{{round(self.x_val - self.mu, 10)}}}{{{round(self.z_val, 10)}}}\\\\"
+            f"\\sigma &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Standard normal curve range
+        x = np.linspace(-4, 4, 1000)
+        y = norm.pdf(x)
+        
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Shade P(Z < z_val)
+        x_fill = np.linspace(-4, self.z_val, 500)
+        y_fill = norm.pdf(x_fill)
+        ax.fill_between(x_fill, y_fill, color='gray', alpha=0.5)
+        
+        # Lines and Labels
+        ax.axvline(0, color='black', linestyle='--', lw=1)
+        ax.axvline(self.z_val, color='black', lw=1.5)
+        
+        # Implicitly provide mu and x_val via axis labels
+        # We transform z-coordinates to "X" scale labels for the user
+        ax.set_xticks([0, self.z_val])
+        ax.set_xticklabels([f"$\mu = {int(self.mu)}$", ""], fontsize=14)
+        
+        # Add probability text
+        # Position it slightly above the shaded area
+        ax.text(self.z_val - 0.5, 0.05, f"$P(X < {self.x_val}) = {self.prob}$", 
+                fontsize=12, ha='right', bbox=dict(facecolor='white', alpha=0.7))
+
+        # Visual styling
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(0, 0.45)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat190:
+    def __init__(self):
+        # Deterministic generation for normal distribution parameters
+        # Standard deviation generated within a continuous range
+        self.sigma = randrange_float(5.0, 20.0, 0.5)
+        self.variance = round(self.sigma ** 2, 2)
+        
+        # Generated mu as the target answer
+        self.mu_true = rnd.randint(100, 1000)
+        
+        # Asymmetric boundaries: Generate two different z-scores
+        # z_lower will be negative (left of mean), z_upper positive (right of mean)
+        self.z_lower = randrange_float(-2.5, -0.5, 0.01)
+        self.z_upper = randrange_float(0.5, 2.5, 0.01)
+        
+        # Calculate boundaries: x = mu + z*sigma
+        self.lower_x = round(self.mu_true + (self.z_lower * self.sigma), 2)
+        self.upper_x = round(self.mu_true + (self.z_upper * self.sigma), 2)
+        
+        # Calculate area between x_lower and x_upper
+        # P(x_lower < X < x_upper) = Phi(z_upper) - Phi(z_lower)
+        self.area = round(norm.cdf(self.z_upper) - norm.cdf(self.z_lower), 4)
+        
+        self.answer = self.mu_true
+
+        self.description = (
+            "The figure shows a normal distribution where the shaded region represents a specific probability. "
+            "Based on the boundary values of the shaded area and the variance of the distribution, find the value of the mean $\\mu$."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "The normal distribution" 
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus" 
+        self.curriculum = "AS & A Level" 
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            rf"\text{{Identify parameters from the figure:}} &\\"
+            rf"\sigma^2 &= {self.variance} \implies \sigma = \sqrt{{{self.variance}}} = {round(self.sigma, 10)}\\"
+            rf"x_1 &= {self.lower_x}, \quad x_2 = {self.upper_x}\\"
+            rf"P(x_1 < X < x_2) &= {self.area}\\"
+            rf"\text{{The standardization formula is:}} &\\"
+            rf"Z &= \frac{{X - \mu}}{{\sigma}}\\"
+            rf"\text{{Express the boundaries in terms of }} Z\text{{:}} &\\"
+            rf"P\left(\frac{{{self.lower_x} - \mu}}{{{round(self.sigma, 10)}}} < Z < \frac{{{self.upper_x} - \mu}}{{{round(self.sigma, 10)}}}\right) &= {self.area}\\"
+            rf"\text{{From the properties of the normal distribution:}} &\\"
+            rf"\Phi(z_{{\text{{upper}}}}) - \Phi(z_{{\text{{lower}}}}) &= {self.area}\\"
+            rf"\text{{Substituting the values for }} z_{{\text{{upper}}}} \text{{ and }} z_{{\text{{lower}}}}\text{{:}} &\\"
+            rf"z_{{\text{{upper}}}} &= {round(self.z_upper, 10)}\\"
+            rf"z_{{\text{{lower}}}} &= {round(self.z_lower, 10)}\\"
+            rf"\text{{Using the standardization equation for }} x_2\text{{:}} &\\"
+            rf"z_{{\text{{upper}}}} &= \frac{{x_2 - \mu}}{{\sigma}}\\"
+            rf"{round(self.z_upper, 10)} &= \frac{{{self.upper_x} - \mu}}{{{round(self.sigma, 10)}}}\\"
+            rf"{round(self.z_upper * self.sigma, 10)} &= {self.upper_x} - \mu\\"
+            rf"\mu &= {self.upper_x} - {round(self.z_upper * self.sigma, 10)}\\"
+            rf"\mu &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Range of 4 standard deviations from a 0-center for visualization
+        x = np.linspace(-4, 4, 1000)
+        y = norm.pdf(x)
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Shade asymmetric central area between z_lower and z_upper
+        x_fill = np.linspace(self.z_lower, self.z_upper, 500)
+        y_fill = norm.pdf(x_fill)
+        ax.fill_between(x_fill, y_fill, color='gray', alpha=0.5)
+        
+        # Visual indicators for boundaries and the unknown mean
+        ax.axvline(0, color='black', linestyle='--', lw=1)
+        ax.axvline(self.z_lower, color='black', lw=1.5)
+        ax.axvline(self.z_upper, color='black', lw=1.5)
+        
+        # Mean label above the line
+        ax.text(0, 0.015, "$\\mu = ?$", ha='center', va='bottom', fontsize=14, fontweight='bold')
+        
+        # Area probability label inside the shaded region
+        ax.text((self.z_lower + self.z_upper)/2, 0.12, f"$P({self.lower_x} < X < {self.upper_x}) = {self.area}$", 
+                fontsize=12, ha='center', bbox=dict(facecolor='white', alpha=0.8, boxstyle='round'))
+        
+        # Variance information provided implicitly
+        ax.text(-3.8, 0.35, f"$X \\sim N(\\mu, {self.variance})$", fontsize=15, fontweight='bold')
+
+        # Formatting axes
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.set_xticks([]) 
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(-0.02, 0.45)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
