@@ -5,6 +5,7 @@ import os
 import math
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
+from matplotlib.ticker import MultipleLocator, AutoMinorLocator
 from scipy.optimize import brentq
 from mathematics.helper import *
 
@@ -2595,6 +2596,407 @@ class Mat175:
         ax.set_xlim(x_a - 2.0, x_c + 2.0)
         ax.set_ylim(y_c - 1.5, y_a + 2.5)
 
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat176:
+    def __init__(self):
+        # Configuration: Randomize the range of scores by shifting the start stem
+        start_stem = rnd.randint(3, 5)
+        self.stems = [start_stem + i for i in range(4)]
+        
+        self.data_a = []
+        self.data_b = []
+        self.leaves_a = {s: [] for s in self.stems}
+        self.leaves_b = {s: [] for s in self.stems}
+        
+        # Populate data for each class across all stems
+        for s in self.stems:
+            num_items_a = rnd.randint(3, 5)
+            num_items_b = rnd.randint(3, 5)
+            for _ in range(num_items_a):
+                leaf = rnd.randint(0, 9)
+                self.data_a.append(s * 10 + leaf)
+                self.leaves_a[s].append(leaf)
+            for _ in range(num_items_b):
+                leaf = rnd.randint(0, 9)
+                self.data_b.append(s * 10 + leaf)
+                self.leaves_b[s].append(leaf)
+        
+        # Sort leaves for display: Class A leaves grow left (descending), Class B right (ascending)
+        for s in self.stems:
+            self.leaves_a[s].sort(reverse=True)
+            self.leaves_b[s].sort()
+            
+        # Calculate medians using numpy
+        med_a = float(np.median(self.data_a))
+        med_b = float(np.median(self.data_b))
+        
+        # Must properties
+        self.answer = abs(med_b - med_a)
+        self.description = (
+            "The back-to-back stem-and-leaf diagram shows the test scores of students in Class A and Class B. "
+            "Based on the figure, calculate the positive difference between the median score of Class B and the median score of Class A."
+        )
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Representation of data"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Ordered data for Class A:}} &= {sorted(self.data_a)}\\\\"
+            f"\\text{{Number of items in Class A (}} n_A \\text{{):}} &= {len(self.data_a)}\\\\"
+            f"\\text{{Median of Class A (}} M_A \\text{{):}} &= {round(float(np.median(self.data_a)), 10)}\\\\"
+            f"\\text{{Ordered data for Class B:}} &= {sorted(self.data_b)}\\\\"
+            f"\\text{{Number of items in Class B (}} n_B \\text{{):}} &= {len(self.data_b)}\\\\"
+            f"\\text{{Median of Class B (}} M_B \\text{{):}} &= {round(float(np.median(self.data_b)), 10)}\\\\"
+            f"\\text{{Positive difference}} &= |M_B - M_A|\\\\"
+            f"&= |{round(float(np.median(self.data_b)), 10)} - {round(float(np.median(self.data_a)), 10)}|\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_xlim(-6, 6)
+        ax.set_ylim(-1.5, len(self.stems) + 2)
+        ax.axis('off')
+
+        # Draw Headers
+        y_head = len(self.stems) + 0.8
+        ax.text(-2.5, y_head, "Class A", fontsize=22, ha='center', weight='bold')
+        ax.text(0, y_head, "Stem", fontsize=22, ha='center', weight='bold')
+        ax.text(2.5, y_head, "Class B", fontsize=22, ha='center', weight='bold')
+
+        # Draw Vertical Separators
+        ax.plot([-0.8, -0.8], [0.3, y_head - 0.2], color='black', lw=2)
+        ax.plot([0.8, 0.8], [0.3, y_head - 0.2], color='black', lw=2)
+
+        # Plot Stems and Leaves
+        for i, s in enumerate(reversed(self.stems)):
+            y_pos = i + 1
+            # Center Stem
+            ax.text(0, y_pos, str(s), fontsize=20, ha='center', weight='bold')
+            
+            # Class A Leaves (Growing Left)
+            l_a_str = "  ".join(map(str, self.leaves_a[s]))
+            ax.text(-1.1, y_pos, l_a_str, fontsize=18, ha='right')
+            
+            # Class B Leaves (Growing Right)
+            l_b_str = "  ".join(map(str, self.leaves_b[s]))
+            ax.text(1.1, y_pos, l_b_str, fontsize=18, ha='left')
+
+        # Draw Key
+        sample_s = self.stems[1]
+        sample_la = self.leaves_a[sample_s][0]
+        sample_lb = self.leaves_b[sample_s][0]
+        key_text = (
+            f"Key: {sample_la} | {sample_s} | {sample_lb} means a score of "
+            f"{sample_s*10 + sample_la} for Class A and {sample_s*10 + sample_lb} for Class B"
+        )
+        ax.text(0, -0.8, key_text, fontsize=16, ha='center', style='italic',
+                bbox=dict(boxstyle='round,pad=0.5', facecolor='white', edgecolor='black'))
+
+        # Save result
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat177:
+    def __init__(self):
+        # Generate base values for the box plot
+        # Using randrange_float for variation as requested
+        self.q1 = round(randrange_float(15, 20, 0.01), 2)
+        self.median = round(self.q1 + randrange_float(5, 10, 0.01), 2)
+        self.q3 = round(self.median + randrange_float(5, 10, 0.01), 2)
+        
+        # Calculate IQR
+        self.iqr = round(self.q3 - self.q1, 2)
+        
+        # Determine the upper boundary for outliers based on subsection 5.1 rules
+        # Criterion: Outlier > Q3 + 1.5 * IQR
+        self.answer = round(self.q3 + 1.5 * self.iqr, 2)
+
+        # Plot boundary limits
+        self.min_val = round(self.q1 - randrange_float(3, 8, 0.01), 2)
+        self.max_val = round(self.q3 + randrange_float(3, 8, 0.01), 2)
+
+        self.description = (
+            "The box-and-whisker plot summarizes the heights of a specific plant species. "
+            "Based on the figure, calculate the minimum numerical value a plant height must reach "
+            "to be considered an outlier according to the standard $Q_3 + 1.5 \\times (IQR)$ criterion."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Representation of data"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Upper Quartile (}} Q_3 \\text{{)}} &= {round(self.q3, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Lower Quartile (}} Q_1 \\text{{)}} &= {round(self.q1, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Interquartile Range (IQR)}} &= Q_3 - Q_1\\\\"
+            f"&= {round(self.q3, 10)} - {round(self.q1, 10)}\\\\"
+            f"&= {round(self.iqr, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{The upper boundary for outliers is defined as:}} &\\\\"
+            f"\\text{{Boundary}} &= Q_3 + 1.5 \\times IQR\\\\"
+            f"&= {round(self.q3, 10)} + 1.5 \\times ({round(self.iqr, 10)})\\\\"
+            f"&= {round(self.q3, 10)} + {round(1.5 * self.iqr, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 4))
+        
+        # Plot styling
+        ax.set_ylim(0, 1)
+        ax.set_xlim(math.floor(self.min_val - 2), math.ceil(self.max_val + 2))
+        ax.set_yticks([])
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        
+        # Draw Box (Q1 to Q3)
+        box_height = 0.4
+        box_bottom = 0.3
+        box = patches.Rectangle((self.q1, box_bottom), self.iqr, box_height, linewidth=2, edgecolor='black', facecolor='none')
+        ax.add_patch(box)
+        
+        # Draw Median line
+        ax.plot([self.median, self.median], [box_bottom, box_bottom + box_height], color='black', lw=3)
+        
+        # Draw Whiskers
+        ax.plot([self.min_val, self.q1], [0.5, 0.5], color='black', lw=1.5)
+        ax.plot([self.q3, self.max_val], [0.5, 0.5], color='black', lw=1.5)
+        
+        # Draw Whisker caps
+        cap_size = 0.1
+        ax.plot([self.min_val, self.min_val], [0.5 - cap_size, 0.5 + cap_size], color='black', lw=2)
+        ax.plot([self.max_val, self.max_val], [0.5 - cap_size, 0.5 + cap_size], color='black', lw=2)
+        
+        # Add numeric labels at the key points
+        label_y = 0.8
+        points = [
+            (self.min_val, "Min"),
+            (self.q1, "$Q_1$"),
+            (self.median, "Med"),
+            (self.q3, "$Q_3$"),
+            (self.max_val, "Max")
+        ]
+        
+        for val, label in points:
+            ax.text(val, label_y, f"{val}", ha='center', fontsize=12, fontweight='bold')
+            ax.plot([val, val], [0.75, 0.55 if val in [self.min_val, self.max_val] else 0.7], color='gray', linestyle='--', alpha=0.5)
+
+        ax.set_xlabel("Height (cm)", fontsize=14, labelpad=15)
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat178:
+    def __init__(self):
+        # Configuration for data distribution
+        self.total_students = rnd.choice([100, 200, 400, 500])
+        self.percentile_rank = rnd.choice([25, 65, 75, 80, 90])
+        
+        # Define sigmoid-like points for cumulative frequency curve
+        # x: time in minutes, y: percentage of total students
+        self.t_min = round(randrange_float(10, 20, 0.01), 2)
+        self.t_mid1 = round(self.t_min + randrange_float(15, 25, 0.01), 2)
+        self.t_mid2 = round(self.t_mid1 + randrange_float(15, 25, 0.01), 2)
+        self.t_max = round(self.t_mid2 + randrange_float(15, 25, 0.01), 2)
+        
+        # Cumulative frequencies at these points
+        self.cf_points = [
+            (self.t_min, 0),
+            (self.t_mid1, 0.2 * self.total_students),
+            (self.t_mid2, 0.8 * self.total_students),
+            (self.t_max, self.total_students)
+        ]
+        
+        # Interpolation logic for the specific percentile
+        target_cf = (self.percentile_rank / 100) * self.total_students
+        
+        # Simple linear interpolation between the sigmoid anchor points for the answer
+        if target_cf <= self.cf_points[1][1]:
+            # Between t_min and t_mid1
+            p0, p1 = self.cf_points[0], self.cf_points[1]
+        elif target_cf <= self.cf_points[2][1]:
+            # Between t_mid1 and t_mid2
+            p0, p1 = self.cf_points[1], self.cf_points[2]
+        else:
+            # Between t_mid2 and t_max
+            p0, p1 = self.cf_points[2], self.cf_points[3]
+            
+        # Linear interpolation formula: x = x0 + (y - y0) * (x1 - x0) / (y1 - y0)
+        self.answer = round(p0[0] + (target_cf - p0[1]) * (p1[0] - p0[0]) / (p1[1] - p0[1]), 2)
+
+        self.description = (
+            f"The cumulative frequency graph displays the time spent by {self.total_students} students on a homework assignment. "
+            f"Based on the figure, estimate the {self.percentile_rank}th percentile time for this distribution."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Representation of data"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total frequency (}} n \\text{{)}} &= {self.total_students} \\\\"
+            f"\\text{{Target percentile}} &= {self.percentile_rank}\\text{{th}} \\\\"
+            f"\\text{{Cumulative frequency value (}} CF \\text{{)}} &= \\frac{{{self.percentile_rank}}}{{100}} \\times {self.total_students} \\\\"
+            f"&= {round((self.percentile_rank / 100) * self.total_students, 10)} \\\\"
+            f"\\text{{From the graph, this }} CF \\text{{ falls between the points }} ({p0[0]}, {int(p0[1])}) \\text{{ and }} ({p1[0]}, {int(p1[1])}). \\\\"
+            f"\\text{{Using linear interpolation:}} & \\\\"
+            f"x &= x_0 + (CF - y_0) \\times \\frac{p1[0] - p0[0]}{p1[1] - p0[1]} \\\\"
+            f"&= {round(p0[0], 10)} + ({round((self.percentile_rank / 100) * self.total_students, 10)} - {int(p0[1])}) \\times \\frac{{{round(p1[0], 10)} - {round(p0[0], 10)}}}{{{int(p1[1])} - {int(p0[1])}}} \\\\"
+            f"&= {round(p0[0], 10)} + {round((self.percentile_rank / 100) * self.total_students - p0[1], 10)} \\times \\frac{{{round(p1[0] - p0[0], 10)}}}{{{int(p1[1] - p0[1])}}} \\\\"
+            f"&= {self.answer}\\,\\text{{minutes}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        # Create a smooth curve through the anchor points
+        x_anchor = [p[0] for p in self.cf_points]
+        y_anchor = [p[1] for p in self.cf_points]
+        
+        from scipy.interpolate import interp1d
+        f = interp1d(x_anchor, y_anchor, kind='quadratic', bounds_error=False, fill_value=(0, self.total_students))
+        x_smooth = np.linspace(self.t_min, self.t_max, 200)
+        y_smooth = np.clip(f(x_smooth), 0, self.total_students)
+        
+        # Plot the cumulative frequency curve
+        ax.plot(x_smooth, y_smooth, color='black', lw=2.5)
+        
+        # Grid and Axes
+        ax.set_xlabel("Time (minutes)", fontsize=14)
+        ax.set_ylabel("Cumulative Frequency", fontsize=14)
+        ax.set_xlim(0, math.ceil(self.t_max / 10) * 10 + 10)
+        ax.set_ylim(0, self.total_students + (0.1 * self.total_students))
+        
+        ax.xaxis.set_major_locator(MultipleLocator(10))
+        ax.yaxis.set_major_locator(MultipleLocator(self.total_students / 10))
+        ax.grid(True, which='major', linestyle='--', alpha=0.6)
+        
+        # Explicit data labels to make the graph "necessary" and solveable
+        # Marking the specific points clearly
+        for x, y in self.cf_points:
+            ax.plot(x, y, 'ko', markersize=4)
+            ax.text(x, y + (0.02 * self.total_students), f"({x}, {int(y)})", fontsize=10, ha='center')
+
+        plt.tight_layout()
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat179:
+    def __init__(self):
+        # Configuration: Randomize distribution of parcels with varying class widths
+        self.total_n = rnd.choice([80, 100, 120, 150, 160, 200, 240, 300])
+        
+        # Define 4 class intervals with varying unequal widths
+        self.w1 = rnd.randint(3, 6)
+        self.w2 = self.w1 + rnd.randint(5, 10)
+        self.w3 = self.w2 + rnd.randint(8, 15)
+        self.w4 = self.w3 + rnd.randint(15, 30)
+        
+        # Randomize frequency densities for the first three bars
+        self.fd1 = round(randrange_float(1.50, 5.00, 0.01), 2)
+        self.fd2 = round(randrange_float(5.00, 10.00, 0.01), 2)
+        self.fd3 = round(randrange_float(0.50, 3.00, 0.01), 2)
+        
+        # Calculate frequencies: Frequency = Frequency Density * Class Width
+        f1 = self.fd1 * self.w1
+        f2 = self.fd2 * (self.w2 - self.w1)
+        f3 = self.fd3 * (self.w3 - self.w2)
+        
+        # Ensure deterministic logic: if current sum exceeds total_n, adjust total_n
+        current_sum = f1 + f2 + f3
+        if current_sum >= self.total_n - 5:
+            self.total_n = math.ceil(current_sum + rnd.randint(20, 50))
+            
+        remaining_f = self.total_n - current_sum
+        
+        # The answer is the frequency density of the final class interval
+        self.answer = round(remaining_f / (self.w4 - self.w3), 2)
+
+        self.description = (
+            f"The histogram illustrates the distribution of masses for a set of {self.total_n} parcels in a delivery warehouse. "
+            f"Based on the figure, calculate the frequency density of the final class interval."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Representation of data"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total number of parcels }} (N) &= {self.total_n}\\\\"
+            "\\text{The frequency of each class is calculated as: } &\\\\"
+            "\\text{Frequency} &= \\text{Frequency Density} \\times \\text{Class Width}\\\\"
+            f"\\text{{Frequency of class 1:}} &= {round(self.fd1, 10)} \\times {self.w1} = {round(self.fd1 * self.w1, 10)}\\\\"
+            f"\\text{{Frequency of class 2:}} &= {round(self.fd2, 10)} \\times ({self.w2} - {self.w1}) = {round(self.fd2 * (self.w2 - self.w1), 10)}\\\\"
+            f"\\text{{Frequency of class 3:}} &= {round(self.fd3, 10)} \\times ({self.w3} - {self.w2}) = {round(self.fd3 * (self.w3 - self.w2), 10)}\\\\"
+            f"\\text{{Remaining frequency for the final class:}} &= N - (f_1 + f_2 + f_3)\\\\"
+            f"&= {self.total_n} - ({round(self.fd1 * self.w1 + self.fd2 * (self.w2 - self.w1) + self.fd3 * (self.w3 - self.w2), 10)})\\\\"
+            f"&= {round(self.total_n - (self.fd1 * self.w1 + self.fd2 * (self.w2 - self.w1) + self.fd3 * (self.w3 - self.w2)), 10)}\\\\"
+            f"\\text{{Final class width}} &= {self.w4} - {self.w3} = {self.w4 - self.w3}\\\\"
+            "\\text{Frequency density of the final class } (x) &= \\frac{\\text{Remaining Frequency}}{\\text{Class Width}}\\\\"
+            f"x &= \\frac{{{round(self.total_n - (self.fd1 * self.w1 + self.fd2 * (self.w2 - self.w1) + self.fd3 * (self.w3 - self.w2)), 10)}}}{{{self.w4 - self.w3}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 7))
+        
+        # Define the bars
+        intervals = [0, self.w1, self.w2, self.w3, self.w4]
+        densities = [self.fd1, self.fd2, self.fd3, self.answer]
+        
+        # Draw the histogram bars
+        for i in range(len(densities)):
+            width = intervals[i+1] - intervals[i]
+            rect = patches.Rectangle((intervals[i], 0), width, densities[i], 
+                                     linewidth=2.5, edgecolor='black', facecolor='whitesmoke', alpha=0.8)
+            ax.add_patch(rect)
+            
+        # Plot limits
+        ax.set_xlim(0, math.ceil(self.w4 * 1.05))
+        ax.set_ylim(0, math.ceil(max(densities) * 1.2))
+        ax.set_xlabel("Mass ($m$ in kg)", fontsize=16)
+        ax.set_ylabel("Frequency Density", fontsize=16)
+        
+        # Major ticks every 10 units
+        ax.xaxis.set_major_locator(MultipleLocator(10))
+        # Minor ticks every 1 unit (makes boundaries like 21 or 46 readable)
+        ax.xaxis.set_minor_locator(MultipleLocator(1))
+        
+        ax.yaxis.set_major_locator(MultipleLocator(2))
+        
+        # Enable major and minor grids
+        ax.grid(True, which='major', linestyle='-', color='lightgray', alpha=0.7)
+        ax.grid(True, which='minor', linestyle=':', color='gray', alpha=0.3)
+        # ---------------------------
+        
+        # Labels for the first three bars
+        for i in range(len(densities) - 1):
+            ax.text(intervals[i] + (intervals[i+1]-intervals[i])/2, densities[i] + 0.2, 
+                    f"{densities[i]}", ha='center', fontsize=14, weight='bold')
+        
+        # Visual cue for the question target
+        ax.text(self.w3 + (self.w4 - self.w3)/2, self.answer + 0.2, "$x$", 
+                ha='center', fontsize=22, weight='bold', color='darkblue')
+
+        plt.tight_layout()
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
