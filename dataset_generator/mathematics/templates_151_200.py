@@ -2103,6 +2103,128 @@ class Mat171:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
         
+class Mat172:
+    def __init__(self):
+        # Motion parameters
+        # Stage 1: Accelerates from initial_v
+        self.u1 = rnd.randint(4, 8) 
+        self.a1 = round(randrange_float(0.4, 1.2, 0.05), 2)
+        self.t1 = rnd.randint(15, 25)
+        self.v_max = self.u1 + self.a1 * self.t1
+        
+        # Stage 2: Decelerates to zero
+        self.t2_duration = rnd.randint(25, 35)
+        self.t2_end = self.t1 + self.t2_duration
+        self.a2 = -self.v_max / self.t2_duration
+        
+        # Area under graph Stage 1 + 2 (Distance from O)
+        self.dist_out = 0.5 * (self.u1 + self.v_max) * self.t1 + 0.5 * self.v_max * self.t2_duration
+        
+        # Stage 3: Travel back to O
+        # Particle reaches some negative velocity at t3_fixed, then slows to rest at T
+        self.t3_fixed = self.t2_end + rnd.randint(8, 15)
+        self.a3_accel = round(randrange_float(-1.5, -0.5, 0.1), 2)
+        self.v_min = self.a3_accel * (self.t3_fixed - self.t2_end)
+        
+        # Distance Stage 3 (negative area) must equal dist_out to return to O
+        # Area = 0.5 * base * height => Area = 0.5 * (T - t2_end) * v_min
+        # Since area is negative and we want magnitude: dist_out = 0.5 * (T - t2_end) * abs(v_min)
+        self.T_minus_t2 = (2 * self.dist_out) / abs(self.v_min)
+        
+        self.answer = self.t2_end + self.T_minus_t2
+
+        self.description = (
+            "The diagram shows a velocity-time graph which models the motion of a particle. "
+            "The particle leaves $O$ and eventually returns to $O$ at time $T$. "
+            "Based on the figure and the information provided, find the value of $T$."
+        )
+        
+        self.topic = "Mechanics"
+        self.subtopic = "Kinematics of motion in a straight line"
+        self.source = "Adapted from AS & A level June 2025 Question Paper 43"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance traveled away from }} O \\text{{ (Area Stage 1 and 2):}} &\\\\"
+            f"d_{{out}} &= \\text{{Area of trapezium}} + \\text{{Area of triangle}}\\\\"
+            f"d_{{out}} &= \\frac{1}{2}(u_1 + v_{{max}})t_1 + \\frac{1}{2}(v_{{max}})(t_{{2,end}} - t_1)\\\\"
+            f"d_{{out}} &= \\frac{1}{2}({self.u1} + {round(self.v_max, 10)})({self.t1}) + \\frac{1}{2}({round(self.v_max, 10)})({self.t2_duration})\\\\"
+            f"d_{{out}} &= {round(self.dist_out, 10)}\\,\\text{{m}}\\\\"
+            f"\\text{{For the particle to return to }} O \\text{{, the area below the }} t\\text{{-axis must equal }} d_{{out}}: &\\\\"
+            f"d_{{out}} &= \\text{{Area of triangle Stage 3}}\\\\"
+            f"d_{{out}} &= \\frac{1}{2} \\times \\text{{base}} \\times |\\text{{height}}|\\\\"
+            f"{round(self.dist_out, 10)} &= \\frac{1}{2} \\times (T - {self.t2_end}) \\times |{round(self.v_min, 10)}|\\\\"
+            f"T - {self.t2_end} &= \\frac{{2 \\times {round(self.dist_out, 10)}}}{{{round(abs(self.v_min), 10)}}}\\\\"
+            f"T - {self.t2_end} &= {round(self.T_minus_t2, 10)}\\\\"
+            f"T &= {self.t2_end} + {round(self.T_minus_t2, 10)}\\\\"
+            f"T &= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # X and Y data points
+        # (0, u1), (t1, v_max), (t2_end, 0), (t3_fixed, v_min), (answer, 0)
+        t_pts = [0, self.t1, self.t2_end, self.t3_fixed, self.answer]
+        v_pts = [self.u1, self.v_max, 0, self.v_min, 0]
+        
+        ax.plot(t_pts, v_pts, color='black', lw=2)
+        
+        # Axes
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        # Limits
+        ax.set_xlim(-5, self.answer * 1.1)
+        ax.set_ylim(min(v_pts) - 5, max(v_pts) + 5)
+        ax.axis('off')
+
+        # Axis labels
+        ax.text(self.answer * 1.1, 0, '$t$ (s)', ha='left', va='center', fontsize=12)
+        ax.text(0, max(v_pts) + 5, '$v$ (m s$^{-1}$)', ha='center', va='bottom', fontsize=12)
+
+        # Labels for points
+        # Initial velocity
+        ax.text(-1, self.u1, f"{self.u1}", ha='right', va='center', fontsize=11)
+        
+        # Time 20 (t1)
+        ax.plot([self.t1, self.t1], [0, self.v_max], color='black', linestyle='--', lw=1)
+        ax.text(self.t1, -1.5, f"{self.t1}", ha='center', va='top', fontsize=11)
+        
+        # Time 40 (t2_end)
+        ax.text(self.t2_end - 1, 1.5, f"{self.t2_end}", ha='right', va='bottom', fontsize=11)
+        
+        # Time 50 (t3_fixed)
+        ax.plot([self.t3_fixed, self.t3_fixed], [0, self.v_min], color='black', linestyle='--', lw=1)
+        ax.text(self.t3_fixed, 1.5, f"{self.t3_fixed}", ha='center', va='bottom', fontsize=11)
+        
+        # Time T
+        ax.text(self.answer, 1.5, '$T$', ha='center', va='bottom', fontsize=12)
+
+        # Origin
+        ax.text(-1.5, -1.5, '0', ha='right', va='top')
+
+        # Context text in figure
+        context_str = (
+            f"Particle leaves $O$ at $t=0$ with $v={self.u1}$ m s$^{{-1}}$.\n"
+            f"Accelerates at {self.a1} m s$^{{-2}}$ for {self.t1} s.\n"
+            f"Decelerates to rest at $t={self.t2_end}$.\n"
+            f"Returns to $O$ at time $T$."
+        )
+        plt.text(self.answer * 0.7, max(v_pts) * 0.8, context_str, fontsize=10, 
+                 bbox=dict(facecolor='white', alpha=0.5, edgecolor='gray'))
+
+        # Arrows for axes
+        ax.annotate('', xy=(self.answer * 1.15, 0), xytext=(self.answer * 1.1, 0),
+                    arrowprops=dict(arrowstyle='->', color='black'))
+        ax.annotate('', xy=(0, max(v_pts) + 7), xytext=(0, max(v_pts) + 5),
+                    arrowprops=dict(arrowstyle='->', color='black'))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
 class Mat173:
     def __init__(self):
         # Varying numeric weights (masses) and speed by step 0.01 and rounding to 2
@@ -2198,128 +2320,6 @@ class Mat173:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
-    
-class Mat172:
-    def __init__(self):
-        # Motion parameters
-        # Stage 1: Accelerates from initial_v
-        self.u1 = rnd.randint(4, 8) 
-        self.a1 = round(randrange_float(0.4, 1.2, 0.05), 2)
-        self.t1 = rnd.randint(15, 25)
-        self.v_max = self.u1 + self.a1 * self.t1
-        
-        # Stage 2: Decelerates to zero
-        self.t2_duration = rnd.randint(25, 35)
-        self.t2_end = self.t1 + self.t2_duration
-        self.a2 = -self.v_max / self.t2_duration
-        
-        # Area under graph Stage 1 + 2 (Distance from O)
-        self.dist_out = 0.5 * (self.u1 + self.v_max) * self.t1 + 0.5 * self.v_max * self.t2_duration
-        
-        # Stage 3: Travel back to O
-        # Particle reaches some negative velocity at t3_fixed, then slows to rest at T
-        self.t3_fixed = self.t2_end + rnd.randint(8, 15)
-        self.a3_accel = round(randrange_float(-1.5, -0.5, 0.1), 2)
-        self.v_min = self.a3_accel * (self.t3_fixed - self.t2_end)
-        
-        # Distance Stage 3 (negative area) must equal dist_out to return to O
-        # Area = 0.5 * base * height => Area = 0.5 * (T - t2_end) * v_min
-        # Since area is negative and we want magnitude: dist_out = 0.5 * (T - t2_end) * abs(v_min)
-        self.T_minus_t2 = (2 * self.dist_out) / abs(self.v_min)
-        
-        self.answer = self.t2_end + self.T_minus_t2
-
-        self.description = (
-            "The diagram shows a velocity-time graph which models the motion of a particle. "
-            "The particle leaves $O$ and eventually returns to $O$ at time $T$. "
-            "Based on the figure and the information provided, find the value of $T$."
-        )
-        
-        self.topic = "Mechanics"
-        self.subtopic = "Kinematics of motion in a straight line"
-        self.source = "Adapted from AS & A level June 2025 Question Paper 43"
-        self.curriculum = "AS & A Level"
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Distance traveled away from }} O \\text{{ (Area Stage 1 and 2):}} &\\\\"
-            f"d_{{out}} &= \\text{{Area of trapezium}} + \\text{{Area of triangle}}\\\\"
-            f"d_{{out}} &= \\frac{1}{2}(u_1 + v_{{max}})t_1 + \\frac{1}{2}(v_{{max}})(t_{{2,end}} - t_1)\\\\"
-            f"d_{{out}} &= \\frac{1}{2}({self.u1} + {round(self.v_max, 10)})({self.t1}) + \\frac{1}{2}({round(self.v_max, 10)})({self.t2_duration})\\\\"
-            f"d_{{out}} &= {round(self.dist_out, 10)}\\,\\text{{m}}\\\\"
-            f"\\text{{For the particle to return to }} O \\text{{, the area below the }} t\\text{{-axis must equal }} d_{{out}}: &\\\\"
-            f"d_{{out}} &= \\text{Area of triangle Stage 3}\\\\"
-            f"d_{{out}} &= \\frac{1}{2} \\times \\text{{base}} \\times |\\text{{height}}|\\\\"
-            f"{round(self.dist_out, 10)} &= \\frac{1}{2} \\times (T - {self.t2_end}) \\times |{round(self.v_min, 10)}|\\\\"
-            f"T - {self.t2_end} &= \\frac{{2 \\times {round(self.dist_out, 10)}}}{{{round(abs(self.v_min), 10)}}}\\\\"
-            f"T - {self.t2_end} &= {round(self.T_minus_t2, 10)}\\\\"
-            f"T &= {self.t2_end} + {round(self.T_minus_t2, 10)}\\\\"
-            f"T &= {self.answer}\\,\\text{{s}}"
-            "\\end{aligned}\\]"
-        )
-
-    def generate(self, num):
-        fig, ax = plt.subplots(figsize=(10, 6))
-        
-        # X and Y data points
-        # (0, u1), (t1, v_max), (t2_end, 0), (t3_fixed, v_min), (answer, 0)
-        t_pts = [0, self.t1, self.t2_end, self.t3_fixed, self.answer]
-        v_pts = [self.u1, self.v_max, 0, self.v_min, 0]
-        
-        ax.plot(t_pts, v_pts, color='black', lw=2)
-        
-        # Axes
-        ax.axhline(0, color='black', lw=1.5)
-        ax.axvline(0, color='black', lw=1.5)
-        
-        # Limits
-        ax.set_xlim(-5, self.answer * 1.1)
-        ax.set_ylim(min(v_pts) - 5, max(v_pts) + 5)
-        ax.axis('off')
-
-        # Axis labels
-        ax.text(self.answer * 1.1, 0, '$t$ (s)', ha='left', va='center', fontsize=12)
-        ax.text(0, max(v_pts) + 5, '$v$ (m s$^{-1}$)', ha='center', va='bottom', fontsize=12)
-
-        # Labels for points
-        # Initial velocity
-        ax.text(-1, self.u1, f"{self.u1}", ha='right', va='center', fontsize=11)
-        
-        # Time 20 (t1)
-        ax.plot([self.t1, self.t1], [0, self.v_max], color='black', linestyle='--', lw=1)
-        ax.text(self.t1, -1.5, f"{self.t1}", ha='center', va='top', fontsize=11)
-        
-        # Time 40 (t2_end)
-        ax.text(self.t2_end - 1, 1.5, f"{self.t2_end}", ha='right', va='bottom', fontsize=11)
-        
-        # Time 50 (t3_fixed)
-        ax.plot([self.t3_fixed, self.t3_fixed], [0, self.v_min], color='black', linestyle='--', lw=1)
-        ax.text(self.t3_fixed, 1.5, f"{self.t3_fixed}", ha='center', va='bottom', fontsize=11)
-        
-        # Time T
-        ax.text(self.answer, 1.5, '$T$', ha='center', va='bottom', fontsize=12)
-
-        # Origin
-        ax.text(-1.5, -1.5, '0', ha='right', va='top')
-
-        # Context text in figure
-        context_str = (
-            f"Particle leaves $O$ at $t=0$ with $v={self.u1}$ m s$^{{-1}}$.\n"
-            f"Accelerates at {self.a1} m s$^{{-2}}$ for {self.t1} s.\n"
-            f"Decelerates to rest at $t={self.t2_end}$.\n"
-            f"Returns to $O$ at time $T$."
-        )
-        plt.text(self.answer * 0.7, max(v_pts) * 0.8, context_str, fontsize=10, 
-                 bbox=dict(facecolor='white', alpha=0.5, edgecolor='gray'))
-
-        # Arrows for axes
-        ax.annotate('', xy=(self.answer * 1.15, 0), xytext=(self.answer * 1.1, 0),
-                    arrowprops=dict(arrowstyle='->', color='black'))
-        ax.annotate('', xy=(0, max(v_pts) + 7), xytext=(0, max(v_pts) + 5),
-                    arrowprops=dict(arrowstyle='->', color='black'))
-
-        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
-        plt.close()
 
 class Mat174:
     def __init__(self):
@@ -2388,7 +2388,7 @@ class Mat174:
             f"&= \\sqrt{{\\frac{{2 \\times {self.distance}}}{{{round((self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}}}}}\\\\"
             f"&= {self.answer}\\,\\text{{s}}"
             "\\end{aligned}\\]"
-)
+    )
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -2444,6 +2444,156 @@ class Mat174:
         )
         ax.text(9.5, 0.5, info_text, fontsize=13, ha='right', va='bottom', 
                 bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat175:
+    def __init__(self):
+        # Setup randomized parameters for Section AB
+        self.mass = rnd.randint(65, 85) 
+        self.l_ab = randrange_float(4.5, 6.5, 0.1) 
+        self.sin_theta = round(randrange_float(0.6, 0.85, 0.05), 2)
+        self.mu = round(randrange_float(0.08, 0.15, 0.01), 2)
+        self.g = 10 # G value standard for A-level mechanics
+
+        # Derived physics values
+        self.theta_rad = math.asin(self.sin_theta)
+        self.cos_theta = math.cos(self.theta_rad)
+        
+        # Energy calculation at B
+        # KE_B = PE_gain_AB - Work_friction_AB
+        v_b_sq = 2 * self.g * self.l_ab * (self.sin_theta - self.mu * self.cos_theta)
+        self.v_b = math.sqrt(max(0.1, v_b_sq))
+
+        # Setup randomized parameters for Section BC
+        self.h_bc = randrange_float(2.0, 3.0, 0.1) 
+        # Theoretical speed at C if frictionless
+        v_c_ideal = math.sqrt(v_b_sq + 2 * self.g * self.h_bc)
+        # Define real speed at C to force positive work done against resistance
+        self.v_c = round(v_c_ideal - randrange_float(0.8, 1.4, 0.1), 1)
+        
+        # Energy balance for Work Done against resistance (B to C)
+        # Total Energy at B = KE_B + PE_B = 0.5*m*v_B^2 + m*g*h_BC
+        # Total Energy at C = KE_C = 0.5*m*v_C^2
+        # Work Done = E_B - E_C
+        ke_b = 0.5 * self.mass * v_b_sq
+        pe_b = self.mass * self.g * self.h_bc
+        ke_c = 0.5 * self.mass * (self.v_c**2)
+        
+        self.answer = ke_b + pe_b - ke_c
+
+        self.description = (
+            "The diagram shows the vertical cross-section $ABC$ of a rough waterslide. "
+            "A man modeled as a particle slides down from rest at $A$. "
+            "Based on the information provided in the figure, find the work done against "
+            "the resistance force as the man moves from $B$ to $C$."
+        )
+        
+        self.topic = "Mechanics"
+        self.subtopic = "Energy, work and power"
+        self.source = "Adapted from AS & A level June 2025 Question Paper 43"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Motion from }} A \\text{{ to }} B: & \\\\"
+            f"\\text{{Initial energy at }} A \\text{{ is purely potential energy:}} & \\\\"
+            f"PE_A &= mgh_{{AB}} = mg(L_{{AB}} \\sin \\theta) \\\\"
+            f"&= {self.mass} \\times {self.g} \\times ({self.l_ab} \\times {self.sin_theta}) \\\\"
+            f"&= {round(self.mass * self.g * self.l_ab * self.sin_theta, 10)}\\,\\text{{J}} \\\\"
+            f"\\text{{Work done against friction on section }} AB: & \\\\"
+            f"WD_{{f}} &= \\mu R L_{{AB}} = \\mu (mg \\cos \\theta) L_{{AB}} \\\\"
+            f"\\cos \\theta &= \\sqrt{{1 - \\sin^2 \\theta}} = \\sqrt{{1 - {self.sin_theta}^2}} = {round(self.cos_theta, 10)} \\\\"
+            f"WD_{{f}} &= {self.mu} \\times ({self.mass} \\times {self.g} \\times {round(self.cos_theta, 10)}) \\times {self.l_ab} \\\\"
+            f"&= {round(self.mu * self.mass * self.g * self.cos_theta * self.l_ab, 10)}\\,\\text{{J}} \\\\"
+            f"\\text{{Using the work-energy principle for }} AB: & \\\\"
+            f"KE_B &= PE_A - WD_{{f}} \\\\"
+            f"&= {round(self.mass * self.g * self.l_ab * self.sin_theta, 10)} - {round(self.mu * self.mass * self.g * self.cos_theta * self.l_ab, 10)} \\\\"
+            f"&= {round(0.5 * self.mass * (self.v_b**2), 10)}\\,\\text{{J}} \\\\"
+            f"\\text{{2. Motion from }} B \\text{{ to }} C: & \\\\"
+            f"\\text{{Total energy at }} B \\text{{ (Kinetic + Potential relative to }} C\\text{{):}} & \\\\"
+            f"E_B &= KE_B + mgh_{{BC}} \\\\"
+            f"&= {round(0.5 * self.mass * (self.v_b**2), 10)} + ({self.mass} \\times {self.g} \\times {self.h_bc}) \\\\"
+            f"&= {round(0.5 * self.mass * (self.v_b**2) + self.mass * self.g * self.h_bc, 10)}\\,\\text{{J}} \\\\"
+            f"\\text{{Kinetic energy at }} C: & \\\\"
+            f"KE_C &= \\frac{{1}}{{2}} m v_C^2 = 0.5 \\times {self.mass} \\times {self.v_c}^2 \\\\"
+            f"&= {round(0.5 * self.mass * (self.v_c**2), 10)}\\,\\text{{J}} \\\\"
+            f"\\text{{Work done against resistance from }} B \\text{{ to }} C: & \\\\"
+            f"WD_{{res}} &= E_B - KE_C \\\\"
+            f"&= {round(0.5 * self.mass * (self.v_b**2) + self.mass * self.g * self.h_bc, 10)} - {round(0.5 * self.mass * (self.v_c**2), 10)} \\\\"
+            f"&= {self.answer}\\,\\text{{J}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Coordinates for plotting
+        x_b, y_b = 0, self.h_bc
+        x_a = -self.l_ab * self.cos_theta
+        y_a = self.h_bc + self.l_ab * self.sin_theta
+        x_c, y_c = 4.0, 0 
+        
+        # Draw the waterslide paths
+        ax.plot([x_a, x_b], [y_a, y_b], color='black', lw=3) # Section AB (Straight)
+        t = np.linspace(0, 1, 100)
+        curve_x = x_b + t * (x_c - x_b)
+        curve_y = y_b * (1 - t)**1.8 # Quadratic-style descent
+        ax.plot(curve_x, curve_y, color='black', lw=3) # Section BC (Curve)
+
+        # Baseline horizontal markers
+        ax.plot([x_b - 2.5, x_b], [y_b, y_b], color='gray', linestyle='--', lw=1)
+        ax.plot([x_b - 2.5, x_c + 0.5], [y_c, y_c], color='gray', linestyle='--', lw=1)
+
+        # Labels for points
+        ax.text(x_a - 0.3, y_a + 0.3, 'A', fontsize=16, fontweight='bold')
+        ax.text(x_b + 0.1, y_b + 0.2, 'B', fontsize=16, fontweight='bold')
+        ax.text(x_c + 0.2, y_c + 0.2, 'C', fontsize=16, fontweight='bold')
+
+        # Dimensioning: AB section length
+        off = 0.6
+        dx, dy = off * self.sin_theta, off * self.cos_theta
+        ax.annotate('', xy=(x_a + dx, y_a + dy), xytext=(x_b + dx, y_b + dy),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
+        ax.text((x_a + x_b)/2 + dx + 0.1, (y_a + y_b)/2 + dy + 0.1, f"{self.l_ab:.1f} m", 
+                rotation=math.degrees(self.theta_rad), ha='left', va='bottom', fontsize=12)
+
+        # Dimensioning: BC vertical height
+        ax.annotate('', xy=(x_b - 1.8, y_b), xytext=(x_b - 1.8, y_c),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
+        ax.text(x_b - 1.9, (y_b + y_c)/2, f"{self.h_bc:.1f} m", ha='right', va='center', fontsize=12)
+
+        # Fix the angle mark arc (theta)
+        arc_r = 0.8
+        angle_deg = math.degrees(self.theta_rad)
+        # Draw arc from line BA (180 - theta) to the horizontal (180)
+        arc = patches.Arc((x_b, y_b), arc_r*2, arc_r*2, theta1=180 - angle_deg, theta2=180, color='black', lw=1.5)
+        ax.add_patch(arc)
+        # Place label theta at the center of the arc span
+        mid_angle = 180 - (angle_deg / 2)
+        lx = x_b + (arc_r + 0.4) * math.cos(math.radians(mid_angle))
+        ly = y_b + (arc_r + 0.4) * math.sin(math.radians(mid_angle))
+        ax.text(lx, ly, r"$\theta$", fontsize=15, ha='center', va='center')
+
+        # Floating info box for parameters
+        info_text = (
+            f"Given Information:\n"
+            f"• Mass of man: {self.mass} kg\n"
+            f"• $\\sin \\theta = {self.sin_theta:.2f}$\n"
+            f"• Friction on AB: $\\mu = {self.mu:.2f}$\n"
+            f"• Speed at C: $v_C = {self.v_c}$ m s$^{{-1}}$\n"
+            f"• Starts from rest at A"
+        )
+        ax.text(0.95, 0.95, info_text, transform=ax.transAxes, fontsize=12,
+                verticalalignment='top', horizontalalignment='right',
+                bbox=dict(boxstyle='round,pad=0.5', facecolor='white', edgecolor='black', alpha=0.9))
+
+        # Adjust axes to ensure no cutoff
+        ax.set_xlim(x_a - 2.0, x_c + 2.0)
+        ax.set_ylim(y_c - 1.5, y_a + 2.5)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
