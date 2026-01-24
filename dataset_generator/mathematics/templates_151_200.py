@@ -3919,3 +3919,863 @@ class Mat190:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+
+class Mat191:
+    def __init__(self):
+        # n is the sample size
+        self.n = rnd.randint(10, 40)
+        # standard_error represents the distance from mean to inflection point in sampling distribution
+        self.standard_error = round(randrange_float(0.5, 3.0, 0.01), 2)
+        # population mean mu
+        self.mu = rnd.randint(40, 100)
+        
+        # Formula: Standard Error = sigma / sqrt(n)
+        # Therefore: sigma = Standard Error * sqrt(n)
+        self.answer = self.standard_error * math.sqrt(self.n)
+
+        self.description = (
+            f"The figure illustrates the probability density function of the sample mean $\\overline{{X}}$ "
+            f"for samples of size $n = {self.n}$ taken from a normally distributed population with mean $\\mu$ and variance $\\sigma^2$. "
+            f"Based on the parameters shown in the figure, calculate the standard deviation of the population, $\\sigma$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The distance from the mean to the inflection point represents the standard error (SE):}} &\\\\"
+            f"\\text{{SE}} &= {round(self.standard_error, 10)}\\\\"
+            f"\\text{{The sample size is given as:}} &\\\\"
+            f"n &= {self.n}\\\\"
+            f"\\text{{The formula for the standard error of the sample mean is:}} &\\\\"
+            f"\\text{{SE}} &= \\frac{{\\sigma}}{{\\sqrt{{n}}}}\\\\"
+            f"\\text{{Rearranging to solve for the population standard deviation }} \\sigma: &\\\\"
+            f"\\sigma &= \\text{{SE}} \\times \\sqrt{{n}}\\\\"
+            f"&= {round(self.standard_error, 10)} \\times \\sqrt{{{self.n}}}\\\\"
+            f"&= {round(self.standard_error, 10)} \\times {round(math.sqrt(self.n), 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Define the range for the normal curve based on standard error
+        x = np.linspace(self.mu - 4 * self.standard_error, self.mu + 4 * self.standard_error, 1000)
+        y = (1 / (self.standard_error * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - self.mu) / self.standard_error)**2)
+        
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Mark the mean
+        ax.axvline(self.mu, color='black', linestyle='--', lw=1)
+        ax.text(self.mu, -0.02 * np.max(y), f"{self.mu}", ha='center', fontsize=12)
+        
+        # Mark the inflection point (1 standard error away)
+        inflection_x = self.mu + self.standard_error
+        ax.plot([self.mu, inflection_x], [np.max(y) * 0.606, np.max(y) * 0.606], color='red', lw=1.5)
+        
+        # Add label for the distance (standard error)
+        ax.text((self.mu + inflection_x) / 2, np.max(y) * 0.62, f"{self.standard_error}", 
+                ha='center', va='bottom', fontsize=12, color='red', fontweight='bold')
+        
+        # Vertical line at inflection point for clarity
+        ax.axvline(inflection_x, ymin=0, ymax=0.606, color='red', linestyle=':', lw=1)
+
+        # Styling
+        ax.set_yticks([])
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.set_xlabel(r"Sample Mean $\overline{X}$", fontsize=12)
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat192:
+    def __init__(self):
+        # Generate a random base and a list of offsets to create data points
+        # Using a set of unique locations then adding some duplicates (stacks)
+        base = rnd.randint(10, 50)
+        num_unique = rnd.randint(4, 7)
+        unique_offsets = sorted(rnd.sample(range(0, 25), num_unique))
+        
+        self.data_points = []
+        for offset in unique_offsets:
+            val = base + offset
+            # Randomly decide to stack 1, 2, or 3 points at this location
+            count = rnd.choices([1, 2, 3], weights=[0.6, 0.3, 0.1])[0]
+            self.data_points.extend([val] * count)
+        
+        # Shuffle for logic, though visualization will be ordered
+        rnd.shuffle(self.data_points)
+        
+        n = len(self.data_points)
+        sum_x = sum(self.data_points)
+        sum_x2 = sum(x**2 for x in self.data_points)
+        
+        # Calculate unbiased estimate of population variance (s^2)
+        # s^2 = (1 / (n-1)) * (sum_x2 - (sum_x^2 / n))
+        self.answer = (sum_x2 - (sum_x**2 / n)) / (n - 1)
+
+        self.description = (
+            "The dot plot shows the wingspan measurements (in cm) of a random sample of birds. "
+            "Based on the visual data provided in the figure, calculate the unbiased estimate of the population variance ($s^2$)."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the dot plot, the data set is:}} &\\\\"
+            f"x &= \\{{ {', '.join(map(str, sorted(self.data_points)))} \\}}\\\\"
+            f"\\text{{The sample size is:}} &\\\\"
+            f"n &= {len(self.data_points)}\\\\"
+            f"\\text{{Calculate the sum of the observations }} \\sum x: &\\\\"
+            f"\\sum x &= {sum(self.data_points)}\\\\"
+            f"\\text{{Calculate the sum of the squares }} \\sum x^2: &\\\\"
+            f"\\sum x^2 &= {sum(x**2 for x in self.data_points)}\\\\"
+            f"\\text{{The formula for the unbiased estimate of population variance }} s^2 \\text{{ is:}} &\\\\"
+            f"s^2 &= \\frac{{1}}{{n-1}} \\left( \\sum x^2 - \\frac{{(\\sum x)^2}}{{n}} \\right)\\\\"
+            f"&= \\frac{{1}}{{{len(self.data_points)} - 1}} \\left( {sum(x**2 for x in self.data_points)} - \\frac{{{sum(self.data_points)}^2}}{{{len(self.data_points)}}} \\right)\\\\"
+            f"&= \\frac{{1}}{{{len(self.data_points) - 1}}} \\left( {sum(x**2 for x in self.data_points)} - {round(sum(self.data_points)**2 / len(self.data_points), 10)} \\right)\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^2"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 4))
+        
+        # Count frequencies for stacking
+        from collections import Counter
+        counts = Counter(self.data_points)
+        sorted_vals = sorted(counts.keys())
+        
+        # Plotting the dot plot
+        for val in sorted_vals:
+            for i in range(counts[val]):
+                ax.plot(val, i + 1, 'ko', markersize=12)
+        
+        # Set axis limits and labels
+        padding = 2
+        ax.set_xlim(min(self.data_points) - padding, max(self.data_points) + padding)
+        ax.set_ylim(0, max(counts.values()) + 1)
+        
+        # Clean up the appearance
+        ax.get_yaxis().set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.set_xlabel("Wingspan (cm)", fontsize=14)
+        
+        # Ensure only integer ticks on x-axis
+        ax.xaxis.set_major_locator(MultipleLocator(2))
+        ax.tick_params(axis='x', labelsize=12)
+
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat193:
+    def __init__(self):
+        # We pick sqrt_n first to ensure n is a perfect square for a clean numeric answer
+        self.sqrt_n = rnd.randint(5, 12) 
+        self.n = self.sqrt_n**2
+        
+        # Standard deviation of population (sigma)
+        # Using randrange_float with step 0.5 for clean variability
+        self.sigma = round(randrange_float(5.0, 25.0, 0.5), 2)
+        
+        # Standard error (SE) = sigma / sqrt(n)
+        self.standard_error = round(self.sigma / self.sqrt_n, 2)
+        
+        # Re-verify sigma to maintain mathematical consistency with the displayed SE
+        self.sigma = round(self.standard_error * self.sqrt_n, 2)
+
+        self.answer = self.n
+
+        self.description = (
+            "The figure shows the distribution of a population and the corresponding sampling distribution "
+            "of the sample mean $\\overline{X}$ for samples of size $n$. Based on the statistical parameters "
+            "provided in the figure, determine the value of the sample size $n$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the population distribution legend, the standard deviation is:}} &\\\\"
+            f"\\sigma &= {round(self.sigma, 10)}\\\\"
+            f"\\text{{From the sampling distribution figure, the standard error (SE) is:}} &\\\\"
+            f"\\text{{SE}} &= {round(self.standard_error, 10)}\\\\"
+            f"\\text{{The formula for the standard error of the sample mean is:}} &\\\\"
+            f"\\text{{SE}} &= \\frac{{\\sigma}}{{\\sqrt{{n}}}}\\\\"
+            f"\\text{{Rearranging the formula to solve for }} \\sqrt{{n}}: &\\\\"
+            f"\\sqrt{{n}} &= \\frac{{\\sigma}}{{\\text{{SE}}}}\\\\"
+            f"&= \\frac{{{round(self.sigma, 10)}}}{{{round(self.standard_error, 10)}}}\\\\"
+            f"&= {round(self.sigma / self.standard_error, 10)}\\\\"
+            f"\\text{{Squaring both sides to find the sample size }} n: &\\\\"
+            f"n &= ({round(self.sigma / self.standard_error, 10)})^2\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+        
+        # Population Distribution (Skewed)
+        from scipy.stats import gamma, norm
+        x_pop = np.linspace(0, 20, 1000)
+        y_pop = gamma.pdf(x_pop, a=2)
+        
+        ax1.plot(x_pop, y_pop, color='black', lw=2, label=f"$\\sigma = {self.sigma}$")
+        ax1.fill_between(x_pop, y_pop, color='lightgray', alpha=0.3)
+        ax1.set_title("Population Distribution", fontsize=14, fontweight='bold')
+        ax1.legend(loc='upper right', fontsize=12, frameon=True)
+        
+        # Clean axes for population
+        ax1.set_xticks([])
+        ax1.set_yticks([])
+        ax1.spines['top'].set_visible(False)
+        ax1.spines['right'].set_visible(False)
+        ax1.spines['left'].set_visible(False)
+
+        # Sampling Distribution (Normal)
+        mu_sample = 10
+        x_sample = np.linspace(mu_sample - 4, mu_sample + 4, 1000)
+        visual_se = 1.0  # Constant visual scale for standardized appearance
+        y_sample = norm.pdf(x_sample, mu_sample, visual_se)
+        
+        ax2.plot(x_sample, y_sample, color='blue', lw=2)
+        ax2.set_title("Sampling Distribution of $\\overline{X}$", fontsize=14, fontweight='bold')
+        
+        # Center line (Mean)
+        ax2.axvline(mu_sample, color='black', linestyle='--', lw=1)
+        
+        # Mark Standard Error distance (Mean to Inflection point)
+        inflection_x = mu_sample + visual_se
+        ax2.annotate('', xy=(mu_sample, max(y_sample)*0.5), xytext=(inflection_x, max(y_sample)*0.5),
+                     arrowprops=dict(arrowstyle='<->', color='red', lw=1.5))
+        
+        # Label the SE value directly on the graph
+        ax2.text((mu_sample + inflection_x)/2, max(y_sample)*0.55, f"SE = {self.standard_error}", 
+                 ha='center', color='black', fontsize=12, fontweight='bold')
+
+        # Clean axes for sampling distribution
+        ax2.set_xticks([])
+        ax2.set_yticks([])
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_visible(False)
+        ax2.spines['left'].set_visible(False)
+        
+        plt.tight_layout()
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat194:
+    def __init__(self):
+        # Generate alpha/2 value as a clean decimal (e.g., 0.005, 0.025, 0.05)
+        # alpha_half is the area of one tail
+        self.alpha_half = round(randrange_float(0.005, 0.05, 0.005), 3)
+        
+        # Calculate total alpha and then the confidence level
+        alpha = 2 * self.alpha_half
+        self.answer = round((1 - alpha) * 100, 2)
+
+        self.description = (
+            "The figure shows a standard normal distribution used to determine the critical value $z$ "
+            "for a confidence interval. Based on the indicated area in the shaded tails, "
+            "calculate the confidence level of the interval as a percentage."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = ""
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Standard Normal Distribution (mu=0, sigma=1)
+        x = np.linspace(-4, 4, 1000)
+        y = norm.pdf(x, 0, 1)
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Calculate z-critical value for the shaded regions
+        z_crit = norm.ppf(1 - self.alpha_half)
+        
+        # Shade Right Tail
+        x_right = np.linspace(z_crit, 4, 200)
+        y_right = norm.pdf(x_right, 0, 1)
+        ax.fill_between(x_right, y_right, color='gray', alpha=0.5)
+        
+        # Shade Left Tail
+        x_left = np.linspace(-4, -z_crit, 200)
+        y_left = norm.pdf(x_left, 0, 1)
+        ax.fill_between(x_left, y_left, color='gray', alpha=0.5)
+        
+        # Labels for the tail areas
+        # Put the text above the tails
+        ax.text(z_crit + 0.3, 0.05, f"{self.alpha_half}", ha='left', fontsize=12, fontweight='bold')
+        ax.text(-z_crit - 0.3, 0.05, f"{self.alpha_half}", ha='right', fontsize=12, fontweight='bold')
+        
+        # Axis formatting
+        ax.set_xticks([-z_crit, 0, z_crit])
+        ax.set_xticklabels(['$-z$', '$0$', '$z$'], fontsize=12)
+        ax.set_yticks([])
+        
+        # Horizontal line for x-axis
+        ax.axhline(0, color='black', lw=1)
+        
+        # Remove spines
+        for spine in ['top', 'right', 'left']:
+            ax.spines[spine].set_visible(False)
+            
+        plt.tight_layout()
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+    
+class Mat195:
+    def __init__(self):
+        # Generate random boundaries for the confidence interval
+        # Using plant height context (e.g., 10cm to 25cm)
+        self.lower_bound = round(randrange_float(10.0, 15.0, 0.01), 2)
+        self.width = round(randrange_float(1.0, 3.0, 0.01), 2)
+        self.upper_bound = round(self.lower_bound + self.width, 2)
+        
+        # The sample mean is the midpoint of the confidence interval
+        self.answer = round((self.lower_bound + self.upper_bound) / 2, 2)
+
+        self.description = (
+            "A confidence interval for the mean height of a plant species was calculated from a large sample. "
+            "Based on the normal distribution curve and the interval shown in the figure, find the sample mean $\\overline{x}$ "
+            "used to construct this interval."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Lower bound of the confidence interval}} &= {round(self.lower_bound, 10)}\\\\"
+            f"\\text{{Upper bound of the confidence interval}} &= {round(self.upper_bound, 10)}\\\\"
+            f"\\text{{The sample mean }} \\overline{{x}} \\text{{ is the midpoint of the confidence interval:}} &\\\\"
+            f"\\overline{{x}} &= \\frac{{\\text{{Lower bound}} + \\text{{Upper bound}}}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.lower_bound, 10)} + {round(self.upper_bound, 10)}}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.lower_bound + self.upper_bound, 10)}}}{{2}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Setup the normal curve parameters for visualization
+        mu = self.answer
+        sigma = self.width / 4  # Scale sigma so the interval looks natural
+        x = np.linspace(mu - 4*sigma, mu + 4*sigma, 1000)
+        y = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mu) / sigma)**2)
+        
+        # Plot the normal curve
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Shade the confidence interval area
+        x_fill = np.linspace(self.lower_bound, self.upper_bound, 500)
+        y_fill = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x_fill - mu) / sigma)**2)
+        ax.fill_between(x_fill, y_fill, color='skyblue', alpha=0.4)
+        
+        # Draw vertical lines at boundaries
+        ax.vlines([self.lower_bound, self.upper_bound], 0, 
+                  [(1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((self.lower_bound - mu) / sigma)**2),
+                   (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((self.upper_bound - mu) / sigma)**2)],
+                  color='black', lw=1.5)
+
+        # Labels for the boundaries
+        ax.text(self.lower_bound, -0.05 * max(y), f"{self.lower_bound}", ha='center', fontsize=12, fontweight='bold')
+        ax.text(self.upper_bound, -0.05 * max(y), f"{self.upper_bound}", ha='center', fontsize=12, fontweight='bold')
+        
+        # Add "Confidence Interval" arrow/text
+        arrow = patches.FancyArrowPatch((self.lower_bound, -0.12 * max(y)), (self.upper_bound, -0.12 * max(y)),
+                                        arrowstyle='<->', mutation_scale=15, color='black')
+        ax.add_patch(arrow)
+        ax.text(mu, -0.18 * max(y), "Confidence Interval", ha='center', fontsize=11)
+
+        # Style cleanup
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.set_ylim(-0.25 * max(y), 1.1 * max(y))
+        
+        # Save image
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat196:
+    def __init__(self):
+        # Generate a continuous range for confidence levels (e.g., 85% to 99%)
+        self.conf_level_pct = round(randrange_float(85.0, 99.0, 0.01), 2)
+        self.conf_level = self.conf_level_pct / 100
+        
+        # Calculate z-critical value based on the confidence level
+        # alpha = 1 - conf_level; tail = alpha / 2; z = norm.ppf(1 - tail)
+        self.z_critical = norm.ppf(1 - (1 - self.conf_level) / 2)
+        
+        # Standard Error (SE) using randrange_float
+        self.se = round(randrange_float(0.5, 5.0, 0.01), 2)
+        
+        # Width = 2 * z * SE
+        self.answer = 2 * self.z_critical * self.se
+
+        self.description = (
+            "The figure shows the areas under the standard normal curve used for a specific confidence interval. "
+            "Based on the shaded area and the given standard error (SE), calculate the width of the confidence interval "
+            "for the population mean $\\mu$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}",
+            f"\\text{{Confidence Level (CL)}} &= {round(self.conf_level_pct, 10)}\\% = {round(self.conf_level, 10)}\\\\"
+            f"\\alpha &= 1 - CL = 1 - {round(self.conf_level, 10)} = {round(1 - self.conf_level, 10)}\\\\"
+            f"\\text{{Tail Area }} \\left(\\frac{{\\alpha}}{{2}}\\right) &= \\frac{{{round(1 - self.conf_level, 10)}}}{{2}} = {round((1 - self.conf_level) / 2, 10)}\\\\"
+            f"z^* &= \\Phi^{{-1}}\\left(1 - \\frac{{\\alpha}}{{2}}\\right) = \\Phi^{{-1}}\\left(1 - {round((1 - self.conf_level) / 2, 10)}\\right)\\\\"
+            f"z^* &= \\Phi^{{-1}}\\left({round(1 - (1 - self.conf_level) / 2, 10)}\\right) = {round(self.z_critical, 10)}\\\\"
+            f"\\text{{Standard Error (SE)}} &= {self.se}\\\\"
+            f"\\text{{Width}} &= 2 \\times z^* \\times SE\\\\"
+            f"&= 2 \\times {round(self.z_critical, 10)} \\times {self.se}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        
+        # Standard Normal Distribution
+        x = np.linspace(-4, 4, 1000)
+        y = norm.pdf(x)
+        ax.plot(x, y, color='black', lw=2)
+        
+        # Central Shading (Confidence Level)
+        z = self.z_critical
+        x_conf = np.linspace(-z, z, 500)
+        y_conf = norm.pdf(x_conf)
+        ax.fill_between(x_conf, y_conf, color='skyblue', alpha=0.5)
+        
+        # Annotations
+        ax.text(0, 0.15, f"{self.conf_level_pct}%", ha='center', fontsize=14, fontweight='bold')
+        
+        # SE Info
+        plt.text(2.2, 0.35, f"SE = {self.se}", bbox=dict(facecolor='white', alpha=0.8), fontsize=12)
+        
+        # Width Indicator
+        ax.annotate('', xy=(-z, -0.02), xytext=(z, -0.02), 
+                    arrowprops=dict(arrowstyle='<->', color='black'))
+        ax.text(0, -0.07, "Interval Width", ha='center', fontsize=11)
+
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(-0.1, 0.45)
+        ax.axis('off')
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat197:
+    def __init__(self):
+        # Randomize sample size nA and the ratio of standard errors (k = SEA / SEB)
+        self.nA = rnd.randint(16, 100)
+        self.k = rnd.randint(2, 5) # ratio SEA : SEB = k : 1
+        
+        # Since SE = sigma / sqrt(n):
+        # SEA / SEB = (sigma / sqrt(nA)) / (sigma / sqrt(nB)) = sqrt(nB) / sqrt(nA)
+        # k = sqrt(nB / nA) => nB = nA * k^2
+        self.answer = self.nA * (self.k**2)
+
+        self.description = (
+            "The figure shows two sampling distributions, $A$ and $B$, for the same population mean "
+            "but with different sample sizes, $n_A$ and $n_B$. Based on the relationship shown and the "
+            "parameters in the legend, calculate the value of $n_B$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Sample size of }} A, n_A &= {self.nA}\\\\"
+            f"\\text{{Ratio of standard errors, }} SE_A : SE_B &= {self.k} : 1\\\\"
+            f"\\text{{The standard error (SE) is defined as:}} &\\\\"
+            f"SE &= \\frac{{\\sigma}}{{\\sqrt{{n}}}}\\\\"
+            f"\\text{{The ratio of standard errors for distributions }} A \\text{{ and }} B \\text{{ is:}} &\\\\"
+            f"\\frac{{SE_A}}{{SE_B}} &= \\frac{{\\sigma / \\sqrt{{n_A}}}}{{\\sigma / \\sqrt{{n_B}}}}\\\\"
+            f"\\frac{{SE_A}}{{SE_B}} &= \\sqrt{{\\frac{{n_B}}{{n_A}}}}\\\\"
+            f"\\text{{Substituting the known values:}} &\\\\"
+            f"{self.k} &= \\sqrt{{\\frac{{n_B}}{{{self.nA}}}}}\\\\"
+            f"\\text{{Squaring both sides to solve for }} n_B: &\\\\"
+            f"{round(self.k**2, 10)} &= \\frac{{n_B}}{{{self.nA}}}\\\\"
+            f"n_B &= {round(self.k**2, 10)} \\times {self.nA}\\\\"
+            f"n_B &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Define parameters for visual distribution
+        mu = 0
+        se_a = 1.0
+        se_b = se_a / self.k
+        
+        x = np.linspace(-4, 4, 1000)
+        y_a = norm.pdf(x, mu, se_a)
+        y_b = norm.pdf(x, mu, se_b)
+        
+        # Plot the normal distribution curves
+        ax.plot(x, y_a, color='blue', lw=2, label=f'Distribution A ($n_A = {self.nA}$)')
+        ax.plot(x, y_b, color='red', lw=2, label='Distribution B ($n_B$)')
+        
+        # Add legend with implicit numerical information
+        legend_text = (
+            f"$n_A = {self.nA}$\n"
+            f"$SE_A : SE_B = {self.k}:1$"
+        )
+        ax.text(0.95, 0.95, legend_text, transform=ax.transAxes, verticalalignment='top', 
+                horizontalalignment='right', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
+                fontsize=12)
+        
+        # Formatting
+        ax.set_title("Comparison of Sampling Distributions", fontsize=14)
+        ax.set_xlabel("Sample Mean ($\\overline{X}$)", fontsize=12)
+        ax.set_ylabel("Probability Density", fontsize=12)
+        ax.legend(loc='upper left')
+        ax.grid(True, linestyle=':', alpha=0.6)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat198:
+    def __init__(self):
+        # Randomly select a confidence level percentage (e.g., 80% to 99%)
+        self.conf_level_pct = round(randrange_float(80.0, 99.0, 0.01), 2)
+        self.conf_level = self.conf_level_pct / 100
+        
+        # Calculate the corresponding z-critical value
+        alpha = 1 - self.conf_level
+        self.z = round(norm.ppf(1 - alpha / 2), 3)
+        
+        # Generate random sample proportion p_hat
+        self.p_hat = round(randrange_float(0.15, 0.85, 0.01), 2)
+        
+        # Target Margin of Error (E)
+        self.E_target = round(randrange_float(0.02, 0.05, 0.01), 2)
+        
+        # Solve for n: E = z * sqrt(p_hat * (1 - p_hat) / n)
+        # n = (z^2 * p_hat * (1 - p_hat)) / E^2
+        self.answer = math.ceil((self.z**2 * self.p_hat * (1 - self.p_hat)) / (self.E_target**2))
+
+        self.description = (
+            "The figure illustrates the relationship between the margin of error ($E$) and the sample size ($n$) "
+            "for a survey result. Based on the parameters provided in the figure legend and the marked point on the curve, "
+            "determine the required sample size $n$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the figure legend:}} &\\\\"
+            f"\\text{{Sample proportion }} (\\hat{{p}}) &= {round(self.p_hat, 10)}\\\\"
+            f"\\text{{Target margin of error }} (E) &= {round(self.E_target, 10)}\\\\"
+            f"\\text{{Critical value }} (z) &= {round(self.z, 10)}\\\\"
+            f"\\text{{The margin of error formula for a proportion is:}} &\\\\"
+            f"E &= z \\times \\sqrt{{\\frac{{\\hat{{p}}(1 - \\hat{{p}})}}{{n}}}}\\\\"
+            f"\\text{{Rearranging for }} n: &\\\\"
+            f"n &= \\frac{{z^2 \\times \\hat{{p}}(1 - \\hat{{p}})}}{{E^2}}\\\\"
+            f"&= \\frac{{({round(self.z, 10)})^2 \\times {round(self.p_hat, 10)}(1 - {round(self.p_hat, 10)})}}{{({round(self.E_target, 10)})^2}}\\\\"
+            f"&= \\frac{{{round(self.z**2, 10)} \\times {round(self.p_hat * (1 - self.p_hat), 10)}}}{{{round(self.E_target**2, 10)}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plotting range for n based on the answer
+        n_start = max(50, self.answer - 800)
+        n_end = self.answer + 1200
+        n_vals = np.linspace(n_start, n_end, 500)
+        E_vals = self.z * np.sqrt((self.p_hat * (1 - self.p_hat)) / n_vals)
+        
+        # Plot the main curve
+        ax.plot(n_vals, E_vals, color='darkblue', lw=2)
+        
+        # Mark target E and corresponding n
+        ax.scatter(self.answer, self.E_target, color='red', s=60, zorder=5)
+        
+        # Dashed projection lines
+        ax.axhline(y=self.E_target, xmin=0, xmax=(self.answer - n_start)/(n_end - n_start), 
+                   color='gray', linestyle='--', alpha=0.6)
+        ax.axvline(x=self.answer, ymin=0, ymax=(self.E_target - min(E_vals))/(max(E_vals) - min(E_vals)), 
+                   color='gray', linestyle='--', alpha=0.6)
+        
+        # Legend with all necessary implicit information
+        legend_info = (
+            f"$\\hat{{p}} = {self.p_hat}$\n"
+            f"Confidence Level = {self.conf_level_pct}%\n"
+            f"Target $E = {self.E_target}$\n"
+            f"Critical Value $z = {self.z}$"
+        )
+        ax.text(0.95, 0.95, legend_info, transform=ax.transAxes, verticalalignment='top', 
+                horizontalalignment='right', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
+                fontsize=11)
+        
+        # Formatting
+        ax.set_xlabel('Sample Size ($n$)', fontsize=12)
+        ax.set_ylabel('Margin of Error ($E$)', fontsize=12)
+        ax.set_title('Margin of Error $E$ as a Function of Sample Size $n$', fontsize=13)
+        ax.grid(True, which='both', linestyle=':', alpha=0.5)
+        
+        # Annotate target E on axis
+        ax.text(n_start + (n_end-n_start)*0.02, self.E_target + 0.001, f"$E={self.E_target}$", 
+                color='red', fontweight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat199:
+    def __init__(self):
+        # Randomize sample sizes n1 and n2
+        self.n1 = rnd.randint(8, 25)
+        self.n2 = rnd.randint(8, 25)
+        
+        # Randomize sample means x1 and x2
+        self.x1 = round(randrange_float(15.0, 30.0, 0.1), 1)
+        self.x2 = round(randrange_float(15.0, 30.0, 0.1), 1)
+        
+        # Calculate the combined unbiased estimate (weighted mean)
+        # Combined Mean = (n1*x1 + n2*x2) / (n1 + n2)
+        self.answer = round((self.n1 * self.x1 + self.n2 * self.x2) / (self.n1 + self.n2), 2)
+
+        self.description = (
+            "Two independent samples are taken from the same population. "
+            "Based on the boxplots and the sample sizes provided in the figure legend, "
+            "calculate the unbiased estimate of the population mean by combining all observations."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Sample sizes: }} n_1 &= {self.n1}, \\quad n_2 = {self.n2}\\\\"
+            f"\\text{{Sample means from figure: }} \\bar{{x}}_1 &= {round(self.x1, 10)}, \\quad \\bar{{x}}_2 = {round(self.x2, 10)}\\\\"
+            f"\\text{{The unbiased estimate of the combined population mean is the weighted mean:}} &\\\\"
+            f"\\bar{{x}}_{{combined}} &= \\frac{{n_1\\bar{{x}}_1 + n_2\\bar{{x}}_2}}{{n_1 + n_2}}\\\\"
+            f"&= \\frac{{{self.n1}({round(self.x1, 10)}) + {self.n2}({round(self.x2, 10)})}}{{{self.n1} + {self.n2}}}\\\\"
+            f"&= \\frac{{{round(self.n1 * self.x1, 10)} + {round(self.n2 * self.x2, 10)}}}{{{self.n1 + self.n2}}}\\\\"
+            f"&= \\frac{{{round(self.n1 * self.x1 + self.n2 * self.x2, 10)}}}{{{self.n1 + self.n2}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Create dummy data for boxplots to reflect the means
+        # Boxplot doesn't show mean by default, so we add a marker
+        data1 = np.random.normal(self.x1, 3, 100)
+        data2 = np.random.normal(self.x2, 3, 100)
+        
+        box = ax.boxplot([data1, data2], vert=False, patch_artist=True, 
+                         labels=['Sample 1', 'Sample 2'],
+                         showmeans=True, meanprops={"marker":"x", "markeredgecolor":"red", "markersize":10})
+
+        # Colors
+        colors = ['#add8e6', '#90ee90']
+        for patch, color in zip(box['boxes'], colors):
+            patch.set_facecolor(color)
+
+        # Annotate the means next to the 'x' markers
+        ax.text(self.x1, 1.15, f"{self.x1}", color='red', fontweight='bold', ha='center')
+        ax.text(self.x2, 2.15, f"{self.x2}", color='red', fontweight='bold', ha='center')
+
+        # Legend with sample sizes (implicit info required for calculation)
+        legend_info = (
+            f"Sample 1: $n_1 = {self.n1}$\n"
+            f"Sample 2: $n_2 = {self.n2}$\n"
+            "x = Sample Mean"
+        )
+        ax.text(0.95, 0.05, legend_info, transform=ax.transAxes, verticalalignment='bottom', 
+                horizontalalignment='right', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8),
+                fontsize=12)
+
+        ax.set_title("Boxplots of Independent Samples", fontsize=14)
+        ax.set_xlabel("Value", fontsize=12)
+        ax.grid(True, linestyle=':', alpha=0.6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat200:
+    def __init__(self):
+        # 1. Generate a large sample size n (integer)
+        self.n = rnd.randint(150, 500)
+        
+        # 2. Generate a random count of successes x (integer)
+        # Ensure the proportion is within a reasonable range (e.g., 0.1 to 0.9)
+        self.x = rnd.randint(int(0.15 * self.n), int(0.85 * self.n))
+        
+        # 3. Calculate the unbiased point estimate (sample proportion)
+        # p_hat = x / n
+        self.answer = round(self.x / self.n, 4)
+
+        self.description = (
+            "A survey was conducted with a large sample size. "
+            "The frequency bar chart illustrates the count of 'success' and 'failure' outcomes. "
+            "Based on the figure, calculate the unbiased point estimate for the population proportion $p$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = ""
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        categories = ['Success', 'Failure']
+        # 'Failure' count is the remaining from the total sample size n
+        counts = [self.x, self.n - self.x]
+        
+        # Draw the bar chart
+        bars = ax.bar(categories, counts, color=['#3498db', '#ecf0f1'], edgecolor='black', linewidth=1.5)
+        
+        # Shading the 'Success' bar to match the requirement of the prompt
+        bars[0].set_hatch('//')
+        bars[0].set_alpha(0.8)
+
+        # Legend and Labeling
+        ax.set_ylabel('Frequency (Count)', fontsize=12, fontweight='bold')
+        ax.set_title(f'Outcome Frequency (Total $n = {self.n}$)', fontsize=14, pad=20)
+        
+        # Add frequency labels on top of the bars for clarity
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height + (0.01 * self.n),
+                    f'{int(height)}', ha='center', va='bottom', fontsize=12, fontweight='bold')
+
+        # Formatting the chart
+        ax.set_ylim(0, max(counts) * 1.2)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
+
+        # Add a text box for the sample size to make it implicit but visible in the legend/figure
+        textstr = f"Sample Size: $n = {self.n}$"
+        props = dict(boxstyle='round', facecolor='white', alpha=0.5)
+        ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=12,
+                verticalalignment='top', bbox=props)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat200:
+    def __init__(self):
+        # Population parameters
+        self.mu = rnd.randint(60, 180)
+        self.variance = rnd.randint(25, 225) # Variances like 25, 36, 49... 225
+        self.sigma = math.sqrt(self.variance)
+        self.n = rnd.randint(30, 80)
+        
+        # Fundamental property: E(X_bar) = mu
+        self.answer = self.mu
+
+        self.description = (
+            "The figure illustrates the distribution of a population $X$ and the distribution "
+            "of the sample mean $\\bar{X}$ for a sample size $n = " + str(self.n) + "$. "
+            "Based on the statistical properties shown, determine the value of $E(\\bar{X})$."
+        )
+        
+        self.topic = "Probability & Statistics 2"
+        self.subtopic = "Sampling and estimation"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the figure, the population mean is given as:}} &\\\\"
+            f"\\mu &= {round(self.mu, 10)}\\\\"
+            f"\\text{{The population variance is given as:}} &\\\\"
+            f"\\sigma^2 &= {round(self.variance, 10)}\\\\"
+            f"\\text{{For a random sample of size }} n, \\text{{ the sample mean }} \\bar{{X}} \\text{{ is a random variable.}} &\\\\"
+            f"\\text{{The expectation of the sample mean, }} E(\\bar{{X}}), \\text{{ is equal to the population mean:}} &\\\\"
+            f"E(\\bar{{X}}) &= \\mu\\\\"
+            f"\\text{{Substituting the value of }} \\mu: &\\\\"
+            f"E(\\bar{{X}}) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # X-axis range based on mu and sigma
+        x = np.linspace(self.mu - 4 * self.sigma, self.mu + 4 * self.sigma, 500)
+        
+        # Distributions
+        y_pop = (1 / (self.sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - self.mu) / self.sigma)**2)
+        
+        sigma_bar = self.sigma / np.sqrt(self.n)
+        y_sample = (1 / (sigma_bar * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - self.mu) / sigma_bar)**2)
+        
+        # Use legend to pass implicit information
+        ax.plot(x, y_pop, label=f'Population $X$ ($\\mu={self.mu}, \\sigma^2={self.variance}$)', color='blue', lw=2)
+        ax.plot(x, y_sample, label='Sample Mean $\\bar{X}$', color='red', lw=2, linestyle='--')
+        
+        # Visual markers
+        ax.axvline(self.mu, color='gray', linestyle=':', lw=1.5)
+        
+        # Plot formatting
+        ax.set_yticks([])
+        ax.set_title("Population vs. Sampling Distribution", fontsize=14, pad=15)
+        ax.legend(loc='upper right', fontsize=10, frameon=True)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        
+        plt.tight_layout()
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
