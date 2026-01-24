@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from matplotlib.ticker import MultipleLocator, AutoMinorLocator
 from scipy.optimize import brentq
+from scipy.stats import binom
 from mathematics.helper import *
 
 # target folder : "root/dataset/mathematics/image"
@@ -3213,14 +3214,14 @@ class Mat182:
         ax.plot([-0.8, self.n - 0.2], [-0.05, -0.05], color='saddlebrown', lw=4, zorder=0)
 
         def draw_ornament(x, y, color, is_special=False):
-            # Base/Pedestal [cite: 58, 61]
+            # Base/Pedestal
             ax.plot([x - 0.3, x + 0.3], [y, y], color='black', lw=2)
-            # Ornament Body [cite: 58, 61]
+            # Ornament Body 
             body = patches.RegularPolygon((x, y + 0.4), numVertices=6, radius=0.3, 
                                           orientation=np.radians(30), color=color, ec='black', lw=1.5)
             ax.add_patch(body)
             if is_special:
-                # Add indicator label as requested in the description [cite: 91]
+                # Add indicator label as requested in the description 
                 ax.text(x, y + 0.9, "!", fontsize=16, ha='center', color='red', fontweight='bold',
                         bbox=dict(facecolor='white', alpha=0.6, edgecolor='none', pad=1))
 
@@ -3322,6 +3323,334 @@ class Mat183:
 
         # Central label
         plt.text(0, 0, "Meeting\nRoom", ha='center', va='center', fontsize=12, fontweight='bold', color='white')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat184:
+    def __init__(self):
+        # Increased variety for x-values: number of points varies from 3 to 5
+        num_points = rnd.randint(3, 5)
+        
+        # Generating a strictly increasing sequence of x-values with larger gaps
+        self.x_values = []
+        current_x = rnd.randint(1, 10)
+        for _ in range(num_points):
+            self.x_values.append(current_x)
+            current_x += rnd.randint(2, 6)
+        
+        # Generating probabilities that sum to exactly 1.0 using randrange_float
+        # We generate n-1 probabilities and the last one is the remainder
+        self.probs = []
+        remaining_p = 1.0
+        for i in range(num_points - 1):
+            # Ensure the remaining probability allows for at least 0.05 per remaining bar
+            upper_bound = remaining_p - (0.05 * (num_points - 1 - i))
+            p_val = round(randrange_float(0.05, max(0.06, upper_bound), 0.05), 2)
+            self.probs.append(p_val)
+            remaining_p = round(remaining_p - p_val, 2)
+        
+        self.probs.append(remaining_p)
+        
+        # Calculate Expected Value E(X) = sum(x * p)
+        mu = sum(x * p for x, p in zip(self.x_values, self.probs))
+        # Calculate E(X^2) = sum(x^2 * p)
+        mu_sq = sum((x**2) * p for x, p in zip(self.x_values, self.probs))
+        
+        # Variance Var(X) = E(X^2) - [E(X)]^2
+        self.answer = mu_sq - (mu**2)
+
+        self.description = (
+            "The figure displays the probability mass function of a discrete random variable $X$. "
+            "Based on the heights of the segments shown, calculate the variance $Var(X)$."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Discrete random variables"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        
+        # LaTeX Reasoning aligned with 9709 Syllabus expectations
+        # Using double backslashes for f-string compatibility and rounding to 10 decimal places
+        steps_mu = " + ".join([f"({x} \\times {round(p, 10)})" for x, p in zip(self.x_values, self.probs)])
+        steps_mu_sq = " + ".join([f"({x}^2 \\times {round(p, 10)})" for x, p in zip(self.x_values, self.probs)])
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{1. Calculate the expected value } E(X): &\\\\"
+            "E(X) &= \\sum x \\cdot P(X=x) \\\\"
+            f"&= {steps_mu} \\\\"
+            f"&= {round(mu, 10)} \\\\"
+            "\\text{2. Calculate } E(X^2): &\\\\"
+            "E(X^2) &= \\sum x^2 \\cdot P(X=x) \\\\"
+            f"&= {steps_mu_sq} \\\\"
+            f"&= {round(mu_sq, 10)} \\\\"
+            "\\text{3. Calculate the variance } Var(X): &\\\\"
+            "Var(X) &= E(X^2) - [E(X)]^2 \\\\"
+            f"&= {round(mu_sq, 10)} - ({round(mu, 10)})^2 \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 6))
+        
+        x_min, x_max = min(self.x_values) - 2, max(self.x_values) + 2
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(0, max(self.probs) + 0.15)
+        
+        # Horizontal baseline
+        ax.axhline(0, color='#2c3e50', lw=2)
+        
+        # Visualizing the PMF as vertical segments
+        for x, p in zip(self.x_values, self.probs):
+            ax.vlines(x, 0, p, color='royalblue', lw=5, alpha=0.8)
+            ax.plot(x, p, 'ro', markersize=10, markeredgecolor='black')
+            # Implicit probability value from figure
+            ax.text(x, p + 0.02, f"{p:.2f}", ha='center', va='bottom', fontsize=12, fontweight='bold')
+            # Discrete x values
+            ax.text(x, -0.05, str(x), ha='center', va='top', fontsize=14, fontweight='bold')
+
+        ax.set_ylabel('$P(X = x)$', fontsize=14)
+        ax.set_xlabel('$x$', fontsize=14)
+        ax.set_title('Probability Distribution of $X$', fontsize=16, pad=20)
+        ax.grid(True, axis='y', linestyle=':', alpha=0.4)
+        
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat185:
+    def __init__(self):
+        # Define 4 scores
+        self.scores = [1, 2, 3, 4]
+        
+        # Define angles (must sum to 360)
+        # We vary angles while ensuring they are multiples of 5 for easier reading
+        # angle1 will be roughly a right angle, angle2 roughly a straight angle
+        angle1 = rnd.randint(12, 24) * 5 # 60 to 120
+        angle2 = rnd.randint(24, 36) * 5 # 120 to 180
+        remaining = 360 - angle1 - angle2
+        
+        # Split remaining into two
+        angle3 = rnd.randint(4, remaining // 10) * 5
+        angle4 = 360 - angle1 - angle2 - angle3
+        
+        self.angles = [angle1, angle2, angle3, angle4]
+        self.probs = [a / 360 for a in self.angles]
+        
+        # Calculate expected value E(X) = sum(x * p)
+        self.answer = sum(s * p for s, p in zip(self.scores, self.probs))
+
+        self.description = (
+            "A discrete random variable $X$ represents the score on the weighted four-sided spinner shown in the figure. "
+            "If the spinner is spun once, find the expected value $E(X)$."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Discrete random variables"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{The probability } P(X=x) \\text{ is calculated by: } & \\\\"
+            "P(X=x) &= \\frac{\\text{Sector Angle}}{360^\\circ} \\\\"
+            f"P(X={self.scores[0]}) &= \\frac{{{self.angles[0]}^\\circ}}{{360^\\circ}} = {round(self.probs[0], 10)} \\\\"
+            f"P(X={self.scores[1]}) &= \\frac{{{self.angles[1]}^\\circ}}{{360^\\circ}} = {round(self.probs[1], 10)} \\\\"
+            f"P(X={self.scores[2]}) &= \\frac{{{self.angles[2]}^\\circ}}{{360^\\circ}} = {round(self.probs[2], 10)} \\\\"
+            f"P(X={self.scores[3]}) &= \\frac{{{self.angles[3]}^\\circ}}{{360^\\circ}} = {round(self.probs[3], 10)} \\\\"
+            "\\text{The expected value } E(X) \\text{ is given by: } & \\\\"
+            "E(X) &= \\sum x \\cdot P(X=x) \\\\"
+            f"&= ({self.scores[0]} \\cdot {round(self.probs[0], 10)}) + ({self.scores[1]} \\cdot {round(self.probs[1], 10)}) + ({self.scores[2]} \\cdot {round(self.probs[2], 10)}) + ({self.scores[3]} \\cdot {round(self.probs[3], 10)}) \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Draw circle
+        circle = plt.Circle((0, 0), 1.0, color='black', fill=False, lw=2)
+        ax.add_artist(circle)
+
+        # Draw sectors and labels
+        current_angle = 0
+        colors_list = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
+        
+        for i, (score, angle) in enumerate(zip(self.scores, self.angles)):
+            # Draw wedge
+            wedge = patches.Wedge((0, 0), 1.0, current_angle, current_angle + angle, 
+                                  facecolor=colors_list[i], edgecolor='black', alpha=0.6)
+            ax.add_patch(wedge)
+            
+            # Label the score
+            mid_angle = current_angle + angle / 2
+            lx = 0.7 * math.cos(math.radians(mid_angle))
+            ly = 0.7 * math.sin(math.radians(mid_angle))
+            ax.text(lx, ly, str(score), fontsize=24, ha='center', va='center', fontweight='bold')
+            
+            # Label the angle
+            ax.annotate(f"{angle}$^\\circ$", xy=(0,0), xytext=(1.2 * math.cos(math.radians(mid_angle)), 1.2 * math.sin(math.radians(mid_angle))),
+                        fontsize=14, ha='center', va='center')
+            
+            current_angle += angle
+
+        # Draw center point and arrow (pointer)
+        ax.plot(0, 0, 'ko', markersize=8)
+        ax.arrow(0, 0, 0.4, 0.4, head_width=0.05, head_length=0.1, fc='k', ec='k')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat186:
+    def __init__(self):
+        # p is the probability of success on the first trial P(X=1)
+        # Using a range that ensures visible decay in the bar chart
+        self.p = round(randrange_float(0.2, 0.6, 0.01), 2)
+        
+        self.answer = self.p
+
+        self.description = (
+            f"A discrete random variable $X$ follows a geometric distribution $X \\sim \\text{{Geo}}(p)$. "
+            f"The figure shows the probability mass function for the first few values of $x$. "
+            f"Based on the figure, determine the value of $p$ as a decimal."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Discrete random variables"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The figure displays the probability mass function for a geometric distribution }} X \\sim \\text{{Geo}}(p). \\\\"
+            f"\\text{{For a geometric distribution, the probability of the first success on the }} r^{{\\text{{th}}}} \\text{{ trial is:}} \\\\"
+            f"P(X = r) &= p(1 - p)^{{r - 1}} \\\\"
+            f"\\text{{From the figure, the probability for the first trial (}} r = 1 \\text{{) is given as:}} \\\\"
+            f"P(X = 1) &= {self.p} \\\\"
+            f"\\text{{Substituting }} r = 1 \\text{{ into the geometric formula:}} \\\\"
+            f"P(X = 1) &= p(1 - p)^{{1 - 1}} \\\\"
+            f"{self.p} &= p(1 - p)^0 \\\\"
+            f"{self.p} &= p(1) \\\\"
+            f"p &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Data for the first 4 values of x
+        x_values = [1, 2, 3, 4]
+        # P(X=r) = p * (1-p)^(r-1)
+        probs = [self.p * ((1 - self.p) ** (r - 1)) for r in x_values]
+
+        # Draw bar chart
+        bars = ax.bar(x_values, probs, color='skyblue', edgecolor='black', width=0.6)
+        
+        # Grid and axes configuration
+        ax.set_xlabel('$x$', fontsize=14)
+        ax.set_ylabel('$P(X=x)$', fontsize=14)
+        ax.set_xticks(x_values)
+        ax.set_ylim(0, max(probs) * 1.2)
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        # Add text annotation for the first bar to provide the implicit value
+        # This makes the answer 'implicit' from the figure
+        ax.text(bars[0].get_x() + bars[0].get_width()/2, bars[0].get_height() + 0.01, 
+                f"{self.p}", ha='center', va='bottom', fontsize=12, fontweight='bold')
+
+        # Formatting title or identifying info
+        ax.set_title('Probability Mass Function of $X \\sim \\text{Geo}(p)$', fontsize=16)
+
+        # Save the figure
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat187:
+    def __init__(self):
+        # n is the number of trials, p is the success probability
+        self.n = rnd.randint(5, 10)
+        self.p = round(randrange_float(0.1, 0.4, 0.05), 2)
+        
+        # Pre-calculating the exact probability values used for both the reasoning and the graph
+        # P(W=0) = (1-p)^n
+        self.prob_0 = round(math.comb(self.n, 0) * (self.p**0) * ((1 - self.p)**(self.n - 0)), 4)
+        # P(W=1) = n * p * (1-p)^(n-1)
+        self.prob_1 = round(math.comb(self.n, 1) * (self.p**1) * ((1 - self.p)**(self.n - 1)), 4)
+        
+        # The ratio calculation used in the reasoning steps
+        self.ratio = round(self.prob_1 / self.prob_0, 10)
+        
+        self.answer = self.p
+
+        self.description = (
+            f"The histogram shows the probability distribution of a discrete random variable $W$ "
+            f"where $W \\sim B(n, p)$. Based on the heights of the bars shown in the figure, "
+            f"find the numerical value of the success probability $p$."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Discrete random variables"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the figure, the probabilities for the first two bars are:}} &\\\\"
+            f"P(W=0) &= {self.prob_0}\\\\"
+            f"P(W=1) &= {self.prob_1}\\\\"
+            f"\\text{{The formula for a binomial distribution }} B(n, p) \\text{{ is:}} &\\\\"
+            f"P(W=k) &= \\binom{{n}}{{k}} p^k (1-p)^{{n-k}}\\\\"
+            f"\\text{{For }} k=0 \\text{{ and }} k=1: &\\\\"
+            f"P(W=0) &= (1-p)^{{{self.n}}}\\\\"
+            f"P(W=1) &= {self.n}p(1-p)^{{{self.n-1}}}\\\\"
+            f"\\text{{Taking the ratio }} \\frac{{P(W=1)}}{{{{P(W=0)}}}}: &\\\\"
+            f"\\frac{{P(W=1)}}{{P(W=0)}} &= \\frac{{{self.n}p(1-p)^{{{self.n-1}}}}}{{(1-p)^{{{self.n}}}}}\\\\"
+            f"\\frac{{P(W=1)}}{{P(W=0)}} &= \\frac{{{self.n}p}}{{1-p}}\\\\"
+            f"\\text{{Substituting the values from the figure:}} &\\\\"
+            f"\\frac{{{self.prob_1}}}{{{self.prob_0}}} &= \\frac{{{self.n}p}}{{1-p}}\\\\"
+            f"{round(self.ratio, 10)} &= \\frac{{{self.n}p}}{{1-p}}\\\\"
+            f"{round(self.ratio, 10)}(1-p) &= {self.n}p\\\\"
+            f"{round(self.ratio, 10)} - {round(self.ratio, 10)}p &= {self.n}p\\\\"
+            f"{round(self.ratio, 10)} &= {self.n}p + {round(self.ratio, 10)}p\\\\"
+            f"{round(self.ratio, 10)} &= ({self.n} + {round(self.ratio, 10)})p\\\\"
+            f"p &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        x = np.arange(0, self.n + 1)
+        # Re-calculating full distribution for the bars 
+        y = [math.comb(self.n, k) * (self.p**k) * ((1 - self.p)**(self.n - k)) for k in x]
+
+        bars = ax.bar(x, y, width=0.8, color='lightgreen', edgecolor='black', alpha=0.8)
+        
+        # Using the exact variables defined in __init__ for the labels 
+        ax.text(0, y[0] + 0.01, f"{self.prob_0}", ha='center', va='bottom', fontsize=10)
+        ax.text(1, y[1] + 0.01, f"{self.prob_1}", ha='center', va='bottom', fontsize=10)
+        
+        ax.set_xlabel('Number of successes ($w$)', fontsize=12)
+        ax.set_ylabel('$P(W=w)$', fontsize=12)
+        ax.set_xticks(x)
+        ax.set_title(f"Binomial Distribution Histogram ($n={self.n}$)", fontsize=14)
+        
+        ax.set_ylim(0, max(y) * 1.2)
+        ax.grid(axis='y', linestyle='--', alpha=0.6)
+
+        plt.text(self.n, max(y) * 1.1, "NOT TO SCALE", fontsize=9, ha='right', style='italic')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
