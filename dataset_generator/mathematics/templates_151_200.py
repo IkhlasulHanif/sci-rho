@@ -3000,3 +3000,329 @@ class Mat179:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
+        
+class Mat180:
+    def __init__(self):
+        # Configuration: total chairs (n) and the pair of twins
+        self.total_students = rnd.randint(5, 15)
+        
+        # Calculate permutations: Total - Together
+        # Total permutations = n!
+        # Together permutations = (n-1)! * 2! (treat twins as one block)
+        total_p = math.factorial(self.total_students)
+        together_p = math.factorial(self.total_students - 1) * 2
+        
+        self.answer = total_p - together_p
+
+        self.description = (
+            f"A group of students is to be seated in the row of chairs shown in the figure. "
+            f"Among the students is a pair of twins who must not sit next to each other. "
+            f"Find the total number of different ways all the students can be seated such that the twins are separated."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Permutations and combinations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total number of students, }} n &= {self.total_students}\\\\"
+            "\\text{{Total ways to arrange all students without restriction:}} &\\\\"
+            "P_{\\text{total}} &= n!\\\\"
+            f"&= {self.total_students}!\\\\"
+            f"&= {math.factorial(self.total_students)}\\\\"
+            "\\text{{Ways to arrange students where the twins sit together:}} &\\\\"
+            "\\text{{Treat the twins as 1 unit; total units to arrange}} &= (n - 1)\\\\"
+            "P_{\\text{together}} &= (n - 1)! \\times 2!\\\\"
+            f"&= ({self.total_students} - 1)! \\times 2\\\\"
+            f"&= {math.factorial(self.total_students - 1)} \\times 2\\\\"
+            f"&= {math.factorial(self.total_students - 1) * 2}\\\\"
+            "\\text{{Ways where the twins are separated:}} &\\\\"
+            "P_{\\text{separated}} &= P_{\\text{total}} - P_{\\text{together}}\\\\"
+            f"&= {math.factorial(self.total_students)} - {math.factorial(self.total_students - 1) * 2}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Create a visualization of a row of chairs
+        fig, ax = plt.subplots(figsize=(10, 4))
+        ax.set_xlim(-1, self.total_students)
+        ax.set_ylim(-1, 2)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Draw chairs as simple square patches with a backrest
+        for i in range(self.total_students):
+            # Seat
+            seat = patches.Rectangle((i - 0.4, 0), 0.8, 0.6, linewidth=2, edgecolor='black', facecolor='none')
+            ax.add_patch(seat)
+            # Backrest
+            back = patches.Rectangle((i - 0.4, 0.6), 0.8, 0.4, linewidth=2, edgecolor='black', facecolor='none')
+            ax.add_patch(back)
+            # Chair Numbering
+            ax.text(i, -0.5, str(i + 1), fontsize=14, ha='center', va='center', fontweight='bold')
+
+        # Add a title label for context
+        ax.text((self.total_students - 1) / 2, 1.5, f"Assembly Seating: {self.total_students} Students", 
+                fontsize=18, ha='center', fontweight='bold')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat181:
+    def __init__(self):
+        # Configuration for group sizes to ensure variations
+        self.num_women = rnd.randint(6, 12)
+        self.num_men = rnd.randint(5, 10)
+        
+        # Committee requirements
+        self.req_women = rnd.randint(2, 4)
+        self.req_men = rnd.randint(2, 4)
+        
+        # Calculate combinations using nCr = n! / (r! * (n-r)!)
+        comb_women = math.comb(self.num_women, self.req_women)
+        comb_men = math.comb(self.num_men, self.req_men)
+        
+        self.answer = comb_women * comb_men
+
+        self.description = (
+            f"A committee is to be chosen from the group of people shown in the figure. "
+            f"The committee must consist of exactly {self.req_women} women and {self.req_men} men. "
+            f"Determine the number of different ways this committee can be selected."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Permutations and combinations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Number of women available, }} n_w &= {self.num_women} \\\\"
+            f"\\text{{Number of men available, }} n_m &= {self.num_men} \\\\"
+            f"\\text{{Requirement: }} r_w &= {self.req_women} \\text{{ women and }} r_m = {self.req_men} \\text{{ men}} \\\\"
+            "\\text{{Ways to select the women:}} & \\\\"
+            "\\binom{n_w}{r_w} &= \\frac{n_w!}{r_w!(n_w - r_w)!} \\\\"
+            f"&= \\binom{{{self.num_women}}}{{{self.req_women}}} \\\\"
+            f"&= {math.comb(self.num_women, self.req_women)} \\\\"
+            "\\text{{Ways to select the men:}} & \\\\"
+            "\\binom{n_m}{r_m} &= \\frac{n_m!}{r_m!(n_m - r_m)!} \\\\"
+            f"&= \\binom{{{self.num_men}}}{{{self.req_men}}} \\\\"
+            f"&= {math.comb(self.num_men, self.req_men)} \\\\"
+            "\\text{{Total number of ways:}} & \\\\"
+            "\\text{{Total}} &= \\binom{n_w}{r_w} \\times \\binom{n_m}{r_m} \\\\"
+            f"&= {math.comb(self.num_women, self.req_women)} \\times {math.comb(self.num_men, self.req_men)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Organized jittered layout
+        fig, ax = plt.subplots(figsize=(10, 8))
+        total_people = self.num_women + self.num_men
+        cols = 6
+        rows = math.ceil(total_people / cols)
+        
+        ax.set_xlim(-0.5, cols)
+        ax.set_ylim(-1, rows)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        def draw_stickman(x, y, color):
+            # Head
+            head = plt.Circle((x, y + 0.5), 0.12, color=color, fill=True)
+            ax.add_artist(head)
+            # Body
+            ax.plot([x, x], [y + 0.15, y + 0.38], color=color, lw=2.5)
+            # Arms
+            ax.plot([x - 0.15, x, x + 0.15], [y + 0.25, y + 0.35, y + 0.25], color=color, lw=2.5)
+            # Legs
+            ax.plot([x - 0.12, x, x + 0.12], [y, y + 0.15, y], color=color, lw=2.5)
+
+        # Prepare population
+        people = [('lightpink', 'Woman')] * self.num_women + [('lightskyblue', 'Man')] * self.num_men
+        rnd.shuffle(people)
+
+        # Draw in a grid with organization + randomness
+        for i, (color, _) in enumerate(people):
+            r = i // cols
+            c = i % cols
+            # Add jitter for "random but organized" look
+            jx = rnd.uniform(-0.2, 0.2)
+            jy = rnd.uniform(-0.2, 0.2)
+            draw_stickman(c + jx, rows - 1 - r + jy, color)
+
+        # Legend
+        pink_patch = patches.Patch(color='lightpink', label='Woman')
+        blue_patch = patches.Patch(color='lightskyblue', label='Man')
+        ax.legend(handles=[pink_patch, blue_patch], loc='lower center', 
+                   bbox_to_anchor=(0.5, -0.05), ncol=2, fontsize=12, frameon=True)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat182:
+    def __init__(self):
+        # Configuration for total items in the arrangement
+        self.n = rnd.randint(6, 20)
+        
+        # Logic: Circular symmetry broken by making it an 'open' arrangement (Line)
+        # However, we apply the 'Together' constraint for specific items
+        # Answer: (n-1)! * 2!
+        self.answer = math.factorial(self.n - 1) * 2
+
+        self.description = (
+            f"A set of {self.n} unique ornaments is being arranged in a straight line on a display shelf. "
+            f"Two specific ornaments, indicated by the colored labels in the figure, must always be placed side-by-side. "
+            f"Determine the total number of different ways the ornaments can be arranged."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Permutations and combinations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total unique ornaments, }} n &= {self.n} \\\\"
+            "\\text{{Treat the two specific ornaments as a single unit:}} & \\\\"
+            f"\\text{{Remaining units to arrange}} &= (n - 2) + 1 = {self.n - 1} \\\\"
+            "\\text{{Number of ways to arrange these units in a line:}} & \\\\"
+            "P_{1} &= (n - 1)! \\\\"
+            f"&= ({self.n} - 1)! \\\\"
+            f"&= {math.factorial(self.n - 1)} \\\\"
+            "\\text{{Number of ways to arrange the two ornaments within the unit:}} & \\\\"
+            "P_{2} &= 2! = 2 \\\\"
+            "\\text{{Total number of different arrangements:}} & \\\\"
+            "\\text{{Total}} &= P_{1} \\times P_{2} \\\\"
+            f"&= {math.factorial(self.n - 1)} \\times 2 \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+    )
+
+    def generate(self, num):
+        # Organized layout with informative captions
+        fig, ax = plt.subplots(figsize=(12, 5))
+        ax.set_xlim(-1, self.n)
+        ax.set_ylim(-1, 2)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Draw a shelf line 
+        ax.plot([-0.8, self.n - 0.2], [-0.05, -0.05], color='saddlebrown', lw=4, zorder=0)
+
+        def draw_ornament(x, y, color, is_special=False):
+            # Base/Pedestal [cite: 58, 61]
+            ax.plot([x - 0.3, x + 0.3], [y, y], color='black', lw=2)
+            # Ornament Body [cite: 58, 61]
+            body = patches.RegularPolygon((x, y + 0.4), numVertices=6, radius=0.3, 
+                                          orientation=np.radians(30), color=color, ec='black', lw=1.5)
+            ax.add_patch(body)
+            if is_special:
+                # Add indicator label as requested in the description [cite: 91]
+                ax.text(x, y + 0.9, "!", fontsize=16, ha='center', color='red', fontweight='bold',
+                        bbox=dict(facecolor='white', alpha=0.6, edgecolor='none', pad=1))
+
+        # Randomly choose two indices for the restricted pair 
+        special_indices = rnd.sample(range(self.n), 2)
+
+        for i in range(self.n):
+            is_special = i in special_indices
+            color = 'gold' if is_special else 'lightblue'
+            # Add organized jitter for a realistic display look
+            jx = rnd.uniform(-0.05, 0.05)
+            draw_ornament(i + jx, 0, color, is_special)
+
+        # Main Title Caption
+        plt.title(f"Display Shelf Arrangement: {self.n} Unique Ornaments", 
+                  fontsize=16, pad=20, fontweight='bold')
+
+        # Legend/Caption for the restricted pair 
+        special_patch = patches.Patch(color='gold', label='Special Ornament (!)')
+        normal_patch = patches.Patch(color='lightblue', label='Standard Ornament')
+        ax.legend(handles=[special_patch, normal_patch], loc='lower center', 
+                   bbox_to_anchor=(0.5, -0.2), ncol=2, fontsize=11, frameon=True)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat183:
+    def __init__(self):
+        # Range set to provide problem variations as per instructions
+        self.num_members = rnd.randint(8, 15)
+        
+        # Logic for circular permutation with 2 specific members together:
+        # 1. Treat the 2 specific members as 1 block.
+        # 2. Arrange (n - 1) items in a circle: ( (n-1) - 1 )! = (n-2)!
+        # 3. Multiply by 2! for internal arrangement of the block.
+        self.answer = math.factorial(self.num_members - 2) * 2
+
+        self.description = (
+            "A group of board members, including a Chairperson and a Secretary, are meeting at the circular table "
+            "shown in the figure. For this specific meeting, the Chairperson and the Secretary must sit in adjacent seats. "
+            "Calculate the total number of different ways the members can be seated around the table."
+        )
+        
+        self.topic = "Probability & Statistics 1"
+        self.subtopic = "Permutations and combinations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total number of board members, }} n &= {self.num_members}\\\\"
+            "\\text{{Treat Chairperson and Secretary as 1 single block.}} &\\\\"
+            f"\\text{{Number of items to arrange in a circle, }} n' &= n - 1 = {self.num_members - 1}\\\\"
+            "\\text{{Ways to arrange }} n' \\text{{ items in a circle:}} &\\\\"
+            "P_{\\text{circle}} &= (n' - 1)!\\\\"
+            f"&= ({self.num_members - 1} - 1)!\\\\"
+            f"&= {self.num_members - 2}!\\\\"
+            f"&= {math.factorial(self.num_members - 2)}\\\\"
+            "\\text{{Ways to arrange Chairperson and Secretary within the block:}} &\\\\"
+            "P_{\\text{internal}} &= 2! = 2\\\\"
+            "\\text{{Total number of arrangements:}} &\\\\"
+            "\\text{{Total}} &= P_{\\text{circle}} \\times P_{\\text{internal}}\\\\"
+            f"&= {math.factorial(self.num_members - 2)} \\times 2\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Draw the circular table
+        table = plt.Circle((0, 0), 0.8, color='peru', ec='black', lw=2, alpha=0.8)
+        ax.add_artist(table)
+
+        # Calculate chair positions
+        angles = np.linspace(0, 360, self.num_members, endpoint=False)
+        r_chairs = 1.1
+
+        for i, angle in enumerate(angles):
+            rad = np.radians(angle)
+            x = r_chairs * np.cos(rad)
+            y = r_chairs * np.sin(rad)
+            
+            # Draw chair icon as a rotated rectangle
+            chair = patches.Rectangle((x - 0.15, y - 0.15), 0.3, 0.3, 
+                                     angle=angle, rotation_point='center',
+                                     color='darkslategrey', ec='black', lw=1)
+            ax.add_patch(chair)
+            
+            # Label Chairperson and Secretary on two adjacent chairs to provide implicit info
+            if i == 0:
+                ax.text(x * 1.25, y * 1.25, "Chairperson", fontsize=10, ha='center', fontweight='bold')
+            elif i == 1:
+                ax.text(x * 1.25, y * 1.25, "Secretary", fontsize=10, ha='center', fontweight='bold')
+
+        # Central label
+        plt.text(0, 0, "Meeting\nRoom", ha='center', va='center', fontsize=12, fontweight='bold', color='white')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
