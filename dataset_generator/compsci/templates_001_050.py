@@ -1652,3 +1652,95 @@ class Com028:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com029:
+
+    def __init__(self):
+        self.input_1 = rnd.randint(10, 20)
+        self.input_2 = rnd.randint(1, self.input_1-1)
+        self.subtract = self.input_1 - self.input_2
+        self.add = self.subtract + 3
+        if self.add == 7:
+            self.answer = 0
+        else:
+            self.answer = self.add
+
+        self.description = f"The following image shows a sequence of assembly language instructions. Given the inputs {self.input_1} (for the first IN) and {self.input_2} (for the second IN), trace the execution of the program then state the value of the final output."
+        self.topic = "Processor Fundamentals"
+        self.subtopic = "Assembly Language"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Input Phase:}} & \\\\"
+            f"\\text{{First input (IN) stored at address 100:}} & \\quad \\text{{[100]}} = {self.input_1} \\\\"
+            f"\\text{{Second input (IN) stored at address 101:}} & \\quad \\text{{[101]}} = {self.input_2} \\\\"
+            f"\\text{{2. Arithmetic Operations:}} & \\\\"
+            f"\\text{{Load value from 100:}} & \\quad \\text{{ACC}} = {self.input_1} \\\\"
+            f"\\text{{Subtract value from 101:}} & \\quad \\text{{ACC}} = {self.input_1} - {self.input_2} = {self.subtract} \\\\"
+            f"\\text{{Add immediate value 3:}} & \\quad \\text{{ACC}} = {self.subtract} + 3 = {self.add} \\\\"
+            f"\\text{{3. Conditional Branching:}} & \\\\"
+            f"\\text{{Compare ACC with 7 (CMP \#7):}} & \\quad {self.add} = 7? \\\\"
+            + (f"\\text{{Condition is True: Jump not taken (JPN), load 0 to ACC.}} & \\quad \\text{{ACC}} = 0 \\\\" if self.add == 7 else 
+            f"\\text{{Condition is False: Jump to OUT (address 31) is taken.}} & \\quad \\text{{ACC}} = {self.add} \\\\") +
+            f"\\text{{4. Output:}} & \\\\"
+            f"\\text{{Final value of ACC is printed:}} & \\quad \\text{{OUT}} = {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com029temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com030:
+    
+    def __init__(self):
+        self.length = 5
+        self.input = rnd.randint(5, 35)
+        self.array = [10, 12, 23, 19, self.input]
+        sum = 0
+        for i in range(self.length):
+            sum += self.array[i]
+        self.answer = sum
+
+        self.description = f"The following image shows a sequence of assembly language instructions. Given the input {self.input}, trace the execution of the program then state the value of the final output."
+        self.topic = "Processor Fundamentals"
+        self.subtopic = "Assembly Language"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Initializing Memory and Inputs:}} & \\\\"
+            f"\\text{{Input value }} (IN) &= {self.input} \\\\"
+            f"\\text{{Store input at address 304:}} & \\quad \\text{{[304]}} = {self.input} \\\\"
+            f"\\text{{Initialize sum at 310:}} & \\quad \\text{{[310]}} = 0 \\\\"
+            f"\\text{{Initialize counter at 311:}} & \\quad \\text{{[311]}} = 0 \\\\"
+            f"\\text{{Address 300-303:}} & \\quad [10, 12, 23, 19] \\\\"
+            f"\\text{{2. Trace Loop Execution (5 iterations):}} & \\\\"
+            f"\\text{{Iteration 1: }} IX=0, \\text{{ ACC}} = [300] = 10, \\text{{ Sum}} = 0 + 10 = 10 \\\\"
+            f"\\text{{Iteration 2: }} IX=1, \\text{{ ACC}} = [301] = 12, \\text{{ Sum}} = 10 + 12 = 22 \\\\"
+            f"\\text{{Iteration 3: }} IX=2, \\text{{ ACC}} = [302] = 23, \\text{{ Sum}} = 22 + 23 = 45 \\\\"
+            f"\\text{{Iteration 4: }} IX=3, \\text{{ ACC}} = [303] = 19, \\text{{ Sum}} = 45 + 19 = 64 \\\\"
+            f"\\text{{Iteration 5: }} IX=4, \\text{{ ACC}} = [304] = {self.input}, \\text{{ Sum}} = 64 + {self.input} = {self.answer} \\\\"
+            f"\\text{{3. Final Output:}} & \\\\"
+            f"\\text{{Exit loop when counter reaches 5, load sum from 310, and output.}} & \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com030temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
