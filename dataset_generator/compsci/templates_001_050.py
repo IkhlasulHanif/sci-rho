@@ -1744,3 +1744,116 @@ class Com030:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com031:
+
+    def __init__(self):
+        self.length = 13
+        self.health_scores = [72, 44, 12, 45, 43, 90, 39, 50, 46, 44, 48, 45, 49]
+        self.increase = rnd.randint(4, 12)
+        self.threshold = rnd.randint(32, 51)
+        self.updated_health_scores = [self.health_scores[i] + self.increase if self.health_scores[i] < self.threshold else self.health_scores[i] for i in range(self.length)]
+        self.answer = sum(self.updated_health_scores)
+
+        self.description = (
+            f"The table 'plant_shipment' stores details about plant shipments. A database administrator runs the following SQL statement: "
+            f"UPDATE plant_shipment "
+            f"SET health_score = health_score + {self.increase} "
+            f"WHERE health_score < {self.threshold};"
+            f"After the query is executed, calculate the total (sum) of the `health_score` column."
+        )
+        self.topic = "Databases"
+        self.subtopic = "Data Definition Language (DDL) and Data Manipulation Language (DML)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial health scores}} &= [{', '.join(map(str, self.health_scores))}]\\\\"
+            f"\\text{{Update criteria}} &: \\text{{If health score}} < {self.threshold}, \\text{{add }} {self.increase}\\\\"
+            f"\\text{{Step 1: Evaluate and update each score:}} &\\\\"
+            + "\\\\".join([
+                f"\\text{{Score }} {i+1} ({self.health_scores[i]}) &: " + 
+                (f"{self.health_scores[i]} < {self.threshold} \\rightarrow {self.health_scores[i]} + {self.increase} = {self.updated_health_scores[i]}" 
+                if self.health_scores[i] < self.threshold else 
+                f"{self.health_scores[i]} \\not< {self.threshold} \\rightarrow {self.health_scores[i]}")
+                for i in range(self.length)
+            ]) + "\\\\"
+            f"\\text{{Step 2: Calculate the total sum of updated scores:}} &\\\\"
+            f"\\text{{Total}} &= " + " + ".join(map(str, self.updated_health_scores)) + "\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com031temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com032:
+
+    def __init__(self):
+        self.length = 12
+        self.duration_min = [rnd.randint(18, 50) for _ in range(self.length)]
+        self.central_park_group_avg = np.mean(self.duration_min[0:3])
+        self.riverside_group_avg = np.mean(self.duration_min[3:6])
+        self.downtown_group_avg = np.mean(self.duration_min[6:])
+        self.answer = round(self.central_park_group_avg + self.riverside_group_avg + self.downtown_group_avg, 2)
+
+        self.description = (
+            f"The table bike_rental stores data about bike rentals, including the station used, the type of user, and the duration of each rental in minutes. The following SQL query is executed: \n"
+            f"SELECT SUM(avg_duration) AS sum_of_group_averages\n"
+            f"FROM (\n"
+            f"SELECT user_type, AVG(duration_min) AS avg_duration \n"
+            f"FROM bike_rental \n"
+            f"GROUP BY station_name \n"
+            f") group_averages;\n"
+            f"Using the data shown in the table, determine the output of this query. Round the answer to two decimal places."
+        )
+        self.topic = "Databases"
+        self.subtopic = "Data Definition Language (DDL) and Data Manipulation Language (DML)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Group by station and calculate individual averages:}} & \\\\"
+            f"\\text{{Central Park Group: }} [ {', '.join(map(str, self.duration_min[0:3]))} ] \\rightarrow \\mu_1 &= \\frac{{{sum(self.duration_min[0:3])}}}{{3}} = {round(self.central_park_group_avg, 10)} \\\\"
+            f"\\text{{Riverside Group: }} [ {', '.join(map(str, self.duration_min[3:6]))} ] \\rightarrow \\mu_2 &= \\frac{{{sum(self.duration_min[3:6])}}}{{3}} = {round(self.riverside_group_avg, 10)} \\\\"
+            f"\\text{{Downtown Group: }} [ {', '.join(map(str, self.duration_min[6:]))} ] \\rightarrow \\mu_3 &= \\frac{{{sum(self.duration_min[6:])}}}{{6}} = {round(self.downtown_group_avg, 10)} \\\\"
+            f"\\text{{2. Calculate the sum of these group averages:}} & \\\\"
+            f"S &= \\mu_1 + \\mu_2 + \\mu_3 \\\\"
+            f"&= {round(self.central_park_group_avg, 10)} + {round(self.riverside_group_avg, 10)} + {round(self.downtown_group_avg, 10)} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com032temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        y_pos = 100
+        line_height = 35
+                
+        for duration in self.duration_min:
+            color = "#2A2A2A"
+            weight = 'normal'
+            
+            ax.text(718, y_pos, str(duration), 
+                    fontsize=8, 
+                    color=color,
+                    family="sans-serif",
+                    weight=weight)
+            
+            y_pos += line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
