@@ -1857,3 +1857,123 @@ class Com032:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com033:
+
+    def __init__(self):
+        self.number = rnd.randint(100, 999999)
+        self.temp = str(self.number)
+        self.num_length = len(self.temp)
+        total = 0
+        for i in range(self.num_length):
+            total += int(self.temp[i])
+        self.answer = total % 10
+
+        self.description = f"A doCheck() function takes an integer value as a parameter, carries out a series of calculations and returns an integer value. The function is shown in this image. State the value returned from the function when doCheck({self.number}) is called."
+        self.topic = "Algorithm Design and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input Parameter (number)}} &= {self.number}\\\\"
+            f"\\text{{1. Convert number to string (temp):}} & \\quad \\text{{temp}} = \"{self.temp}\"\\\\"
+            f"\\text{{2. Identify digits and calculate sum (total):}} &\\\\"
+            + " \\\\ ".join([f"\\text{{Digit }} {i} &= {self.temp[i]}" for i in range(self.num_length)]) + "\\\\"
+            f"\\text{{total}} &= \\sum_{{i=0}}^{{{self.num_length - 1}}} \\text{{digit}}_i\\\\"
+            f"&= {' + '.join([self.temp[i] for i in range(self.num_length)])}\\\\"
+            f"&= {sum(int(d) for d in self.temp)}\\\\"
+            f"\\text{{3. Perform MOD 10 calculation:}} &\\\\"
+            f"\\text{{Result}} &= \\text{{total}} \\pmod{{10}}\\\\"
+            f"&= {sum(int(d) for d in self.temp)} \\pmod{{10}}\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final return value}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        pseudocode = [
+            "function doCheck(number)",
+            "    temp = str(number)",
+            "    max = temp.length - 1",
+            "    total = 0",
+            "    for x = 0 to max",
+            "        total = total + int(temp.subString(x, 1))",
+            "    next x",
+            "    return total MOD 10",
+            "endfunction"
+        ]
+        
+        fig, ax = plt.subplots(figsize=(6, 4))
+        plt.axis('off')
+        
+        y_pos = 0.95
+        line_height = 0.08
+                
+        for line in pseudocode:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(0.05, y_pos, line, 
+                    fontsize=14, 
+                    family='monospace', 
+                    verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com034:
+
+    def __init__(self):
+        self.input_1 = rnd.randint(1, 50)
+        self.input_2 = rnd.randint(1, 50)
+        self.input_3 = rnd.randint(1, 50)
+        if (self.input_1 >= self.input_2 and self.input_1 >= self.input_3):
+            self.ans = self.input_1
+        elif self.input_2 >= self.input_3:
+            self.ans = self.input_2
+        else:
+            self.ans = self.input_3
+        self.avg = (self.input_1 + self.input_2 + self.input_3) / 3
+        self.answer = round(self.ans - self.avg, 2)
+
+        self.description = f"A program is being developed. An algorithm for part of the program is shown in the given image below. The algorithm will input three numeric values and assign them to identifiers Num1, Num2 and Num3. If the input are {self.input_1}, {self.input_2}, and {self.input_3}, what will be displayed as the final output? Round the answer to two decimal places."
+        self.topic = "Algorithm Design and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Adapted from CAIE COMPUTER SCIENCE 9618/22 Paper 2 Fundamental Problem-solving and Programming Skills May/June 2024"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Inputs: }} \\text{{Num1}} &= {self.input_1}, \\text{{Num2}} = {self.input_2}, \\text{{Num3}} = {self.input_3}\\\\"
+            f"\\text{{1. Determine the maximum value (ans):}} &\\\\"
+            f"\\text{{If (Num1}} \\ge \\text{{Num2 AND Num1}} \\ge \\text{{Num3): ans}} &= \\text{{Num1}}\\\\"
+            f"\\text{{Else if (Num2}} \\ge \\text{{Num3): ans}} &= \\text{{Num2}}\\\\"
+            f"\\text{{Else: ans}} &= \\text{{Num3}}\\\\"
+            f"\\text{{Substituting values: }} \\text{{ans}} &= {self.ans}\\\\"
+            f"\\text{{2. Calculate the average (avg):}} &\\\\"
+            f"\\text{{avg}} &= \\frac{{\\text{{Num1}} + \\text{{Num2}} + \\text{{Num3}}}}{{3}}\\\\"
+            f"&= \\frac{{{self.input_1} + {self.input_2} + {self.input_3}}}{{3}}\\\\"
+            f"&= \\frac{{{self.input_1 + self.input_2 + self.input_3}}}{{3}}\\\\"
+            f"&= {round(self.avg, 10)}\\\\"
+            f"\\text{{3. Calculate final output:}} &\\\\"
+            f"\\text{{Output}} &= \\text{{ans}} - \\text{{avg}}\\\\"
+            f"&= {self.ans} - {round(self.avg, 10)}\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com034temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
