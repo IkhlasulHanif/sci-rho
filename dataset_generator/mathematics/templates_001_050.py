@@ -2575,52 +2575,72 @@ class Mat036:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 8))
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
         limit = 10
         ax.set_xlim(-limit, limit)
         ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
         
-        # Stable Grid and Axis Hierarchy
-        ax.axhline(0, color='black', lw=1.5, zorder=2)
-        ax.axvline(0, color='black', lw=1.5, zorder=2)
-        ax.grid(True, linestyle='--', alpha=0.4, zorder=1)
-
-        x_plot = np.array([-limit, limit])
+        # Grid and axes per Cambridge IGCSE conventions [cite: 1222]
+        ax.grid(True, which='both', linestyle='--', alpha=0.5)
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
         
-        # --- Line L ---
+        x_plot = np.linspace(-limit, limit, 100)
+        
+        # --- Line L (Blue) ---
         y_l = self.m1 * x_plot + self.c1
         ax.plot(x_plot, y_l, color='blue', lw=2.5)
         
-        # Anchor label for L in a consistent location
-        l_label_y = self.m1 * (-7) + self.c1
-        ax.text(-7, l_label_y, f"$L: y = {self.m1}x {fmt_poly(self.c1, '')}$", 
-                color='blue', fontsize=11, fontweight='bold', ha='right',
-                bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round,pad=0.2'))
+        # Dynamic placement for L label at the edge of the visible area
+        label_x_l = -limit + 1.5 if self.m1 > 0 else limit - 1.5
+        label_y_l = self.m1 * label_x_l + self.c1
+        label_y_l = max(-limit + 1, min(limit - 1, label_y_l)) # Clamping
         
-        # --- Line M ---
+        ax.text(label_x_l, label_y_l, '$L$', color='blue', fontsize=24, 
+                fontweight='bold', ha='center', va='bottom')
+        
+        # --- Line M (Red) ---
         y_m = self.m2 * x_plot + self.c2
         ax.plot(x_plot, y_m, color='red', lw=2.5)
-        ax.text(7, self.m2 * 7 + self.c2 + 1, "M", color='red', fontsize=16, fontweight='bold')
         
-        # --- Point P ---
+        # Dynamic placement for M label
+        label_x_m = limit - 1.5 if self.m2 > 0 else -limit + 1.5
+        label_y_m = self.m2 * label_x_m + self.c2
+        label_y_m = max(-limit + 1, min(limit - 1, label_y_m))
+        
+        ax.text(label_x_m, label_y_m, '$M$', color='red', fontsize=24, 
+                fontweight='bold', ha='center', va='bottom')
+        
+        # --- Point P Marking ---
         ax.plot(self.px, self.py, 'ko', markersize=8, zorder=5)
-        ax.annotate(f'P({self.px}, {self.py})', (self.px, self.py), xytext=(12, 12), 
-                    textcoords='offset points', fontsize=10, fontweight='bold',
-                    bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="black", lw=1))
+        
+        # Offset logic: Place label 'away' from both lines based on m2
+        # If m2 is negative, place top-right or bottom-left
+        dx = 1.0 if self.m2 < 0 else -1.0
+        dy = 1.0
+        
+        ax.text(self.px + dx, self.py + dy, f"$P({self.px}, {self.py})$", 
+                fontsize=16, fontweight='bold', ha='center' if dx==0 else ('left' if dx>0 else 'right'),
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.2', alpha=0.8))
 
-        # --- Right Angle Indicator ---
-        # Find intersection point of L and M
-        ix = (self.c2 - self.c1) / (self.m1 - self.m2)
-        iy = self.m1 * ix + self.c1
-        self._draw_perpendicular_square(ax, ix, iy, self.m1, self.m2)
+        # --- Line L Equation Label ---
+        # Position equation text at a predictable spot that doesn't overlap P
+        eq_x = -limit * 0.7 if self.m1 < 0 else limit * 0.3
+        eq_y = self.m1 * eq_x + self.c1
+        eq_y = max(-limit + 2, min(limit - 2, eq_y))
+        
+        ax.text(eq_x, eq_y, f"$y = {self.m1}x {fmt_poly(self.c1, '')}$", 
+                color='blue', fontsize=18, fontweight='bold',
+                bbox=dict(facecolor='white', edgecolor='blue', alpha=0.9), ha='center')
 
-        ax.set_aspect('equal')
-        ax.set_xlabel('x', loc='right', fontweight='bold')
-        ax.set_ylabel('y', loc='top', rotation=0, fontweight='bold')
+        ax.set_xlabel('x', fontsize=14)
+        ax.set_ylabel('y', fontsize=14)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, bbox_inches='tight', dpi=150)
-        plt.close(fig)
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
 
     def _draw_perpendicular_square(self, ax, x0, y0, m1, m2, size=0.6):
         """Draws a geometrically accurate perpendicular square at the intersection."""
