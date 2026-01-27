@@ -105,7 +105,7 @@ if __name__ == "__main__":
         json_path = os.path.join(destination_folder, "dataset.json")
 
         if os.path.exists(json_path):
-            with open(json_path, "r") as file:
+            with open(json_path, "r", encoding='utf-8') as file:
                 data = json.load(file)
         else:
             data = {}
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
             if debug:
                 debug_file_path = os.path.join(debug_folder_path, f"{count}.txt")
-                with open(debug_file_path, 'w') as file:
+                with open(debug_file_path, 'w', encoding='utf-8') as file:
                     file.write(instance.reasoning)
 
             data[f"{count}"] = temp_data
@@ -141,12 +141,12 @@ if __name__ == "__main__":
 
             count += 1
 
-        json_data = json.dumps(data, indent=4)
-        with open(json_path, 'w') as file:
+        json_data = json.dumps(data, indent=4, ensure_ascii=False)
+        with open(json_path, 'w', encoding='utf-8') as file:
             file.write(json_data)
 
         print(f"All instances of {subject} are sucessfully generated!\n")
 
     seed_path = os.path.join(os.path.dirname(os.getcwd()), "dataset", "seed.txt")
-    with open(seed_path, "w") as file:
+    with open(seed_path, "w", encoding='utf-8') as file:
         file.write(str(seed))
