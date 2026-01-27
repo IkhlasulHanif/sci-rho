@@ -2682,111 +2682,259 @@ class Mat036:
         
 class Mat037:
     def __init__(self):
-        # Gradient for line L (m1). We vary this significantly.
-        self.m1 = round(randrange_float(-4.0, 4.0, 0.2), 1)
-        if abs(self.m1) < 0.5: self.m1 = 2.0 # Avoid horizontal lines for better perpendicular visuals
+        # Gradient of line L (m1). Varied significantly.
+        self.m1 = round(randrange_float(-4.0, 4.0, 0.01), 2)
+        if abs(self.m1) < 0.5: self.m1 = 2.0 
         
-        # Line L passes through a point (x1, y1). We can use origin (0,0) as one of the variations or any other point.
-        self.x1 = rnd.randint(-5, 5)
-        self.y1 = rnd.randint(-5, 5)
+        # Equation form: y = m1 * x + c1. c1 is y-intercept of L.
+        self.c1 = rnd.randint(-5, 5)
         
-        # Another point on L to define its slope visually
-        self.x_ref = self.x1 + rnd.randint(2, 5)
-        self.y_ref = round(self.y1 + self.m1 * (self.x_ref - self.x1), 1)
+        # Two points on L for implicit visual data.
+        self.x1_L = rnd.randint(-4, 0)
+        self.y1_L = round(self.m1 * self.x1_L + self.c1, 2)
+        self.x2_L = self.x1_L + rnd.randint(2, 5)
+        self.y2_L = round(self.m1 * self.x2_L + self.c1, 2)
         
-        # Perpendicular line P gradient (m2 = -1/m1)
-        self.m2 = -1 / self.m1
+        # Perpendicular Gradient (m2 = -1/m1)
+        self.m2 = round(-1 / self.m1, 2)
         
-        # Point P(px, py) that line P passes through
+        # Point P(px, py) on line P
         self.px = rnd.randint(-5, 5)
         self.py = rnd.randint(-5, 5)
         
-        # Target x-coordinate for the question
-        self.x_target = self.px + rnd.randint(3, 8)
+        # Target logic: Vary asking for x or y
+        self.q_type = rnd.choice(["find_y", "find_x"])
+        self.const_val = rnd.randint(-10, 10)
         
-        # Calculate final answer: y = m2 * (x - px) + py
-        self.answer = round(self.m2 * (self.x_target - self.px) + self.py, 2)
+        # Ensure target is not too close to point P
+        while abs(self.const_val - (self.px if self.q_type == "find_y" else self.py)) < 2:
+            self.const_val = rnd.randint(-10, 10)
 
-        # Implicit description relying on the generated figure
+        # Calculation logic
+        # Equation of P: y - py = m2 * (x - px)
+        if self.q_type == "find_y":
+            self.target_var, self.given_var = "y", "x"
+            self.answer = round(self.m2 * (self.const_val - self.px) + self.py, 2)
+            calc_step = f"y &= {round(self.m2, 10)}({self.const_val} - ({self.px})) + {self.py}"
+        else:
+            self.target_var, self.given_var = "x", "y"
+            self.answer = round((self.const_val - self.py) / self.m2 + self.px, 2)
+            calc_step = (
+                f"{self.const_val} - {self.py} &= {round(self.m2, 10)}(x - {self.px}) \\\\"
+                f"{round(self.const_val - self.py, 10)} &= {round(self.m2, 10)}(x - {self.px}) \\\\"
+                f"x - {self.px} &= {round((self.const_val - self.py)/self.m2, 10)} \\\\"
+                f"x &= {self.answer}"
+            )
+
         self.description = (
-            f"The diagram shows line $L$ and line $P$, where line $P$ is perpendicular to line $L$. "
-            f"Based on the coordinates provided in the figure, find the y-coordinate of the point "
-            f"on line $P$ where the x-coordinate is {self.x_target}."
+            f"The figure shows line $L$ and line $P$, where line $P$ is perpendicular to line $L$. "
+            f"Based on the coordinates provided in the diagram, find the {self.target_var}-coordinate "
+            f"of the point on line $P$ where the {self.given_var}-coordinate is {self.const_val}."
         )
         
         self.topic = "Coordinate geometry"
         self.subtopic = "Perpendicular lines"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
-        self.reasoning = ""
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Find the gradient of line }} L, m_1, \\text{{ using points }} ({self.x1_L}, {self.y1_L}) \\text{{ and }} ({self.x2_L}, {self.y2_L}): &\\\\"
+            f"m_1 &= \\frac{{{self.y2_L} - ({self.y1_L})}}{{{self.x2_L} - ({self.x1_L})}} = {round(self.m1, 10)} \\\\"
+            f"\\text{{Since }} P \\perp L, \\text{{ the gradient of }} P, m_2, \\text{{ satisfies }} m_1 \\times m_2 = -1: &\\\\"
+            f"m_2 &= -\\frac{{1}}{{{round(self.m1, 10)}}} = {round(self.m2, 10)} \\\\"
+            f"\\text{{Using point }} ({self.px}, {self.py}) \\text{{ on line }} P, \\text{{ the point-slope equation is:}} &\\\\"
+            f"y - y_p &= m_2(x - x_p) \\\\"
+            f"y - {self.py} &= {round(self.m2, 10)}(x - {self.px}) \\\\"
+            f"\\text{{Substitute the given value }} {self.given_var} = {self.const_val}: &\\\\"
+            f"{calc_step}"
+            "\\end{aligned}\\]"
+        )
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 10))
-        
         limit = 15
         ax.set_xlim(-limit, limit)
         ax.set_ylim(-limit, limit)
         ax.set_aspect('equal')
         
-        # Standard coordinate grid
         ax.grid(True, which='both', linestyle='--', alpha=0.5)
         ax.axhline(0, color='black', lw=1.5)
         ax.axvline(0, color='black', lw=1.5)
         
         x_plot = np.linspace(-limit, limit, 100)
         
-        # --- Line L (Blue) ---
-        y_l = self.y1 + self.m1 * (x_plot - self.x1)
-        ax.plot(x_plot, y_l, color='blue', lw=2, label='$L$')
+        # Line L (Blue)
+        y_l = self.m1 * x_plot + self.c1
+        ax.plot(x_plot, y_l, color='blue', lw=2.5)
         
-        # Points defining L
-        ax.plot([self.x1, self.x_ref], [self.y1, self.y_ref], 'bo', markersize=7)
-        ax.text(self.x1 + 0.5, self.y1 - 0.5, f"({self.x1}, {self.y1})", color='blue', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
-        ax.text(self.x_ref + 0.5, self.y_ref - 0.5, f"({self.x_ref}, {self.y_ref})", color='blue', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
+        # Label points for L
+        ax.plot([self.x1_L, self.x2_L], [self.y1_L, self.y2_L], 'bo', markersize=8)
+        ax.text(self.x1_L + 0.5, self.y1_L + 0.5, f"({self.x1_L}, {self.y1_L})", color='blue', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
+        ax.text(self.x2_L + 0.5, self.y2_L + 0.5, f"({self.x2_L}, {self.y2_L})", color='blue', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
 
-        # --- Line P (Red) ---
+        # Line P (Red)
         c2 = self.py - self.m2 * self.px
         y_p = self.m2 * x_plot + c2
-        ax.plot(x_plot, y_p, color='red', lw=2, label='$P$')
+        ax.plot(x_plot, y_p, color='red', lw=2.5)
         
-        # Point defining P
-        ax.plot(self.px, self.py, 'ro', markersize=7)
-        ax.text(self.px + 0.5, self.py + 0.5, f"({self.px}, {self.py})", color='red', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
+        # Label point for P
+        ax.plot(self.px, self.py, 'ro', markersize=8, zorder=5)
+        
+        # Dynamic placement of P label
+        dx = 1.0 if self.m2 < 0 else -1.0
+        ax.text(self.px + dx, self.py + 1, f"({self.px}, {self.py})", color='red', fontsize=12, fontweight='bold', ha='center' if dx==0 else ('left' if dx>0 else 'right'), bbox=dict(facecolor='white', alpha=0.8))
 
-        # Perpendicular symbol at intersection
-        # Intersection point of L and P
-        c1 = self.y1 - self.m1 * self.x1
-        ix = (c2 - c1) / (self.m1 - self.m2)
-        iy = self.m1 * ix + c1
-        
-        # Marker for perpendicularity
+        # Intersection square for perpendicularity
+        ix = (c2 - self.c1) / (self.m1 - self.m2)
+        iy = self.m1 * ix + self.c1
         if -limit < ix < limit and -limit < iy < limit:
-            size = 0.6
-            # Unit vectors along lines
+            size = 0.7
             v1 = np.array([1, self.m1]) / np.sqrt(1 + self.m1**2)
             v2 = np.array([1, self.m2]) / np.sqrt(1 + self.m2**2)
-            # Correct orientation for the "square" symbol
             p1 = np.array([ix, iy]) + size * v1
             p2 = p1 + size * v2
             p3 = np.array([ix, iy]) + size * v2
             ax.plot([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], color='black', lw=1.5)
 
-        # Dynamic labels for L and P
-        # Label L at edge
-        lx = limit * 0.8 if self.m1 > 0 else -limit * 0.8
-        ly = self.y1 + self.m1 * (lx - self.x1)
-        ly = max(-limit + 1, min(limit - 1, ly))
-        ax.text(lx, ly + 1, "$L$", color='blue', fontsize=20, fontweight='bold')
-        
-        # Label P at edge
-        px_lbl = -limit * 0.8 if self.m2 > 0 else limit * 0.8
-        py_lbl = self.m2 * (px_lbl - self.px) + self.py
-        py_lbl = max(-limit + 1, min(limit - 1, py_lbl))
-        ax.text(px_lbl, py_lbl + 1, "$P$", color='red', fontsize=20, fontweight='bold')
+        # Labels L and P at edges
+        for line_name, m, c, color in [('$L$', self.m1, self.c1, 'blue'), ('$P$', self.m2, c2, 'red')]:
+            edge_x = limit * 0.8 if m > 0 else -limit * 0.8
+            edge_y = m * edge_x + c
+            edge_y = max(-limit + 1, min(limit - 1, edge_y))
+            ax.text(edge_x, edge_y, line_name, fontsize=24, color=color, fontweight='bold', ha='center', va='bottom')
 
         ax.set_xlabel('x', fontsize=14)
         ax.set_ylabel('y', fontsize=14)
 
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+        
+class Mat038:
+    def __init__(self):
+        # Gradient for line k (m_k). Varied for visual clarity.
+        self.m_k = round(randrange_float(-3.0, 3.0, 0.01), 2)
+        if abs(self.m_k) < 0.4: self.m_k = 1.5
+        
+        # Equation of line k: y = m_k * x + c_k
+        self.c_k = rnd.randint(-5, 5)
+        
+        # Perpendicular Gradient for line l (m_l = -1/m_k)
+        self.m_l = round(-1 / self.m_k, 2)
+        
+        # Define Intersection point C (cx, cy)
+        self.cx = rnd.randint(-4, 4)
+        self.cy = round(self.m_k * self.cx + self.c_k, 2)
+        
+        # Intercept for line l: c_l = cy - m_l * cx
+        self.c_l = round(self.cy - self.m_l * self.cx, 2)
+        
+        # Define Point A on line k and Point B on line l
+        # Points are shifted from C to ensure triangle existence
+        self.ax_val = self.cx + rnd.choice([-1, 1]) * rnd.randint(3, 6)
+        self.ay_val = round(self.m_k * self.ax_val + self.c_k, 2)
+        
+        self.bx_val = self.cx + rnd.choice([-1, 1]) * rnd.randint(3, 6)
+        self.by_val = round(self.m_l * self.bx_val + self.c_l, 2)
+        
+        # Area calculation: 0.5 * distance(AC) * distance(BC)
+        dist_ac = math.sqrt((self.ax_val - self.cx)**2 + (self.ay_val - self.cy)**2)
+        dist_bc = math.sqrt((self.bx_val - self.cx)**2 + (self.by_val - self.cy)**2)
+        
+        self.answer = round(0.5 * dist_ac * dist_bc, 2)
+
+        # Metadata properties
+        self.description = (
+            "The figure shows two perpendicular lines, line $k$ and line $l$, "
+            "which intersect at a point $C$. Based on the coordinates of points "
+            "$A$ and $B$ and the equations provided in the diagram, find the area of triangle $ABC$."
+        )
+        self.topic = "Coordinate geometry"
+        self.subtopic = "Perpendicular lines"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Equations of the lines:}} & \\\\"
+            f"k: y &= {round(self.m_k, 10)}x {fmt_poly(round(self.c_k, 10), '')} \\\\"
+            f"l: y &= {round(self.m_l, 10)}x {fmt_poly(round(self.c_l, 10), '')} \\\\"
+            f"\\text{{Find the intersection point }} C(x, y) \\text{{ by solving the system:}} & \\\\"
+            f"{round(self.m_k, 10)}x {fmt_poly(round(self.c_k, 10), '')} &= {round(self.m_l, 10)}x {fmt_poly(round(self.c_l, 10), '')} \\\\"
+            f"{round(self.m_k - self.m_l, 10)}x &= {round(self.c_l - self.c_k, 10)} \\\\"
+            f"x &= {round(self.cx, 10)}, \\quad y = {round(self.cy, 10)} \\implies C({round(self.cx, 10)}, {round(self.cy, 10)}) \\\\"
+            f"\\text{{Identify points }} A \\text{{ and }} B \\text{{ from the figure:}} & \\\\"
+            f"A &= ({round(self.ax_val, 10)}, {round(self.ay_val, 10)}), \\quad B = ({round(self.bx_val, 10)}, {round(self.by_val, 10)}) \\\\"
+            f"\\text{{Calculate base }} AC \\text{{ and height }} BC \\text{{ using the distance formula:}} & \\\\"
+            f"AC &= \\sqrt{{({round(self.ax_val, 10)} - {round(self.cx, 10)})^2 + ({round(self.ay_val, 10)} - {round(self.cy, 10)})^2}} \\\\"
+            f"&= {round(math.sqrt((self.ax_val - self.cx)**2 + (self.ay_val - self.cy)**2), 10)} \\\\"
+            f"BC &= \\sqrt{{({round(self.bx_val, 10)} - {round(self.cx, 10)})^2 + ({round(self.by_val, 10)} - {round(self.cy, 10)})^2}} \\\\"
+            f"&= {round(math.sqrt((self.bx_val - self.cx)**2 + (self.by_val - self.cy)**2), 10)} \\\\"
+            f"\\text{{Since lines }} k \\text{{ and }} l \\text{{ are perpendicular, Area }} ABC = \\frac{1}{2} \\times AC \\times BC: & \\\\"
+            f"\\text{{Area}} &= 0.5 \\times {round(math.sqrt((self.ax_val - self.cx)**2 + (self.ay_val - self.cy)**2), 10)} \\times {round(math.sqrt((self.bx_val - self.cx)**2 + (self.by_val - self.cy)**2), 10)} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        limit = 15
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        
+        ax.grid(True, which='both', linestyle='--', alpha=0.5)
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        x_plot = np.linspace(-limit, limit, 100)
+        
+        # Plot Lines k and l
+        ax.plot(x_plot, self.m_k * x_plot + self.c_k, color='blue', lw=2.5)
+        ax.plot(x_plot, self.m_l * x_plot + self.c_l, color='red', lw=2.5)
+        
+        # Triangle vertices and connecting line AB
+        pts = {'A': [self.ax_val, self.ay_val], 'B': [self.bx_val, self.by_val]}
+        ax.plot([pts['A'][0], pts['B'][0]], [pts['A'][1], pts['B'][1]], color='black', lw=1.5, linestyle='-')
+        
+        # Dynamic Point Labeling for A and B
+        for label, pos in pts.items():
+            ax.plot(pos[0], pos[1], 'ko', markersize=8, zorder=5)
+            off_x = 1.5 if pos[0] >= self.cx else -1.5
+            off_y = 1.5 if pos[1] >= self.cy else -1.5
+            ax.text(pos[0] + off_x, pos[1] + off_y, f"{label}({pos[0]}, {pos[1]})", 
+                    fontsize=14, fontweight='bold', ha='center', 
+                    bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.2', alpha=0.9))
+
+        # Intersection point C (visual marker only, label is just "C")
+        ax.plot(self.cx, self.cy, 'ko', markersize=8, zorder=5)
+        ax.text(self.cx - 1.5, self.cy - 1.5, "C", fontsize=16, fontweight='bold', color='black')
+
+        # Dynamic Equation Placement
+        for line_name, m, c, color in [('k', self.m_k, self.c_k, 'blue'), ('l', self.m_l, self.c_l, 'red')]:
+            edge_x = -limit + 3 if m > 0 else limit - 8
+            edge_y = m * edge_x + c
+            edge_y = max(-limit + 2, min(limit - 2, edge_y))
+            
+            eq_text = f"${line_name}: y = {m}x {fmt_poly(c, '')}$"
+            ax.text(edge_x, edge_y, eq_text, color=color, fontsize=16, fontweight='bold', 
+                    bbox=dict(facecolor='white', edgecolor=color, alpha=0.9))
+
+        # Perpendicular marker at C
+        size = 0.8
+        v_k = np.array([1, self.m_k]) / np.sqrt(1 + self.m_k**2)
+        v_l = np.array([1, self.m_l]) / np.sqrt(1 + self.m_l**2)
+        s_k = np.sign(self.ax_val - self.cx)
+        s_l = np.sign(self.bx_val - self.cx)
+        
+        corner1 = np.array([self.cx, self.cy]) + s_k * size * v_k
+        corner2 = corner1 + s_l * size * v_l
+        corner3 = np.array([self.cx, self.cy]) + s_l * size * v_l
+        ax.plot([corner1[0], corner2[0], corner3[0]], [corner1[1], corner2[1], corner3[1]], color='black', lw=1.5)
+
+        ax.set_xlabel('x', fontsize=14)
+        ax.set_ylabel('y', fontsize=14)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
