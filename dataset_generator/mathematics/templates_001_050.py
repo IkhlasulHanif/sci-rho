@@ -1433,6 +1433,119 @@ class Mat015:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
         
+class Mat024:
+    def __init__(self):
+        # Generate integer coordinates for point D and E
+        # Ensure they are not the same and have a decent distance for zig-zagging
+        self.xd = rnd.randint(-8, 8)
+        self.yd = rnd.randint(-8, 8)
+        
+        self.xe = rnd.randint(-8, 8)
+        self.ye = rnd.randint(-8, 8)
+        
+        # Ensure a minimum distance to allow for a visible zig-zag path
+        while abs(self.xe - self.xd) < 3 or abs(self.ye - self.yd) < 3:
+            self.xe = rnd.randint(-8, 8)
+            self.ye = rnd.randint(-8, 8)
+        
+        # Calculate Manhattan distance (total steps)
+        self.dist_x = abs(self.xe - self.xd)
+        self.dist_y = abs(self.ye - self.yd)
+        self.answer = self.dist_x + self.dist_y
+
+        # Metadata properties in the required order
+        self.description = (
+            "A robot travels from point $D$ to point $E$ along the grid lines as shown in the figure. "
+            "The robot's path consists of horizontal and vertical steps, and it moves monotonically "
+            "(it never moves away from its destination). Based on the coordinates provided in the diagram, "
+            "find the total distance traveled by the robot."
+        )
+        self.topic = "Coordinate geometry"
+        self.subtopic = "Coordinates"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Starting point }} D &= (x_D, y_D) = ({self.xd}, {self.yd})\\\\"
+            f"\\text{{Ending point }} E &= (x_E, y_E) = ({self.xe}, {self.ye})\\\\"
+            f"\\text{{Horizontal distance }} d_x &= |x_E - x_D|\\\\"
+            f"&= |{self.xe} - ({self.xd})|\\\\"
+            f"&= {round(self.dist_x, 10)}\\,\\text{{units}}\\\\"
+            f"\\text{{Vertical distance }} d_y &= |y_E - y_D|\\\\"
+            f"&= |{self.ye} - ({self.yd})|\\\\"
+            f"&= {round(self.dist_y, 10)}\\,\\text{{units}}\\\\"
+            f"\\text{{Since the robot moves monotonically along grid lines, total distance is:}} &\\\\"
+            f"d_{{total}} &= d_x + d_y\\\\"
+            f"&= {round(self.dist_x, 10)} + {round(self.dist_y, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{units}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        # Set integer grid
+        limit = 10
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.set_aspect('equal')
+        
+        # Major ticks at every integer
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax.yaxis.set_major_locator(MultipleLocator(1))
+        ax.grid(True, which='both', linestyle='-', color='lightgray', alpha=0.5)
+        
+        # Bold axes
+        ax.axhline(0, color='black', lw=2)
+        ax.axvline(0, color='black', lw=2)
+
+        # Generate a random monotonic zig-zag path
+        # Steps are either +1 or -1 in x/y direction
+        step_x = 1 if self.xe > self.xd else -1
+        step_y = 1 if self.ye > self.yd else -1
+        
+        # Pool of steps
+        steps = (['x'] * self.dist_x) + (['y'] * self.dist_y)
+        rnd.shuffle(steps)
+        
+        curr_x, curr_y = self.xd, self.yd
+        path_points = [(curr_x, curr_y)]
+        
+        for move in steps:
+            if move == 'x':
+                curr_x += step_x
+            else:
+                curr_y += step_y
+            path_points.append((curr_x, curr_y))
+            
+        # Draw the path
+        px, py = zip(*path_points)
+        ax.plot(px, py, color='red', lw=4, alpha=0.8, zorder=3, label='Robot Path')
+        
+        # Plot points D and E
+        ax.scatter([self.xd, self.xe], [self.yd, self.ye], color='black', s=150, zorder=5)
+        
+        # Dynamic label placement for D and E
+        # Offset them slightly 'away' from the path origin/end
+        off_d_y = 0.5 if self.yd < self.ye else -0.8
+        off_e_y = -0.8 if self.yd < self.ye else 0.5
+        
+        ax.text(self.xd, self.yd + off_d_y, f"D({self.xd}, {self.yd})", 
+                fontsize=16, ha='center', fontweight='bold',
+                bbox=dict(facecolor='white', alpha=0.9, edgecolor='black', boxstyle='round,pad=0.2'))
+        
+        ax.text(self.xe, self.ye + off_e_y, f"E({self.xe}, {self.ye})", 
+                fontsize=16, ha='center', fontweight='bold',
+                bbox=dict(facecolor='white', alpha=0.9, edgecolor='black', boxstyle='round,pad=0.2'))
+
+        ax.set_xlabel('x', fontsize=14, loc='right')
+        ax.set_ylabel('y', fontsize=14, loc='top', rotation=0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat025:
     def __init__(self):
         # Base length along the x-axis
