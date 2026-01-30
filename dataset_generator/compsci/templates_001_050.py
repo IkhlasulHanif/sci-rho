@@ -2784,3 +2784,102 @@ class Com043:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com044:
+
+    def __init__(self):
+        cols_AB = ["00", "01", "11", "10"]
+        rows_CD = ["00", "01", "11", "10"]
+        literals = {"A":1, "B":2, "C":3, "D":4, "A_bar":5, "B_bar":6, "C_bar":7, "D_bar":8}
+        self.kmap = [
+            [rnd.choice([0, 1]) for _ in range(4)],
+            [rnd.choice([0, 1]) for _ in range(4)],
+            [rnd.choice([0, 1]) for _ in range(4)],
+            [rnd.choice([0, 1]) for _ in range(4)],
+        ]
+        ones = [
+            (r, c)
+            for r in range(4)
+            for c in range(4)
+            if self.kmap[r][c] == 1
+        ]
+        self.shaded_cell_row, self.shaded_cell_col = rnd.choice(ones)
+        self.shaded_cell_value = self.kmap[self.shaded_cell_row][self.shaded_cell_col]
+
+        self.shaded_cell_CD = rows_CD[self.shaded_cell_row]
+        self.shaded_cell_AB = cols_AB[self.shaded_cell_col]
+
+        self.A = int(self.shaded_cell_AB[0])
+        self.B = int(self.shaded_cell_AB[1])
+        self.C = int(self.shaded_cell_CD[0])
+        self.D = int(self.shaded_cell_CD[1])
+
+        self.result = []
+        self.result.append("A" if self.A == 1 else "A_bar")
+        self.result.append("B" if self.B == 1 else "B_bar")
+        self.result.append("C" if self.C == 1 else "C_bar")
+        self.result.append("D" if self.D == 1 else "D_bar")
+
+        self.result_converted = [str(literals[name]) for name in self.result]
+        self.answer = int("".join(self.result_converted))
+
+        self.description = f"What is the Boolean expression that can be obtained for the Karnaugh map cell indicated in the given image? Form the answer using the following encoding rule: A = 1, B = 2, C = 3, D = 4, Ā = 5, B̄ = 6, C̄ = 7, D̄ = 8. Concatenate the digits in the order A, B, C, D to form the final numeric answer."
+        self.topic = "Hardware and Virtual Machines"
+        self.subtopic = "Boolean Algebra and Logic Circuits"
+        self.source = "Adapted from Learnabout electronics (Module 2.5 Digital Logic Quiz)"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Identify coordinates of the shaded cell:}} &\\\\"
+            f"\\text{{Column (AB)}} &= {self.shaded_cell_AB}\\\\"
+            f"\\text{{Row (CD)}} &= {self.shaded_cell_CD}\\\\"
+            f"\\text{{2. Extract Boolean values:}} &\\\\"
+            f"A &= {self.A}, \\quad B = {self.B}, \\quad C = {self.C}, \\quad D = {self.D}\\\\"
+            f"\\text{{3. Determine literals and encoding:}} &\\\\"
+            f"\\text{{Variable A is }} {self.A} &\\rightarrow {'A (1)' if self.A == 1 else 'NOT A (5)'}\\\\"
+            f"\\text{{Variable B is }} {self.B} &\\rightarrow {'B (2)' if self.B == 1 else 'NOT B (6)'}\\\\"
+            f"\\text{{Variable C is }} {self.C} &\\rightarrow {'C (3)' if self.C == 1 else 'NOT C (7)'}\\\\"
+            f"\\text{{Variable D is }} {self.D} &\\rightarrow {'D (4)' if self.D == 1 else 'NOT D (8)'}\\\\"
+            f"\\text{{4. Concatenate encoded digits:}} &\\\\"
+            f"\\text{{Sequence}} &= {self.result_converted[0]}, {self.result_converted[1]}, {self.result_converted[2]}, {self.result_converted[3]}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        cols_AB = ["00", "01", "11", "10"]
+        rows_CD = ["00", "01", "11", "10"]
+
+        fig, ax = plt.subplots(figsize=(5.2, 4.2))
+        ax.set_xlim(-0.75, 4)
+        ax.set_ylim(0, 4.65)
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        for r in range(4):
+            for c in range(4):
+                x = c
+                y = 3 - r  # Row 0 appears at top
+
+                if r == self.shaded_cell_row and c == self.shaded_cell_col:
+                    ax.add_patch(patches.Rectangle((x, y), 1, 1, facecolor="#5B7BC0", edgecolor="none"))
+
+                ax.add_patch(patches.Rectangle((x, y), 1, 1, fill=False, linewidth=2.6, edgecolor="#5B7BC0"))
+                ax.text(x + 0.5, y + 0.5, str(self.kmap[r][c]), ha="center", va="center", fontsize=16)
+
+        ax.add_patch(patches.Rectangle((0, 0), 4, 4, fill=False, linewidth=3.2, edgecolor = "#5B7BC0"))
+
+        for c, lab in enumerate(cols_AB):
+            ax.text(c + 0.5, 4.12, lab, ha="center", va="bottom", fontsize=12)
+
+        for r, lab in enumerate(rows_CD):
+            ax.text(-0.12, 3 - r + 0.5, lab, ha="right", va="center", fontsize=12)
+
+        ax.text(0.05, 4.42, "AB", ha="left", va="bottom", fontsize=14, color="black")
+        ax.text(-0.65, 3.95, "CD", ha="left", va="center", fontsize=14, color="black")
+
+        fig.tight_layout(pad=0.6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close(fig)
