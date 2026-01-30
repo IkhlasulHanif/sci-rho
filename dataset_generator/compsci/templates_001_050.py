@@ -1977,3 +1977,549 @@ class Com034:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com035:
+
+    def __init__(self):
+        self.initial_num_elements = rnd.randint(2, 4)
+        self.initial_stack_elements = rnd.sample(range(6, 50), self.initial_num_elements)
+        stack = self.initial_stack_elements.copy()
+        stack.pop()
+        self.answer = stack[-1]
+
+        self.description = f"The diagram shows a stack containing the following values. A pop() operation is carried out on the stack. What is the value at the top of the stack after this operation?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial stack (bottom to top)}} &= [{', '.join(map(str, self.initial_stack_elements))}] \\\\"
+            f"\\text{{Current top of the stack}} &= {self.initial_stack_elements[-1]} \\\\"
+            f"\\text{{Perform pop() operation:}} & \\\\"
+            f"\\text{{Value removed}} &= {self.initial_stack_elements[-1]} \\\\"
+            f"\\text{{Updated stack (bottom to top)}} &= [{', '.join(map(str, self.initial_stack_elements[:-1]))}] \\\\"
+            f"\\text{{New top of the stack}} &= \\text{{stack}}[-1] \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig_w, fig_h = 3.0, max(3.2, 0.9 * self.initial_num_elements + 1.2)
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.axis("off")
+
+        x_left, x_right = 2.0, 8.0
+        y_bottom, y_top = 1.3, 9.2
+        n = self.initial_num_elements
+
+        # Stack container (two sides + base)
+        ax.plot([x_left, x_left], [y_bottom, y_top], linewidth=3, color="black")
+        ax.plot([x_right, x_right], [y_bottom, y_top], linewidth=3, color="black")
+        ax.plot([x_left, x_right], [y_bottom, y_bottom], linewidth=3, color="black")
+
+        # Element boxes
+        inner_margin = 0.6
+        box_x = x_left + inner_margin
+        box_w = (x_right - x_left) - 2 * inner_margin
+
+        # Vertical layout
+        available_h = (y_top - y_bottom) - 1.0
+        gap = 0.35
+        box_h = (available_h - gap * (n - 1)) / n
+        start_y = y_bottom + 0.5
+
+        # Draw from bottom -> top (last element is the top)
+        for i, value in enumerate(self.initial_stack_elements):
+            y = start_y + i * (box_h + gap)
+            rect = patches.Rectangle((box_x, y), box_w, box_h, facecolor="#f7ead7", edgecolor="#e3b27a", linewidth=1.5,)
+            ax.add_patch(rect)
+            ax.text(box_x + box_w / 2, y + box_h / 2, str(value), ha="center", va="center", fontsize=18, fontweight="bold", color="black",)
+
+        ax.text((x_left + x_right) / 2, y_bottom - 0.55, "Stack", ha="center", va="top", fontsize=14)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com036:
+
+    def __init__(self):
+        self.stack_length = 10
+        self.filled_length = rnd.randint(4, 9)
+        self.values = [rnd.randint(100, 400) for _ in range(self.filled_length)]
+        stack = self.values.copy()
+        stack.pop()
+        self.push_1 = rnd.randint(100, 400)
+        self.push_2 = rnd.randint(100, 400)
+        stack.append(self.push_1)
+        stack.append(self.push_2)
+        self.answer = self.filled_length
+
+        self.description = f"The diagram shows a stack implemented using an array, where top stores the index of the current top element. A pop() operation is carried out, followed by push({self.push_1}) and then push({self.push_2}). What is the value of top after these operations?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial number of elements}} &= {self.filled_length}\\\\"
+            f"\\text{{Initial top index (0-indexed)}} &= {self.filled_length - 1}\\\\"
+            f"\\text{{1. Perform pop() operation:}} &\\\\"
+            f"\\text{{New count}} &= {self.filled_length} - 1 = {self.filled_length - 1}\\\\"
+            f"\\text{{New top index}} &= {self.filled_length - 1} - 1 = {self.filled_length - 2}\\\\"
+            f"\\text{{2. Perform push({self.push_1}) operation:}} &\\\\"
+            f"\\text{{New count}} &= {self.filled_length - 1} + 1 = {self.filled_length}\\\\"
+            f"\\text{{New top index}} &= {self.filled_length - 2} + 1 = {self.filled_length - 1}\\\\"
+            f"\\text{{3. Perform push({self.push_2}) operation:}} &\\\\"
+            f"\\text{{New count}} &= {self.filled_length} + 1 = {self.filled_length + 1}\\\\"
+            f"\\text{{New top index}} &= {self.filled_length - 1} + 1 = {self.filled_length}\\\\"
+            f"\\text{{Final index value of top}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig_w = max(9, self.stack_length * 1.05)
+        fig_h = 3
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.axis("off")
+
+        top_index = self.filled_length - 1
+
+        cell_w = 1.0
+        cell_h = 0.7
+        left = 0.5
+        bottom = 1.4
+
+        ax.set_xlim(0, left + self.stack_length * cell_w + 0.5)
+        ax.set_ylim(0, 3.2)
+
+        # Title
+        ax.text(left + (self.stack_length * cell_w) / 2, bottom + 1.3, "Stack", ha="center", va="bottom", fontsize=14)
+
+        for i in range(self.stack_length):
+            x = left + i * cell_w
+            y = bottom
+
+            ax.add_patch(patches.Rectangle((x, y), cell_w, cell_h, fill=False, linewidth=1.5))
+
+            ax.text(x + cell_w / 2, y + cell_h + 0.15, str(i), ha="center", va="center", fontsize=11)
+
+            # Value (only if filled)
+            if i < self.filled_length:
+                ax.text(x + cell_w / 2, y + cell_h / 2, str(self.values[i]), ha="center", va="center", fontsize=11)
+
+        top_box_w = 1.0
+        top_box_h = 0.55
+        top_box_x = left
+        top_box_y = 0.25
+
+        ax.text(top_box_x, top_box_y + top_box_h + 0.1, "top", ha="left", va="bottom", fontsize=11)
+        ax.add_patch(patches.Rectangle((top_box_x, top_box_y), top_box_w, top_box_h, fill=False, linewidth=1.2))
+        ax.text(top_box_x + top_box_w / 2, top_box_y + top_box_h / 2, str(top_index), ha="center", va="center", fontsize=12)
+    
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com037:
+
+    def __init__(self):
+        self.size = 10
+        self.queue = rnd.sample(range(1, 50), self.size)
+        front = 0
+        self.dequeued = self.queue[front]
+        self.current_front = self.queue[front + 1]
+        self.answer = self.current_front
+
+        self.description = f"The diagram shows a queue implemented using an array. One dequeue() operation is carried out. What value is now at the front of the queue?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Queue}} &= [{', '.join(map(str, self.queue))}]\\\\"
+            f"\\text{{Initial Front Index}} &= 0\\\\"
+            f"\\text{{Initial Front Value}} &= {self.dequeued}\\\\"
+            f"\\text{{1. Perform dequeue() operation:}} &\\\\"
+            f"\\text{{Value removed from the front}} &= {self.dequeued}\\\\"
+            f"\\text{{2. Update front pointer:}} &\\\\"
+            f"\\text{{New Front Index}} &= \\text{{front}} + 1 = 1\\\\"
+            f"\\text{{3. Identify value at new front index:}} &\\\\"
+            f"\\text{{New Front Value}} &= \\text{{queue}}[1]\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 3))
+        ax.axis("off")
+
+        cell_w = 1.2
+        cell_h = 0.8
+        left = 0.6
+        bottom = 1.3
+
+        for i in range(self.size):
+            x = left + i * cell_w
+            y = bottom
+
+            ax.add_patch(patches.Rectangle((x, y), cell_w, cell_h, fill=False, linewidth=1.5))
+            ax.text(x + cell_w / 2, y + cell_h / 2, str(self.queue[i]), ha="center", va="center", fontsize=12, fontweight="bold", color="black")
+
+        front_x = left + (0 * cell_w) + cell_w / 2
+        front_label_y = bottom - 0.65
+
+        ax.annotate("", xy=(front_x, bottom), xytext=(front_x, front_label_y + 0.2), arrowprops=dict(arrowstyle="->", linewidth=2.5, color="red"))
+        ax.text(front_x, front_label_y, "FRONT", ha="center", va="top", fontsize=11, fontweight="bold", bbox=dict(boxstyle="square,pad=0.25", fc="white", ec="black", lw=1))
+
+        rear_x = left + ((self.size - 1) * cell_w) + cell_w / 2
+        rear_label_y = bottom - 0.65
+
+        ax.annotate("", xy=(rear_x, bottom), xytext=(rear_x, rear_label_y + 0.2), arrowprops=dict(arrowstyle="->", linewidth=2.5, color="red"))
+        ax.text(rear_x, rear_label_y, "REAR", ha="center", va="top", fontsize=11, fontweight="bold", bbox=dict(boxstyle="square,pad=0.25", fc="white", ec="black", lw=1))
+
+        ax.set_xlim(0, left + self.size * cell_w + 0.6)
+        ax.set_ylim(0, 3.0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com038:
+
+    def __init__(self):
+        self.queue_max_length = 10
+        self.filled_length = rnd.randint(4, 8)
+        self.values = rnd.sample(range(50, 300), self.filled_length)
+        self.enq_1 = rnd.randint(50, 300)
+        self.enq_2 = rnd.randint(50, 300)
+
+        arr = [None] * self.queue_max_length
+        for i, v in enumerate(self.values):
+            arr[i] = v
+
+        front = 0
+        rear = self.filled_length - 1
+
+        # enqueue enq_1
+        rear += 1
+        arr[rear] = self.enq_1
+        # dequeue
+        arr[front] = None
+        front += 1
+        # enqueue enq_2
+        rear += 1
+        arr[rear] = self.enq_2
+
+        self.answer = sum(v for v in arr if v is not None)
+
+        self.description = f"The diagram shows an implementation of queue ADT. The operations enqueue({self.enq_1}), dequeue, and then enqueue({self.enq_2}) are carried out in that order. What is the sum of all values currently stored in the queue after these operations?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial queue values}} &= [{', '.join(map(str, self.values))}] \\\\"
+            f"\\text{{Initial sum}} &= {sum(self.values)} \\\\"
+            f"\\text{{1. enqueue({self.enq_1}):}} & \\\\"
+            f"\\text{{Add }} {self.enq_1} \\text{{ to the rear of the queue.}} & \\\\"
+            f"\\text{{Current values}} &= [{', '.join(map(str, self.values))}, {self.enq_1}] \\\\"
+            f"\\text{{2. dequeue():}} & \\\\"
+            f"\\text{{Remove the front element }} ({self.values[0]}) \\text{{ from the queue.}} & \\\\"
+            f"\\text{{Current values}} &= [{', '.join(map(str, self.values[1:]))}, {self.enq_1}] \\\\"
+            f"\\text{{3. enqueue({self.enq_2}):}} & \\\\"
+            f"\\text{{Add }} {self.enq_2} \\text{{ to the rear of the queue.}} & \\\\"
+            f"\\text{{Final values}} &= [{', '.join(map(str, self.values[1:]))}, {self.enq_1}, {self.enq_2}] \\\\"
+            f"\\text{{4. Calculate the final sum:}} & \\\\"
+            f"\\text{{Sum}} &= " + " + ".join(map(str, self.values[1:])) + f" + {self.enq_1} + {self.enq_2} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(11, 3.2))
+        ax.axis("off")
+
+        # Container
+        cont_x, cont_y = 0.6, 1.2
+        cont_w, cont_h = 12.0, 1.6
+        ax.add_patch(
+            patches.FancyBboxPatch(
+                (cont_x, cont_y),
+                cont_w,
+                cont_h,
+                boxstyle="round,pad=0.2,rounding_size=0.25",
+                linewidth=2.2,
+                edgecolor="#1b5e20",
+                facecolor="#e8f5e9",
+            )
+        )
+
+        filled = self.filled_length
+        front_idx = 0
+        rear_idx = filled - 1
+
+        # Title
+        ax.text(cont_x + cont_w / 2, cont_y + cont_h + 0.55, "QUEUE", ha="center", va="center", fontsize=16, fontweight="bold", color="#1b5e20")
+
+        # Cells
+        cell_w = cont_w / self.queue_max_length
+        cell_h = 1.0
+        cell_y = cont_y + (cont_h - cell_h) / 2
+
+        for i in range(self.queue_max_length):
+            cell_x = cont_x + i * cell_w
+
+            is_filled = i < filled
+            ax.add_patch(
+                patches.Rectangle((cell_x, cell_y), cell_w, cell_h, linewidth=1.8, edgecolor="#2e7d32", facecolor=("#c8e6c9" if is_filled else "white"))
+            )
+
+            if is_filled:
+                ax.text(cell_x + cell_w / 2, cell_y + cell_h / 2, str(self.values[i]), ha="center", va="center", fontsize=12, fontweight="bold", color="#1b5e20")
+
+        # FRONT arrow + label (pointing to front cell)
+        fx = cont_x + front_idx * cell_w + cell_w / 2
+        ax.annotate("Front", xy=(fx, cont_y + cont_h), xytext=(fx, cont_y + cont_h + 0.8), ha="center", va="bottom", fontsize=12, fontweight="bold", color="#1b5e20", arrowprops=dict(arrowstyle="-|>", linewidth=2.5, color="#1b5e20"))
+
+        # REAR arrow + label (pointing to rear cell)
+        rx = cont_x + rear_idx * cell_w + cell_w / 2
+        ax.annotate("Rear", xy=(rx, cont_y + cont_h), xytext=(rx, cont_y + cont_h + 0.8), ha="center", va="bottom", fontsize=12, fontweight="bold", color="#1b5e20", arrowprops=dict(arrowstyle="-|>", linewidth=2.5, color="#1b5e20"))
+
+        ax.set_xlim(0, 13.5)
+        ax.set_ylim(0, 4.0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com039:
+
+    def __init__(self):
+        self.length = 10
+        self.data = rnd.sample(range(1000, 2000), self.length)
+        order = list(range(self.length))
+        rnd.shuffle(order)
+
+        self.ptr = [0] * self.length
+        for i in range(self.length - 1):
+            self.ptr[order[i]] = order[i + 1]
+        self.ptr[order[-1]] = None
+
+        self.nodes = list(zip(self.data, self.ptr))
+        self.startptr = order[0]
+        self.next_node_ptr = self.ptr[self.startptr]
+        self.answer = self.data[self.next_node_ptr]
+
+        self.description = f"A linked list abstract data type (ADT) is to be used to store and organise data. This will be implemented with a 1D array and a start pointer. State the value stored in the node immediately after LinkedList[StartPtr]."
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Adapted from PastPapersCo CAIE A-Level 4.1.2"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Parameters:}} &\\\\"
+            f"\\text{{Start Pointer (StartPtr)}} &= {self.startptr} \\\\"
+            f"\\text{{1. Identify the first node:}} &\\\\"
+            f"\\text{{Node at index StartPtr}} &= \\text{{LinkedList}}[{self.startptr}] \\\\"
+            f"\\text{{Value at index StartPtr}} &= {self.data[self.startptr]} \\\\"
+            f"\\text{{Next pointer at index StartPtr}} &= {self.ptr[self.startptr]} \\\\"
+            f"\\text{{2. Identify the node immediately after StartPtr:}} &\\\\"
+            f"\\text{{Next Node Pointer}} &= \\text{{LinkedList}}[{self.startptr}].\\text{{ptr}} \\\\"
+            f"&= {self.next_node_ptr} \\\\"
+            f"\\text{{3. Extract value from the identified node:}} &\\\\"
+            f"\\text{{Value}} &= \\text{{LinkedList}}[{self.next_node_ptr}].\\text{{data}} \\\\"
+            f"&= {self.data[self.next_node_ptr]} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig_w = max(9, self.length * 1.05)
+        fig_h = 3.1
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.axis("off")
+
+        left_margin = 1.9
+        top_y = 2.0
+        cell_w = 1.0
+        cell_h = 0.7
+
+        ax.text(0.1, top_y + cell_h + 0.65, f"StartPtr: {self.startptr}", ha="left", va="center", fontsize=14, family="monospace")
+
+        for i in range(self.length):
+            x = left_margin + i * cell_w
+            ax.text(x + cell_w / 2, top_y + cell_h + 0.15, str(i), ha="center", va="center", fontsize=12, fontweight="bold")
+
+        ax.text(left_margin - 0.25, top_y + cell_h / 2, "Data", ha="right", va="center", fontsize=14, fontweight="bold")
+        ax.text(left_margin - 0.25, top_y - cell_h / 2, "Ptr", ha="right", va="center", fontsize=14, fontweight="bold")
+
+        for i in range(self.length):
+            x = left_margin + i * cell_w
+
+            # Data row cell
+            ax.add_patch(
+                patches.Rectangle(
+                    (x, top_y), cell_w, cell_h,
+                    fill=False, linewidth=1.5, edgecolor="black"
+                )
+            )
+            ax.text(x + cell_w / 2, top_y + cell_h / 2, str(self.data[i]), ha="center", va="center", fontsize=12)
+
+            # Ptr row cell
+            ax.add_patch(
+                patches.Rectangle(
+                    (x, top_y - cell_h), cell_w, cell_h,
+                    fill=False, linewidth=1.5, edgecolor="black"
+                )
+            )
+            ptr_val = self.ptr[i]
+            ptr_text = "NULL" if ptr_val is None else str(ptr_val)
+            ax.text(
+                x + cell_w / 2, top_y - cell_h / 2,
+                ptr_text,
+                ha="center", va="center",
+                fontsize=12
+            )
+
+        ax.set_xlim(0, left_margin + self.length * cell_w + 1.2)
+        ax.set_ylim(0.1, top_y + cell_h + 1.0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com040:
+
+    def __init__(self):
+        self.length = 8
+        self.data = rnd.sample(range(500, 900), self.length)
+        order = list(range(self.length))
+        rnd.shuffle(order)
+
+        self.ptr = [0] * self.length
+        for i in range(self.length - 1):
+            self.ptr[order[i]] = order[i + 1]
+        self.ptr[order[-1]] = None
+
+        self.nodes = list(zip(self.data, self.ptr))
+        deletable_positions = list(range(1, len(order) - 1))  # excludes head (0) and tail (last)
+        pos = rnd.choice(deletable_positions)
+        self.delete_idx = order[pos] 
+        self.delete_value = self.data[self.delete_idx]
+        self.prev_idx = order[pos - 1]
+        self.next_idx = self.ptr[self.delete_idx]
+
+        self.answer = self.next_idx
+
+        self.description = f"The following image is showing an example of linked list. If the node containing {self.delete_value} is deleted from the linked list, what value should be stored in the pointer field of the node immediately before it after the deletion?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Identify the node to be deleted:}} &\\\\"
+            f"\\text{{Target value to delete}} &= {self.delete_value}\\\\"
+            f"\\text{{Index of target node (delete\\_idx)}} &= {self.delete_idx}\\\\"
+            f"\\text{{2. Identify the surrounding nodes in the linked list:}} &\\\\"
+            f"\\text{{Node immediately before (prev\\_idx)}} &= {self.prev_idx}\\\\"
+            f"\\text{{Node immediately after (next\\_idx)}} &= {self.next_idx}\\\\"
+            f"\\text{{3. Update the pointer of the preceding node:}} &\\\\"
+            f"\\text{{To delete a node, the predecessor's pointer must bypass it:}} &\\\\"
+            f"\\text{{New Pointer}} &= \\text{{Pointer of current node to be deleted}}\\\\"
+            f"\\text{{New Pointer}} &= \\text{{next\\_idx}}\\\\"
+            f"\\text{{New Pointer}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Build traversal order starting from the head (which is order[0])
+        head_idx = None
+        # Find head by finding the node that is never pointed TO (except None)
+        pointed_to = {p for p in self.ptr if p is not None}
+        for i in range(self.length):
+            if i not in pointed_to:
+                head_idx = i
+                break
+
+        chain = []
+        cur = head_idx
+        seen = set()
+        while cur is not None and cur not in seen:
+            seen.add(cur)
+            chain.append(cur)
+            cur = self.ptr[cur]
+
+        data_color = "#AF9AB2"
+        next_color = "#D1C3D3"
+        arrow_color = "black"
+        text_color = "black"
+
+        n = len(chain)
+        fig_w = max(12, 3.4 * n + 3.0)
+        fig_h = 2.8
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.axis("off")
+
+        node_w = 3.2
+        half_w = node_w / 2
+        node_h = 1.1
+        gap = 1.6
+        start_x = 3.0
+        y0 = 1.0
+
+        # head ->
+        ax.text(0.5, y0 + node_h * 0.55, "head", fontsize=22, fontweight="bold", ha="left", va="center", color="black")
+        ax.annotate("", xy=(start_x, y0 + node_h * 0.55), xytext=(2.0, y0 + node_h * 0.55), arrowprops=dict(arrowstyle="->", linewidth=3, color=arrow_color))
+
+        # Draw nodes
+        for i, idx in enumerate(chain):
+            x = start_x + i * (node_w + gap)
+            data_val = self.data[idx]
+            next_ptr = self.ptr[idx]
+
+            # Data block
+            ax.add_patch(patches.Rectangle((x, y0), half_w, node_h, facecolor=data_color, edgecolor="none"))
+            # Next block
+            ax.add_patch(patches.Rectangle((x + half_w, y0), half_w, node_h, facecolor=next_color, edgecolor="none"))
+            # Node border (single outline around both halves)
+            ax.add_patch(patches.Rectangle((x, y0), node_w, node_h, fill=False, edgecolor="black", linewidth=2))
+
+            # Address above node
+            ax.text(x + half_w * 0.5, y0 + node_h + 0.4, str(idx), ha="center", va="center", fontsize=20, fontweight="bold", color="black")
+
+            # Data text
+            ax.text(x + half_w / 2, y0 + node_h / 2, str(data_val), ha="center", va="center", fontsize=20, fontweight="bold", color=text_color)
+
+            # Next pointer text, show NULL for None
+            ax.text(x + half_w + (half_w / 2), y0 + node_h / 2, "NULL" if next_ptr is None else str(next_ptr), ha="center", va="center", fontsize=20, fontweight="bold", color=text_color)
+
+            # "data" label under left half
+            ax.text(x + half_w / 2, y0 - 0.35, "data", ha="center", va="center", fontsize=18, fontweight="bold", color=text_color)
+
+            # Arrow to next node (except last)
+            if i < n - 1:
+                ax.annotate(
+                    "",
+                    xy=(x + node_w + gap - 0.15, y0 + node_h * 0.55),
+                    xytext=(x + node_w + 0.15, y0 + node_h * 0.55),
+                    arrowprops=dict(arrowstyle="->", linewidth=3, color=arrow_color),
+                )
+
+        ax.set_xlim(0, start_x + n * (node_w + gap) + 0.8)
+        ax.set_ylim(0, 2.8)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
