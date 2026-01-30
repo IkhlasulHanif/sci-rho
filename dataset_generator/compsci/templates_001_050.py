@@ -2523,3 +2523,264 @@ class Com040:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com041:
+
+    def __init__(self):
+        self.vowels = ["a", "e", "i", "o", "u"]
+        self.num_char = rnd.randint(5, 8)
+        self.input = "".join([rnd.choice(["a", "e", "i", "o", "u", "b", "c", "g"]) * rnd.randint(3, 8) for _ in range(self.num_char)])
+        max_run = 0
+        current_run = 0
+        prev_char = ""
+        steps = []
+        for idx, char in enumerate(self.input, start=1):
+            prev_before = prev_char
+            is_vowel = char in self.vowels
+            same_as_prev = (char == prev_char)
+
+            if is_vowel:
+                if same_as_prev:
+                    current_run += 1
+                else:
+                    current_run = 1
+
+                if current_run > max_run:
+                    max_run = current_run
+            else:
+                current_run = 0
+
+            prev_char = char
+            steps.append((idx, char, prev_before, is_vowel, same_as_prev, current_run, max_run))
+
+        self.answer = max_run
+
+        self.description = f"A Python code snippet is shown in this image. What will longest_run(\"{self.input}\") return?"
+        self.topic = "Programming"
+        self.subtopic = "Structured Programming"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given string}}\\; s &= \\texttt{{\"{self.input}\"}}\\\\"
+            f"\\text{{Vowels set}}\\; V &= \\{{a,e,i,o,u\\}}\\\\"
+            f"\\text{{Initialize}}\\; \\text{{current\\_run}} &= 0,\\; \\text{{max\\_run}} = 0,\\; \\text{{prev}} = \\texttt{{\"\"}}\\\\"
+            f"\\text{{Update rules per character }} c:\\; &\\\\"
+            f"\\quad c\\in V\\ \\land\\ c=\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow \\text{{current\\_run}}+1\\\\"
+            f"\\quad c\\in V\\ \\land\\ c\\neq\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow 1\\\\"
+            f"\\quad c\\notin V\\Rightarrow \\text{{current\\_run}}\\leftarrow 0\\\\"
+            f"\\quad \\text{{max\\_run}}\\leftarrow \\max(\\text{{max\\_run}},\\text{{current\\_run}})\\\\"
+            f"\\text{{Now scan left-to-right and count:}}\\\\"
+            + "".join(
+                f"{idx}:\\; c=\\texttt{{\"{ch}\"}},\\; \\text{{prev}}=\\texttt{{\"{prev}\"}}"
+                f" &\\Rightarrow\\; "
+                + (
+                    f"c\\in V,\\; c=\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow \\text{{current\\_run}}+1"
+                    if is_vowel and same_as_prev
+                    else f"c\\in V,\\; c\\neq\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow 1"
+                    if is_vowel and (not same_as_prev)
+                    else f"c\\notin V\\Rightarrow \\text{{current\\_run}}\\leftarrow 0"
+                )
+                + (
+                    f",\\; \\text{{max\\_run}}\\leftarrow \\max(\\text{{max\\_run}},\\text{{current\\_run}})"
+                    if is_vowel
+                    else ",\\; \\text{{max\\_run}}\\text{ unchanged}"
+                )
+                + f",\\; \\text{{current\\_run}}={round(float(cur_after),10)},\\; \\text{{max\\_run}}={round(float(max_after),10)}\\\\"
+                for (idx, ch, prev, is_vowel, same_as_prev, cur_after, max_after) in steps
+            )
+            + f"\\text{{Final longest identical-vowel run}}\\; \\text{{max\\_run}} &= {self.answer}\\\\"
+            f"\\text{{Therefore}}\\; \\texttt{{longest\\_run}}(s) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com041temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com042:
+
+    def __init__(self):
+        self.input = rnd.randint(6, 30)
+        # func2
+        if self.input % 3 == 0:
+            self.res2 = self.input * 2 + 5
+        else:
+            self.res2 = self.input * 3 - (self.input % 4)
+        
+        # func1
+        self.res1 = self.res2 * self.res2 - 4 * self.res2
+        if self.res1 % 2 == 0:
+            self.res1 += self.res1 % 5
+        else:
+            self.res1 -= 3 * (self.res1 % 3)
+
+        self.answer = self.res1
+
+        self.description = f"Observe this image below. Let inp be an integer. If the function call func1(func2(inp)) is made where inp is {self.input}, what value will be printed out?"
+        self.topic = "Programming"
+        self.subtopic = "Structured Programming"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Evaluate inner function:}} &\\ \\text{{func2(inp) where inp}} = {self.input} \\\\"
+            f"\\text{{Check condition:}} &\\ {self.input} \\pmod{{3}} = {self.input % 3} \\\\"
+            + (
+                f"\\text{{Since }} {self.input} \\pmod{{3}} = 0: & \\\\"
+                f"res_2 &= (inp \\times 2) + 5 \\\\"
+                f"&= ({self.input} \\times 2) + 5 \\\\"
+                f"&= {self.res2}"
+                if self.input % 3 == 0 else
+                f"\\text{{Since }} {self.input} \\pmod{{3}} \\neq 0: & \\\\"
+                f"res_2 &= (inp \\times 3) - (inp \\pmod{{4}}) \\\\"
+                f"&= ({self.input} \\times 3) - ({self.input % 4}) \\\\"
+                f"&= {self.res2}"
+            ) + " \\\\"
+            f"\\text{{2. Evaluate outer function:}} &\\ \\text{{func1(res\\_2) where res\\_2}} = {self.res2} \\\\"
+            f"\\text{{Initial }} res\\_1 \\text{{ calculation:}} & \\\\"
+            f"res_1 &= (res_2)^2 - (4 \\times res_2) \\\\"
+            f"&= ({self.res2})^2 - (4 \\times {self.res2}) \\\\"
+            f"&= {self.res2**2} - {4 * self.res2} \\\\"
+            f"&= {self.res2**2 - 4 * self.res2} \\\\"
+            f"\\text{{Check }} res\\_1 \\text{{ parity:}} &\\ {self.res2**2 - 4 * self.res2} \\pmod{{2}} = {(self.res2**2 - 4 * self.res2) % 2} \\\\"
+            + (
+                f"\\text{{Since }} res\\_1 \\text{{ is even:}} & \\\\"
+                f"res_1 &= res_1 + (res_1 \\pmod{{5}}) \\\\"
+                f"&= {self.res2**2 - 4 * self.res2} + ({(self.res2**2 - 4 * self.res2) % 5}) \\\\"
+                f"&= {self.answer}"
+                if (self.res2**2 - 4 * self.res2) % 2 == 0 else
+                f"\\text{{Since }} res\\_1 \\text{{ is odd:}} & \\\\"
+                f"res_1 &= res_1 - (3 \\times (res_1 \\pmod{{3}})) \\\\"
+                f"&= {self.res2**2 - 4 * self.res2} - (3 \\times {(self.res2**2 - 4 * self.res2) % 3}) \\\\"
+                f"&= {self.answer}"
+            ) + " \\\\"
+            f"\\text{{Final Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com042temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com043:
+
+    def __init__(self):
+        self.x = rnd.randint(1, 23)
+        self.x_copy = self.x
+        steps = []
+        k = 0
+
+        while True:
+            x_before = self.x
+            parity = x_before % 2
+
+            if parity == 0:
+                self.x = self.x + 5
+            else:
+                self.x = self.x * 2 + 1
+
+            x_after = self.x
+            k += 1
+            steps.append((k, x_before, parity, x_after))
+
+            if self.x > 20:
+                break
+
+        self.answer = self.x
+
+        self.description = f"A pseudocode is provided in the image below. What value is output at the end?"
+        self.topic = "Programming"
+        self.subtopic = "Structured Programming"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial value}}\\; x_0 &= {self.x_copy}\\\\"
+            f"\\text{{Update rule (UpdateX):}}\\; x_{{k+1}} &= \\begin{{cases}}"
+            f"x_k + 5, & x_k\\equiv 0\\pmod{{2}}\\\\"
+            f"2x_k + 1, & x_k\\equiv 1\\pmod{{2}}"
+            f"\\end{{cases}}\\\\"
+            f"\\text{{Repeat until }} x_k &> 20\\\\"
+            f"\\text{{Step-by-step updates:}}\\\\"
+            + "".join(
+                (
+                    f"\\text{{Step {k}:}}\\; x_{{{k-1}}} &= {x_before}\\\\"
+                    + f"x_{{{k-1}}}\\bmod 2 &= {parity}\\\\"
+                    + (
+                        f"\\text{{Since }} x_{{{k-1}}}\\equiv 0\\pmod{{2}},\\; x_{{{k}}} &= x_{{{k-1}}} + 5\\\\"
+                        f"&= {x_before} + 5\\\\"
+                        f"&= {x_after}\\\\"
+                        if parity == 0
+                        else
+                        f"\\text{{Since }} x_{{{k-1}}}\\equiv 1\\pmod{{2}},\\; x_{{{k}}} &= 2x_{{{k-1}}} + 1\\\\"
+                        f"&= 2\\big({x_before}\\big) + 1\\\\"
+                        f"&= {x_after}\\\\"
+                    )
+                    + (
+                        f"\\text{{Check stop:}}\\; x_{{{k}}} > 20\\;?\\; &\\Rightarrow\\; \\text{{Yes}}\\\\"
+                        if x_after > 20
+                        else
+                        f"\\text{{Check stop:}}\\; x_{{{k}}} > 20\\;?\\; &\\Rightarrow\\; \\text{{No}}\\\\"
+                    )
+                )
+                for (k, x_before, parity, x_after) in steps
+            )
+            + f"\\text{{Final output}}\\; x &= {self.answer}\\\\"
+            + "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        pseudocode = [
+            "1  DECLARE x : INTEGER",
+            f"2  x ← {self.x_copy}",
+            "3",
+            "4  REPEAT",
+            "5      CALL UpdateX(VAR x)",
+            "6  UNTIL x > 20",
+            "7",
+            "8  OUTPUT x",
+            "9",
+            "10  PROCEDURE UpdateX(VAR n : INTEGER)",
+            "11      IF n MOD 2 = 0 THEN",
+            "12          n ← n + 5",
+            "13     ELSE",
+            "14         n ← n * 2 + 1",
+            "15     ENDIF",
+            "16 ENDPROCEDURE"
+        ]
+        
+        fig, ax = plt.subplots(figsize=(6, 7))
+        plt.axis('off')
+        
+        y_pos = 0.95
+        line_height = 0.08
+                
+        for line in pseudocode:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(0.05, y_pos, line, 
+                    fontsize=14, 
+                    family='monospace', 
+                    verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
