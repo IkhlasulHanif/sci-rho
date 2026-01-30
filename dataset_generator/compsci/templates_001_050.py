@@ -1,6 +1,7 @@
 import random as rnd
 import os
 import numpy as np
+import sys
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
@@ -2883,3 +2884,401 @@ class Com044:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close(fig)
+
+class Com045:
+
+    def __init__(self):
+        self.heuristic = {"A":5, "B":6, "C":4, "D":3, "E":3, "F":1, "G":0} 
+        self.start_node = "A"
+        self.goal_node = "G"
+        self.AB_cost = rnd.randint(1, 5)
+        self.AC_cost = rnd.randint(1, 5)
+        self.BC_cost = rnd.randint(1, 5)
+        self.BD_cost = rnd.randint(1, 5)
+        self.DF_cost = rnd.randint(1, 5)
+        self.DG_cost = rnd.randint(1, 5)
+        self.FG_cost = rnd.randint(1, 5)
+        self.CE_cost = rnd.randint(1, 5)
+        self.EG_cost = rnd.randint(1, 5)
+
+        self.graph = {
+            "A": {"B": self.AB_cost, "C": self.AC_cost},
+            "B": {"C": self.BC_cost, "D": self.BD_cost},
+            "C": {"E": self.CE_cost},
+            "D": {"F": self.DF_cost, "G": self.DG_cost},
+            "E": {"G": self.EG_cost},
+            "F": {"G": self.FG_cost},
+            "G": {},
+        }
+
+        G_SCORE = 0
+        F_SCORE = 1
+        PREVIOUS = 2
+
+        self.steps = []
+        visited = {}
+        unvisited = {}
+
+        # Init all nodes
+        for node in self.graph:
+            unvisited[node] = [sys.maxsize, sys.maxsize, None]
+
+        start = self.start_node
+        goal = self.goal_node
+
+        unvisited[start][G_SCORE] = 0
+        unvisited[start][F_SCORE] = self.heuristic[start]
+        unvisited[start][PREVIOUS] = None
+
+        self.steps.append({
+            "event": "init",
+            "start": start,
+            "goal": goal,
+            "open_init": {n: unvisited[n][:] for n in unvisited},
+        })
+
+        while True:
+            current = get_minimum_fscore(unvisited)
+            cur_g, cur_f, cur_prev = unvisited[current]
+
+            self.steps.append({
+                "event": "select_min",
+                "current": current,
+                "g": cur_g,
+                "h": self.heuristic.get(current, 0),
+                "f": cur_f,
+                "open_size": len(unvisited),
+            })
+
+            # Goal reached
+            if current == goal:
+                visited[current] = unvisited[current]
+                self.steps.append({
+                    "event": "goal_reached",
+                    "node": current,
+                    "final_cost": cur_g,
+                })
+                break
+
+            # Expand neighbors
+            neighbors = self.graph[current]
+            self.steps.append({
+                "event": "expand",
+                "node": current,
+                "neighbors": {k: neighbors[k] for k in neighbors},
+            })
+
+            for nb, w in neighbors.items():
+                # Skip if already finalized
+                if nb in visited:
+                    self.steps.append({
+                        "event": "skip_neighbor",
+                        "from": current,
+                        "to": nb,
+                        "reason": "already_visited",
+                    })
+                    continue
+
+                tentative_g = cur_g + w
+                old_g = unvisited[nb][G_SCORE]
+
+                self.steps.append({
+                    "event": "consider_edge",
+                    "from": current,
+                    "to": nb,
+                    "w": w,
+                    "tentative_g": tentative_g,
+                    "old_g": old_g,
+                })
+
+                if tentative_g < old_g:
+                    unvisited[nb][G_SCORE] = tentative_g
+                    unvisited[nb][F_SCORE] = tentative_g + self.heuristic[nb]
+                    unvisited[nb][PREVIOUS] = current
+
+                    self.steps.append({
+                        "event": "update",
+                        "node": nb,
+                        "new_g": unvisited[nb][G_SCORE],
+                        "new_h": self.heuristic[nb],
+                        "new_f": unvisited[nb][F_SCORE],
+                        "previous": current,
+                    })
+                else:
+                    self.steps.append({
+                        "event": "no_update",
+                        "node": nb,
+                        "reason": "tentative_g_not_better",
+                    })
+
+            visited[current] = unvisited[current]
+            del unvisited[current]
+
+            self.steps.append({
+                "event": "close",
+                "node": current,
+                "closed_g": visited[current][G_SCORE],
+                "closed_f": visited[current][F_SCORE],
+                "remaining_open": len(unvisited),
+            })
+
+        # Reconstruct route + store outputs
+        if goal in visited:
+            self.answer = visited[goal][G_SCORE]
+
+            route = []
+            cur = goal
+            while cur is not None:
+                route.append(cur)
+                cur = visited[cur][PREVIOUS]
+
+            route.reverse()
+            self.shortest_route = route
+
+            self.steps.append({
+                "event": "reconstruct",
+                "route": list(self.shortest_route),
+                "answer": self.answer,
+            })
+        
+        self.description = f"Given a directed weighted graph with heuristic estimates for each node, use the A* search algorithm to find the shortest/minimum cost from node {self.start_node} to node {self.goal_node}. The table underneath the graph provides the estimated distance from the nodes to the target node."
+        self.topic = "Artificial Intelligence (AI)"
+        self.subtopic = "Artificial Intelligence (AI)"
+        self.source = "Adapted from Mahesh Huddar (Youtube)"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Heuristic:}} & \\\\"
+            f"\\text{{A:5, B:6, C:4, D:3, E:3, F:1, G:0}} & \\\\"
+            f"\\text{{1. Initialization:}} & \\\\"
+            f"\\text{{Start Node: }} {self.start_node}, \\text{{ Goal Node: }} {self.goal_node} \\\\"
+            f"g({self.start_node}) &= 0, \\quad h({self.start_node}) = {self.heuristic[self.start_node]} \\\\"
+            f"f({self.start_node}) &= g({self.start_node}) + h({self.start_node}) = 0 + {self.heuristic[self.start_node]} = {self.heuristic[self.start_node]} \\\\"
+            "\\text{{2. A* Search Process (Iterative expansion):}} & \\\\"
+            "\\text{{We select the node with the lowest }} f(n) = g(n) + h(n) \\text{{ to expand.}} \\\\"
+            "\\text{{Step-by-step trace:}} & \\\\"
+        )
+        search_trace = ""
+        for step in self.steps:
+            if step["event"] == "select_min":
+                search_trace += f"\\\\\\text{{Expand {step['current']}: }} g={step['g']}, h={step['h']} \\rightarrow f={step['f']} \\\\"
+            elif step["event"] == "update":
+                search_trace += f"\\quad \\rightarrow \\text{{Update neighbor {step['node']}: }} g={step['new_g']}, f={step['new_g']}+{step['new_h']}={step['new_f']} \\\\"
+            elif step["event"] == "goal_reached":
+                search_trace += f"\\\\\\text{{Goal reached: }} {step['node']} \\text{{ with total cost }} g = {step['final_cost']} \\\\"
+        self.reasoning += (
+            search_trace +
+            "\\text{{3. Route Reconstruction:}} & \\\\"
+            f"\\text{{Path: }} " + " \\rightarrow ".join(self.shortest_route) + " \\\\"
+            f"\\text{{Final minimum cost}} &= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com045temp.png').convert('RGB')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(268, 119, self.AB_cost, fontsize=10, color='red')
+        ax.text(260, 330, self.AC_cost, fontsize=10, color='red')
+        ax.text(430, 212, self.BC_cost, fontsize=10, color='red')
+        ax.text(529, 54, self.BD_cost, fontsize=10, color='red')
+        ax.text(532, 405, self.CE_cost, fontsize=10, color='red')
+        ax.text(806, 405, self.EG_cost, fontsize=10, color='red')
+        ax.text(819, 200, self.DG_cost, fontsize=10, color='red')
+        ax.text(797, 54, self.DF_cost, fontsize=10, color='red')
+        ax.text(961, 212, self.FG_cost, fontsize=10, color='red')
+        plt.axis('off')
+
+        x0, x1 = 112, 1122
+        y0, y1 = 450, 550
+        width = x1 - x0
+        height = y1 - y0
+
+        keys = list(self.heuristic.keys())
+        vals = [self.heuristic[k] for k in keys]
+        n = len(keys)
+
+        cell_w = width / n
+        row_h = height / 2
+
+        ax.add_patch(patches.Rectangle((x0, y0), width, height, fill=False, edgecolor='black', linewidth=2))
+
+        for i, k in enumerate(keys):
+            cx = x0 + i * cell_w
+
+            # Top cell (header)
+            ax.add_patch(patches.Rectangle((cx, y0), cell_w, row_h, fill=False, facecolor='white', edgecolor='black', linewidth=1.4))
+            ax.text(cx + cell_w/2, y0 + row_h/2, k, ha='center', va='center', fontsize=8, color='black')
+
+            # Bottom cell (value)
+            ax.add_patch(patches.Rectangle((cx, y0 + row_h), cell_w, row_h, fill=False, facecolor='white', edgecolor='black', linewidth=1.4))
+            ax.text(cx + cell_w/2, y0 + row_h + row_h/2, str(vals[i]), ha='center', va='center', fontsize=8, color='red')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", transparent=True)
+        plt.close()
+
+class Com046:
+
+    def __init__(self):
+        self.nodes = ["A", "B", "C", "D", "E"]
+        self.start = rnd.choice(self.nodes)
+        self.goal = rnd.choice([n for n in self.nodes if n != self.start])
+        self.AB = rnd.randint(1, 8)
+        self.AE = rnd.randint(1, 8)
+        self.BE = rnd.randint(1, 8)
+        self.BC = rnd.randint(1, 8)
+        self.CD = rnd.randint(1, 8)
+        self.ED = rnd.randint(1, 8)
+        self.EC = rnd.randint(1, 8)
+        self.graph = {
+            "A": {"B": self.AB, "E": self.AE},
+            "B": {"A": self.AB, "E": self.BE, "C": self.BC},
+            "C": {"B": self.BC, "D": self.CD, "E": self.EC},
+            "D": {"C": self.CD, "E": self.ED},
+            "E": {"A": self.AE, "B": self.BE, "C": self.EC, "D": self.ED},
+        }
+
+        INF = float("inf")
+        dist = {n: INF for n in self.nodes}
+        prev = {n: None for n in self.nodes}
+        visited = set()
+
+        self.steps = []
+
+        dist[self.start] = 0
+        self.steps.append(("init", self.start, self.goal, dict(dist)))
+
+        while len(visited) < len(self.nodes):
+            # Pick the unvisited node with the smallest tentative distance
+            u = None
+            best = INF
+            for n in self.nodes:
+                if n not in visited and dist[n] < best:
+                    best = dist[n]
+                    u = n
+
+            if u is None:
+                self.steps.append(("stop_unreachable", dict(dist), set(visited)))
+                break
+
+            self.steps.append(("select", u, dist[u], set(visited), dict(dist)))
+
+            if u == self.goal:
+                self.steps.append(("stop_goal_selected", u, dist[u]))
+                break
+
+            visited.add(u)
+            self.steps.append(("finalize", u, set(visited)))
+
+            for v, w in self.graph[u].items():
+                if v in visited:
+                    self.steps.append(("skip_relax", u, v, w, "visited"))
+                    continue
+
+                old = dist[v]
+                cand = dist[u] + w
+                updated = cand < old
+
+                self.steps.append(("relax_try", u, v, w, old, cand, updated))
+
+                if updated:
+                    dist[v] = cand
+                    prev[v] = u
+                    self.steps.append(("relax_apply", v, dist[v], prev[v], dict(dist), dict(prev)))
+
+        if dist[self.goal] == INF:
+            self.answer = None
+            self.shortest_route = []
+        else:
+            self.answer = dist[self.goal]
+            path = []
+            cur = self.goal
+            while cur is not None:
+                path.append(cur)
+                cur = prev[cur]
+            self.shortest_route = list(reversed(path))
+
+        self.steps.append(("final", self.answer, self.shortest_route, dict(dist), dict(prev)))
+
+        self.description = f"Given an undirected weighted graph, use the Dijkstra algorithm to find the shortest length from node {self.start} to node {self.goal}."
+        self.topic = "Artificial Intelligence (AI)"
+        self.subtopic = "Artificial Intelligence (AI)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Initialize Dijkstra's Algorithm:}} &\\\\"
+            f"\\text{{Start Node: }} {self.start},\\; \\text{{Goal Node: }} {self.goal} \\\\"
+            f"\\text{{Initialize distances:}} &\\\\"
+            f"d({self.start}) &= 0 \\\\"
+            f"d(v) &= \\infty \\quad \\text{{for all }} v \\neq {self.start} \\\\"
+            f"\\text{{Initialize predecessor map:}} &\\\\"
+            f"\\text{{prev}}(v) &= \\text{{None}} \\quad \\text{{for all nodes}} \\\\"
+            f"\\text{{Initialize visited set:}} &\\\\"
+            f"\\text{{visited}} &= \\emptyset \\\\"
+            f"\\text{{2. Iterative Selection and Relaxation:}} &\\\\"
+            + " \\\\ ".join([
+                (
+                    f"\\text{{Select node }} {s[1]} \\text{{ with minimum tentative distance: }} d({s[1]}) = {round(s[2], 10) if isinstance(s[2], (int, float)) else s[2]}"
+                    if s[0] == "select" else
+                    f"\\text{{Finalize node }} {s[1]}:\\; \\text{{visited}} \\leftarrow \\text{{visited}} \\cup \\{{{s[1]}\\}}"
+                    if s[0] == "finalize" else
+                    f"\\quad \\text{{Skip edge }}({s[1]},{s[2]})\\text{{ (neighbor already visited)}}"
+                    if s[0] == "skip_relax" else
+                    (
+                        f"\\quad \\text{{Relax }}({s[1]},{s[2]})\\text{{ with }} w={s[3]}:\\; "
+                        f"\\text{{candidate}} = d({s[1]}) + w = {round(s[5]-s[3],10)} + {s[3]} = {round(s[5],10)},\\; "
+                        f"\\text{{current}}\\; d({s[2]}) = "
+                        + (f"{round(s[4],10)}" if s[4] != float('inf') else "\\infty")
+                        + "\\;\\Rightarrow\\; \\text{{update}}"
+                        if s[0] == "relax_try" and s[6] else
+                        f"\\quad \\text{{Relax }}({s[1]},{s[2]})\\text{{ with }} w={s[3]}:\\; "
+                        f"\\text{{candidate}} = d({s[1]}) + w = {round(s[5]-s[3],10)} + {s[3]} = {round(s[5],10)},\\; "
+                        f"\\text{{current}}\\; d({s[2]}) = "
+                        + (f"{round(s[4],10)}" if s[4] != float('inf') else "\\infty")
+                        + "\\;\\Rightarrow\\; \\text{{no update}}"
+                        if s[0] == "relax_try" and (not s[6]) else
+                        f"\\quad d({s[1]}) \\leftarrow {round(s[2],10)},\\; \\text{{prev}}({s[1]}) \\leftarrow {s[3]}"
+                        if s[0] == "relax_apply" else
+                        f"\\text{{Goal node selected; shortest distance finalized.}}"
+                        if s[0] == "stop_goal_selected" else
+                        f"\\text{{No more reachable unvisited nodes; stop.}}"
+                        if s[0] == "stop_unreachable" else
+                        f""
+                    )
+                )
+                for s in self.steps
+                if s[0] not in ["init", "final"] and (s[0] != "relax_apply" or True)
+            ]) + " \\\\ "
+            + (
+                f"\\text{{3. Final Path Reconstruction:}} &\\\\"
+                + (
+                    f"\\text{{Shortest path: }} " + " \\rightarrow ".join(self.shortest_route) + " \\\\"
+                    f"d({self.goal}) &= {self.answer} \\\\"
+                    f"\\text{{Final Result}} &= {self.answer}"
+                    if self.answer is not None else
+                    f"\\text{{No path exists from }} {self.start} \\text{{ to }} {self.goal} \\\\"
+                    f"\\text{{Final Result}} &= \\text{{None}}"
+                )
+            )
+            + "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com046temp.png').convert('RGB')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(374, 197, self.AB, fontsize=10, color='black')
+        ax.text(348, 430, self.AE, fontsize=10, color='black')
+        ax.text(463, 312, self.BE, fontsize=10, color='black')
+        ax.text(615, 114, self.BC, fontsize=10, color='black')
+        ax.text(766, 312, self.CD, fontsize=10, color='black') 
+        ax.text(607, 527, self.ED, fontsize=10, color='black')
+        ax.text(585, 287, self.EC, fontsize=10, color='black')
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", transparent=True)
+        plt.close()
