@@ -1623,6 +1623,781 @@ class Mat017:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
 
+class Mat018:
+    def __init__(self):
+        # f'(x) = a_prime * (x - x1)(x - x2)
+        # Using randrange_float with step 0.01 for maximum variety in stationary point locations
+        self.root1 = round(randrange_float(-3.0, 0.5, 0.01), 2)
+        self.root2 = round(self.root1 + randrange_float(1.5, 4.0, 0.01), 2)
+        
+        # Leading multiplier for the derivative. +/- 3 ensures integer x^3 coefficient.
+        a_prime = rnd.choice([-3, 3])
+        
+        # Integrated coefficients: f(x) = (a_prime/3)x^3 + ...
+        self.a = float(a_prime // 3)
+        self.b = round(-(a_prime * (self.root1 + self.root2)) / 2, 2)
+        self.c = round(a_prime * self.root1 * self.root2, 2)
+        self.d = float(rnd.randint(-5, 5))
+        
+        def f(x):
+            return self.a * x**3 + self.b * x**2 + self.c * x + self.d
+        
+        # Select target point M
+        self.m_x = rnd.choice([self.root1, self.root2])
+        self.m_y = round(f(self.m_x), 2)
+        
+        # Determine nature of M for description logic
+        is_max = (6 * self.a * self.m_x + 2 * self.b) < 0
+        self.m_type = "maximum" if is_max else "minimum"
+        
+        self.ask_for = rnd.choice(['x', 'y'])
+        self.answer = self.m_x if self.ask_for == 'x' else self.m_y
+        
+        # Format the equation string for the graph
+        t1 = fmt_poly(self.a, "x^3", True)
+        t2 = fmt_poly(self.b, "x^2")
+        t3 = fmt_poly(self.c, "x")
+        t4 = fmt_poly(self.d, "")
+        self.eq_latex = f"$y = {t1}{t2}{t3}{t4}$"
+
+        self.description = (
+            f"The diagram shows the graph of a cubic function. "
+            f"Point $M$ is a local {self.m_type} of the curve. "
+            f"Based on the figure, find the {self.ask_for}-coordinate of $M$."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        
+        # Identification of M (used in both cases)
+        m_x_rounded = round(self.m_x, 10)
+        m_y_rounded = round(self.m_y, 10)
+
+        # Build the conditional steps
+        if self.ask_for == 'x':
+            final_steps = (
+                f"\\text{{The point }} M \\text{{ is the local {self.m_type} shown on the graph.}} \\\\"
+                f"\\text{{From the roots of the derivative, we identify }} x = {m_x_rounded} \\text{{ as the location of }} M. \\\\"
+                f"\\text{{Therefore, the }} x\\text{{-coordinate is }} {self.answer}"
+            )
+        else:
+            final_steps = (
+                f"\\text{{The point }} M \\text{{ is the local {self.m_type} shown on the graph, located at }} x = {m_x_rounded}. \\\\"
+                f"\\text{{To find the corresponding }} y\\text{{-coordinate, substitute }} x = {m_x_rounded} \\text{{ into the original function:}} \\\\"
+                f"y &= {self.a}({m_x_rounded})^3 + {fmt_poly(self.b, f'({m_x_rounded})^2')}{fmt_poly(self.c, f'({m_x_rounded})')}{fmt_poly(self.d, '')} \\\\"
+                f"y &= {m_y_rounded} \\\\"
+                f"\\text{{Therefore, the }} y\\text{{-coordinate is }} {self.answer}"
+            )
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The function is: }} y &= {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')} \\\\"
+            f"\\text{{1. Differentiate to find the gradient function:}} \\\\"
+            f"\\frac{{dy}}{{dx}} &= {round(3 * self.a, 10)}x^2 {fmt_poly(round(2 * self.b, 10), 'x')}{fmt_poly(self.c, '')} \\\\"
+            f"\\text{{2. Set }} \\frac{{dy}}{{dx}} = 0 \\text{{ to find stationary points:}} \\\\"
+            f"0 &= {round(3 * self.a, 10)}x^2 {fmt_poly(round(2 * self.b, 10), 'x')}{fmt_poly(self.c, '')} \\\\"
+            f"\\text{{Solving for }} x \\text{{ gives: }} x = {round(self.root1, 10)} \\text{{ and }} x = {round(self.root2, 10)} \\\\"
+            f"{final_steps}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        pad = 1.2
+        x_vals = np.linspace(self.root1 - pad, self.root2 + pad, 400)
+        y_vals = self.a * x_vals**3 + self.b * x_vals**2 + self.c * x_vals + self.d
+        
+        # Plot curve and axes
+        ax.plot(x_vals, y_vals, color='blue', lw=2.5, zorder=3)
+        ax.axhline(0, color='black', lw=1.2, zorder=2)
+        ax.axvline(0, color='black', lw=1.2, zorder=2)
+        
+        # Plot equation text on the graph (top center/left depending on curve)
+        ax.text(0.05, 0.95, self.eq_latex, transform=ax.transAxes, fontsize=16, 
+                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        # Mark point M
+        ax.scatter(self.m_x, self.m_y, color='red', s=100, zorder=5)
+        
+        # Dynamic label positioning
+        label_offset = 1.0 if self.m_type == "minimum" else -1.5
+        ax.text(self.m_x, self.m_y - label_offset, 'M', 
+                color='red', fontsize=22, fontweight='bold', ha='center', zorder=6)
+        
+        ax.grid(True, which='both', linestyle='--', alpha=0.4)
+        ax.set_xlabel('$x$', loc='right', fontsize=14)
+        ax.set_ylabel('$y$', loc='top', rotation=0, fontsize=14)
+        
+        ax.set_xlim(self.root1 - pad, self.root2 + pad)
+        y_range = max(y_vals) - min(y_vals)
+        ax.set_ylim(min(y_vals) - 0.15 * y_range, max(y_vals) + 0.15 * y_range)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat019:
+    def __init__(self):
+        # f'(x) = a_prime * (x - x1)(x - x2)
+        # Root-based construction for precise curvature
+        self.root1 = round(randrange_float(-3.0, 0.5, 0.01), 2)
+        self.root2 = round(self.root1 + randrange_float(1.5, 4.0, 0.01), 2)
+        
+        a_prime = rnd.choice([-3, 3])
+        
+        # Integrated coefficients for f(x)
+        self.a = float(a_prime // 3)
+        self.b = round(-(a_prime * (self.root1 + self.root2)) / 2, 2)
+        self.c = round(a_prime * self.root1 * self.root2, 2)
+        self.d = float(rnd.randint(-5, 5))
+        
+        def f(x):
+            return self.a * x**3 + self.b * x**2 + self.c * x + self.d
+        
+        def f_prime(x):
+            return 3 * self.a * x**2 + 2 * self.b * x + self.c
+
+        # M is a known point on the curve
+        self.m_x = round(randrange_float(self.root1, self.root2, 0.01), 2)
+        self.m_y = round(f(self.m_x), 2)
+        
+        # Mathematical properties of line l
+        self.gradient = round(f_prime(self.m_x), 2)
+        self.intercept = round(self.m_y - (self.gradient * self.m_x), 2)
+        
+        # The answer is the numerical gradient
+        self.answer = self.gradient
+        
+        # Formatting for display
+        t1 = fmt_poly(self.a, "x^3", True)
+        t2 = fmt_poly(self.b, "x^2")
+        t3 = fmt_poly(self.c, "x")
+        t4 = fmt_poly(self.d, "")
+        self.curve_eq = f"$y = {t1}{t2}{t3}{t4}$"
+        
+        # The line is now represented as a variable equation in the diagram
+        self.line_label = "$l: y = mx + c$"
+
+        self.description = (
+            f"The diagram shows the graph of a cubic function and a tangent line $l$ "
+            f"touching the curve at point $M$ as shown in the figure. "
+            f"Based on the figure, find the value of the gradient $m$."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The cubic function is: }} y &= {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')} \\\\"
+            f"\\text{{The gradient of the tangent line }} l \\text{{ at point }} M \\text{{ is equal to the derivative }} \\frac{{dy}}{{dx}} \\text{{ evaluated at }} x_M. \\\\"
+            f"\\text{{1. Differentiate the function:}} \\\\"
+            f"\\frac{{dy}}{{dx}} &= \\frac{{d}}{{dx}}({fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')}) \\\\"
+            f"&= {round(3 * self.a, 10)}x^2 {fmt_poly(round(2 * self.b, 10), 'x')}{fmt_poly(self.c, '')} \\\\"
+            f"\\text{{2. Substitute the }} x\\text{{-coordinate of point }} M({self.m_x}, {self.m_y}) \\text{{ into }} \\frac{{dy}}{{dx}}: \\\\"
+            f"m &= {round(3 * self.a, 10)}({round(self.m_x, 10)})^2 {fmt_poly(round(2 * self.b, 10), f'({round(self.m_x, 10)})')}{fmt_poly(self.c, '')} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Therefore, the gradient }} m \\text{{ is }} {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        pad = 1.2
+        x_vals = np.linspace(self.root1 - pad, self.root2 + pad, 400)
+        y_curve = self.a * x_vals**3 + self.b * x_vals**2 + self.c * x_vals + self.d
+        y_line = self.gradient * x_vals + self.intercept
+        
+        # Plot curve and tangent line
+        ax.plot(x_vals, y_curve, color='blue', lw=2.5, zorder=3)
+        ax.plot(x_vals, y_line, color='green', lw=1.5, linestyle='--', zorder=4)
+        
+        ax.axhline(0, color='black', lw=1.2, zorder=2)
+        ax.axvline(0, color='black', lw=1.2, zorder=2)
+        
+        # Mark point M and label its coordinates
+        ax.scatter(self.m_x, self.m_y, color='red', s=100, zorder=5)
+        ax.annotate(f"M({self.m_x}, {self.m_y})", (self.m_x, self.m_y), 
+                    textcoords="offset points", xytext=(15, 10), 
+                    fontsize=12, color='red', fontweight='bold',
+                    bbox=dict(boxstyle='round,pad=0.3', fc='white', ec='red', alpha=0.8))
+        
+        # Display the Curve equation (Known) and Line equation (Symbolic)
+        ax.text(0.05, 0.95, self.curve_eq, transform=ax.transAxes, fontsize=15, 
+                verticalalignment='top', color='blue', bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
+        ax.text(0.05, 0.88, self.line_label, transform=ax.transAxes, fontsize=15, 
+                verticalalignment='top', color='green', bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
+        
+        ax.grid(True, which='both', linestyle='--', alpha=0.4)
+        ax.set_xlabel('$x$', loc='right', fontsize=14)
+        ax.set_ylabel('$y$', loc='top', rotation=0, fontsize=14)
+        
+        ax.set_xlim(self.root1 - pad, self.root2 + pad)
+        y_range = max(y_curve) - min(y_curve)
+        ax.set_ylim(min(y_curve) - 0.15 * y_range, max(y_curve) + 0.15 * y_range)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat020:
+    def __init__(self):
+        # f(x) = ax^2 + bx + c
+        # Use simple integers for coefficients to keep the parabola readable
+        self.a = float(rnd.choice([-2, -1, 1, 2]))
+        self.b = float(rnd.randint(-4, 4))
+        self.c = float(rnd.randint(-3, 3))
+        
+        # Define two x-coordinates for the secant line points A and B
+        # Use randrange_float for variation
+        self.x_a = round(randrange_float(-3.0, -0.5, 0.01), 2)
+        self.x_b = round(randrange_float(0.5, 3.0, 0.01), 2)
+        
+        def f(x):
+            return self.a * x**2 + self.b * x + self.c
+        
+        self.y_a = round(f(self.x_a), 2)
+        self.y_b = round(f(self.x_b), 2)
+        
+        # Secant Gradient (m_secant) = (y_b - y_a) / (x_b - x_a)
+        # For a parabola f(x) = ax^2 + bx + c, f'(x) = 2ax + b
+        # Parallel tangent means f'(x_tan) = m_secant
+        # 2a(x_tan) + b = m_secant  => x_tan = (m_secant - b) / (2a)
+        
+        self.m_secant = (self.y_b - self.y_a) / (self.x_b - self.x_a)
+        self.x_tan = round((self.m_secant - self.b) / (2 * self.a), 2)
+        self.y_tan = round(f(self.x_tan), 2)
+        
+        # Randomly choose to ask for x or y coordinate of the point of tangency
+        self.ask_for = rnd.choice(['x', 'y'])
+        self.answer = self.x_tan if self.ask_for == 'x' else self.y_tan
+        
+        # Equation formatting for the plot
+        t1 = fmt_poly(self.a, "x^2", True)
+        t2 = fmt_poly(self.b, "x")
+        t3 = fmt_poly(self.c, "")
+        self.curve_eq = f"$g(x) = {t1}{t2}{t3}$"
+
+        self.description = (
+            f"The diagram shows the graph of the parabola $g(x)$ and a secant line "
+            f"intersecting the curve at points $A$ and $B$. There is a point $T$ on the curve "
+            f"where the tangent line is parallel to the secant $AB$. "
+            f"Based on the information provided in the figure, find the {self.ask_for}-coordinate of point $T$."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Differentiation"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Find the gradient of the secant line passing through }} A({self.x_a}, {self.y_a}) \\text{{ and }} B({self.x_b}, {self.y_b}): \\\\"
+            f"m_{{secant}} &= \\frac{{y_B - y_A}}{{x_B - x_A}} \\\\"
+            f"&= \\frac{{{round(self.y_b, 10)} - ({round(self.y_a, 10)})}}{{{round(self.x_b, 10)} - ({round(self.x_a, 10)})}} \\\\"
+            f"&= {round(self.m_secant, 10)} \\\\"
+            f"\\text{{2. Find the derivative of the parabola }} g(x) = {fmt_poly(self.a, 'x^2', True)}{fmt_poly(self.b, 'x')}{fmt_poly(self.c, '')}: \\\\"
+            f"g'(x) &= {round(2 * self.a, 10)}x {fmt_poly(self.b, '')} \\\\"
+            f"\\text{{3. The tangent line at }} T \\text{{ is parallel to the secant, so }} g'(x_T) = m_{{secant}}: \\\\"
+            f"{round(2 * self.a, 10)}x_T {fmt_poly(self.b, '')} &= {round(self.m_secant, 10)} \\\\"
+            f"{round(2 * self.a, 10)}x_T &= {round(self.m_secant - self.b, 10)} \\\\"
+            f"x_T &= {round(self.x_tan, 10)} \\\\"
+            + (f"\\text{{4. Substitute }} x_T \\text{{ into }} g(x) \\text{{ to find the }} y\\text{{-coordinate:}} \\\\"
+            f"y_T &= {self.a}({round(self.x_tan, 10)})^2 {fmt_poly(self.b, f'({round(self.x_tan, 10)})')}{fmt_poly(self.c, '')} \\\\"
+            f"&= {round(self.y_tan, 10)} \\\\" if self.ask_for == 'y' else "") +
+            f"\\text{{Therefore, the }} {self.ask_for}\\text{{-coordinate of point }} T \\text{{ is }} {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Use x_range for both the curve and the secant line
+        x_range = np.linspace(-4, 4, 400)
+        y_curve = self.a * x_range**2 + self.b * x_range + self.c
+        
+        # Plotting the curve
+        ax.plot(x_range, y_curve, color='blue', lw=2, zorder=3)
+        
+        # Calculate the intercept of the secant line: c = y - mx
+        secant_intercept = self.y_a - (self.m_secant * self.x_a)
+
+        # Use x_range here to make the secant line "endless" across the plot
+        ax.plot(x_range, self.m_secant * x_range + secant_intercept, color='green', linestyle='--', lw=1.5, zorder=4)
+
+        # Re-add the specific dots for A and B
+        ax.scatter([self.x_a, self.x_b], [self.y_a, self.y_b], color='green', s=40, zorder=5)
+        
+        # Label points A and B
+        ax.text(self.x_a, self.y_a, f' A({self.x_a}, {self.y_a})', verticalalignment='bottom', horizontalalignment='right', fontsize=10)
+        ax.text(self.x_b, self.y_b, f' B({self.x_b}, {self.y_b})', verticalalignment='bottom', horizontalalignment='left', fontsize=10)
+        
+        # Mark Point T (Tangency)
+        ax.scatter(self.x_tan, self.y_tan, color='red', s=100, zorder=5)
+        ax.text(self.x_tan, self.y_tan, ' T ', color='red', verticalalignment='top', fontweight='bold', fontsize=14)
+        
+        # Equations and Axes
+        ax.axhline(0, color='black', lw=1.2)
+        ax.axvline(0, color='black', lw=1.2)
+        ax.text(0.05, 0.95, self.curve_eq, transform=ax.transAxes, fontsize=16, 
+                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+        
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.set_xlabel('$x$', loc='right')
+        ax.set_ylabel('$y$', loc='top', rotation=0)
+        
+        # Set limits
+        ax.set_xlim(-4, 4)
+        y_vals = [self.y_a, self.y_b, self.y_tan]
+        ax.set_ylim(min(y_vals) - 5, max(y_vals) + 5)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat021:
+    def __init__(self):
+        # f(x) = a(x - p)(x - q)
+        # Defining clear intercepts for the student to read from the graph
+        self.p = round(randrange_float(-5.0, -2.0, 0.5), 2)
+        self.q = round(randrange_float(2.0, 5.0, 0.5), 2)
+        
+        # Leading coefficient 'a' can now be positive (upward) or negative (downward)
+        # We choose a range that ensures the parabola is visible and distinct
+        self.a_magnitude = round(randrange_float(0.8, 1.3, 0.01), 2)
+        self.a_sign = rnd.choice([-1, 1])
+        self.a = round(self.a_magnitude * self.a_sign, 2)
+        
+        self.y_int = round(self.a * (-self.p) * (-self.q), 2)
+        
+        # Vertex defines the start of the one-to-one branch for the inverse
+        self.vertex_x = (self.p + self.q) / 2
+        
+        # Pick a target x-value for the answer (staying close to q for better zoom)
+        self.target_x = round(randrange_float(self.q + 1.2, self.q + 2.8, 0.1), 2)
+        
+        # Calculate k = f(target_x), the input for f^-1(k)
+        self.k = round(self.a * (self.target_x - self.p) * (self.target_x - self.q), 2)
+        
+        self.answer = self.target_x
+
+        self.description = (
+            f"The figure shows the graph of a quadratic function $f(x)$ as a solid line and its inverse function $f^{{-1}}(x)$ as a dashed line. "
+            f"Based on the coordinates provided in the diagram, find the value of $f^{{-1}}({self.k})$."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Determine the equation of }} f(x) \\text{{ from the roots and }} y\\text{{-intercept:}} &\\\\"
+            f"x_1 &= {self.p}, \\quad x_2 = {self.q}, \\quad y_{{\\text{{int}}}} = {self.y_int}\\\\"
+            f"f(x) &= a(x - x_1)(x - x_2)\\\\"
+            f"{self.y_int} &= a(0 - ({self.p}))(0 - ({self.q}))\\\\"
+            f"{self.y_int} &= {round(self.p * self.q, 10)}a \\implies a = {self.a}\\\\"
+            f"f(x) &= {self.a}(x - {self.p})(x - {self.q})\\\\"
+            f"\\text{{2. Express }} f(x) \\text{{ in the completed square form }} a(x - h)^2 + k: &\\\\"
+            f"h &= \\frac{{x_1 + x_2}}{{2}} = \\frac{{{self.p} + {self.q}}}{{2}} = {round(self.vertex_x, 10)}\\\\"
+            f"k_{{\\text{{vertex}}}} &= f(h) = {self.a}({round(self.vertex_x, 10)} - ({self.p}))({round(self.vertex_x, 10)} - ({self.q})) = {round(self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q), 10)}\\\\"
+            f"f(x) &= {self.a}(x - {round(self.vertex_x, 10)})^2 + {round(self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q), 10)}\\\\"
+            f"\\text{{3. Find the inverse function }} f^{{-1}}(x): &\\\\"
+            f"y &= {self.a}(x - {round(self.vertex_x, 10)})^2 + {round(self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q), 10)}\\\\"
+            f"\\frac{{y - ({round(self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q), 10)})}}{{{self.a}}} &= (x - {round(self.vertex_x, 10)})^2\\\\"
+            f"x &= {round(self.vertex_x, 10)} \\pm \\sqrt{{\\frac{{y - ({round(self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q), 10)})}}{{{self.a}}}}}\\\\"
+            f"\\text{{4. Substitute }} y = {self.k} \\text{{ and select the branch }} x \\ge {round(self.vertex_x, 10)}: &\\\\"
+            f"f^{{-1}}({self.k}) &= {round(self.vertex_x, 10)} + \\sqrt{{\\frac{{{self.k} - ({round(self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q), 10)})}}{{{self.a}}}}}\\\\"
+            f"&= {round(self.vertex_x, 10)} + \\sqrt{{{round((self.k - (self.a * (self.vertex_x - self.p) * (self.vertex_x - self.q))) / self.a, 10)}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        # Framing logic: ensure all key features (roots, y-int, target point) are visible
+        limit = max(abs(self.p), abs(self.q), abs(self.k), abs(self.target_x), abs(self.y_int)) + 2
+        
+        # Define Curves
+        xs_f = np.linspace(-limit, limit, 1000)
+        def f(x): return self.a * (x - self.p) * (x - self.q)
+        ys_f = f(xs_f)
+        
+        # Only reflect the branch from the vertex to the limit
+        xs_inv_branch = np.linspace(self.vertex_x, limit, 1000)
+        ys_inv_branch = f(xs_inv_branch)
+        
+        # Plotting
+        ax.plot(xs_f, ys_f, 'k-', lw=2.5, label='$f(x)$') 
+        ax.plot(ys_inv_branch, xs_inv_branch, 'k--', lw=2, alpha=0.7, label='$f^{-1}(x)$') 
+        
+        # Target Point Label (k, ?)
+        ax.plot(self.k, self.target_x, 'ro', markersize=8)
+        # Position label slightly above or below the point based on direction
+        offset = limit * 0.05 if self.a_sign < 0 else -limit * 0.07
+        ax.text(self.k, self.target_x + offset, f'({self.k}, ?)', 
+                fontsize=14, fontweight='bold', color='red', ha='center')
+        
+        # Implicit Coordinate Labels for f(x)
+        ax.plot([self.p, self.q, 0], [0, 0, self.y_int], 'ko', markersize=6)
+        label_offset = limit * 0.03
+        ax.text(self.p, label_offset, f'({self.p}, 0)', ha='center', va='bottom', fontsize=11)
+        ax.text(self.q, label_offset, f'({self.q}, 0)', ha='center', va='bottom', fontsize=11)
+        ax.text(label_offset, self.y_int, f'(0, {self.y_int})', ha='left', va='center', fontsize=11)
+        
+        # Visual Styling
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        ax.axhline(0, color='black', lw=1.2)
+        ax.axvline(0, color='black', lw=1.2)
+        # Identity line y=x
+        ax.plot([-limit, limit], [-limit, limit], color='gray', lw=0.8, ls='-.', alpha=0.3)
+        
+        ax.set_aspect('equal')
+        ax.grid(True, linestyle=':', alpha=0.4)
+        ax.legend(loc='upper left', fontsize=12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat022:
+    def __init__(self):
+        # f(x) = mx + c (Linear)
+        # g(x) = p / (qx + r) (Reciprocal)
+        # Sequence: x -> g(x) -> f(g(x))
+        
+        # Parameters for g(x)
+        self.p = rnd.randint(5, 20)
+        self.q = rnd.randint(1, 4)
+        self.r = rnd.randint(1, 10)
+        
+        # Parameters for f(x)
+        self.m = rnd.randint(2, 6)
+        self.c = rnd.randint(-15, 15)
+        
+        # Input value x (Raw material)
+        # Pick x such that qx + r != 0 and result is reasonably clean
+        self.input_x = rnd.randint(1, 10)
+        
+        # Calculations
+        intermediate_num = self.p
+        intermediate_den = self.q * self.input_x + self.r
+        self.intermediate_val = intermediate_num / intermediate_den
+        
+        # Final result = m * (p / (q*x + r)) + c
+        self.answer = self.m * self.intermediate_val + self.c
+        
+        # Rounding for the answer to keep it as a clean float if necessary, 
+        # but the prompt says no need to round self.answer.
+        
+        self.description = (
+            "The diagram shows a factory process with two machines. "
+            f"A 'Raw Material' value of $x = {self.input_x}$ is fed into the first machine. "
+            "Based on the functions shown on the machines, calculate the value of the 'Final Product'."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = "" # To be filled later as per instructions
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 6)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Box dimensions
+        box_w, box_h = 2.5, 1.8
+        
+        # Machine G (Reciprocal)
+        g_x, g_y = 1.0, 2.0
+        g_box = patches.FancyBboxPatch((g_x, g_y), box_w, box_h, boxstyle="round,pad=0.2", 
+                                       ec="black", fc="#e1f5fe", lw=2)
+        ax.add_patch(g_box)
+        
+        # Machine F (Linear)
+        f_x, f_y = 6.0, 2.0
+        f_box = patches.FancyBboxPatch((f_x, f_y), box_w, box_h, boxstyle="round,pad=0.2", 
+                                       ec="black", fc="#fff9c4", lw=2)
+        ax.add_patch(f_box)
+
+        # Labels for G
+        ax.text(g_x + box_w/2, g_y + box_h/2 + 0.3, "Machine $g$", fontsize=14, ha='center', fontweight='bold')
+        g_text = f"$g(x) = \\frac{{{self.p}}}{{{fmt_poly(self.q, 'x', True)} {fmt_poly(self.r, '', False)}}}$"
+        ax.text(g_x + box_w/2, g_y + box_h/2 - 0.3, g_text, fontsize=12, ha='center')
+
+        # Labels for F
+        ax.text(f_x + box_w/2, f_y + box_h/2 + 0.3, "Machine $f$", fontsize=14, ha='center', fontweight='bold')
+        f_text = f"$f(x) = {fmt_poly(self.m, 'x', True)} {fmt_poly(self.c, '', False)}$"
+        ax.text(f_x + box_w/2, f_y + box_h/2 - 0.3, f_text, fontsize=12, ha='center')
+
+        # Arrows and Flow Labels
+        # Input to G
+        ax.annotate("Raw Material\n$x$", xy=(g_x, g_y + box_h/2), xytext=(g_x - 1.5, g_y + box_h/2),
+                    arrowprops=dict(arrowstyle="->", lw=2), ha='center', va='center', fontsize=10)
+        
+        # G to F (Intermediate)
+        ax.annotate("Intermediate\nProduct", xy=(f_x, f_y + box_h/2), xytext=(g_x + box_w + 1.25, f_y + box_h/2),
+                    arrowprops=dict(arrowstyle="->", lw=2), ha='center', va='center', fontsize=10)
+        # Line from G output to text
+        ax.plot([g_x + box_w, g_x + box_w + 0.5], [g_y + box_h/2, g_y + box_h/2], color='black', lw=2)
+
+        # F to Final
+        ax.annotate("Final\nProduct", xy=(f_x + box_w + 1.5, f_y + box_h/2), xytext=(f_x + box_w, f_y + box_h/2),
+                    arrowprops=dict(arrowstyle="<-", lw=2), ha='center', va='center', fontsize=10)
+
+        # Save
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat022:
+    def __init__(self):
+        # f(u) = mu + c (Linear) - using 'u' as per request
+        # g(x) = p / (qx + r) (Reciprocal)
+        # Sequence: x (Raw Material) -> g(x) = u (Intermediate) -> f(u) (Final Product)
+        
+        # Parameters for g(x)
+        self.p = round(randrange_float(5, 15, 0.01), 2)
+        self.q = round(randrange_float(0.5, 2.5, 0.01), 2)
+        self.r = round(randrange_float(1, 10, 0.01), 2)
+        
+        # Parameters for f(u)
+        self.m = round(randrange_float(2, 6, 0.01), 2)
+        self.c = round(randrange_float(5, 25, 0.01), 2)
+        
+        # Input value x (Raw material in kg)
+        self.input_x = round(randrange_float(1, 10, 0.01), 2)
+        
+        # Calculations
+        intermediate_den = self.q * self.input_x + self.r
+        self.intermediate_val = self.p / intermediate_den
+        
+        # Final result = m * intermediate_val + c
+        # The prompt says no need to round self.answer
+        self.answer = self.m * self.intermediate_val + self.c
+        
+        # Implicit description: value is in the figure
+        self.description = (
+            "A factory uses a two-stage processing system as shown in the diagram. "
+            "Based on the input of raw material and the functions of each machine, "
+            "determine the value of the final product in liters."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Determine the intermediate product }} u = g(x) \\text{{ where }} x = {self.input_x}\\,\\text{{kg:}} &\\\\"
+            f"g(x) &= \\frac{{{self.p}}}{{{self.q}x + {self.r}}}\\\\"
+            f"u = g({self.input_x}) &= \\frac{{{self.p}}}{{{self.q}({self.input_x}) + {self.r}}}\\\\"
+            f"&= \\frac{{{self.p}}}{{{round(self.q * self.input_x, 10)} + {self.r}}}\\\\"
+            f"&= \\frac{{{self.p}}}{{{round(self.q * self.input_x + self.r, 10)}}}\\\\"
+            f"&= {round(self.intermediate_val, 10)}\\\\"
+            f"\\text{{2. Substitute }} u \\text{{ into the reactor function }} f(u) \\text{{ to find the final pressure:}} &\\\\"
+            f"f(u) &= {self.m}u + {self.c}\\\\"
+            f"f({round(self.intermediate_val, 10)}) &= {self.m}({round(self.intermediate_val, 10)}) + {self.c}\\\\"
+            f"&= {round(self.m * self.intermediate_val, 10)} + {self.c}\\\\"
+            f"&= {self.answer}\\,\\text{{liters}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 6)
+        ax.set_aspect('equal')
+        ax.axis('off')
+
+        # Box dimensions
+        box_w, box_h = 3.2, 2.2
+        
+        # --- Machine g ---
+        g_x, g_y = 1.5, 1.8
+        g_box = patches.FancyBboxPatch((g_x, g_y), box_w, box_h, boxstyle="round,pad=0.2", 
+                                       ec="black", fc="#e3f2fd", lw=2)
+        ax.add_patch(g_box)
+        
+        ax.text(g_x + box_w/2, g_y + box_h - 0.4, "Machine $g$", fontsize=14, ha='center', fontweight='bold')
+        g_eqn_str = f"$g(x) = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$"
+        ax.text(g_x + box_w/2, g_y + box_h/2 - 0.2, g_eqn_str, fontsize=13, ha='center')
+
+        # --- Machine f ---
+        f_x, f_y = 7.0, 1.8
+        f_box = patches.FancyBboxPatch((f_x, f_y), box_w, box_h, boxstyle="round,pad=0.2", 
+                                       ec="black", fc="#fffde7", lw=2)
+        ax.add_patch(f_box)
+
+        ax.text(f_x + box_w/2, f_y + box_h - 0.4, "Machine $f$", fontsize=14, ha='center', fontweight='bold')
+        # Using f(u) label inside the machine
+        f_eqn_str = f"$f(u) = {self.m}u + {self.c}$"
+        ax.text(f_x + box_w/2, f_y + box_h/2 - 0.2, f_eqn_str, fontsize=13, ha='center')
+
+        # --- Input, Intermediate, Output Arrows ---
+        
+        # 1. Input: Raw Material x
+        ax.annotate("", xy=(g_x, g_y + box_h/2), xytext=(g_x - 1.5, g_y + box_h/2),
+                    arrowprops=dict(arrowstyle="->", lw=2, color="black"))
+        ax.text(g_x - 1.6, g_y + box_h/2, f"Raw Material\n$x = {self.input_x}$ kg", 
+                ha='right', va='center', fontsize=11, fontweight='bold')
+        
+        # 2. Intermediate: u = # intermediate product
+        ax.annotate("", xy=(f_x, f_y + box_h/2), xytext=(g_x + box_w, g_y + box_h/2),
+                    arrowprops=dict(arrowstyle="->", lw=2, color="black"))
+        ax.text((g_x + box_w + f_x)/2, g_y + box_h/2 + 0.3, "$u = $\n # Intermediate Product", 
+                ha='center', va='bottom', fontsize=11, color="#1565c0")
+
+        # 3. Output: Final Product
+        # Fixed arrow direction: From second machine to final product
+        ax.annotate("", xy=(f_x + box_w + 1.5, f_y + box_h/2), xytext=(f_x + box_w, f_y + box_h/2),
+                    arrowprops=dict(arrowstyle="->", lw=2, color="black"))
+        ax.text(f_x + box_w + 1.6, f_y + box_h/2, "Final Product\n(liters)", 
+                ha='left', va='center', fontsize=11, fontweight='bold', color="#2e7d32")
+
+        # Save the figure
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat023:
+    def __init__(self):
+        # f(x) = n / (x - h) + k
+        # Asymptotes: x = h (vertical), y = k (horizontal)
+        # Using randrange_float for high variability
+        self.h = round(randrange_float(-5.0, 5.0, 0.01), 2)
+        self.k = round(randrange_float(-5.0, 5.0, 0.01), 2)
+        
+        # Ensure n is an integer for cleaner point identification
+        self.n = rnd.choice([-4, -3, -2, 2, 3, 4])
+        
+        # Pick a helper point P(x_p, y_p) that the student can see on the graph
+        # This allows them to calculate 'n'
+        self.x_p = round(self.h + 1, 2)
+        self.y_p = round(self.n / (self.x_p - self.h) + self.k, 2)
+        
+        # Question types: 0 = Domain restriction, 1 = Range restriction, 2 = Coordinate Mapping
+        self.q_type = rnd.randint(0, 2)
+        
+        if self.q_type == 0:
+            self.answer = float(self.h)
+            self.target_text = "the value of $x$ that is excluded from the domain"
+        elif self.q_type == 1:
+            self.answer = float(self.k)
+            self.target_text = "the value of $y$ that is excluded from the range"
+        else:
+            # f(a) = target_y => find a
+            self.diff = rnd.choice([-2, -1, 1, 2])
+            self.target_y = round(float(self.k + (self.n / self.diff)), 2)
+            self.a_val = round(float(self.h + self.diff), 2)
+            self.answer = self.a_val
+            self.target_text = f"the value of $a$ given that $f(a) = {self.target_y}$"
+
+        # Implicit description: forces the user to look at the figure
+        self.description = (
+            f"The figure shows the graph of a reciprocal function $f(x)$ which passes through the point $P$. "
+            f"Based on the information provided in the diagram, determine {self.target_text}."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Functions"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        if self.q_type == 0:
+            self.reasoning = (
+                "\\[\\begin{aligned}"
+                f"\\text{{The function is of the form: }} f(x) &= \\frac{{n}}{{x - h}} + k\\\\"
+                f"\\text{{Identify the asymptotes from the graph:}} &\\\\"
+                f"\\text{{Vertical asymptote: }} x &= {self.h}\\\\"
+                f"\\text{{Horizontal asymptote: }} y &= {self.k}\\\\"
+                f"\\text{{The domain is restricted where the denominator equals zero:}} &\\\\"
+                f"x - h &= 0\\\\"
+                f"x - {self.h} &= 0\\\\"
+                f"x &= {self.answer}"
+                "\\end{aligned}\\]"
+            )
+        elif self.q_type == 1:
+            self.reasoning = (
+                "\\[\\begin{aligned}"
+                f"\\text{{The function is of the form: }} f(x) &= \\frac{{n}}{{x - h}} + k\\\\"
+                f"\\text{{Identify the asymptotes from the graph:}} &\\\\"
+                f"\\text{{Vertical asymptote: }} x &= {self.h}\\\\"
+                f"\\text{{Horizontal asymptote: }} y &= {self.k}\\\\"
+                f"\\text{{The range restriction occurs at the horizontal asymptote where the term }} \\frac{{n}}{{x-h}} \\neq 0: &\\\\"
+                f"f(x) &= \\frac{{n}}{{x - h}} + k\\\\"
+                f"f(x) &\\neq k\\\\"
+                f"f(x) &\\neq {self.answer}"
+                "\\end{aligned}\\]"
+            )
+        else:
+            self.reasoning = (
+                "\\[\\begin{aligned}"
+                f"\\text{{The function is of the form: }} f(x) &= \\frac{{n}}{{x - h}} + k\\\\"
+                f"\\text{{1. Identify the asymptotes from the graph: }} h = {self.h}, \\, k = {self.k}\\\\"
+                f"\\text{{2. Use point }} P({self.x_p}, {self.y_p}) \\text{{ to determine the constant }} n: &\\\\"
+                f"f(x_p) &= \\frac{{n}}{{x_p - h}} + k\\\\"
+                f"{self.y_p} &= \\frac{{n}}{{{self.x_p} - ({self.h})}} + {self.k}\\\\"
+                f"{round(self.y_p - self.k, 10)} &= \\frac{{n}}{{{round(self.x_p - self.h, 10)}}}\\\\"
+                f"n &= {self.n}\\\\"
+                f"\\text{{3. Solve for }} a \\text{{ such that }} f(a) = {self.target_y}: &\\\\"
+                f"{self.target_y} &= \\frac{{{self.n}}}{{a - {self.h}}} + {self.k}\\\\"
+                f"{round(self.target_y - self.k, 10)} &= \\frac{{{self.n}}}{{a - {self.h}}}\\\\"
+                f"a - {self.h} &= \\frac{{{self.n}}}{{{round(self.target_y - self.k, 10)}}}\\\\"
+                f"a - {self.h} &= {round(self.n / (self.target_y - self.k), 10)}\\\\"
+                f"a &= {self.answer}"
+                "\\end{aligned}\\]"
+            )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        limit = max(abs(self.h), abs(self.k), 8) + 2
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        
+        x1 = np.linspace(-limit, self.h - 0.1, 500)
+        x2 = np.linspace(self.h + 0.1, limit, 500)
+        def f_func(x_v): return self.n / (x_v - self.h) + self.k
+            
+        ax.plot(x1, f_func(x1), 'k-', lw=2.5)
+        ax.plot(x2, f_func(x2), 'k-', lw=2.5)
+        
+        # Visual Asymptotes
+        ax.axvline(self.h, color='gray', ls='--', lw=1, alpha=0.5)
+        ax.axhline(self.k, color='gray', ls='--', lw=1, alpha=0.5)
+        
+        # Equation Template Label
+        ax.text(-limit + 1, limit - 1.5, r"$f(x) = \frac{n}{x - h} + k$", 
+                fontsize=16, color='darkred', fontweight='bold', bbox=dict(facecolor='white', alpha=0.8))
+        
+        # Key Point P
+        ax.plot(self.x_p, self.y_p, 'ro', markersize=8)
+        ax.annotate(f"$P({self.x_p}, {self.y_p})$", (self.x_p, self.y_p), 
+                    textcoords="offset points", xytext=(10, 10), fontsize=12, fontweight='bold', color='red')
+        
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        ax.grid(True, linestyle=':', alpha=0.4)
+        ax.set_aspect('equal')
+        
+        # Asymptote indicator labels
+        ax.text(self.h + 0.2, -limit + 1, f"$x={self.h}$", color='blue', rotation=90, alpha=0.7)
+        ax.text(-limit + 1, self.k + 0.2, f"$y={self.k}$", color='blue', alpha=0.7)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat024:
     def __init__(self):
         # Generate integer coordinates for point D and E
