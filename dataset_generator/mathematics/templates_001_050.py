@@ -1433,6 +1433,196 @@ class Mat015:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=150, bbox_inches='tight')
         plt.close(fig)
         
+class Mat016:
+    def __init__(self):
+        # Generate three distinct float roots using deterministic ranges to avoid overlap
+        self.r1 = round(randrange_float(-5.0, -2.5, 0.01), 2)
+        self.r2 = round(randrange_float(-1.0, 1.5, 0.01), 2)
+        self.r3 = round(randrange_float(3.0, 5.5, 0.01), 2)
+        
+        # Scaling factor a (non-integer)
+        self.a = round(randrange_float(0.4, 1.2, 0.01) * rnd.choice([-1, 1]), 2)
+        
+        # Point k to evaluate, placed outside the roots for clarity
+        self.k = round(self.r3 + randrange_float(0.5, 1.5, 0.01), 2)
+        
+        # Calculation logic
+        # f(x) = a(x - r1)(x - r2)(x - r3)
+        self.y_int = round(self.a * (-self.r1) * (-self.r2) * (-self.r3), 2)
+        self.answer = round(self.a * (self.k - self.r1) * (self.k - self.r2) * (self.k - self.r3), 2)
+
+        self.description = (
+            "The figure shows the graph of a cubic function with its intercepts labeled. "
+            f"A vertical line is drawn. Based on the information in the "
+            "graph, determine the value of $y$ at the intersection point labeled $(k, ?)$."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Sketching curves"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The cubic function can be expressed in factored form using the roots }} r_1, r_2, r_3: &\\\\"
+            f"y &= a(x - r_1)(x - r_2)(x - r_3)\\\\"
+            f"\\text{{From the graph, the roots are }} x_1 = {round(self.r1, 10)}, x_2 = {round(self.r2, 10)}, \\text{{ and }} x_3 = {round(self.r3, 10)}: &\\\\"
+            f"y &= a(x - ({round(self.r1, 10)}))(x - ({round(self.r2, 10)}))(x - ({round(self.r3, 10)}))\\\\"
+            f"\\text{{Using the }} y\\text{{-intercept at }} (0, {round(self.y_int, 10)}) \\text{{ to find }} a: &\\\\"
+            f"{round(self.y_int, 10)} &= a(0 - ({round(self.r1, 10)}))(0 - ({round(self.r2, 10)}))(0 - ({round(self.r3, 10)}))\\\\"
+            f"{round(self.y_int, 10)} &= a({round(-self.r1, 10)})({round(-self.r2, 10)})({round(-self.r3, 10)})\\\\"
+            f"a &= \\frac{{{round(self.y_int, 10)}}}{{{round((-self.r1)*(-self.r2)*(-self.r3), 10)}}}\\\\"
+            f"a &= {round(self.a, 10)}\\\\"
+            f"\\text{{Now, find }} y \\text{{ when }} x = {round(self.k, 10)}: &\\\\"
+            f"y &= {round(self.a, 10)}({round(self.k, 10)} - ({round(self.r1, 10)}))({round(self.k, 10)} - ({round(self.r2, 10)}))({round(self.k, 10)} - ({round(self.r3, 10)}))\\\\"
+            f"y &= {round(self.a, 10)}({round(self.k - self.r1, 10)})({round(self.k - self.r2, 10)})({round(self.k - self.r3, 10)})\\\\"
+            f"y &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        # Function for plotting
+        f = lambda x: self.a * (x - self.r1) * (x - self.r2) * (x - self.r3)
+
+        # Plot setup
+        x_min, x_max = self.r1 - 1.5, self.k + 1.5
+        x_vals = np.linspace(x_min, x_max, 500)
+        y_vals = f(x_vals)
+        
+        ax.plot(x_vals, y_vals, color='blue', lw=2, label='f(x)')
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        
+        # Labeling the three zeros
+        roots = [self.r1, self.r2, self.r3]
+        for r in roots:
+            ax.plot(r, 0, 'ro')
+            ax.text(r, 0.5 if self.a < 0 else -0.8, f"{r}", ha='center', fontweight='bold')
+            
+        # Labeling the y-intercept
+        ax.plot(0, self.y_int, 'ro')
+        ax.text(0.3, self.y_int, f"{self.y_int}", va='center', fontweight='bold')
+
+        # Draw the line x = k and the intersection point
+        ax.axvline(self.k, color='green', linestyle='--', lw=1.5)
+        ax.plot(self.k, self.answer, 'go', markersize=8)
+        ax.text(self.k+ (1 if self.answer > 0 else -1), self.answer + (1.5 if self.answer > 0 else -1.5), 
+                f"({self.k}, ?)", ha='center', color='green', fontsize=12, fontweight='bold')
+
+        # Formatting
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.set_xlim(x_min, x_max)
+        # Dynamic y-limit to ensure all points are visible
+        y_buffer = abs(self.answer) * 0.2 + 2
+        ax.set_ylim(min(y_vals) - y_buffer, max(y_vals) + y_buffer)
+        
+        ax.set_xlabel('$x$', loc='right')
+        ax.set_ylabel('$y$', loc='top', rotation=0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
+class Mat017:
+    def __init__(self):
+        # p is the vertical asymptote (horizontal translation)
+        self.p = round(randrange_float(-3.0, 3.0, 0.5), 2)
+        # q is the horizontal asymptote (vertical translation)
+        self.q = round(randrange_float(-2.0, 2.0, 0.5), 2)
+        
+        # k is the stretch factor (ensuring it's not zero)
+        self.k = round(randrange_float(1.5, 4.5, 0.1) * rnd.choice([-1, 1]), 2)
+        
+        # A point (x_val, y_val) used to identify the specific curve
+        self.x_val = round(self.p + rnd.choice([-2, -1, 1, 2]), 2)
+        self.y_val = round((self.k / (self.x_val - self.p)) + self.q, 2)
+        
+        # The target x-coordinate for the final question (implicit in image)
+        self.target_x = round(self.p + randrange_float(3.0, 5.0, 0.1) * rnd.choice([-1, 1]), 2)
+        # Avoid overlap with the provided point
+        if abs(self.target_x - self.x_val) < 0.5:
+            self.target_x += 2.0
+            
+        self.answer = round((self.k / (self.target_x - self.p)) + self.q, 2)
+
+        self.description = (
+            "The figure shows the graph of a reciprocal function in the form $y = \\frac{k}{x - p} + q$. "
+            "The vertical and horizontal asymptotes are shown as dashed lines, and one point on the curve is given. "
+            "Based on the information provided in the diagram, find the missing $y$-value at the point indicated."
+        )
+        
+        self.topic = "Algebra and graphs"
+        self.subtopic = "Sketching curves"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Identify the asymptotes from the dashed lines in the figure:}} &\\\\"
+            f"\\text{{Vertical asymptote: }} x &= {round(self.p, 10)} \\implies p = {round(self.p, 10)}\\\\"
+            f"\\text{{Horizontal asymptote: }} y &= {round(self.q, 10)} \\implies q = {round(self.q, 10)}\\\\"
+            f"\\text{{The equation of the curve is of the form:}} &\\\\"
+            f"y &= \\frac{{k}}{{x - p}} + q\\\\"
+            f"\\text{{Substitute the given point }} ({round(self.x_val, 10)}, {round(self.y_val, 10)}) \\text{{ into the equation:}} &\\\\"
+            f"{round(self.y_val, 10)} &= \\frac{{k}}{{{round(self.x_val, 10)} - ({round(self.p, 10)})}} + {round(self.q, 10)}\\\\"
+            f"{round(self.y_val, 10)} - {round(self.q, 10)} &= \\frac{{k}}{{{round(self.x_val - self.p, 10)}}}\\\\"
+            f"{round(self.y_val - self.q, 10)} &= \\frac{{k}}{{{round(self.x_val - self.p, 10)}}}\\\\"
+            f"k &= {round(self.k, 10)}\\\\"
+            f"\\text{{The full equation is: }} y &= \\frac{{{round(self.k, 10)}}}{{x - ({round(self.p, 10)})}} + {round(self.q, 10)}\\\\"
+            f"\\text{{Identify the target }} x\\text{{-coordinate from the figure: }} x &= {round(self.target_x, 10)}\\\\"
+            f"\\text{{Substitute }} x = {round(self.target_x, 10)} \\text{{ to find the missing }} y\\text{{-value:}} &\\\\"
+            f"y &= \\frac{{{round(self.k, 10)}}}{{{round(self.target_x, 10)} - ({round(self.p, 10)})}} + {round(self.q, 10)}\\\\"
+            f"y &= \\frac{{{round(self.k, 10)}}}{{{round(self.target_x - self.p, 10)}}} + {round(self.q, 10)}\\\\"
+            f"y &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        
+        f = lambda x: (self.k / (x - self.p)) + self.q
+
+        x1 = np.linspace(self.p - 10, self.p - 0.1, 500)
+        x2 = np.linspace(self.p + 0.1, self.p + 10, 500)
+        
+        ax.plot(x1, f(x1), color='blue', lw=2.5)
+        ax.plot(x2, f(x2), color='blue', lw=2.5)
+        
+        # Drawing Asymptotes
+        ax.axvline(self.p, color='red', linestyle='--', lw=1.5)
+        ax.axhline(self.q, color='red', linestyle='--', lw=1.5)
+        
+        # Labels for asymptotes on the graph
+        ax.text(self.p + 0.2, self.q + 4.5, f'$x = {self.p}$', color='red', fontsize=12, fontweight='bold')
+        ax.text(self.p + 4.5, self.q + 0.2, f'$y = {self.q}$', color='red', fontsize=12, fontweight='bold')
+
+        # Marking the known point
+        ax.scatter(self.x_val, self.y_val, color='blue', s=60, zorder=5)
+        ax.text(self.x_val, self.y_val + (0.4 if self.k > 0 else -0.8), 
+                f'({self.x_val}, {self.y_val})', ha='center', fontsize=11, fontweight='bold',
+                bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
+
+        # Marking the query point with target_x value
+        ax.scatter(self.target_x, self.answer, color='green', s=100, edgecolors='black', zorder=6)
+        ax.axvline(self.target_x, color='green', linestyle=':', lw=1.2)
+        ax.text(self.target_x, self.answer + (0.5 if self.answer > self.q else -0.8), 
+                f'({self.target_x}, ?)', color='green', ha='center', fontsize=13, fontweight='bold')
+
+        ax.axhline(0, color='black', lw=1.2)
+        ax.axvline(0, color='black', lw=1.2)
+        ax.grid(True, which='both', linestyle=':', alpha=0.3)
+        
+        ax.set_xlim(self.p - 6, self.p + 6)
+        ax.set_ylim(self.q - 6, self.q + 6)
+        
+        ax.set_xlabel('$x$', loc='right', fontsize=12)
+        ax.set_ylabel('$y$', loc='top', rotation=0, fontsize=12)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
+        plt.close()
+
 class Mat024:
     def __init__(self):
         # Generate integer coordinates for point D and E
