@@ -2,6 +2,7 @@ import random as rnd
 import os
 import numpy as np
 import sys
+import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
@@ -3281,4 +3282,400 @@ class Com046:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", transparent=True)
+        plt.close()
+
+class Com047:
+
+    def __init__(self):
+        self.initial_values = [rnd.randint(5, 30) for _ in range(5)]
+        self.values = self.initial_values.copy()
+        self.actions = ["A", "S", "E"]
+        self.input = "".join([rnd.choice(self.actions[:2]) for _ in range(3)]) + self.actions[-1]
+        self.steps = []
+        for i, inp in enumerate(self.input):
+            if inp == "A":
+                num1 = self.values.pop()
+                num2 = self.values.pop()
+                new = num1 + num2
+                self.values.append(new)
+                self.steps.append([i+1, num1, num2, new, self.values.copy()])
+            elif inp == "S":
+                num1 = self.values.pop()
+                num2 = self.values.pop()
+                new = num2 - num1
+                self.values.append(new)
+                self.steps.append([i+1, num1, num2, new, self.values.copy()])
+            else:
+                self.answer = self.values.pop()
+                break
+
+        self.description = f"Sundip writes an algorithm to carry out addition and subtraction. The algorithm will use an initially filled stack and will take input from the user. The action the algorithm takes depends on the value input by the user. These actions are listed in the given figure. If the input from the user is \"{self.input}\", what will be the output?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Adapted from Physics & Maths Tutor"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Stack}} &= [{', '.join(map(str, self.initial_values))}]\\\\"
+            f"\\text{{Input Sequence}} &= \\text{{{self.input}}}\\\\"
+            "\\text{{Step 1: }} " + (f"\\text{{Input }} {self.input[0]} \\rightarrow " + (f"\\text{{Pop }} {self.steps[0][1]}, {self.steps[0][2]} \\rightarrow {self.steps[0][2]} + {self.steps[0][1]} = {self.steps[0][3]}" if self.input[0] == "A" else f"\\text{{Pop }} {self.steps[0][1]}, {self.steps[0][2]} \\rightarrow {self.steps[0][2]} - {self.steps[0][1]} = {self.steps[0][3]}")) + f" \\rightarrow \\text{{Stack: }} {self.steps[0][4]}\\\\"
+            "\\text{{Step 2: }} " + (f"\\text{{Input }} {self.input[1]} \\rightarrow " + (f"\\text{{Pop }} {self.steps[1][1]}, {self.steps[1][2]} \\rightarrow {self.steps[1][2]} + {self.steps[1][1]} = {self.steps[1][3]}" if self.input[1] == "A" else f"\\text{{Pop }} {self.steps[1][1]}, {self.steps[1][2]} \\rightarrow {self.steps[1][2]} - {self.steps[1][1]} = {self.steps[1][3]}")) + f" \\rightarrow \\text{{Stack: }} {self.steps[1][4]}\\\\"
+            "\\text{{Step 3: }} " + (f"\\text{{Input }} {self.input[2]} \\rightarrow " + (f"\\text{{Pop }} {self.steps[2][1]}, {self.steps[2][2]} \\rightarrow {self.steps[2][2]} + {self.steps[2][1]} = {self.steps[2][3]}" if self.input[2] == "A" else f"\\text{{Pop }} {self.steps[2][1]}, {self.steps[2][2]} \\rightarrow {self.steps[2][2]} - {self.steps[2][1]} = {self.steps[2][3]}")) + f" \\rightarrow \\text{{Stack: }} {self.steps[2][4]}\\\\"
+            f"\\text{{Step 4: Input E}} &\\rightarrow \\text{{Pop top value for output}}\\\\"
+            f"\\text{{Final Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com047temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis("off")
+
+        y_pos = 900
+        line_height = 105
+                
+        for val in self.initial_values:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(368, y_pos, val, 
+                    fontsize=11, 
+                    family='sans-serif', 
+                    # verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com048:
+
+    def __init__(self):
+        self.x = rnd.randint(1, 3)
+        self.y = rnd.randint(1, 3)
+        self.steps = []
+        
+        def paths(a, b, depth=0):
+            indent = "  " * depth
+            self.steps.append(f"{indent}PATHS({a},{b}) called")
+
+            if a == 0 or b == 0:
+                self.steps.append(f"{indent}PATHS({a},{b}) = 1 (base case)")
+                return 1
+
+            left = paths(a - 1, b, depth + 1)
+            down = paths(a, b - 1, depth + 1)
+            result = left + down
+
+            self.steps.append(
+                f"{indent}PATHS({a},{b}) = PATHS({a-1},{b}) + PATHS({a},{b-1}) = {result}"
+            )
+            return result
+
+        self.answer = paths(self.x, self.y)
+
+        self.description = f"A robot starts at coordinate ({self.x}, {self.y}) on a grid and must reach (0, 0). It can move only left (decreasing x by 1) or down (decreasing y by 1). Using this recursive pseudocode, how many different paths are there?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Recursion"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Coordinate: }} & ({self.x}, {self.y}) \\\\"
+            f"\\text{{Goal Coordinate: }} & (0, 0) \\\\"
+            "\\text{{Recursive Definition:}} & \\\\"
+            "\\text{{PATHS}}(a, b) &= \\begin{cases} 1 & \\text{{if }} a=0 \\lor b=0 \\\\ \\text{{PATHS}}(a-1, b) + \\text{{PATHS}}(a, b-1) & \\text{{otherwise}} \\end{cases} \\\\"
+            "\\text{{Step-by-Step Trace:}} & \\\\"
+            + " \\\\ ".join([f"\\text{{{s}}}" for s in self.steps]) + " \\\\"
+            f"\\text{{Final Calculation:}} & \\text{{PATHS}}({self.x}, {self.y}) = {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com048temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com049:
+
+    def __init__(self):
+        self.num = 7
+        self.values = rnd.sample(range(90, 140), self.num)
+
+        self.root = None
+        for v in self.values:
+            if self.root is None:
+                self.root = Node(v)
+                continue
+            cur = self.root
+            while True:
+                if v < cur.val:
+                    if cur.left is None:
+                        cur.left = Node(v)
+                        break
+                    cur = cur.left
+                else:
+                    if cur.right is None:
+                        cur.right = Node(v)
+                        break
+                    cur = cur.right
+
+        self.post = []
+        self.history = []
+        stack = [(self.root, False)]
+        while stack:
+            node, visited = stack.pop()
+            if node is None:
+                continue
+            if visited:
+                self.post.append(node.val)
+                self.history.append({
+                    "root": node.val,
+                    "left": node.left.val if node.left else None,
+                    "right": node.right.val if node.right else None,
+                    "order_index": len(self.post)
+                })
+            else:
+                stack.append((node, True))
+                stack.append((node.right, False))
+                stack.append((node.left, False))
+
+        self.answer = self.post[3]
+
+        self.description = f"A Binary Search Tree (BST) is constructed as in the image below. What is the 4th element visited during the postorder traversal?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{A Postorder traversal follows the rule:}} &\\quad \\text{{Left Subtree}} \\to \\text{{Right Subtree}} \\to \\text{{Root}}\\\\"
+            f"\\text{{A node is visited only after both subtrees are processed.}} &\\\\"
+            f"\\text{{1st element processed (Leftmost leaf):}} &\\quad v_1 = {self.history[0]['root']}\\\\"
+            f"\\text{{2nd element processed:}} &\\quad v_2 = {self.history[1]['root']}\\\\"
+            f"\\text{{3rd element processed:}} &\\quad v_3 = {self.history[2]['root']}\\\\"
+            f"\\text{{4th element processed:}} &\\quad v_4 = {self.history[3]['root']}\\\\"
+            f"\\text{{Complete Postorder Sequence}} &= {', '.join(map(str, self.post))} \\\\"
+            f"\\text{{Therefore, the 4th element visited is:}} &\\quad {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.axis("off")
+
+        G = nx.DiGraph()
+        stack = [self.root]
+        while stack:
+            node = stack.pop()
+            if node is None:
+                continue
+
+            G.add_node(node.val)
+
+            if node.left is not None:
+                G.add_node(node.left.val)
+                G.add_edge(node.val, node.left.val)
+                stack.append(node.left)
+
+            if node.right is not None:
+                G.add_node(node.right.val)
+                G.add_edge(node.val, node.right.val)
+                stack.append(node.right)
+
+        pos = {}
+
+        # Root position
+        pos[self.root.val] = (0.0, 0.0)
+
+        # BFS/stack: (node, x, y, horizontal_gap)
+        queue = [(self.root, 0.0, 0.0, 8.0)]
+
+        while queue:
+            node, x, y, gap = queue.pop(0)
+
+            # Children are one level lower
+            ny = y - 1.8 
+
+            child_gap = gap / 2.0
+
+            if node.left is not None:
+                lx = x - gap
+                pos[node.left.val] = (lx, ny)
+                queue.append((node.left, lx, ny, child_gap))
+
+            if node.right is not None:
+                rx = x + gap
+                pos[node.right.val] = (rx, ny)
+                queue.append((node.right, rx, ny, child_gap))
+
+        nx.draw_networkx_edges(G, pos, ax=ax, arrows=False)
+        nx.draw_networkx_nodes(
+            G, pos, ax=ax,
+            node_size=1800,
+            node_color="white",
+            edgecolors="black",
+            linewidths=2
+        )
+        nx.draw_networkx_labels(G, pos, ax=ax, font_size=11)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com050:
+
+    def __init__(self):
+        self.num = 10
+        self.values = sorted(rnd.sample(range(20, 60), self.num))
+        self.target = rnd.choice(self.values)
+
+        self.steps = []
+        l, r = 0, len(self.values) - 1
+        splits = 0
+
+        while l <= r:
+            mid = (l + r) // 2
+            splits += 1
+
+            mid_val = self.values[mid]
+
+            step = {
+                "split": splits,
+                "l": l,
+                "r": r,
+                "mid": mid,
+                "mid_val": mid_val,
+                "target": self.target,
+                "action": None
+            }
+
+            if mid_val == self.target:
+                step["action"] = "FOUND"
+                self.steps.append(step)
+                break
+            elif self.target < mid_val:
+                step["action"] = "GO_LEFT"
+                self.steps.append(step)
+                r = mid - 1
+            else:
+                step["action"] = "GO_RIGHT"
+                self.steps.append(step)
+                l = mid + 1
+
+        self.answer = splits
+
+        self.description = f"A sorted array is shown in the figure below. The value that we want to search for is {self.target}. With binary search, how many splits (iterations) are required to find the target? Number of splits here is defined as checks to find the target."
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Sorted Array:}} &= [{', '.join(map(str, self.values))}]\\\\"
+            f"\\text{{Target Value:}} &= {self.target}\\\\"
+            "\\text{{Binary Search Procedure:}} &\\\\"
+            + " \\\\ ".join([
+                f"\\text{{Iteration {s['split']}: }} L={s['l']}, R={s['r']} \\rightarrow \\text{{mid}} = \\lfloor\\frac{{{s['l']} + {s['r']}}}{{2}}\\rfloor = {s['mid']}\\\\"
+                f"\\text{{Value at index {s['mid']}: }} {s['mid_val']} \\rightarrow " + (
+                    f"{s['mid_val']} = {s['target']} \\text{{ (Target Found)}}" if s['action'] == "FOUND" else
+                    f"{s['target']} < {s['mid_val']} \\text{{ (Search Left)}}" if s['action'] == "GO_LEFT" else
+                    f"{s['target']} > {s['mid_val']} \\text{{ (Search Right)}}"
+                )
+                for s in self.steps
+            ]) + f"\\\\"
+            "\\text{{Total iterations required:}} &\\\\"
+            f"\\text{{Total splits}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com050temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        x = 360
+        for val in self.values:
+            ax.text(x, 592, val, fontsize=14, color='black')
+            x += 138
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com051:
+
+    def __init__(self):
+        self.num = 7
+        self.first_arr = rnd.sample(range(10, 35), self.num)
+        self.traces = []
+        arr = self.first_arr.copy()
+        for i in range(1, len(arr)):
+            before = arr.copy()
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and arr[j] > key:
+                arr[j + 1] = arr[j]
+                j -= 1
+            arr[j + 1] = key
+            after = arr.copy()
+
+            self.traces.append({
+                "pass": i,
+                "key": key,
+                "before": before,
+                "after": after,
+                "sorted_prefix_before": before[:i],
+                "sorted_prefix_after": after[:i+1],
+            })
+
+        X = rnd.randint(1, len(self.traces))
+        self.second_arr = self.traces[X - 1]["after"].copy()
+        self.answer = X
+
+        self.description = f"Two array are shown in the figure below. The first array is the initial array. The second array is the result of running insertion sort on the first array for X passes. Find X."
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Array}} &= [{', '.join(map(str, self.first_arr))}]\\\\"
+            f"\\text{{Target Array}} &= [{', '.join(map(str, self.second_arr))}]\\\\"
+            "\\text{{Insertion Sort Procedure:}} &\\\\"
+            "\\text{{In each pass }} i, \\text{{ the element at index }} i \\text{{ (key) is inserted into the sorted prefix.}} &\\\\"
+            + " \\\\ ".join([
+                f"\\text{{Pass }} {t['pass']}: \\text{{ Key }} = {t['key']}, \\text{{ Prefix }} {t['before'][:t['pass']]} \\rightarrow \\text{{ Result }} {t['after']}"
+                for t in self.traces
+            ]) + "\\\\"
+            "\\text{{Comparison and Identification:}} &\\\\"
+            f"\\text{{The array after Pass }} {self.answer} \\text{{ matches the target array:}} [{', '.join(map(str, self.second_arr))}]&\\\\"
+            f"\\text{{Final Result }} (X) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com051temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        x = 700
+        for val1, val2 in zip(self.first_arr, self.second_arr):
+            ax.text(x, 435, val1, fontsize=14, color="#272727")
+            ax.text(x, 688, val2, fontsize=14, color='#272727')
+            x += 158
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()

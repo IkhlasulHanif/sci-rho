@@ -25,3 +25,9 @@ def get_minimum_fscore(open_dict):
             best_f = f
             best_g = g
     return best_node
+
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
