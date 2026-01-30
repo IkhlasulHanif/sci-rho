@@ -1,6 +1,8 @@
 import random as rnd
 import os
 import numpy as np
+import sys
+import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from PIL import Image
@@ -1972,6 +1974,1706 @@ class Com034:
         img = Image.open('compsci/temp_image/Com034temp.png')
         fig, ax = plt.subplots()
         ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com035:
+
+    def __init__(self):
+        self.initial_num_elements = rnd.randint(2, 4)
+        self.initial_stack_elements = rnd.sample(range(6, 50), self.initial_num_elements)
+        stack = self.initial_stack_elements.copy()
+        stack.pop()
+        self.answer = stack[-1]
+
+        self.description = f"The diagram shows a stack containing the following values. A pop() operation is carried out on the stack. What is the value at the top of the stack after this operation?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial stack (bottom to top)}} &= [{', '.join(map(str, self.initial_stack_elements))}] \\\\"
+            f"\\text{{Current top of the stack}} &= {self.initial_stack_elements[-1]} \\\\"
+            f"\\text{{Perform pop() operation:}} & \\\\"
+            f"\\text{{Value removed}} &= {self.initial_stack_elements[-1]} \\\\"
+            f"\\text{{Updated stack (bottom to top)}} &= [{', '.join(map(str, self.initial_stack_elements[:-1]))}] \\\\"
+            f"\\text{{New top of the stack}} &= \\text{{stack}}[-1] \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig_w, fig_h = 3.0, max(3.2, 0.9 * self.initial_num_elements + 1.2)
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.axis("off")
+
+        x_left, x_right = 2.0, 8.0
+        y_bottom, y_top = 1.3, 9.2
+        n = self.initial_num_elements
+
+        # Stack container (two sides + base)
+        ax.plot([x_left, x_left], [y_bottom, y_top], linewidth=3, color="black")
+        ax.plot([x_right, x_right], [y_bottom, y_top], linewidth=3, color="black")
+        ax.plot([x_left, x_right], [y_bottom, y_bottom], linewidth=3, color="black")
+
+        # Element boxes
+        inner_margin = 0.6
+        box_x = x_left + inner_margin
+        box_w = (x_right - x_left) - 2 * inner_margin
+
+        # Vertical layout
+        available_h = (y_top - y_bottom) - 1.0
+        gap = 0.35
+        box_h = (available_h - gap * (n - 1)) / n
+        start_y = y_bottom + 0.5
+
+        # Draw from bottom -> top (last element is the top)
+        for i, value in enumerate(self.initial_stack_elements):
+            y = start_y + i * (box_h + gap)
+            rect = patches.Rectangle((box_x, y), box_w, box_h, facecolor="#f7ead7", edgecolor="#e3b27a", linewidth=1.5,)
+            ax.add_patch(rect)
+            ax.text(box_x + box_w / 2, y + box_h / 2, str(value), ha="center", va="center", fontsize=18, fontweight="bold", color="black",)
+
+        ax.text((x_left + x_right) / 2, y_bottom - 0.55, "Stack", ha="center", va="top", fontsize=14)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com036:
+
+    def __init__(self):
+        self.stack_length = 10
+        self.filled_length = rnd.randint(4, 9)
+        self.values = [rnd.randint(100, 400) for _ in range(self.filled_length)]
+        stack = self.values.copy()
+        stack.pop()
+        self.push_1 = rnd.randint(100, 400)
+        self.push_2 = rnd.randint(100, 400)
+        stack.append(self.push_1)
+        stack.append(self.push_2)
+        self.answer = self.filled_length
+
+        self.description = f"The diagram shows a stack implemented using an array, where top stores the index of the current top element. A pop() operation is carried out, followed by push({self.push_1}) and then push({self.push_2}). What is the value of top after these operations?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial number of elements}} &= {self.filled_length}\\\\"
+            f"\\text{{Initial top index (0-indexed)}} &= {self.filled_length - 1}\\\\"
+            f"\\text{{1. Perform pop() operation:}} &\\\\"
+            f"\\text{{New count}} &= {self.filled_length} - 1 = {self.filled_length - 1}\\\\"
+            f"\\text{{New top index}} &= {self.filled_length - 1} - 1 = {self.filled_length - 2}\\\\"
+            f"\\text{{2. Perform push({self.push_1}) operation:}} &\\\\"
+            f"\\text{{New count}} &= {self.filled_length - 1} + 1 = {self.filled_length}\\\\"
+            f"\\text{{New top index}} &= {self.filled_length - 2} + 1 = {self.filled_length - 1}\\\\"
+            f"\\text{{3. Perform push({self.push_2}) operation:}} &\\\\"
+            f"\\text{{New count}} &= {self.filled_length} + 1 = {self.filled_length + 1}\\\\"
+            f"\\text{{New top index}} &= {self.filled_length - 1} + 1 = {self.filled_length}\\\\"
+            f"\\text{{Final index value of top}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig_w = max(9, self.stack_length * 1.05)
+        fig_h = 3
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.axis("off")
+
+        top_index = self.filled_length - 1
+
+        cell_w = 1.0
+        cell_h = 0.7
+        left = 0.5
+        bottom = 1.4
+
+        ax.set_xlim(0, left + self.stack_length * cell_w + 0.5)
+        ax.set_ylim(0, 3.2)
+
+        # Title
+        ax.text(left + (self.stack_length * cell_w) / 2, bottom + 1.3, "Stack", ha="center", va="bottom", fontsize=14)
+
+        for i in range(self.stack_length):
+            x = left + i * cell_w
+            y = bottom
+
+            ax.add_patch(patches.Rectangle((x, y), cell_w, cell_h, fill=False, linewidth=1.5))
+
+            ax.text(x + cell_w / 2, y + cell_h + 0.15, str(i), ha="center", va="center", fontsize=11)
+
+            # Value (only if filled)
+            if i < self.filled_length:
+                ax.text(x + cell_w / 2, y + cell_h / 2, str(self.values[i]), ha="center", va="center", fontsize=11)
+
+        top_box_w = 1.0
+        top_box_h = 0.55
+        top_box_x = left
+        top_box_y = 0.25
+
+        ax.text(top_box_x, top_box_y + top_box_h + 0.1, "top", ha="left", va="bottom", fontsize=11)
+        ax.add_patch(patches.Rectangle((top_box_x, top_box_y), top_box_w, top_box_h, fill=False, linewidth=1.2))
+        ax.text(top_box_x + top_box_w / 2, top_box_y + top_box_h / 2, str(top_index), ha="center", va="center", fontsize=12)
+    
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com037:
+
+    def __init__(self):
+        self.size = 10
+        self.queue = rnd.sample(range(1, 50), self.size)
+        front = 0
+        self.dequeued = self.queue[front]
+        self.current_front = self.queue[front + 1]
+        self.answer = self.current_front
+
+        self.description = f"The diagram shows a queue implemented using an array. One dequeue() operation is carried out. What value is now at the front of the queue?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Queue}} &= [{', '.join(map(str, self.queue))}]\\\\"
+            f"\\text{{Initial Front Index}} &= 0\\\\"
+            f"\\text{{Initial Front Value}} &= {self.dequeued}\\\\"
+            f"\\text{{1. Perform dequeue() operation:}} &\\\\"
+            f"\\text{{Value removed from the front}} &= {self.dequeued}\\\\"
+            f"\\text{{2. Update front pointer:}} &\\\\"
+            f"\\text{{New Front Index}} &= \\text{{front}} + 1 = 1\\\\"
+            f"\\text{{3. Identify value at new front index:}} &\\\\"
+            f"\\text{{New Front Value}} &= \\text{{queue}}[1]\\\\"
+            f"&= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 3))
+        ax.axis("off")
+
+        cell_w = 1.2
+        cell_h = 0.8
+        left = 0.6
+        bottom = 1.3
+
+        for i in range(self.size):
+            x = left + i * cell_w
+            y = bottom
+
+            ax.add_patch(patches.Rectangle((x, y), cell_w, cell_h, fill=False, linewidth=1.5))
+            ax.text(x + cell_w / 2, y + cell_h / 2, str(self.queue[i]), ha="center", va="center", fontsize=12, fontweight="bold", color="black")
+
+        front_x = left + (0 * cell_w) + cell_w / 2
+        front_label_y = bottom - 0.65
+
+        ax.annotate("", xy=(front_x, bottom), xytext=(front_x, front_label_y + 0.2), arrowprops=dict(arrowstyle="->", linewidth=2.5, color="red"))
+        ax.text(front_x, front_label_y, "FRONT", ha="center", va="top", fontsize=11, fontweight="bold", bbox=dict(boxstyle="square,pad=0.25", fc="white", ec="black", lw=1))
+
+        rear_x = left + ((self.size - 1) * cell_w) + cell_w / 2
+        rear_label_y = bottom - 0.65
+
+        ax.annotate("", xy=(rear_x, bottom), xytext=(rear_x, rear_label_y + 0.2), arrowprops=dict(arrowstyle="->", linewidth=2.5, color="red"))
+        ax.text(rear_x, rear_label_y, "REAR", ha="center", va="top", fontsize=11, fontweight="bold", bbox=dict(boxstyle="square,pad=0.25", fc="white", ec="black", lw=1))
+
+        ax.set_xlim(0, left + self.size * cell_w + 0.6)
+        ax.set_ylim(0, 3.0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com038:
+
+    def __init__(self):
+        self.queue_max_length = 10
+        self.filled_length = rnd.randint(4, 8)
+        self.values = rnd.sample(range(50, 300), self.filled_length)
+        self.enq_1 = rnd.randint(50, 300)
+        self.enq_2 = rnd.randint(50, 300)
+
+        arr = [None] * self.queue_max_length
+        for i, v in enumerate(self.values):
+            arr[i] = v
+
+        front = 0
+        rear = self.filled_length - 1
+
+        # enqueue enq_1
+        rear += 1
+        arr[rear] = self.enq_1
+        # dequeue
+        arr[front] = None
+        front += 1
+        # enqueue enq_2
+        rear += 1
+        arr[rear] = self.enq_2
+
+        self.answer = sum(v for v in arr if v is not None)
+
+        self.description = f"The diagram shows an implementation of queue ADT. The operations enqueue({self.enq_1}), dequeue, and then enqueue({self.enq_2}) are carried out in that order. What is the sum of all values currently stored in the queue after these operations?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial queue values}} &= [{', '.join(map(str, self.values))}] \\\\"
+            f"\\text{{Initial sum}} &= {sum(self.values)} \\\\"
+            f"\\text{{1. enqueue({self.enq_1}):}} & \\\\"
+            f"\\text{{Add }} {self.enq_1} \\text{{ to the rear of the queue.}} & \\\\"
+            f"\\text{{Current values}} &= [{', '.join(map(str, self.values))}, {self.enq_1}] \\\\"
+            f"\\text{{2. dequeue():}} & \\\\"
+            f"\\text{{Remove the front element }} ({self.values[0]}) \\text{{ from the queue.}} & \\\\"
+            f"\\text{{Current values}} &= [{', '.join(map(str, self.values[1:]))}, {self.enq_1}] \\\\"
+            f"\\text{{3. enqueue({self.enq_2}):}} & \\\\"
+            f"\\text{{Add }} {self.enq_2} \\text{{ to the rear of the queue.}} & \\\\"
+            f"\\text{{Final values}} &= [{', '.join(map(str, self.values[1:]))}, {self.enq_1}, {self.enq_2}] \\\\"
+            f"\\text{{4. Calculate the final sum:}} & \\\\"
+            f"\\text{{Sum}} &= " + " + ".join(map(str, self.values[1:])) + f" + {self.enq_1} + {self.enq_2} \\\\"
+            f"&= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(11, 3.2))
+        ax.axis("off")
+
+        # Container
+        cont_x, cont_y = 0.6, 1.2
+        cont_w, cont_h = 12.0, 1.6
+        ax.add_patch(
+            patches.FancyBboxPatch(
+                (cont_x, cont_y),
+                cont_w,
+                cont_h,
+                boxstyle="round,pad=0.2,rounding_size=0.25",
+                linewidth=2.2,
+                edgecolor="#1b5e20",
+                facecolor="#e8f5e9",
+            )
+        )
+
+        filled = self.filled_length
+        front_idx = 0
+        rear_idx = filled - 1
+
+        # Title
+        ax.text(cont_x + cont_w / 2, cont_y + cont_h + 0.55, "QUEUE", ha="center", va="center", fontsize=16, fontweight="bold", color="#1b5e20")
+
+        # Cells
+        cell_w = cont_w / self.queue_max_length
+        cell_h = 1.0
+        cell_y = cont_y + (cont_h - cell_h) / 2
+
+        for i in range(self.queue_max_length):
+            cell_x = cont_x + i * cell_w
+
+            is_filled = i < filled
+            ax.add_patch(
+                patches.Rectangle((cell_x, cell_y), cell_w, cell_h, linewidth=1.8, edgecolor="#2e7d32", facecolor=("#c8e6c9" if is_filled else "white"))
+            )
+
+            if is_filled:
+                ax.text(cell_x + cell_w / 2, cell_y + cell_h / 2, str(self.values[i]), ha="center", va="center", fontsize=12, fontweight="bold", color="#1b5e20")
+
+        # FRONT arrow + label (pointing to front cell)
+        fx = cont_x + front_idx * cell_w + cell_w / 2
+        ax.annotate("Front", xy=(fx, cont_y + cont_h), xytext=(fx, cont_y + cont_h + 0.8), ha="center", va="bottom", fontsize=12, fontweight="bold", color="#1b5e20", arrowprops=dict(arrowstyle="-|>", linewidth=2.5, color="#1b5e20"))
+
+        # REAR arrow + label (pointing to rear cell)
+        rx = cont_x + rear_idx * cell_w + cell_w / 2
+        ax.annotate("Rear", xy=(rx, cont_y + cont_h), xytext=(rx, cont_y + cont_h + 0.8), ha="center", va="bottom", fontsize=12, fontweight="bold", color="#1b5e20", arrowprops=dict(arrowstyle="-|>", linewidth=2.5, color="#1b5e20"))
+
+        ax.set_xlim(0, 13.5)
+        ax.set_ylim(0, 4.0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com039:
+
+    def __init__(self):
+        self.length = 10
+        self.data = rnd.sample(range(1000, 2000), self.length)
+        order = list(range(self.length))
+        rnd.shuffle(order)
+
+        self.ptr = [0] * self.length
+        for i in range(self.length - 1):
+            self.ptr[order[i]] = order[i + 1]
+        self.ptr[order[-1]] = None
+
+        self.nodes = list(zip(self.data, self.ptr))
+        self.startptr = order[0]
+        self.next_node_ptr = self.ptr[self.startptr]
+        self.answer = self.data[self.next_node_ptr]
+
+        self.description = f"A linked list abstract data type (ADT) is to be used to store and organise data. This will be implemented with a 1D array and a start pointer. State the value stored in the node immediately after LinkedList[StartPtr]."
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Adapted from PastPapersCo CAIE A-Level 4.1.2"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Parameters:}} &\\\\"
+            f"\\text{{Start Pointer (StartPtr)}} &= {self.startptr} \\\\"
+            f"\\text{{1. Identify the first node:}} &\\\\"
+            f"\\text{{Node at index StartPtr}} &= \\text{{LinkedList}}[{self.startptr}] \\\\"
+            f"\\text{{Value at index StartPtr}} &= {self.data[self.startptr]} \\\\"
+            f"\\text{{Next pointer at index StartPtr}} &= {self.ptr[self.startptr]} \\\\"
+            f"\\text{{2. Identify the node immediately after StartPtr:}} &\\\\"
+            f"\\text{{Next Node Pointer}} &= \\text{{LinkedList}}[{self.startptr}].\\text{{ptr}} \\\\"
+            f"&= {self.next_node_ptr} \\\\"
+            f"\\text{{3. Extract value from the identified node:}} &\\\\"
+            f"\\text{{Value}} &= \\text{{LinkedList}}[{self.next_node_ptr}].\\text{{data}} \\\\"
+            f"&= {self.data[self.next_node_ptr]} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig_w = max(9, self.length * 1.05)
+        fig_h = 3.1
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.axis("off")
+
+        left_margin = 1.9
+        top_y = 2.0
+        cell_w = 1.0
+        cell_h = 0.7
+
+        ax.text(0.1, top_y + cell_h + 0.65, f"StartPtr: {self.startptr}", ha="left", va="center", fontsize=14, family="monospace")
+
+        for i in range(self.length):
+            x = left_margin + i * cell_w
+            ax.text(x + cell_w / 2, top_y + cell_h + 0.15, str(i), ha="center", va="center", fontsize=12, fontweight="bold")
+
+        ax.text(left_margin - 0.25, top_y + cell_h / 2, "Data", ha="right", va="center", fontsize=14, fontweight="bold")
+        ax.text(left_margin - 0.25, top_y - cell_h / 2, "Ptr", ha="right", va="center", fontsize=14, fontweight="bold")
+
+        for i in range(self.length):
+            x = left_margin + i * cell_w
+
+            # Data row cell
+            ax.add_patch(
+                patches.Rectangle(
+                    (x, top_y), cell_w, cell_h,
+                    fill=False, linewidth=1.5, edgecolor="black"
+                )
+            )
+            ax.text(x + cell_w / 2, top_y + cell_h / 2, str(self.data[i]), ha="center", va="center", fontsize=12)
+
+            # Ptr row cell
+            ax.add_patch(
+                patches.Rectangle(
+                    (x, top_y - cell_h), cell_w, cell_h,
+                    fill=False, linewidth=1.5, edgecolor="black"
+                )
+            )
+            ptr_val = self.ptr[i]
+            ptr_text = "NULL" if ptr_val is None else str(ptr_val)
+            ax.text(
+                x + cell_w / 2, top_y - cell_h / 2,
+                ptr_text,
+                ha="center", va="center",
+                fontsize=12
+            )
+
+        ax.set_xlim(0, left_margin + self.length * cell_w + 1.2)
+        ax.set_ylim(0.1, top_y + cell_h + 1.0)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com040:
+
+    def __init__(self):
+        self.length = 8
+        self.data = rnd.sample(range(500, 900), self.length)
+        order = list(range(self.length))
+        rnd.shuffle(order)
+
+        self.ptr = [0] * self.length
+        for i in range(self.length - 1):
+            self.ptr[order[i]] = order[i + 1]
+        self.ptr[order[-1]] = None
+
+        self.nodes = list(zip(self.data, self.ptr))
+        deletable_positions = list(range(1, len(order) - 1))  # excludes head (0) and tail (last)
+        pos = rnd.choice(deletable_positions)
+        self.delete_idx = order[pos] 
+        self.delete_value = self.data[self.delete_idx]
+        self.prev_idx = order[pos - 1]
+        self.next_idx = self.ptr[self.delete_idx]
+
+        self.answer = self.next_idx
+
+        self.description = f"The following image is showing an example of linked list. If the node containing {self.delete_value} is deleted from the linked list, what value should be stored in the pointer field of the node immediately before it after the deletion?"
+        self.topic = "Data Types and Structures"
+        self.subtopic = "Introduction to Abstract Data Types (ADT)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Identify the node to be deleted:}} &\\\\"
+            f"\\text{{Target value to delete}} &= {self.delete_value}\\\\"
+            f"\\text{{Index of target node (delete\\_idx)}} &= {self.delete_idx}\\\\"
+            f"\\text{{2. Identify the surrounding nodes in the linked list:}} &\\\\"
+            f"\\text{{Node immediately before (prev\\_idx)}} &= {self.prev_idx}\\\\"
+            f"\\text{{Node immediately after (next\\_idx)}} &= {self.next_idx}\\\\"
+            f"\\text{{3. Update the pointer of the preceding node:}} &\\\\"
+            f"\\text{{To delete a node, the predecessor's pointer must bypass it:}} &\\\\"
+            f"\\text{{New Pointer}} &= \\text{{Pointer of current node to be deleted}}\\\\"
+            f"\\text{{New Pointer}} &= \\text{{next\\_idx}}\\\\"
+            f"\\text{{New Pointer}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        # Build traversal order starting from the head (which is order[0])
+        head_idx = None
+        # Find head by finding the node that is never pointed TO (except None)
+        pointed_to = {p for p in self.ptr if p is not None}
+        for i in range(self.length):
+            if i not in pointed_to:
+                head_idx = i
+                break
+
+        chain = []
+        cur = head_idx
+        seen = set()
+        while cur is not None and cur not in seen:
+            seen.add(cur)
+            chain.append(cur)
+            cur = self.ptr[cur]
+
+        data_color = "#AF9AB2"
+        next_color = "#D1C3D3"
+        arrow_color = "black"
+        text_color = "black"
+
+        n = len(chain)
+        fig_w = max(12, 3.4 * n + 3.0)
+        fig_h = 2.8
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.axis("off")
+
+        node_w = 3.2
+        half_w = node_w / 2
+        node_h = 1.1
+        gap = 1.6
+        start_x = 3.0
+        y0 = 1.0
+
+        # head ->
+        ax.text(0.5, y0 + node_h * 0.55, "head", fontsize=22, fontweight="bold", ha="left", va="center", color="black")
+        ax.annotate("", xy=(start_x, y0 + node_h * 0.55), xytext=(2.0, y0 + node_h * 0.55), arrowprops=dict(arrowstyle="->", linewidth=3, color=arrow_color))
+
+        # Draw nodes
+        for i, idx in enumerate(chain):
+            x = start_x + i * (node_w + gap)
+            data_val = self.data[idx]
+            next_ptr = self.ptr[idx]
+
+            # Data block
+            ax.add_patch(patches.Rectangle((x, y0), half_w, node_h, facecolor=data_color, edgecolor="none"))
+            # Next block
+            ax.add_patch(patches.Rectangle((x + half_w, y0), half_w, node_h, facecolor=next_color, edgecolor="none"))
+            # Node border (single outline around both halves)
+            ax.add_patch(patches.Rectangle((x, y0), node_w, node_h, fill=False, edgecolor="black", linewidth=2))
+
+            # Address above node
+            ax.text(x + half_w * 0.5, y0 + node_h + 0.4, str(idx), ha="center", va="center", fontsize=20, fontweight="bold", color="black")
+
+            # Data text
+            ax.text(x + half_w / 2, y0 + node_h / 2, str(data_val), ha="center", va="center", fontsize=20, fontweight="bold", color=text_color)
+
+            # Next pointer text, show NULL for None
+            ax.text(x + half_w + (half_w / 2), y0 + node_h / 2, "NULL" if next_ptr is None else str(next_ptr), ha="center", va="center", fontsize=20, fontweight="bold", color=text_color)
+
+            # "data" label under left half
+            ax.text(x + half_w / 2, y0 - 0.35, "data", ha="center", va="center", fontsize=18, fontweight="bold", color=text_color)
+
+            # Arrow to next node (except last)
+            if i < n - 1:
+                ax.annotate(
+                    "",
+                    xy=(x + node_w + gap - 0.15, y0 + node_h * 0.55),
+                    xytext=(x + node_w + 0.15, y0 + node_h * 0.55),
+                    arrowprops=dict(arrowstyle="->", linewidth=3, color=arrow_color),
+                )
+
+        ax.set_xlim(0, start_x + n * (node_w + gap) + 0.8)
+        ax.set_ylim(0, 2.8)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com041:
+
+    def __init__(self):
+        self.vowels = ["a", "e", "i", "o", "u"]
+        self.num_char = rnd.randint(5, 8)
+        self.input = "".join([rnd.choice(["a", "e", "i", "o", "u", "b", "c", "g"]) * rnd.randint(3, 8) for _ in range(self.num_char)])
+        max_run = 0
+        current_run = 0
+        prev_char = ""
+        steps = []
+        for idx, char in enumerate(self.input, start=1):
+            prev_before = prev_char
+            is_vowel = char in self.vowels
+            same_as_prev = (char == prev_char)
+
+            if is_vowel:
+                if same_as_prev:
+                    current_run += 1
+                else:
+                    current_run = 1
+
+                if current_run > max_run:
+                    max_run = current_run
+            else:
+                current_run = 0
+
+            prev_char = char
+            steps.append((idx, char, prev_before, is_vowel, same_as_prev, current_run, max_run))
+
+        self.answer = max_run
+
+        self.description = f"A Python code snippet is shown in this image. What will longest_run(\"{self.input}\") return?"
+        self.topic = "Programming"
+        self.subtopic = "Structured Programming"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Given string}}\\; s &= \\texttt{{\"{self.input}\"}}\\\\"
+            f"\\text{{Vowels set}}\\; V &= \\{{a,e,i,o,u\\}}\\\\"
+            f"\\text{{Initialize}}\\; \\text{{current\\_run}} &= 0,\\; \\text{{max\\_run}} = 0,\\; \\text{{prev}} = \\texttt{{\"\"}}\\\\"
+            f"\\text{{Update rules per character }} c:\\; &\\\\"
+            f"\\quad c\\in V\\ \\land\\ c=\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow \\text{{current\\_run}}+1\\\\"
+            f"\\quad c\\in V\\ \\land\\ c\\neq\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow 1\\\\"
+            f"\\quad c\\notin V\\Rightarrow \\text{{current\\_run}}\\leftarrow 0\\\\"
+            f"\\quad \\text{{max\\_run}}\\leftarrow \\max(\\text{{max\\_run}},\\text{{current\\_run}})\\\\"
+            f"\\text{{Now scan left-to-right and count:}}\\\\"
+            + "".join(
+                f"{idx}:\\; c=\\texttt{{\"{ch}\"}},\\; \\text{{prev}}=\\texttt{{\"{prev}\"}}"
+                f" &\\Rightarrow\\; "
+                + (
+                    f"c\\in V,\\; c=\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow \\text{{current\\_run}}+1"
+                    if is_vowel and same_as_prev
+                    else f"c\\in V,\\; c\\neq\\text{{prev}}\\Rightarrow \\text{{current\\_run}}\\leftarrow 1"
+                    if is_vowel and (not same_as_prev)
+                    else f"c\\notin V\\Rightarrow \\text{{current\\_run}}\\leftarrow 0"
+                )
+                + (
+                    f",\\; \\text{{max\\_run}}\\leftarrow \\max(\\text{{max\\_run}},\\text{{current\\_run}})"
+                    if is_vowel
+                    else ",\\; \\text{{max\\_run}}\\text{ unchanged}"
+                )
+                + f",\\; \\text{{current\\_run}}={round(float(cur_after),10)},\\; \\text{{max\\_run}}={round(float(max_after),10)}\\\\"
+                for (idx, ch, prev, is_vowel, same_as_prev, cur_after, max_after) in steps
+            )
+            + f"\\text{{Final longest identical-vowel run}}\\; \\text{{max\\_run}} &= {self.answer}\\\\"
+            f"\\text{{Therefore}}\\; \\texttt{{longest\\_run}}(s) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com041temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com042:
+
+    def __init__(self):
+        self.input = rnd.randint(6, 30)
+        # func2
+        if self.input % 3 == 0:
+            self.res2 = self.input * 2 + 5
+        else:
+            self.res2 = self.input * 3 - (self.input % 4)
+        
+        # func1
+        self.res1 = self.res2 * self.res2 - 4 * self.res2
+        if self.res1 % 2 == 0:
+            self.res1 += self.res1 % 5
+        else:
+            self.res1 -= 3 * (self.res1 % 3)
+
+        self.answer = self.res1
+
+        self.description = f"Observe this image below. Let inp be an integer. If the function call func1(func2(inp)) is made where inp is {self.input}, what value will be printed out?"
+        self.topic = "Programming"
+        self.subtopic = "Structured Programming"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Evaluate inner function:}} &\\ \\text{{func2(inp) where inp}} = {self.input} \\\\"
+            f"\\text{{Check condition:}} &\\ {self.input} \\pmod{{3}} = {self.input % 3} \\\\"
+            + (
+                f"\\text{{Since }} {self.input} \\pmod{{3}} = 0: & \\\\"
+                f"res_2 &= (inp \\times 2) + 5 \\\\"
+                f"&= ({self.input} \\times 2) + 5 \\\\"
+                f"&= {self.res2}"
+                if self.input % 3 == 0 else
+                f"\\text{{Since }} {self.input} \\pmod{{3}} \\neq 0: & \\\\"
+                f"res_2 &= (inp \\times 3) - (inp \\pmod{{4}}) \\\\"
+                f"&= ({self.input} \\times 3) - ({self.input % 4}) \\\\"
+                f"&= {self.res2}"
+            ) + " \\\\"
+            f"\\text{{2. Evaluate outer function:}} &\\ \\text{{func1(res\\_2) where res\\_2}} = {self.res2} \\\\"
+            f"\\text{{Initial }} res\\_1 \\text{{ calculation:}} & \\\\"
+            f"res_1 &= (res_2)^2 - (4 \\times res_2) \\\\"
+            f"&= ({self.res2})^2 - (4 \\times {self.res2}) \\\\"
+            f"&= {self.res2**2} - {4 * self.res2} \\\\"
+            f"&= {self.res2**2 - 4 * self.res2} \\\\"
+            f"\\text{{Check }} res\\_1 \\text{{ parity:}} &\\ {self.res2**2 - 4 * self.res2} \\pmod{{2}} = {(self.res2**2 - 4 * self.res2) % 2} \\\\"
+            + (
+                f"\\text{{Since }} res\\_1 \\text{{ is even:}} & \\\\"
+                f"res_1 &= res_1 + (res_1 \\pmod{{5}}) \\\\"
+                f"&= {self.res2**2 - 4 * self.res2} + ({(self.res2**2 - 4 * self.res2) % 5}) \\\\"
+                f"&= {self.answer}"
+                if (self.res2**2 - 4 * self.res2) % 2 == 0 else
+                f"\\text{{Since }} res\\_1 \\text{{ is odd:}} & \\\\"
+                f"res_1 &= res_1 - (3 \\times (res_1 \\pmod{{3}})) \\\\"
+                f"&= {self.res2**2 - 4 * self.res2} - (3 \\times {(self.res2**2 - 4 * self.res2) % 3}) \\\\"
+                f"&= {self.answer}"
+            ) + " \\\\"
+            f"\\text{{Final Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com042temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com043:
+
+    def __init__(self):
+        self.x = rnd.randint(1, 23)
+        self.x_copy = self.x
+        steps = []
+        k = 0
+
+        while True:
+            x_before = self.x
+            parity = x_before % 2
+
+            if parity == 0:
+                self.x = self.x + 5
+            else:
+                self.x = self.x * 2 + 1
+
+            x_after = self.x
+            k += 1
+            steps.append((k, x_before, parity, x_after))
+
+            if self.x > 20:
+                break
+
+        self.answer = self.x
+
+        self.description = f"A pseudocode is provided in the image below. What value is output at the end?"
+        self.topic = "Programming"
+        self.subtopic = "Structured Programming"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial value}}\\; x_0 &= {self.x_copy}\\\\"
+            f"\\text{{Update rule (UpdateX):}}\\; x_{{k+1}} &= \\begin{{cases}}"
+            f"x_k + 5, & x_k\\equiv 0\\pmod{{2}}\\\\"
+            f"2x_k + 1, & x_k\\equiv 1\\pmod{{2}}"
+            f"\\end{{cases}}\\\\"
+            f"\\text{{Repeat until }} x_k &> 20\\\\"
+            f"\\text{{Step-by-step updates:}}\\\\"
+            + "".join(
+                (
+                    f"\\text{{Step {k}:}}\\; x_{{{k-1}}} &= {x_before}\\\\"
+                    + f"x_{{{k-1}}}\\bmod 2 &= {parity}\\\\"
+                    + (
+                        f"\\text{{Since }} x_{{{k-1}}}\\equiv 0\\pmod{{2}},\\; x_{{{k}}} &= x_{{{k-1}}} + 5\\\\"
+                        f"&= {x_before} + 5\\\\"
+                        f"&= {x_after}\\\\"
+                        if parity == 0
+                        else
+                        f"\\text{{Since }} x_{{{k-1}}}\\equiv 1\\pmod{{2}},\\; x_{{{k}}} &= 2x_{{{k-1}}} + 1\\\\"
+                        f"&= 2\\big({x_before}\\big) + 1\\\\"
+                        f"&= {x_after}\\\\"
+                    )
+                    + (
+                        f"\\text{{Check stop:}}\\; x_{{{k}}} > 20\\;?\\; &\\Rightarrow\\; \\text{{Yes}}\\\\"
+                        if x_after > 20
+                        else
+                        f"\\text{{Check stop:}}\\; x_{{{k}}} > 20\\;?\\; &\\Rightarrow\\; \\text{{No}}\\\\"
+                    )
+                )
+                for (k, x_before, parity, x_after) in steps
+            )
+            + f"\\text{{Final output}}\\; x &= {self.answer}\\\\"
+            + "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        pseudocode = [
+            "1  DECLARE x : INTEGER",
+            f"2  x ← {self.x_copy}",
+            "3",
+            "4  REPEAT",
+            "5      CALL UpdateX(VAR x)",
+            "6  UNTIL x > 20",
+            "7",
+            "8  OUTPUT x",
+            "9",
+            "10  PROCEDURE UpdateX(VAR n : INTEGER)",
+            "11      IF n MOD 2 = 0 THEN",
+            "12          n ← n + 5",
+            "13     ELSE",
+            "14         n ← n * 2 + 1",
+            "15     ENDIF",
+            "16 ENDPROCEDURE"
+        ]
+        
+        fig, ax = plt.subplots(figsize=(6, 7))
+        plt.axis('off')
+        
+        y_pos = 0.95
+        line_height = 0.08
+                
+        for line in pseudocode:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(0.05, y_pos, line, 
+                    fontsize=14, 
+                    family='monospace', 
+                    verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com044:
+
+    def __init__(self):
+        cols_AB = ["00", "01", "11", "10"]
+        rows_CD = ["00", "01", "11", "10"]
+        literals = {"A":1, "B":2, "C":3, "D":4, "A_bar":5, "B_bar":6, "C_bar":7, "D_bar":8}
+        self.kmap = [
+            [rnd.choice([0, 1]) for _ in range(4)],
+            [rnd.choice([0, 1]) for _ in range(4)],
+            [rnd.choice([0, 1]) for _ in range(4)],
+            [rnd.choice([0, 1]) for _ in range(4)],
+        ]
+        ones = [
+            (r, c)
+            for r in range(4)
+            for c in range(4)
+            if self.kmap[r][c] == 1
+        ]
+        self.shaded_cell_row, self.shaded_cell_col = rnd.choice(ones)
+        self.shaded_cell_value = self.kmap[self.shaded_cell_row][self.shaded_cell_col]
+
+        self.shaded_cell_CD = rows_CD[self.shaded_cell_row]
+        self.shaded_cell_AB = cols_AB[self.shaded_cell_col]
+
+        self.A = int(self.shaded_cell_AB[0])
+        self.B = int(self.shaded_cell_AB[1])
+        self.C = int(self.shaded_cell_CD[0])
+        self.D = int(self.shaded_cell_CD[1])
+
+        self.result = []
+        self.result.append("A" if self.A == 1 else "A_bar")
+        self.result.append("B" if self.B == 1 else "B_bar")
+        self.result.append("C" if self.C == 1 else "C_bar")
+        self.result.append("D" if self.D == 1 else "D_bar")
+
+        self.result_converted = [str(literals[name]) for name in self.result]
+        self.answer = int("".join(self.result_converted))
+
+        self.description = f"What is the Boolean expression that can be obtained for the Karnaugh map cell indicated in the given image? Form the answer using the following encoding rule: A = 1, B = 2, C = 3, D = 4, Ā = 5, B̄ = 6, C̄ = 7, D̄ = 8. Concatenate the digits in the order A, B, C, D to form the final numeric answer."
+        self.topic = "Hardware and Virtual Machines"
+        self.subtopic = "Boolean Algebra and Logic Circuits"
+        self.source = "Adapted from Learnabout electronics (Module 2.5 Digital Logic Quiz)"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Identify coordinates of the shaded cell:}} &\\\\"
+            f"\\text{{Column (AB)}} &= {self.shaded_cell_AB}\\\\"
+            f"\\text{{Row (CD)}} &= {self.shaded_cell_CD}\\\\"
+            f"\\text{{2. Extract Boolean values:}} &\\\\"
+            f"A &= {self.A}, \\quad B = {self.B}, \\quad C = {self.C}, \\quad D = {self.D}\\\\"
+            f"\\text{{3. Determine literals and encoding:}} &\\\\"
+            f"\\text{{Variable A is }} {self.A} &\\rightarrow {'A (1)' if self.A == 1 else 'NOT A (5)'}\\\\"
+            f"\\text{{Variable B is }} {self.B} &\\rightarrow {'B (2)' if self.B == 1 else 'NOT B (6)'}\\\\"
+            f"\\text{{Variable C is }} {self.C} &\\rightarrow {'C (3)' if self.C == 1 else 'NOT C (7)'}\\\\"
+            f"\\text{{Variable D is }} {self.D} &\\rightarrow {'D (4)' if self.D == 1 else 'NOT D (8)'}\\\\"
+            f"\\text{{4. Concatenate encoded digits:}} &\\\\"
+            f"\\text{{Sequence}} &= {self.result_converted[0]}, {self.result_converted[1]}, {self.result_converted[2]}, {self.result_converted[3]}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        cols_AB = ["00", "01", "11", "10"]
+        rows_CD = ["00", "01", "11", "10"]
+
+        fig, ax = plt.subplots(figsize=(5.2, 4.2))
+        ax.set_xlim(-0.75, 4)
+        ax.set_ylim(0, 4.65)
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        for r in range(4):
+            for c in range(4):
+                x = c
+                y = 3 - r  # Row 0 appears at top
+
+                if r == self.shaded_cell_row and c == self.shaded_cell_col:
+                    ax.add_patch(patches.Rectangle((x, y), 1, 1, facecolor="#5B7BC0", edgecolor="none"))
+
+                ax.add_patch(patches.Rectangle((x, y), 1, 1, fill=False, linewidth=2.6, edgecolor="#5B7BC0"))
+                ax.text(x + 0.5, y + 0.5, str(self.kmap[r][c]), ha="center", va="center", fontsize=16)
+
+        ax.add_patch(patches.Rectangle((0, 0), 4, 4, fill=False, linewidth=3.2, edgecolor = "#5B7BC0"))
+
+        for c, lab in enumerate(cols_AB):
+            ax.text(c + 0.5, 4.12, lab, ha="center", va="bottom", fontsize=12)
+
+        for r, lab in enumerate(rows_CD):
+            ax.text(-0.12, 3 - r + 0.5, lab, ha="right", va="center", fontsize=12)
+
+        ax.text(0.05, 4.42, "AB", ha="left", va="bottom", fontsize=14, color="black")
+        ax.text(-0.65, 3.95, "CD", ha="left", va="center", fontsize=14, color="black")
+
+        fig.tight_layout(pad=0.6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close(fig)
+
+class Com045:
+
+    def __init__(self):
+        self.heuristic = {"A":5, "B":6, "C":4, "D":3, "E":3, "F":1, "G":0} 
+        self.start_node = "A"
+        self.goal_node = "G"
+        self.AB_cost = rnd.randint(1, 5)
+        self.AC_cost = rnd.randint(1, 5)
+        self.BC_cost = rnd.randint(1, 5)
+        self.BD_cost = rnd.randint(1, 5)
+        self.DF_cost = rnd.randint(1, 5)
+        self.DG_cost = rnd.randint(1, 5)
+        self.FG_cost = rnd.randint(1, 5)
+        self.CE_cost = rnd.randint(1, 5)
+        self.EG_cost = rnd.randint(1, 5)
+
+        self.graph = {
+            "A": {"B": self.AB_cost, "C": self.AC_cost},
+            "B": {"C": self.BC_cost, "D": self.BD_cost},
+            "C": {"E": self.CE_cost},
+            "D": {"F": self.DF_cost, "G": self.DG_cost},
+            "E": {"G": self.EG_cost},
+            "F": {"G": self.FG_cost},
+            "G": {},
+        }
+
+        G_SCORE = 0
+        F_SCORE = 1
+        PREVIOUS = 2
+
+        self.steps = []
+        visited = {}
+        unvisited = {}
+
+        # Init all nodes
+        for node in self.graph:
+            unvisited[node] = [sys.maxsize, sys.maxsize, None]
+
+        start = self.start_node
+        goal = self.goal_node
+
+        unvisited[start][G_SCORE] = 0
+        unvisited[start][F_SCORE] = self.heuristic[start]
+        unvisited[start][PREVIOUS] = None
+
+        self.steps.append({
+            "event": "init",
+            "start": start,
+            "goal": goal,
+            "open_init": {n: unvisited[n][:] for n in unvisited},
+        })
+
+        while True:
+            current = get_minimum_fscore(unvisited)
+            cur_g, cur_f, cur_prev = unvisited[current]
+
+            self.steps.append({
+                "event": "select_min",
+                "current": current,
+                "g": cur_g,
+                "h": self.heuristic.get(current, 0),
+                "f": cur_f,
+                "open_size": len(unvisited),
+            })
+
+            # Goal reached
+            if current == goal:
+                visited[current] = unvisited[current]
+                self.steps.append({
+                    "event": "goal_reached",
+                    "node": current,
+                    "final_cost": cur_g,
+                })
+                break
+
+            # Expand neighbors
+            neighbors = self.graph[current]
+            self.steps.append({
+                "event": "expand",
+                "node": current,
+                "neighbors": {k: neighbors[k] for k in neighbors},
+            })
+
+            for nb, w in neighbors.items():
+                # Skip if already finalized
+                if nb in visited:
+                    self.steps.append({
+                        "event": "skip_neighbor",
+                        "from": current,
+                        "to": nb,
+                        "reason": "already_visited",
+                    })
+                    continue
+
+                tentative_g = cur_g + w
+                old_g = unvisited[nb][G_SCORE]
+
+                self.steps.append({
+                    "event": "consider_edge",
+                    "from": current,
+                    "to": nb,
+                    "w": w,
+                    "tentative_g": tentative_g,
+                    "old_g": old_g,
+                })
+
+                if tentative_g < old_g:
+                    unvisited[nb][G_SCORE] = tentative_g
+                    unvisited[nb][F_SCORE] = tentative_g + self.heuristic[nb]
+                    unvisited[nb][PREVIOUS] = current
+
+                    self.steps.append({
+                        "event": "update",
+                        "node": nb,
+                        "new_g": unvisited[nb][G_SCORE],
+                        "new_h": self.heuristic[nb],
+                        "new_f": unvisited[nb][F_SCORE],
+                        "previous": current,
+                    })
+                else:
+                    self.steps.append({
+                        "event": "no_update",
+                        "node": nb,
+                        "reason": "tentative_g_not_better",
+                    })
+
+            visited[current] = unvisited[current]
+            del unvisited[current]
+
+            self.steps.append({
+                "event": "close",
+                "node": current,
+                "closed_g": visited[current][G_SCORE],
+                "closed_f": visited[current][F_SCORE],
+                "remaining_open": len(unvisited),
+            })
+
+        # Reconstruct route + store outputs
+        if goal in visited:
+            self.answer = visited[goal][G_SCORE]
+
+            route = []
+            cur = goal
+            while cur is not None:
+                route.append(cur)
+                cur = visited[cur][PREVIOUS]
+
+            route.reverse()
+            self.shortest_route = route
+
+            self.steps.append({
+                "event": "reconstruct",
+                "route": list(self.shortest_route),
+                "answer": self.answer,
+            })
+        
+        self.description = f"Given a directed weighted graph with heuristic estimates for each node, use the A* search algorithm to find the shortest/minimum cost from node {self.start_node} to node {self.goal_node}. The table underneath the graph provides the estimated distance from the nodes to the target node."
+        self.topic = "Artificial Intelligence (AI)"
+        self.subtopic = "Artificial Intelligence (AI)"
+        self.source = "Adapted from Mahesh Huddar (Youtube)"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Heuristic:}} & \\\\"
+            f"\\text{{A:5, B:6, C:4, D:3, E:3, F:1, G:0}} & \\\\"
+            f"\\text{{1. Initialization:}} & \\\\"
+            f"\\text{{Start Node: }} {self.start_node}, \\text{{ Goal Node: }} {self.goal_node} \\\\"
+            f"g({self.start_node}) &= 0, \\quad h({self.start_node}) = {self.heuristic[self.start_node]} \\\\"
+            f"f({self.start_node}) &= g({self.start_node}) + h({self.start_node}) = 0 + {self.heuristic[self.start_node]} = {self.heuristic[self.start_node]} \\\\"
+            "\\text{{2. A* Search Process (Iterative expansion):}} & \\\\"
+            "\\text{{We select the node with the lowest }} f(n) = g(n) + h(n) \\text{{ to expand.}} \\\\"
+            "\\text{{Step-by-step trace:}} & \\\\"
+        )
+        search_trace = ""
+        for step in self.steps:
+            if step["event"] == "select_min":
+                search_trace += f"\\\\\\text{{Expand {step['current']}: }} g={step['g']}, h={step['h']} \\rightarrow f={step['f']} \\\\"
+            elif step["event"] == "update":
+                search_trace += f"\\quad \\rightarrow \\text{{Update neighbor {step['node']}: }} g={step['new_g']}, f={step['new_g']}+{step['new_h']}={step['new_f']} \\\\"
+            elif step["event"] == "goal_reached":
+                search_trace += f"\\\\\\text{{Goal reached: }} {step['node']} \\text{{ with total cost }} g = {step['final_cost']} \\\\"
+        self.reasoning += (
+            search_trace +
+            "\\text{{3. Route Reconstruction:}} & \\\\"
+            f"\\text{{Path: }} " + " \\rightarrow ".join(self.shortest_route) + " \\\\"
+            f"\\text{{Final minimum cost}} &= {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com045temp.png').convert('RGB')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(268, 119, self.AB_cost, fontsize=10, color='red')
+        ax.text(260, 330, self.AC_cost, fontsize=10, color='red')
+        ax.text(430, 212, self.BC_cost, fontsize=10, color='red')
+        ax.text(529, 54, self.BD_cost, fontsize=10, color='red')
+        ax.text(532, 405, self.CE_cost, fontsize=10, color='red')
+        ax.text(806, 405, self.EG_cost, fontsize=10, color='red')
+        ax.text(819, 200, self.DG_cost, fontsize=10, color='red')
+        ax.text(797, 54, self.DF_cost, fontsize=10, color='red')
+        ax.text(961, 212, self.FG_cost, fontsize=10, color='red')
+        plt.axis('off')
+
+        x0, x1 = 112, 1122
+        y0, y1 = 450, 550
+        width = x1 - x0
+        height = y1 - y0
+
+        keys = list(self.heuristic.keys())
+        vals = [self.heuristic[k] for k in keys]
+        n = len(keys)
+
+        cell_w = width / n
+        row_h = height / 2
+
+        ax.add_patch(patches.Rectangle((x0, y0), width, height, fill=False, edgecolor='black', linewidth=2))
+
+        for i, k in enumerate(keys):
+            cx = x0 + i * cell_w
+
+            # Top cell (header)
+            ax.add_patch(patches.Rectangle((cx, y0), cell_w, row_h, fill=False, facecolor='white', edgecolor='black', linewidth=1.4))
+            ax.text(cx + cell_w/2, y0 + row_h/2, k, ha='center', va='center', fontsize=8, color='black')
+
+            # Bottom cell (value)
+            ax.add_patch(patches.Rectangle((cx, y0 + row_h), cell_w, row_h, fill=False, facecolor='white', edgecolor='black', linewidth=1.4))
+            ax.text(cx + cell_w/2, y0 + row_h + row_h/2, str(vals[i]), ha='center', va='center', fontsize=8, color='red')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", transparent=True)
+        plt.close()
+
+class Com046:
+
+    def __init__(self):
+        self.nodes = ["A", "B", "C", "D", "E"]
+        self.start = rnd.choice(self.nodes)
+        self.goal = rnd.choice([n for n in self.nodes if n != self.start])
+        self.AB = rnd.randint(1, 8)
+        self.AE = rnd.randint(1, 8)
+        self.BE = rnd.randint(1, 8)
+        self.BC = rnd.randint(1, 8)
+        self.CD = rnd.randint(1, 8)
+        self.ED = rnd.randint(1, 8)
+        self.EC = rnd.randint(1, 8)
+        self.graph = {
+            "A": {"B": self.AB, "E": self.AE},
+            "B": {"A": self.AB, "E": self.BE, "C": self.BC},
+            "C": {"B": self.BC, "D": self.CD, "E": self.EC},
+            "D": {"C": self.CD, "E": self.ED},
+            "E": {"A": self.AE, "B": self.BE, "C": self.EC, "D": self.ED},
+        }
+
+        INF = float("inf")
+        dist = {n: INF for n in self.nodes}
+        prev = {n: None for n in self.nodes}
+        visited = set()
+
+        self.steps = []
+
+        dist[self.start] = 0
+        self.steps.append(("init", self.start, self.goal, dict(dist)))
+
+        while len(visited) < len(self.nodes):
+            # Pick the unvisited node with the smallest tentative distance
+            u = None
+            best = INF
+            for n in self.nodes:
+                if n not in visited and dist[n] < best:
+                    best = dist[n]
+                    u = n
+
+            if u is None:
+                self.steps.append(("stop_unreachable", dict(dist), set(visited)))
+                break
+
+            self.steps.append(("select", u, dist[u], set(visited), dict(dist)))
+
+            if u == self.goal:
+                self.steps.append(("stop_goal_selected", u, dist[u]))
+                break
+
+            visited.add(u)
+            self.steps.append(("finalize", u, set(visited)))
+
+            for v, w in self.graph[u].items():
+                if v in visited:
+                    self.steps.append(("skip_relax", u, v, w, "visited"))
+                    continue
+
+                old = dist[v]
+                cand = dist[u] + w
+                updated = cand < old
+
+                self.steps.append(("relax_try", u, v, w, old, cand, updated))
+
+                if updated:
+                    dist[v] = cand
+                    prev[v] = u
+                    self.steps.append(("relax_apply", v, dist[v], prev[v], dict(dist), dict(prev)))
+
+        if dist[self.goal] == INF:
+            self.answer = None
+            self.shortest_route = []
+        else:
+            self.answer = dist[self.goal]
+            path = []
+            cur = self.goal
+            while cur is not None:
+                path.append(cur)
+                cur = prev[cur]
+            self.shortest_route = list(reversed(path))
+
+        self.steps.append(("final", self.answer, self.shortest_route, dict(dist), dict(prev)))
+
+        self.description = f"Given an undirected weighted graph, use the Dijkstra algorithm to find the shortest length from node {self.start} to node {self.goal}."
+        self.topic = "Artificial Intelligence (AI)"
+        self.subtopic = "Artificial Intelligence (AI)"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{1. Initialize Dijkstra's Algorithm:}} &\\\\"
+            f"\\text{{Start Node: }} {self.start},\\; \\text{{Goal Node: }} {self.goal} \\\\"
+            f"\\text{{Initialize distances:}} &\\\\"
+            f"d({self.start}) &= 0 \\\\"
+            f"d(v) &= \\infty \\quad \\text{{for all }} v \\neq {self.start} \\\\"
+            f"\\text{{Initialize predecessor map:}} &\\\\"
+            f"\\text{{prev}}(v) &= \\text{{None}} \\quad \\text{{for all nodes}} \\\\"
+            f"\\text{{Initialize visited set:}} &\\\\"
+            f"\\text{{visited}} &= \\emptyset \\\\"
+            f"\\text{{2. Iterative Selection and Relaxation:}} &\\\\"
+            + " \\\\ ".join([
+                (
+                    f"\\text{{Select node }} {s[1]} \\text{{ with minimum tentative distance: }} d({s[1]}) = {round(s[2], 10) if isinstance(s[2], (int, float)) else s[2]}"
+                    if s[0] == "select" else
+                    f"\\text{{Finalize node }} {s[1]}:\\; \\text{{visited}} \\leftarrow \\text{{visited}} \\cup \\{{{s[1]}\\}}"
+                    if s[0] == "finalize" else
+                    f"\\quad \\text{{Skip edge }}({s[1]},{s[2]})\\text{{ (neighbor already visited)}}"
+                    if s[0] == "skip_relax" else
+                    (
+                        f"\\quad \\text{{Relax }}({s[1]},{s[2]})\\text{{ with }} w={s[3]}:\\; "
+                        f"\\text{{candidate}} = d({s[1]}) + w = {round(s[5]-s[3],10)} + {s[3]} = {round(s[5],10)},\\; "
+                        f"\\text{{current}}\\; d({s[2]}) = "
+                        + (f"{round(s[4],10)}" if s[4] != float('inf') else "\\infty")
+                        + "\\;\\Rightarrow\\; \\text{{update}}"
+                        if s[0] == "relax_try" and s[6] else
+                        f"\\quad \\text{{Relax }}({s[1]},{s[2]})\\text{{ with }} w={s[3]}:\\; "
+                        f"\\text{{candidate}} = d({s[1]}) + w = {round(s[5]-s[3],10)} + {s[3]} = {round(s[5],10)},\\; "
+                        f"\\text{{current}}\\; d({s[2]}) = "
+                        + (f"{round(s[4],10)}" if s[4] != float('inf') else "\\infty")
+                        + "\\;\\Rightarrow\\; \\text{{no update}}"
+                        if s[0] == "relax_try" and (not s[6]) else
+                        f"\\quad d({s[1]}) \\leftarrow {round(s[2],10)},\\; \\text{{prev}}({s[1]}) \\leftarrow {s[3]}"
+                        if s[0] == "relax_apply" else
+                        f"\\text{{Goal node selected; shortest distance finalized.}}"
+                        if s[0] == "stop_goal_selected" else
+                        f"\\text{{No more reachable unvisited nodes; stop.}}"
+                        if s[0] == "stop_unreachable" else
+                        f""
+                    )
+                )
+                for s in self.steps
+                if s[0] not in ["init", "final"] and (s[0] != "relax_apply" or True)
+            ]) + " \\\\ "
+            + (
+                f"\\text{{3. Final Path Reconstruction:}} &\\\\"
+                + (
+                    f"\\text{{Shortest path: }} " + " \\rightarrow ".join(self.shortest_route) + " \\\\"
+                    f"d({self.goal}) &= {self.answer} \\\\"
+                    f"\\text{{Final Result}} &= {self.answer}"
+                    if self.answer is not None else
+                    f"\\text{{No path exists from }} {self.start} \\text{{ to }} {self.goal} \\\\"
+                    f"\\text{{Final Result}} &= \\text{{None}}"
+                )
+            )
+            + "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com046temp.png').convert('RGB')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(374, 197, self.AB, fontsize=10, color='black')
+        ax.text(348, 430, self.AE, fontsize=10, color='black')
+        ax.text(463, 312, self.BE, fontsize=10, color='black')
+        ax.text(615, 114, self.BC, fontsize=10, color='black')
+        ax.text(766, 312, self.CD, fontsize=10, color='black') 
+        ax.text(607, 527, self.ED, fontsize=10, color='black')
+        ax.text(585, 287, self.EC, fontsize=10, color='black')
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", transparent=True)
+        plt.close()
+
+class Com047:
+
+    def __init__(self):
+        self.initial_values = [rnd.randint(5, 30) for _ in range(5)]
+        self.values = self.initial_values.copy()
+        self.actions = ["A", "S", "E"]
+        self.input = "".join([rnd.choice(self.actions[:2]) for _ in range(3)]) + self.actions[-1]
+        self.steps = []
+        for i, inp in enumerate(self.input):
+            if inp == "A":
+                num1 = self.values.pop()
+                num2 = self.values.pop()
+                new = num1 + num2
+                self.values.append(new)
+                self.steps.append([i+1, num1, num2, new, self.values.copy()])
+            elif inp == "S":
+                num1 = self.values.pop()
+                num2 = self.values.pop()
+                new = num2 - num1
+                self.values.append(new)
+                self.steps.append([i+1, num1, num2, new, self.values.copy()])
+            else:
+                self.answer = self.values.pop()
+                break
+
+        self.description = f"Sundip writes an algorithm to carry out addition and subtraction. The algorithm will use an initially filled stack and will take input from the user. The action the algorithm takes depends on the value input by the user. These actions are listed in the given figure. If the input from the user is \"{self.input}\", what will be the output?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Adapted from Physics & Maths Tutor"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Stack}} &= [{', '.join(map(str, self.initial_values))}]\\\\"
+            f"\\text{{Input Sequence}} &= \\text{{{self.input}}}\\\\"
+            "\\text{{Step 1: }} " + (f"\\text{{Input }} {self.input[0]} \\rightarrow " + (f"\\text{{Pop }} {self.steps[0][1]}, {self.steps[0][2]} \\rightarrow {self.steps[0][2]} + {self.steps[0][1]} = {self.steps[0][3]}" if self.input[0] == "A" else f"\\text{{Pop }} {self.steps[0][1]}, {self.steps[0][2]} \\rightarrow {self.steps[0][2]} - {self.steps[0][1]} = {self.steps[0][3]}")) + f" \\rightarrow \\text{{Stack: }} {self.steps[0][4]}\\\\"
+            "\\text{{Step 2: }} " + (f"\\text{{Input }} {self.input[1]} \\rightarrow " + (f"\\text{{Pop }} {self.steps[1][1]}, {self.steps[1][2]} \\rightarrow {self.steps[1][2]} + {self.steps[1][1]} = {self.steps[1][3]}" if self.input[1] == "A" else f"\\text{{Pop }} {self.steps[1][1]}, {self.steps[1][2]} \\rightarrow {self.steps[1][2]} - {self.steps[1][1]} = {self.steps[1][3]}")) + f" \\rightarrow \\text{{Stack: }} {self.steps[1][4]}\\\\"
+            "\\text{{Step 3: }} " + (f"\\text{{Input }} {self.input[2]} \\rightarrow " + (f"\\text{{Pop }} {self.steps[2][1]}, {self.steps[2][2]} \\rightarrow {self.steps[2][2]} + {self.steps[2][1]} = {self.steps[2][3]}" if self.input[2] == "A" else f"\\text{{Pop }} {self.steps[2][1]}, {self.steps[2][2]} \\rightarrow {self.steps[2][2]} - {self.steps[2][1]} = {self.steps[2][3]}")) + f" \\rightarrow \\text{{Stack: }} {self.steps[2][4]}\\\\"
+            f"\\text{{Step 4: Input E}} &\\rightarrow \\text{{Pop top value for output}}\\\\"
+            f"\\text{{Final Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com047temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis("off")
+
+        y_pos = 900
+        line_height = 105
+                
+        for val in self.initial_values:
+            color = 'black'
+            weight = 'normal'
+            
+            ax.text(368, y_pos, val, 
+                    fontsize=11, 
+                    family='sans-serif', 
+                    # verticalalignment='top', 
+                    color=color, 
+                    weight=weight)
+            
+            y_pos -= line_height
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com048:
+
+    def __init__(self):
+        self.x = rnd.randint(1, 3)
+        self.y = rnd.randint(1, 3)
+        self.steps = []
+        
+        def paths(a, b, depth=0):
+            indent = "  " * depth
+            self.steps.append(f"{indent}PATHS({a},{b}) called")
+
+            if a == 0 or b == 0:
+                self.steps.append(f"{indent}PATHS({a},{b}) = 1 (base case)")
+                return 1
+
+            left = paths(a - 1, b, depth + 1)
+            down = paths(a, b - 1, depth + 1)
+            result = left + down
+
+            self.steps.append(
+                f"{indent}PATHS({a},{b}) = PATHS({a-1},{b}) + PATHS({a},{b-1}) = {result}"
+            )
+            return result
+
+        self.answer = paths(self.x, self.y)
+
+        self.description = f"A robot starts at coordinate ({self.x}, {self.y}) on a grid and must reach (0, 0). It can move only left (decreasing x by 1) or down (decreasing y by 1). Using this recursive pseudocode, how many different paths are there?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Recursion"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Coordinate: }} & ({self.x}, {self.y}) \\\\"
+            f"\\text{{Goal Coordinate: }} & (0, 0) \\\\"
+            "\\text{{Recursive Definition:}} & \\\\"
+            "\\text{{PATHS}}(a, b) &= \\begin{cases} 1 & \\text{{if }} a=0 \\lor b=0 \\\\ \\text{{PATHS}}(a-1, b) + \\text{{PATHS}}(a, b-1) & \\text{{otherwise}} \\end{cases} \\\\"
+            "\\text{{Step-by-Step Trace:}} & \\\\"
+            + " \\\\ ".join([f"\\text{{{s}}}" for s in self.steps]) + " \\\\"
+            f"\\text{{Final Calculation:}} & \\text{{PATHS}}({self.x}, {self.y}) = {self.answer} \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com048temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com049:
+
+    def __init__(self):
+        self.num = 7
+        self.values = rnd.sample(range(90, 140), self.num)
+
+        self.root = None
+        for v in self.values:
+            if self.root is None:
+                self.root = Node(v)
+                continue
+            cur = self.root
+            while True:
+                if v < cur.val:
+                    if cur.left is None:
+                        cur.left = Node(v)
+                        break
+                    cur = cur.left
+                else:
+                    if cur.right is None:
+                        cur.right = Node(v)
+                        break
+                    cur = cur.right
+
+        self.post = []
+        self.history = []
+        stack = [(self.root, False)]
+        while stack:
+            node, visited = stack.pop()
+            if node is None:
+                continue
+            if visited:
+                self.post.append(node.val)
+                self.history.append({
+                    "root": node.val,
+                    "left": node.left.val if node.left else None,
+                    "right": node.right.val if node.right else None,
+                    "order_index": len(self.post)
+                })
+            else:
+                stack.append((node, True))
+                stack.append((node.right, False))
+                stack.append((node.left, False))
+
+        self.answer = self.post[3]
+
+        self.description = f"A Binary Search Tree (BST) is constructed as in the image below. What is the 4th element visited during the postorder traversal?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{A Postorder traversal follows the rule:}} &\\quad \\text{{Left Subtree}} \\to \\text{{Right Subtree}} \\to \\text{{Root}}\\\\"
+            f"\\text{{A node is visited only after both subtrees are processed.}} &\\\\"
+            f"\\text{{1st element processed (Leftmost leaf):}} &\\quad v_1 = {self.history[0]['root']}\\\\"
+            f"\\text{{2nd element processed:}} &\\quad v_2 = {self.history[1]['root']}\\\\"
+            f"\\text{{3rd element processed:}} &\\quad v_3 = {self.history[2]['root']}\\\\"
+            f"\\text{{4th element processed:}} &\\quad v_4 = {self.history[3]['root']}\\\\"
+            f"\\text{{Complete Postorder Sequence}} &= {', '.join(map(str, self.post))} \\\\"
+            f"\\text{{Therefore, the 4th element visited is:}} &\\quad {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.axis("off")
+
+        G = nx.DiGraph()
+        stack = [self.root]
+        while stack:
+            node = stack.pop()
+            if node is None:
+                continue
+
+            G.add_node(node.val)
+
+            if node.left is not None:
+                G.add_node(node.left.val)
+                G.add_edge(node.val, node.left.val)
+                stack.append(node.left)
+
+            if node.right is not None:
+                G.add_node(node.right.val)
+                G.add_edge(node.val, node.right.val)
+                stack.append(node.right)
+
+        pos = {}
+
+        # Root position
+        pos[self.root.val] = (0.0, 0.0)
+
+        # BFS/stack: (node, x, y, horizontal_gap)
+        queue = [(self.root, 0.0, 0.0, 8.0)]
+
+        while queue:
+            node, x, y, gap = queue.pop(0)
+
+            # Children are one level lower
+            ny = y - 1.8 
+
+            child_gap = gap / 2.0
+
+            if node.left is not None:
+                lx = x - gap
+                pos[node.left.val] = (lx, ny)
+                queue.append((node.left, lx, ny, child_gap))
+
+            if node.right is not None:
+                rx = x + gap
+                pos[node.right.val] = (rx, ny)
+                queue.append((node.right, rx, ny, child_gap))
+
+        nx.draw_networkx_edges(G, pos, ax=ax, arrows=False)
+        nx.draw_networkx_nodes(
+            G, pos, ax=ax,
+            node_size=1800,
+            node_color="white",
+            edgecolors="black",
+            linewidths=2
+        )
+        nx.draw_networkx_labels(G, pos, ax=ax, font_size=11)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com050:
+
+    def __init__(self):
+        self.num = 10
+        self.values = sorted(rnd.sample(range(20, 60), self.num))
+        self.target = rnd.choice(self.values)
+
+        self.steps = []
+        l, r = 0, len(self.values) - 1
+        splits = 0
+
+        while l <= r:
+            mid = (l + r) // 2
+            splits += 1
+
+            mid_val = self.values[mid]
+
+            step = {
+                "split": splits,
+                "l": l,
+                "r": r,
+                "mid": mid,
+                "mid_val": mid_val,
+                "target": self.target,
+                "action": None
+            }
+
+            if mid_val == self.target:
+                step["action"] = "FOUND"
+                self.steps.append(step)
+                break
+            elif self.target < mid_val:
+                step["action"] = "GO_LEFT"
+                self.steps.append(step)
+                r = mid - 1
+            else:
+                step["action"] = "GO_RIGHT"
+                self.steps.append(step)
+                l = mid + 1
+
+        self.answer = splits
+
+        self.description = f"A sorted array is shown in the figure below. The value that we want to search for is {self.target}. With binary search, how many splits (iterations) are required to find the target? Number of splits here is defined as checks to find the target."
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Sorted Array:}} &= [{', '.join(map(str, self.values))}]\\\\"
+            f"\\text{{Target Value:}} &= {self.target}\\\\"
+            "\\text{{Binary Search Procedure:}} &\\\\"
+            + " \\\\ ".join([
+                f"\\text{{Iteration {s['split']}: }} L={s['l']}, R={s['r']} \\rightarrow \\text{{mid}} = \\lfloor\\frac{{{s['l']} + {s['r']}}}{{2}}\\rfloor = {s['mid']}\\\\"
+                f"\\text{{Value at index {s['mid']}: }} {s['mid_val']} \\rightarrow " + (
+                    f"{s['mid_val']} = {s['target']} \\text{{ (Target Found)}}" if s['action'] == "FOUND" else
+                    f"{s['target']} < {s['mid_val']} \\text{{ (Search Left)}}" if s['action'] == "GO_LEFT" else
+                    f"{s['target']} > {s['mid_val']} \\text{{ (Search Right)}}"
+                )
+                for s in self.steps
+            ]) + f"\\\\"
+            "\\text{{Total iterations required:}} &\\\\"
+            f"\\text{{Total splits}} &= {self.answer}\\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com050temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        x = 360
+        for val in self.values:
+            ax.text(x, 592, val, fontsize=14, color='black')
+            x += 138
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
+
+class Com051:
+
+    def __init__(self):
+        self.num = 7
+        self.first_arr = rnd.sample(range(10, 35), self.num)
+        self.traces = []
+        arr = self.first_arr.copy()
+        for i in range(1, len(arr)):
+            before = arr.copy()
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and arr[j] > key:
+                arr[j + 1] = arr[j]
+                j -= 1
+            arr[j + 1] = key
+            after = arr.copy()
+
+            self.traces.append({
+                "pass": i,
+                "key": key,
+                "before": before,
+                "after": after,
+                "sorted_prefix_before": before[:i],
+                "sorted_prefix_after": after[:i+1],
+            })
+
+        X = rnd.randint(1, len(self.traces))
+        self.second_arr = self.traces[X - 1]["after"].copy()
+        self.answer = X
+
+        self.description = f"Two array are shown in the figure below. The first array is the initial array. The second array is the result of running insertion sort on the first array for X passes. Find X."
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Algorithms"
+        self.source = "Original"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial Array}} &= [{', '.join(map(str, self.first_arr))}]\\\\"
+            f"\\text{{Target Array}} &= [{', '.join(map(str, self.second_arr))}]\\\\"
+            "\\text{{Insertion Sort Procedure:}} &\\\\"
+            "\\text{{In each pass }} i, \\text{{ the element at index }} i \\text{{ (key) is inserted into the sorted prefix.}} &\\\\"
+            + " \\\\ ".join([
+                f"\\text{{Pass }} {t['pass']}: \\text{{ Key }} = {t['key']}, \\text{{ Prefix }} {t['before'][:t['pass']]} \\rightarrow \\text{{ Result }} {t['after']}"
+                for t in self.traces
+            ]) + "\\\\"
+            "\\text{{Comparison and Identification:}} &\\\\"
+            f"\\text{{The array after Pass }} {self.answer} \\text{{ matches the target array:}} [{', '.join(map(str, self.second_arr))}]&\\\\"
+            f"\\text{{Final Result }} (X) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com051temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        x = 700
+        for val1, val2 in zip(self.first_arr, self.second_arr):
+            ax.text(x, 435, val1, fontsize=14, color="#272727")
+            ax.text(x, 688, val2, fontsize=14, color='#272727')
+            x += 158
         plt.axis('off')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")

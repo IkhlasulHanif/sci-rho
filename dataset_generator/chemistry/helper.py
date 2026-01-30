@@ -7,7 +7,8 @@ import matplotlib.patches as mpatches
 
 def draw_labeled_box(ax, x, y, width, height, label, sublabel=None, 
                      facecolor='lightblue', edgecolor='black', linewidth=2,
-                     label_fontsize=13, sublabel_fontsize=10, label_weight='bold'):
+                     label_fontsize=13, sublabel_fontsize=10, label_weight='bold',
+                     label_spacing=0.2):
     """
     Draw a rectangle with centered text label(s).
     
@@ -20,6 +21,7 @@ def draw_labeled_box(ax, x, y, width, height, label, sublabel=None,
         facecolor, edgecolor, linewidth: box styling
         label_fontsize, sublabel_fontsize: text sizes
         label_weight: font weight for main label
+        label_spacing: vertical spacing between labels (default 0.2, increased from 0.15)
     
     Returns:
         Rectangle patch object
@@ -32,16 +34,15 @@ def draw_labeled_box(ax, x, y, width, height, label, sublabel=None,
     center_y = y + height/2
     
     if sublabel:
-        ax.text(center_x, center_y + height*0.15, label, 
+        ax.text(center_x, center_y + height*label_spacing, label, 
                fontsize=label_fontsize, ha='center', va='center', fontweight=label_weight)
-        ax.text(center_x, center_y - height*0.15, sublabel, 
+        ax.text(center_x, center_y - height*label_spacing, sublabel, 
                fontsize=sublabel_fontsize, ha='center', va='center', style='italic')
     else:
         ax.text(center_x, center_y, label, 
                fontsize=label_fontsize, ha='center', va='center', fontweight=label_weight)
     
     return rect
-
 
 def draw_circle_atom(ax, x, y, element, radius=0.3, color='lightblue', 
                      edgecolor='black', linewidth=2, fontsize=14, 
@@ -730,9 +731,43 @@ def add_charge_label(ax, x, y, charge_type, fontsize=12, color='blue'):
     
     return text
 
+def add_charge_label_with_offset(ax, x, y, charge_type, fontsize=12, color='blue',
+                                 x_offset=0, y_offset=0.6):
+    """
+    Add δ+/δ- or full charge labels with configurable offset.
+    
+    Args:
+        ax: matplotlib axis
+        x, y: base position
+        charge_type: 'delta+', 'delta-', '+', '-', '2+', etc.
+        fontsize: text size
+        color: text color
+        x_offset: horizontal offset from base position
+        y_offset: vertical offset from base position (default 0.6, increased from 0)
+    
+    Returns:
+        Text object
+    """
+    charge_map = {
+        'delta+': 'δ+',
+        'delta-': 'δ-',
+        '+': '+',
+        '-': '-',
+        '2+': '²⁺',
+        '2-': '²⁻',
+        '3+': '³⁺'
+    }
+    
+    display_text = charge_map.get(charge_type, charge_type)
+    
+    text = ax.text(x + x_offset, y + y_offset, display_text, fontsize=fontsize, 
+                  color=color, fontweight='bold')
+    
+    return text
 
 def add_title_box(ax, x, y, title, fontsize=16, facecolor='lightyellow',
-                  edgecolor='black', linewidth=2, padding=0.3):
+                  edgecolor='black', linewidth=2, padding=0.3, 
+                  min_spacing=0.5):
     """
     Add a centered title with background box.
     
@@ -745,6 +780,7 @@ def add_title_box(ax, x, y, title, fontsize=16, facecolor='lightyellow',
         edgecolor: box border color
         linewidth: border thickness
         padding: space around text
+        min_spacing: minimum spacing from plot elements (default 0.5)
     
     Returns:
         Text object
@@ -757,7 +793,6 @@ def add_title_box(ax, x, y, title, fontsize=16, facecolor='lightyellow',
                            linewidth=linewidth))
     
     return text
-
 
 def draw_test_tube(ax, x, y, width=1.4, height=3.5, solution_height=2.5,
                    solution_color='lightblue', tube_linewidth=2):
@@ -885,9 +920,8 @@ def draw_nmr_peak(ax, chemical_shift, integration, splitting='singlet',
     
     return x, y
 
-
 def draw_3d_molecule(ax, atom_positions, bonds, labels=None, 
-                    atom_colors=None, radius=0.3):
+                    atom_colors=None, radius=0.3, label_offset=0.4):
     """
     Draw a 3D molecule on a 3D axis.
     
@@ -898,6 +932,7 @@ def draw_3d_molecule(ax, atom_positions, bonds, labels=None,
         labels: list of element symbols
         atom_colors: list of colors for each atom
         radius: atom sphere radius
+        label_offset: distance from atom center to label (default 0.4, increased from 0.15)
     
     Returns:
         dict with atoms and bonds objects
@@ -911,7 +946,8 @@ def draw_3d_molecule(ax, atom_positions, bonds, labels=None,
     for i, ((x, y, z), color, label) in enumerate(zip(atom_positions, atom_colors, labels)):
         ax.scatter(x, y, z, s=500, c=color, marker='o', 
                   edgecolors='black', linewidths=2, zorder=3)
-        ax.text(x, y, z + 0.15, label, fontsize=14, ha='center', 
+        # UPDATED: Use configurable label_offset instead of hardcoded 0.15
+        ax.text(x, y, z + label_offset, label, fontsize=14, ha='center', 
                va='bottom', fontweight='bold', zorder=4)
     
     for i, j in bonds:
@@ -926,6 +962,30 @@ def draw_3d_molecule(ax, atom_positions, bonds, labels=None,
     
     return {'positions': atom_positions, 'bonds': bonds}
 
+def draw_3d_info_box(ax, text, position='bottom', z_offset=-2.5, 
+                    fontsize=14, facecolor='lightyellow'):
+    """
+    Add an information box to a 3D plot with better positioning.
+    
+    Args:
+        ax: matplotlib 3D axis
+        text: text to display (can be multi-line with \\n)
+        position: 'bottom', 'top', 'left', 'right'
+        z_offset: vertical offset from origin
+        fontsize: text size
+        facecolor: background color
+    
+    Returns:
+        Text object
+    """
+    x_pos = 0
+    y_pos = 0
+    
+    text_obj = ax.text(x_pos, y_pos, z_offset, text, fontsize=fontsize, 
+                      ha='center', fontweight='bold',
+                      bbox=dict(boxstyle='round', facecolor=facecolor, 
+                               edgecolor='black'))
+    return text_obj
 
 def format_chemical_formula(text):
     """
