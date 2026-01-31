@@ -75,3 +75,75 @@ class Com051:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
         plt.close()
+
+class Com052:
+
+    def __init__(self):
+        self.array = [None, 8, 12, 16, 20, 12, 14, 16, 20, 20, 22] # Starts from index 1
+        self.x = 1
+        self.trace = []
+        # func itik
+        def itik_logic(a: int, b:int) -> int:
+            if b == 0:
+                itik = a
+            else:
+                itik = itik_logic(b, a % b)
+            return itik
+        # func bebek
+        def bebek_logic(x: int) -> int:
+            if x > 10:
+                self.trace.append({"x": x, "val": 0, "is_base": True})
+                return 0
+            
+            next_val = bebek_logic(x * 2)
+            current_val = self.array[x]
+            res = itik_logic(current_val, next_val)
+            
+            self.trace.append({
+                "x": x, 
+                "val": res, 
+                "array_val": current_val, 
+                "next_x": x * 2, 
+                "next_val": next_val,
+                "is_base": False
+            })
+            return res
+        
+        self.answer = bebek_logic(self.x)
+
+        self.description = f"What is the output of the given program, if insert_num is {self.x}?"
+        self.topic = "Computational thinking and Problem-solving"
+        self.subtopic = "Recursion"
+        self.source = "Adapted from Indonesia's National Science Olympiad Selection Test for Informatics at the Regency/City Level 2018"
+        self.curriculum = "AS & A Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Input x}} &= {self.x} \\\\"
+            f"\\text{{Array (1-based indexing)}} &= {self.array[1:]} \\\\"
+            f"\\text{{The function }} itik(a, b) &\\text{{ calculates }} \\gcd(a, b).\\\\"
+            f"\\text{{The function }} bebek(x) &\\text{{ is defined recursively:}}\\\\"
+            f"bebek(x) &= \\begin{{cases}} 0 & \\text{{if }} x > 10 \\\\ itik(array[x], bebek(2x)) & \\text{{otherwise}} \\end{{cases}}\\\\"
+            "\\text{{Evaluation:}} &\\\\"
+            + " \\\\ ".join([
+                f"\\text{{Base Case: }} bebek({t['x']}) &= {round(float(t['val']), 10)}" if t['is_base']
+                else (
+                    f"bebek({t['x']}) &= itik(array[{t['x']}], bebek({t['next_x']}))\\\\"
+                    f"&= itik({round(float(t['array_val']), 10)}, {round(float(t['next_val']), 10)})\\\\"
+                    f"&= {round(float(t['val']), 10)}"
+                )
+                for t in self.trace
+            ])
+            + f"\\\\ \\text{{Therefore, the final result is:}} &\\\\"
+            + f"\\text{{Output}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('compsci/temp_image/Com052temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        plt.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.close()
