@@ -4103,7 +4103,7 @@ class Mat144:
 class Mat145:
     def __init__(self):
         # f(x) = ax^3 + bx^2 + cx + d
-        # Aligns with syllabus section 2.5: Numerical solution of equations and integration
+        # Aligns with syllabus section 2.5: Integration
         self.a = randrange_float(0.1, 0.3, 0.01)
         self.b = randrange_float(-0.5, 0.5, 0.01)
         self.c = randrange_float(0.5, 1.5, 0.01)
@@ -4377,36 +4377,325 @@ class Mat147:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
-        
+
 class Mat148:
     def __init__(self):
-        # Configuration for convergent iteration: x_{n+1} = sqrt(x_n + c)
-        # Using specific increments to ensure x2 falls exactly on a grid line (0.1 steps)
-        # Choosing c such that sqrt(x1 + c) is a clean tenth (e.g., 1.2, 1.3, etc.)
-        valid_pairs = [
-            (0.5, 0.94), # x2 = 1.2
-            (0.5, 1.19), # x2 = 1.3
-            (0.5, 1.46), # x2 = 1.4
-            (1.0, 1.25), # x2 = 1.5
-            (1.0, 1.56), # x2 = 1.6
-            (1.5, 1.39), # x2 = 1.7
-            (1.5, 1.74), # x2 = 1.8
-        ]
+        # 1. Configuration: Choose function and extremum type
+        self.func_type = rnd.choice(['sin', 'cos', 'tan', 'ln', 'cubic'])
+        self.extremum_type = rnd.choice(['smallest', 'largest'])
         
-        selected = rnd.choice(valid_pairs)
-        self.x1 = selected[0]
-        self.c = selected[1]
+        # Transformation parameters
+        self.a = round(randrange_float(1.0, 2.5, 0.1), 1)
+        self.b = round(randrange_float(0.5, 1.2, 0.1), 1)
+        self.c = round(randrange_float(-1.0, 1.0, 0.1), 1)
+        self.d = round(randrange_float(-1.0, 1.0, 0.1), 1)
+
+        # Store cubic roots to ensure init and generate stay in sync
+        if self.func_type == 'cubic':
+            self.cubic_roots = sorted([rnd.randint(-6, -3), rnd.randint(-2, 2), rnd.randint(3, 6)])
+
+        # 2. Testing Logic: Find all roots in a visible window [-8, 8]
+        def f_test(x):
+            try:
+                v = self.b * x + self.c
+                if self.func_type == 'sin': return self.a * math.sin(v) + self.d
+                if self.func_type == 'cos': return self.a * math.cos(v) + self.d
+                if self.func_type == 'tan': return self.a * math.tan(v) + self.d
+                if self.func_type == 'ln':
+                    # Log domain protection
+                    if v <= 0: return None
+                    return self.a * math.log(v) + self.d
+                if self.func_type == 'cubic':
+                    r1, r2, r3 = self.cubic_roots
+                    return 0.1 * self.a * (x - r1) * (x - r2) * (x - r3) + self.d
+            except (ValueError, ZeroDivisionError):
+                return None
+
+        # Scan for sign changes across the visible domain
+        roots = []
+        scan_range = np.linspace(-8, 7, 151) 
+        for i in range(len(scan_range) - 1):
+            x1, x2 = scan_range[i], scan_range[i+1]
+            f1, f2 = f_test(x1), f_test(x2)
+            
+            if f1 is not None and f2 is not None:
+                if f1 * f2 < 0:
+                    # Asymptote Protection for tan
+                    if self.func_type == 'tan' and abs(f1 - f2) > 5:
+                        continue
+                        
+                    n_candidate = math.floor(x1)
+                    if n_candidate not in roots:
+                        roots.append(n_candidate)
         
-        # Calculate x2 and ensure it is the target for grid extraction
-        self.val_x2 = round(math.sqrt(self.x1 + self.c), 1)
-        self.answer = self.val_x2
+        # Fallback if no roots are found
+        if not roots:
+            self.func_type = 'sin'
+            self.a, self.b, self.c, self.d = 2.0, 1.0, 0.0, 0.0
+            roots = [-4, -1, 3]
+
+        roots.sort()
+        self.target_n = roots[0] if self.extremum_type == 'smallest' else roots[-1]
+        self.answer = self.target_n
 
         self.description = (
-            "The staircase diagram in the figure illustrates the process of finding a root for an equation "
-            "using an iterative formula $x_{n+1} = F(x_n)$. Starting from the value $x_1$ indicated on the "
-            "horizontal axis, a vertical line is drawn to the curve $y = F(x)$, followed by a horizontal "
-            "line to the line $y = x$ to determine the next approximation. Based on the geometric steps "
-            "shown and the provided grid, identify the numerical value of $x_2$."
+            f"The figure shows the graph of a continuous function $y = f(x)$ over a local domain. "
+            f"Identify the **{self.extremum_type}** integer $n$ seen in the figure such that "
+            f"a root of the equation $f(x) = 0$ exists in the interval $[n, n+1]$."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Numerical solution of equations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+
+        # --- Dynamic Reasoning Construction ---
+        d_val = round(self.d, 10)
+        d_sign = "-" if d_val < 0 else "+"
+        d_abs = abs(d_val)
+
+        if self.func_type == 'cubic':
+            r1, r2, r3 = self.cubic_roots
+            expr = f"0.1({self.a})(x - ({r1}))(x - ({r2}))(x - ({r3})) {d_sign} {d_abs}"
+        elif self.func_type == 'ln':
+            expr = f"{self.a} \\ln({self.b}x + {self.c}) {d_sign} {d_abs}"
+        else:
+            lat_func = f"\\{self.func_type}"
+            expr = f"{self.a} {lat_func}({self.b}x + {self.c}) {d_sign} {d_abs}"
+
+        roots_str = ", ".join([str(r) for r in roots])
+        interval_str = ", ".join([f"[{r}, {r+1}]" for r in roots])
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{The function shown is:}} &\\\\"
+            f"f(x) &= {expr}\\\\"
+            f"\\text{{A root exists in the interval }} [n, n+1] \\text{{ if there is a sign change:}} &\\\\"
+            f"f(n) \\cdot f(n+1) &< 0\\\\"
+            f"\\text{{By inspecting the graph, the integer intervals containing roots are:}} &\\\\"
+            f"\\text{{{interval_str}}}\\\\"
+            f"\\text{{The corresponding values for }} n \\text{{ are:}} &\\\\"
+            f"n \\in \\{{{roots_str}\\}}\\\\"
+            f"\\text{{The task is to identify the }} \\mathbf{{{self.extremum_type}}} \\text{{ such value.}} &\\\\"
+            f"n &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        def f(x):
+            v = self.b * x + self.c
+            if self.func_type == 'sin': return self.a * np.sin(v) + self.d
+            if self.func_type == 'cos': return self.a * np.cos(v) + self.d
+            if self.func_type == 'tan': return self.a * np.tan(v) + self.d
+            if self.func_type == 'ln':
+                return np.where(v > 0, self.a * np.log(v) + self.d, np.nan)
+            if self.func_type == 'cubic':
+                r1, r2, r3 = self.cubic_roots
+                return 0.1 * self.a * (x - r1) * (x - r2) * (x - r3) + self.d
+
+        x_vals = np.linspace(-9, 9, 1000)
+        y_vals = f(x_vals)
+        
+        if self.func_type == 'tan':
+            y_vals[np.abs(y_vals) > 15] = np.nan
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(x_vals, y_vals, color='blue', lw=2)
+        
+        ax.axhline(0, color='black', lw=1.5)
+        ax.axvline(0, color='black', lw=1.5)
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax.grid(True, which='major', linestyle='--', alpha=0.5)
+        
+        ax.set_xlim(-9, 9)
+        ax.set_ylim(-8, 8)
+        ax.set_xlabel("$x$")
+        ax.set_ylabel("$y$")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=120)
+        plt.close()
+
+class Mat149:
+    def __init__(self):
+        # 1. Configuration & Testing Logic: f(x) = p / (qx + r)
+        # We vary p, q, and r to ensure high template diversity
+        self.p = round(randrange_float(5.0, 15.0, 0.01), 2)
+        self.q = round(randrange_float(1.0, 2.0, 0.01), 2)
+        self.r = round(randrange_float(1.0, 3.0, 0.01), 2)
+        
+        # Solving the fixed point equation: x = p / (qx + r)
+        # qx^2 + rx - p = 0
+        # Using quadratic formula: x = (-r + sqrt(r^2 + 4qp)) / (2q)
+        discriminant = self.r**2 + 4 * self.q * self.p
+        self.actual_root = (-self.r + math.sqrt(discriminant)) / (2 * self.q)
+        
+        # Testing Logic for Convergence: |f'(root)| < 1
+        # f'(x) = -pq / (qx + r)^2. Since x(qx+r) = p, then (qx+r) = p/x.
+        # f'(root) = -pq / (p/root)^2 = -q * root^2 / p
+        deriv_at_root = abs(-self.q * (self.actual_root**2) / self.p)
+        
+        # Fallback if the randomization produces a divergent spiral
+        if deriv_at_root >= 1:
+            self.p, self.q, self.r = 10.0, 1.0, 2.0
+            self.actual_root = (-2 + math.sqrt(4 + 40)) / 2
+
+        # Starting point x0 as a clearly identifiable integer
+        # We pick an integer near the root to ensure the cobweb stays in frame
+        self.x0 = rnd.randint(max(0, math.floor(self.actual_root) - 2), math.ceil(self.actual_root) + 2)
+        if abs(self.x0 - self.actual_root) < 0.1: # Prevent starting exactly on the root
+            self.x0 += 1
+            
+        self.k_iterations = rnd.randint(1, 4)
+        
+        # 2. Perform k iterations
+        x_vals_reasoning = [self.x0]
+        for _ in range(self.k_iterations):
+            prev = x_vals_reasoning[-1]
+            x_vals_reasoning.append(self.p / (self.q * prev + self.r))
+            
+        self.answer = round(x_vals_reasoning[-1], 10)
+        
+        # Implicit description referencing the more complex rational function
+        self.description = (
+            f"The figure shows a cobweb diagram for a fixed-point iteration to approximate the positive root of $x = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$. "
+            f"Starting with the value $x_0$ shown in the graph, find the approximation of the root after {self.k_iterations} iterations. "
+            f"Give your answer to 10 decimal places."
+        )
+        
+        self.topic = "Pure Mathematics 2"
+        self.subtopic = "Numerical solution of equations"
+        self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
+        self.curriculum = "AS & A Level"
+
+        # LaTeX Reasoning
+        iteration_steps = ""
+        for i in range(self.k_iterations):
+            step_label = i + 1
+            prev_x = round(x_vals_reasoning[i], 10)
+            curr_x = round(x_vals_reasoning[i+1], 10)
+            iteration_steps += (
+                f"x_{{{step_label}}} &= \\frac{{{self.p}}}{{{self.q}({prev_x}) + {self.r}}}\\\\"
+                f"&= {curr_x}\\\\"
+            )
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Iterative formula:}} & \\\\"
+            f"x_{{n+1}} &= \\frac{{{self.p}}}{{{self.q}x_n + {self.r}}}\\\\"
+            f"\\text{{Initial value:}} & x_0 = {self.x0}\\\\"
+            f"{iteration_steps}"
+            f"\\text{{Final result:}} & x_{{{self.k_iterations}}} = {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        f = lambda val: self.p / (self.q * val + self.r)
+        
+        # Dynamic zoom centered on the root and x0
+        x_min_zoom = max(0, min(self.x0, self.actual_root) - 1.5)
+        x_max_zoom = max(self.x0, self.actual_root) + 1.5
+        x_vals = np.linspace(x_min_zoom, x_max_zoom, 600)
+        
+        fig, ax = plt.subplots(figsize=(8, 8))
+        ax.plot(x_vals, f(x_vals), color='black', label=f'$y = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$', lw=2.5)
+        ax.plot(x_vals, x_vals, color='blue', label='$y = x$', lw=1.5)
+        
+        curr_x = self.x0
+        # For the very first step, we often start from the x-axis (y=0)
+        curr_y = 0 
+
+        for i in range(self.k_iterations):
+            # 1. Vertical move: (curr_x, curr_y) -> (curr_x, f(curr_x))
+            next_y = f(curr_x)
+            ax.annotate('', xy=(curr_x, next_y), xytext=(curr_x, curr_y),
+                        arrowprops=dict(arrowstyle='->', color='red', lw=1.5, mutation_scale=15))
+            
+            # 2. Horizontal move: (curr_x, next_y) -> (next_y, next_y)
+            # This moves the point to the y=x line, making the new x = next_y
+            ax.annotate('', xy=(next_y, next_y), xytext=(curr_x, next_y),
+                        arrowprops=dict(arrowstyle='->', color='red', lw=1.5, mutation_scale=15))
+            
+            # Update for next iteration: 
+            # The new x-coordinate is the previous result (next_y)
+            # The new y-coordinate starts on the y=x line (which is also next_y)
+            curr_x = next_y
+            curr_y = next_y
+
+        # Label x0 as the starting point
+        ax.axvline(self.x0, color='gray', linestyle='--', lw=1, alpha=0.5)
+        ax.text(self.x0, x_min_zoom + 0.2, f'${self.x0}$', ha='center', fontsize=14, 
+                fontweight='bold', color='red', bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
+
+        ax.set_xlim(x_min_zoom, x_max_zoom)
+        ax.set_ylim(x_min_zoom, x_max_zoom)
+        ax.set_aspect('equal')
+        ax.grid(True, linestyle=':', alpha=0.4)
+        ax.legend(loc='upper right', fontsize=11)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, bbox_inches='tight', dpi=120)
+        plt.close()
+        
+class Mat150:
+    def __init__(self):
+        # f(x) = ax^2 - c
+        # We need g'(x) = 2ax > 1 at the positive root for divergence.
+        # Positive root x* satisfies ax^2 - x - c = 0
+        # x* = (1 + sqrt(1 + 4ac)) / (2a)
+        
+        self.a = round(randrange_float(0.5, 1.5, 0.1), 1)
+        self.c = round(randrange_float(1.0, 3.0, 0.1), 1)
+        
+        # Calculate root
+        discriminant = 1 + 4 * self.a * self.c
+        self.root = (1 + math.sqrt(discriminant)) / (2 * self.a)
+        
+        # Define range [range_a, range_b] centered near the root
+        # Sequence will start near root and move out.
+        m = rnd.randint(2, 4)
+        self.range_a = int(math.floor(self.root - m))
+        self.range_b = int(math.ceil(self.root + m))
+        
+        # Ensure range_a is at least 0 for better visual framing
+        if self.range_a < 0:
+            self.range_a = 0
+            self.range_b = m * 2
+
+        # Starting point x0
+        # We need a point near the root such that it takes 3 to 8 iterations to exit [range_a, range_b]
+        # Since it is divergent, we pick x0 = root + epsilon or root - epsilon
+        self.n_iters = rnd.randint(3, 8)
+        
+        # Deterministic simulation to find epsilon
+        # x_n = root + epsilon * (g'(root))^n approx
+        # deriv = 2 * a * root
+        deriv = 2 * self.a * self.root
+        
+        # Distance to boundary is dist = max(abs(range_a - root), abs(range_b - root))
+        dist = max(abs(self.range_a - self.root), abs(self.range_b - self.root))
+        epsilon_mag = dist / (deriv ** self.n_iters)
+        
+        # Randomize direction
+        direction = rnd.choice([-1, 1])
+        self.x0 = round(self.root + direction * epsilon_mag, 2)
+        
+        # Verify and adjust answer
+        curr_x = self.x0
+        iters = 0
+        for _ in range(10): # safety cap
+            next_x = self.a * (curr_x ** 2) - self.c
+            iters += 1
+            if next_x < self.range_a or next_x > self.range_b:
+                break
+            curr_x = next_x
+            
+        self.answer = iters
+        
+        self.description = (
+            f"As shown in the cobweb diagram for the iteration $x_{{n+1}} = g(x_n)$ starting at $x_0$, "
+            f"determine the number of iterations required for the sequence to move outside the "
+            f"integer range $[{self.range_a}, {self.range_b}]$."
         )
         
         self.topic = "Pure Mathematics 2"
@@ -4415,63 +4704,80 @@ class Mat148:
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{From the figure, the starting value is: }} x_1 &= {self.x1}\\\\"
-            f"\\text{{The iterative process follows the path: }} (x_n, 0) \\rightarrow (x_n, F(x_n)) \\rightarrow (x_{{n+1}}, x_{{n+1}})\\\\"
-            f"\\text{{For the first iteration, the vertical line from }} x_1 \\text{{ meets the curve }} y = F(x) \\text{{ at:}} &\\\\"
-            f"y &= F(x_1)\\\\"
-            f"\\text{{The horizontal line from this point meets the line }} y = x \\text{{ where:}} &\\\\"
-            f"x_2 &= F(x_1)\\\\"
-            f"\\text{{Substituting the values from the geometric construction:}} &\\\\"
-            f"x_2 &= \\sqrt{{x_1 + c}}\\\\"
-            f"&= \\sqrt{{{round(self.x1, 10)} + {round(self.c, 10)}}}\\\\"
-            f"&= \\sqrt{{{round(self.x1 + self.c, 10)}}}\\\\"
-            f"&= {self.answer}"
+            f"\\text{{The iterative formula is given by:}} &\\\\"
+            f"x_{{n+1}} &= g(x_n) = {self.a}x_n^2 - {self.c}\\\\"
+            f"\\text{{The target interval is:}} & [{self.range_a}, {self.range_b}]\\\\"
+            f"\\text{{Initial value:}} & x_0 = {self.x0}\\\\"
+        )
+
+        curr_x_reasoning = self.x0
+        for i in range(self.answer):
+            next_x_reasoning = self.a * (curr_x_reasoning ** 2) - self.c
+            self.reasoning += (
+                f"\\text{{Iteration {i+1}:}} &\\\\"
+                f"x_{{{i+1}}} &= {self.a}({round(curr_x_reasoning, 10)})^2 - {self.c}\\\\"
+                f"&= {round(next_x_reasoning, 10)}\\\\"
+            )
+            curr_x_reasoning = next_x_reasoning
+
+        self.reasoning += (
+            f"\\text{{Since }} x_{{{self.answer}}} \\text{{ is outside the interval }}[{self.range_a}, {self.range_b}], \\\\"
+            f"\\text{{Total iterations}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
+        def g(x):
+            return self.a * (x ** 2) - self.c
+
         fig, ax = plt.subplots(figsize=(8, 8))
         
-        def F(x): return np.sqrt(x + self.c)
+        # Plotting range
+        x_min = max(0, self.range_a - 2)
+        x_max = self.range_b + 2
+        x_vals = np.linspace(x_min, x_max, 500)
         
-        # Root calculation for plot limits
-        real_root = (1 + math.sqrt(1 + 4 * self.c)) / 2
-        limit = math.ceil(real_root) + 0.5
+        ax.plot(x_vals, x_vals, color='blue', linestyle='--', label='$y=x$', alpha=0.6)
+        ax.plot(x_vals, g(x_vals), color='red', lw=2, label=f'$g(x) = {self.a}x^2 - {self.c}$')
         
-        x_vals = np.linspace(0, limit, 500)
+        # Cobweb path
+        curr_x = self.x0
+        path_pts = [(curr_x, 0), (curr_x, curr_x)]
         
-        # Plot identity line and curve
-        ax.plot(x_vals, x_vals, color='blue', lw=2, label='$y=x$')
-        ax.plot(x_vals, F(x_vals), color='red', lw=2, label='$y=F(x)$')
+        actual_x = self.x0
+        for _ in range(self.answer):
+            next_y = g(actual_x)
+            path_pts.append((actual_x, next_y)) # Vertical to curve
+            path_pts.append((next_y, next_y))   # Horizontal to y=x
+            actual_x = next_y
+            if actual_x < x_min or actual_x > x_max:
+                break
+                
+        px, py = zip(*path_pts)
+        ax.plot(px, py, color='black', lw=1.2)
         
-        # Draw the first iteration step (Staircase)
-        # Vertical from x1 to curve
-        ax.plot([self.x1, self.x1], [0, self.val_x2], color='black', lw=1.5)
-        # Horizontal from curve to y=x
-        ax.plot([self.x1, self.val_x2], [self.val_x2, self.val_x2], color='black', lw=1.5)
-        # Drop down to x-axis to clearly indicate x2
-        ax.plot([self.val_x2, self.val_x2], [self.val_x2, 0], color='gray', lw=1, linestyle='--')
+        # Directional arrows
+        for i in range(2, len(path_pts)):
+            start_p = path_pts[i-1]
+            end_p = path_pts[i]
+            mid_p = ((start_p[0] + end_p[0])/2, (start_p[1] + end_p[1])/2)
+            ax.annotate('', xy=end_p, xytext=mid_p,
+                        arrowprops=dict(arrowstyle='->', color='black', lw=1, mutation_scale=10))
 
-        # Axis markings
-        ax.text(self.x1, -0.1, '$x_1$', ha='center', fontsize=14, fontweight='bold')
-        ax.text(self.val_x2, -0.1, '$x_2$', ha='center', fontsize=14, fontweight='bold', color='darkgreen')
+        # Annotate x0
+        ax.text(self.x0, -0.4, '$x_0$', ha='center', fontsize=12, fontweight='bold')
+        
+        # Mark boundaries
+        ax.axvline(self.range_a, color='green', lw=2, linestyle='-')
+        ax.axvline(self.range_b, color='green', lw=2, linestyle='-')
+        ax.axvspan(self.range_a, self.range_b, color='green', alpha=0.05)
 
-        # Set dense grid for precise visual extraction
-        ax.set_xticks(np.arange(0, limit + 0.1, 0.1), minor=True)
-        ax.set_xticks(np.arange(0, limit + 0.5, 0.5))
-        ax.set_yticks(np.arange(0, limit + 0.1, 0.1), minor=True)
-        ax.set_yticks(np.arange(0, limit + 0.5, 0.5))
-        
-        ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='gray', alpha=0.5)
-        ax.grid(True, which='minor', linestyle=':', linewidth=0.4, color='gray', alpha=0.3)
-        
-        ax.set_xlim(0, limit)
-        ax.set_ylim(0, limit)
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(min(-1, g(x_min)), x_max)
         ax.set_aspect('equal')
-        ax.set_xlabel("$x$")
-        ax.set_ylabel("$y$")
-        ax.legend(loc='upper left')
-
+        ax.grid(True, linestyle=':', alpha=0.6)
+        ax.legend(loc='upper left', fontsize=10)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
