@@ -1,5 +1,6 @@
 import random as rnd
 import os
+import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
@@ -59,28 +60,71 @@ class Phy051:
         fig, ax = plt.subplots(figsize=(6, 4))
         setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
 
-        # Outer loop wires
-        draw_wire(ax, [(2, 2), (2, 8), (8.5, 8), (8.5, 2), (2, 2)], lw=2)
+        # Layout
+        top_y, bot_y = 8.0, 2.0
+        left_x, right_x = 2.0, 8.5
 
-        # Cell on left side
-        ax.plot([2, 2], [8, 7], linewidth=2, color="black")
-        ax.plot([2, 2], [3, 2], linewidth=2, color="black")
-        draw_cell_vertical(ax, x=2, y_bottom=3, y_top=7, value_text=f"{self.Vs} V")
+        # Cell placement on left vertical
+        y_cell_top = top_y - 1.0   # 7.0
+        y_cell_bot = bot_y + 1.0   # 3.0
 
-        # R1 and R2 on top wire
-        draw_resistor_box(ax, x=4.5, y=8, label="R1", value_text=f"{self.R1} Ω")
-        draw_resistor_box(ax, x=6.9, y=8, label="R2", value_text=f"{self.R2} Ω")
+        # --- Ammeter inline on bottom wire (wire stops at circle edge) ---
+        x_A = (left_x + right_x) / 2
+        r_A = 0.45
+        A_left  = (x_A - r_A, bot_y)
+        A_right = (x_A + r_A, bot_y)
 
-        # Ammeter on bottom wire
-        draw_circle_meter(ax, x=5.25, y=2, letter="A")
+        # Bottom wire split by ammeter
+        draw_wire(ax, [(left_x, bot_y), A_left], lw=2)
+        draw_wire(ax, [A_right, (right_x, bot_y)], lw=2)
 
-        # Voltmeter across R2 (simple parallel loop above R2)
-        # Tap points near R2 ends
-        draw_wire(ax, [(6.3, 8), (6.3, 9.2)], lw=2)
-        draw_wire(ax, [(7.5, 8), (7.5, 9.2)], lw=2)
-        draw_wire(ax, [(6.3, 9.2), (6.8, 9.2)], lw=2)
-        draw_wire(ax, [(7.0, 9.2), (7.5, 9.2)], lw=2)
-        draw_circle_meter(ax, x=6.9, y=9.2, letter="V", r=0.35, fontsize=12)
+        # Right side vertical (continuous)
+        draw_wire(ax, [(right_x, bot_y), (right_x, top_y)], lw=2)
+
+        # Left side split for cell
+        draw_wire(ax, [(left_x, top_y), (left_x, y_cell_top)], lw=2)
+        draw_wire(ax, [(left_x, y_cell_bot), (left_x, bot_y)], lw=2)
+        draw_cell_vertical(ax, x=left_x, y_bottom=y_cell_bot, y_top=y_cell_top,
+                        value_text=f"{self.Vs} V", fontsize=10)
+
+        # ---- Series resistors on the top wire (wire meets resistor edges) ----
+        wR, hR = 1.2, 0.6
+        span = right_x - left_x
+
+        x_R1 = left_x + 0.40 * span
+        x_R2 = left_x + 0.75 * span
+
+        r1_left  = (x_R1 - wR/2, top_y)
+        r1_right = (x_R1 + wR/2, top_y)
+        r2_left  = (x_R2 - wR/2, top_y)
+        r2_right = (x_R2 + wR/2, top_y)
+
+        draw_wire(ax, [(left_x, top_y), r1_left], lw=2)
+        draw_wire(ax, [r1_right, r2_left], lw=2)
+        draw_wire(ax, [r2_right, (right_x, top_y)], lw=2)
+
+        draw_resistor_box(ax, x=x_R1, y=top_y, w=wR, h=hR, label="R1",
+                        value_text=f"{self.R1} Ω", fontsize=10)
+        draw_resistor_box(ax, x=x_R2, y=top_y, w=wR, h=hR, label="R2",
+                        value_text=f"{self.R2} Ω", fontsize=10)
+
+        # Draw ammeter symbol AFTER wires so it sits cleanly on top
+        draw_circle_meter(ax, x=x_A, y=bot_y, letter="A", r=r_A, fontsize=10)
+
+        # ---- Voltmeter across R2 (wire stops at voltmeter circle edge) ----
+        x_vm = x_R2
+        y_vm = top_y + 1.2
+        r_vm = 0.35
+
+        # vertical leads from R2 ends up to voltmeter level
+        draw_wire(ax, [r2_left,  (r2_left[0],  y_vm)], lw=2)
+        draw_wire(ax, [r2_right, (r2_right[0], y_vm)], lw=2)
+
+        # horizontal leads to voltmeter circle edge
+        draw_wire(ax, [(r2_left[0],  y_vm), (x_vm - r_vm, y_vm)], lw=2)
+        draw_wire(ax, [(x_vm + r_vm, y_vm), (r2_right[0], y_vm)], lw=2)
+
+        draw_circle_meter(ax, x=x_vm, y=y_vm, letter="V", r=r_vm, fontsize=10)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -153,25 +197,38 @@ class Phy052:
         top_y, bot_y = 8.0, 2.5
         left_x, right_x = 2.0, 8.0
 
-        # buses
-        draw_wire(ax, [(left_x, top_y), (right_x, top_y)], lw=2)
+        # --- Ammeter inline on top bus (wire stops at circle edge) ---
+        x_A, y_A = 4.1, top_y
+        r_A = 0.45
+        A_left  = (x_A - r_A, y_A)
+        A_right = (x_A + r_A, y_A)
+
+        # Top bus split by ammeter
+        draw_wire(ax, [(left_x, top_y), A_left], lw=2)
+        draw_wire(ax, [A_right, (right_x, top_y)], lw=2)
+
+        # Bottom bus (continuous)
         draw_wire(ax, [(left_x, bot_y), (right_x, bot_y)], lw=2)
 
-        # cell inserted on left vertical
+        # Left vertical split for cell
         draw_wire(ax, [(left_x, top_y), (left_x, 7.5)], lw=2)
         draw_wire(ax, [(left_x, 3.0), (left_x, bot_y)], lw=2)
-        draw_cell_vertical(ax, x=left_x, y_bottom=3.0, y_top=7.5, value_text=f"{self.Vs} V")
+        draw_cell_vertical(ax, x=left_x, y_bottom=3.0, y_top=7.5,
+                        value_text=f"{self.Vs} V", fontsize=10)
 
-        # ammeter (symbol only)
-        draw_circle_meter(ax, x=4.1, y=top_y, letter="A")
+        # Draw ammeter symbol AFTER wires
+        draw_circle_meter(ax, x=x_A, y=y_A, letter="A", r=r_A, fontsize=10)
 
-        # branches
+        # Branches
         x1, x2 = 5.6, 7.3
-        r1_top, r1_bot = draw_resistor_box(ax, x=x1, y=5.6, label="R1", value_text=f"{self.R1} Ω", fontsize=14)
+
+        r1_top, r1_bot = draw_resistor_box(ax, x=x1, y=5.6, label="R1",
+                                        value_text=f"{self.R1} Ω", fontsize=10)
         draw_wire(ax, [(x1, top_y), (x1, r1_top)], lw=2)
         draw_wire(ax, [(x1, r1_bot), (x1, bot_y)], lw=2)
 
-        r2_top, r2_bot = draw_resistor_box(ax, x=x2, y=5.6, label="R2", value_text=f"{self.R2} Ω", fontsize=14)
+        r2_top, r2_bot = draw_resistor_box(ax, x=x2, y=5.6, label="R2",
+                                        value_text=f"{self.R2} Ω", fontsize=10)
         draw_wire(ax, [(x2, top_y), (x2, r2_top)], lw=2)
         draw_wire(ax, [(x2, r2_bot), (x2, bot_y)], lw=2)
 
@@ -239,26 +296,26 @@ class Phy053:
         # left vertical with cell
         draw_wire(ax, [(left_x, top_y), (left_x, 7.0)], lw=2)
         draw_wire(ax, [(left_x, 3.0), (left_x, bot_y)], lw=2)
-        draw_cell_vertical(ax, x=left_x, y_bottom=3.0, y_top=7.0, value_text=f"{self.Vs} V", fontsize=14)
+        draw_cell_vertical(ax, x=left_x, y_bottom=3.0, y_top=7.0, value_text=f"{self.Vs} V", fontsize=10)
 
         # fixed resistor (connect to its TRUE top/bottom)
-        rf_top, rf_bot = draw_resistor_box(ax, x=x_div, y=6.3, label="R", value_text=f"{self.R_fixed} Ω", fontsize=14)
+        rf_top, rf_bot = draw_resistor_box(ax, x=x_div, y=7.3, label="R", value_text=f"{self.R_fixed} Ω", fontsize=10)
         draw_wire(ax, [(x_div, top_y), (x_div, rf_top)], lw=2)
 
         # thermistor
-        rt_top, rt_bot = draw_thermistor(ax, x=x_div, y=3.3, label="NTC", value_text=f"{self.R_T} Ω", fontsize=14)
+        rt_top, rt_bot = draw_thermistor(ax, x=x_div, y=3.0, label="NTC", value_text=f"{self.R_T} Ω", fontsize=10)
         draw_wire(ax, [(x_div, rf_bot), (x_div, rt_top)], lw=2)
         draw_wire(ax, [(x_div, rt_bot), (x_div, bot_y)], lw=2)
 
         # voltmeter across thermistor (use meter terminals so it touches the circle)
-        V = draw_circle_meter(ax, x=7.5, y=3.2, letter="V", r=0.55, fontsize=14)
+        V = draw_circle_meter(ax, x=7.5, y=2.7, letter="V", r=0.45, fontsize=10)
 
         junction = (x_div, rt_top)   # top of thermistor
         draw_wire(ax, [junction, (7.5, rt_top)], lw=2)
         draw_wire(ax, [(7.5, rt_top), V["top"]], lw=2)
         draw_wire(ax, [(7.5, bot_y), V["bottom"]], lw=2)
 
-        draw_text(ax, 8.1, 4.1, "Vout", fontsize=14, ha="left", boxed=True)
+        draw_text(ax, 8.1, 2.7, "Vout", fontsize=10, ha="left", boxed=True)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -267,18 +324,34 @@ class Phy053:
 
 class Phy054:
     """
-    Bar magnet with a point P above the center.
-    Options A,B,C,D are arrows: A=up, B=right, C=down, D=left.
-    Ask which arrow shows the magnetic field direction at P.
+    Bar magnet + point P. Arrow labels A/B/C/D are SHUFFLED each time.
+    Also randomizes magnet orientation (horizontal/vertical) + pole arrangement + P location.
     """
 
     def __init__(self):
-        # Randomly choose magnet orientation
-        self.N_on_left = rnd.choice([True, False])
+        # 1) Randomize magnet orientation
+        self.orientation = rnd.choice(["horizontal", "vertical"])
 
-        # At a point above the middle, direction is from N to S along the top:
-        # If N left -> field points right; if N right -> field points left
-        self.answer = "B" if self.N_on_left else "D"
+        # 2) Randomize pole arrangement + choose a P location with an unambiguous local field direction
+        if self.orientation == "horizontal":
+            self.N_on_left = rnd.choice([True, False])
+            self.P_pos = rnd.choice(["above", "below"])  # visual variety
+            # At a point above/below the center, field is from N to S (left<->right)
+            self.correct_dir = "right" if self.N_on_left else "left"
+        else:
+            self.N_on_top = rnd.choice([True, False])
+            self.P_pos = rnd.choice(["left", "right"])   # visual variety
+            # At a point left/right of the center, field is from N to S (top<->bottom)
+            self.correct_dir = "down" if self.N_on_top else "up"
+
+        # 3) Shuffle which letter labels which direction (many versions)
+        dirs = ["up", "right", "down", "left"]
+        letters = ["A", "B", "C", "D"]
+        rnd.shuffle(letters)
+        self.dir_to_label = dict(zip(dirs, letters))
+
+        # Answer is the label on the correct direction arrow
+        self.answer = self.dir_to_label[self.correct_dir]
 
         self.description = (
             "A bar magnet is shown with a point P. "
@@ -288,14 +361,16 @@ class Phy054:
         self.subtopic = "Electromagnetic effects"
         self.source = "Original"
         self.curriculum = "IGCSE"
+
+        # Reasoning includes the shuffled label mapping
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Pole on the left}} &= {'\\text{North (N)}' if self.N_on_left else '\\text{South (S)}'}\\\\"
-            f"\\text{{Pole on the right}} &= {'\\text{South (S)}' if self.N_on_left else '\\text{North (N)}'}\\\\"
-            "\\text{{Magnetic field lines direction}} &: \\text{From North to South outside the magnet}\\\\"
-            "\\text{{At point P (above the magnet):}} &\\\\"
-            f"\\text{{Field lines travel from }} {'\\text{left to right}' if self.N_on_left else '\\text{right to left}'} \\text{{ to reach the South pole}}\\\\"
-            f"\\text{{Direction at P}} &= {'\\text{Right (B)}' if self.N_on_left else '\\text{Left (D)}'}\\\\"
+            "\\text{Magnetic field lines outside a magnet go from N to S.}\\\\"
+            f"\\text{{Magnet orientation}} &= \\text{{{self.orientation}}}\\\\"
+            f"\\text{{Point location}} &= \\text{{{self.P_pos}}}\\\\"
+            f"\\text{{Direction of field at P}} &= \\text{{{self.correct_dir}}}\\\\"
+            f"\\text{{Arrow labels: Up={self.dir_to_label['up']}, Right={self.dir_to_label['right']}, "
+            f"Down={self.dir_to_label['down']}, Left={self.dir_to_label['left']}}}\\\\"
             f"\\text{{Final Answer}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -305,27 +380,50 @@ class Phy054:
         fig, ax = plt.subplots(figsize=(6, 3.8))
         setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
 
-        # Magnet body
-        mag = patches.Rectangle((2, 4), 6, 2, fill=False, linewidth=2, edgecolor="black")
-        ax.add_patch(mag)
+        # --- Draw magnet + poles + point P depending on orientation ---
+        if self.orientation == "horizontal":
+            # Magnet body
+            mag = patches.Rectangle((2, 4), 6, 2, fill=False, linewidth=2, edgecolor="black")
+            ax.add_patch(mag)
 
-        # Label poles
-        if self.N_on_left:
-            ax.text(2.6, 5, "N", ha="center", va="center", fontsize=14)
-            ax.text(7.4, 5, "S", ha="center", va="center", fontsize=14)
+            # Poles
+            if self.N_on_left:
+                ax.text(2.6, 5, "N", ha="center", va="center", fontsize=14)
+                ax.text(7.4, 5, "S", ha="center", va="center", fontsize=14)
+            else:
+                ax.text(2.6, 5, "S", ha="center", va="center", fontsize=14)
+                ax.text(7.4, 5, "N", ha="center", va="center", fontsize=14)
+
+            # Point P: above or below
+            xP = 5.0
+            yP = 8.0 if self.P_pos == "above" else 2.5
         else:
-            ax.text(2.6, 5, "S", ha="center", va="center", fontsize=14)
-            ax.text(7.4, 5, "N", ha="center", va="center", fontsize=14)
+            # Vertical magnet body
+            mag = patches.Rectangle((4, 2), 2, 6, fill=False, linewidth=2, edgecolor="black")
+            ax.add_patch(mag)
 
-        # Point P
-        ax.plot([5], [8], marker="o", markersize=5, color="black")
-        ax.text(5.2, 8.0, "P", ha="left", va="center", fontsize=12)
+            # Poles
+            if self.N_on_top:
+                ax.text(5.0, 7.4, "N", ha="center", va="center", fontsize=14)
+                ax.text(5.0, 2.6, "S", ha="center", va="center", fontsize=14)
+            else:
+                ax.text(5.0, 7.4, "S", ha="center", va="center", fontsize=14)
+                ax.text(5.0, 2.6, "N", ha="center", va="center", fontsize=14)
 
-        # Option arrows around P: A up, B right, C down, D left
-        arrow(ax, 5, 8, 0, 1.2, label="A", label_offset=(0.0, 0.25))
-        arrow(ax, 5, 8, 1.2, 0, label="B", label_offset=(0.25, 0.0))
-        arrow(ax, 5, 8, 0, -1.2, label="C", label_offset=(0.0, -0.25))
-        arrow(ax, 5, 8, -1.2, 0, label="D", label_offset=(-0.25, 0.0))
+            # Point P: left or right
+            yP = 5.0
+            xP = 2.5 if self.P_pos == "left" else 7.5
+
+        # Draw point P
+        ax.plot([xP], [yP], marker="o", markersize=5, color="black")
+        ax.text(xP + 0.2, yP, "P", ha="left", va="center", fontsize=12)
+
+        # --- Draw option arrows around P, but labels are SHUFFLED ---
+        L = 1.2
+        arrow(ax, xP, yP, 0,  L, label=self.dir_to_label["up"],    label_offset=(0.0,  0.25))
+        arrow(ax, xP, yP, L,  0, label=self.dir_to_label["right"], label_offset=(0.25, 0.0))
+        arrow(ax, xP, yP, 0, -L, label=self.dir_to_label["down"],  label_offset=(0.0, -0.25))
+        arrow(ax, xP, yP, -L, 0, label=self.dir_to_label["left"],  label_offset=(-0.25, 0.0))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -334,28 +432,42 @@ class Phy054:
 
 class Phy055:
     """
-    Wire between magnet poles with a shown B-field direction.
-    Current is either into the page (×) or out of the page (•).
-    Options A,B,C,D are arrows around the wire: A=up, B=right, C=down, D=left.
-    Ask direction of force on the wire.
+    Force on a current-carrying conductor in a magnetic field.
+    Randomizes:
+      - B direction axis (horizontal or vertical)
+      - B direction sign (+/-)
+      - current direction (into/out of page)
+      - SHUFFLES labels A/B/C/D on the four option arrows
     """
 
     def __init__(self):
-        # Choose field direction and current direction
-        # B_dir = +1 means left->right, -1 means right->left
-        self.B_dir = rnd.choice([1, -1])
-        # I_dir = +1 means out of page (•, +z), -1 means into page (×, -z)
+        # Randomize field axis and direction
+        self.B_axis = rnd.choice(["x", "y"])     # x = horizontal, y = vertical
+        self.B_dir = rnd.choice([1, -1])         # + means right/up; - means left/down
+
+        # Current direction: +1 out of page (dot), -1 into page (cross)
         self.I_dir = rnd.choice([1, -1])
 
-        # Using F ∝ I × B:
-        # If B is +x and I is -z -> F is -y (down)
-        # If B is +x and I is +z -> F is +y (up)
-        # Reversing B flips force.
-        # So force is vertical; options are A (up) or C (down).
-        # Determine sign of y:
-        # y_sign = I_dir * B_dir (because (+z)×(+x)=+y, (-z)×(+x)=-y, etc.)
-        y_sign = self.I_dir * self.B_dir
-        self.answer = "A" if y_sign > 0 else "C"
+        # Compute force direction using F = I x B with I along ±z
+        # If B=(Bx,By,0) and I=(0,0,I):
+        # Fx = -I*By, Fy = I*Bx
+        Bx = self.B_dir if self.B_axis == "x" else 0
+        By = self.B_dir if self.B_axis == "y" else 0
+        Fx = -self.I_dir * By
+        Fy =  self.I_dir * Bx
+
+        if Fx != 0:
+            self.correct_dir = "right" if Fx > 0 else "left"
+        else:
+            self.correct_dir = "up" if Fy > 0 else "down"
+
+        # Shuffle labels on the four arrows (huge variety)
+        dirs = ["up", "right", "down", "left"]
+        letters = ["A", "B", "C", "D"]
+        rnd.shuffle(letters)
+        self.dir_to_label = dict(zip(dirs, letters))
+
+        self.answer = self.dir_to_label[self.correct_dir]
 
         self.description = (
             "A wire is placed in a magnetic field as shown. The current direction is given on the diagram. "
@@ -365,53 +477,77 @@ class Phy055:
         self.subtopic = "Electromagnetic effects"
         self.source = "Original"
         self.curriculum = "IGCSE"
+
+        # Reasoning includes the shuffled mapping
+        B_text = (
+            ("right" if self.B_dir == 1 else "left") if self.B_axis == "x"
+            else ("up" if self.B_dir == 1 else "down")
+        )
+        I_text = "out of page (•)" if self.I_dir == 1 else "into page (×)"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Magnetic field direction (B)}} &= {'\\text{{Left to Right}}' if self.B_dir == 1 else '\\text{{Right to Left}}'}\\\\"
-            f"\\text{{Current direction (I)}} &= {'\\text{{Out of the page (\\textbullet)}}' if self.I_dir == 1 else '\\text{{Into the page (\\texttimes)}}'}\\\\"
-            "\\text{{Using Fleming's Left-Hand Rule:}} &\\\\"
-            "\\text{{First finger}} &= \\text{{Field (B)}}\\\\"
-            "\\text{{Second finger}} &= \\text{{Current (I)}}\\\\"
-            "\\text{{Thumb}} &= \\text{{Force (F)}}\\\\"
-            "\\text{{Applying the rule:}} &\\\\"
-            f"\\text{{Force direction}} &= {'\\text{{Upward (A)}}' if (self.I_dir * self.B_dir) > 0 else '\\text{{Downward (C)}}'}\\\\"
+            "\\text{Use }\\vec{F}\\propto \\vec{I}\\times\\vec{B}.\\\\"
+            f"\\text{{Magnetic field direction}} &= \\text{{{B_text}}}\\\\"
+            f"\\text{{Current direction}} &= \\text{{{I_text}}}\\\\"
+            f"\\text{{Force direction}} &= \\text{{{self.correct_dir}}}\\\\"
+            f"\\text{{Arrow labels: Up={self.dir_to_label['up']}, Right={self.dir_to_label['right']}, "
+            f"Down={self.dir_to_label['down']}, Left={self.dir_to_label['left']}}}\\\\"
             f"\\text{{Final Answer}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
-        
+
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(6, 4))
         setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
 
-        # Magnet poles blocks
-        left = patches.Rectangle((1.2, 3), 2, 4, fill=False, linewidth=2, edgecolor="black")
-        right = patches.Rectangle((6.8, 3), 2, 4, fill=False, linewidth=2, edgecolor="black")
-        ax.add_patch(left)
-        ax.add_patch(right)
+        # Wire position
+        xW, yW = 5.0, 5.0
 
-        # Label N/S to match B direction
-        if self.B_dir == 1:
-            ax.text(2.2, 5, "N", ha="center", va="center", fontsize=14)
-            ax.text(7.8, 5, "S", ha="center", va="center", fontsize=14)
+        # --- Draw magnet blocks depending on B-axis ---
+        if self.B_axis == "x":
+            # Side-by-side blocks
+            left = patches.Rectangle((1.2, 3), 2, 4, fill=False, linewidth=2, edgecolor="black")
+            right = patches.Rectangle((6.8, 3), 2, 4, fill=False, linewidth=2, edgecolor="black")
+            ax.add_patch(left)
+            ax.add_patch(right)
+
+            # Poles define B direction across the gap (N -> S)
+            if self.B_dir == 1:  # field to the right
+                ax.text(2.2, 5, "N", ha="center", va="center", fontsize=14)
+                ax.text(7.8, 5, "S", ha="center", va="center", fontsize=14)
+                arrow(ax, 3.5, 8.2, 3.0, 0.0, label=None)
+            else:                # field to the left
+                ax.text(2.2, 5, "S", ha="center", va="center", fontsize=14)
+                ax.text(7.8, 5, "N", ha="center", va="center", fontsize=14)
+                arrow(ax, 6.5, 8.2, -3.0, 0.0, label=None)
         else:
-            ax.text(2.2, 5, "S", ha="center", va="center", fontsize=14)
-            ax.text(7.8, 5, "N", ha="center", va="center", fontsize=14)
+            # Top-bottom blocks
+            top = patches.Rectangle((3.0, 6.8), 4.0, 2.0, fill=False, linewidth=2, edgecolor="black")
+            bottom = patches.Rectangle((3.0, 1.2), 4.0, 2.0, fill=False, linewidth=2, edgecolor="black")
+            ax.add_patch(top)
+            ax.add_patch(bottom)
 
-        # B-field arrow across the gap (centered)
-        if self.B_dir == 1:
-            arrow(ax, 3.5, 8.2, 3.0, 0.0, label=None)
-        else:
-            arrow(ax, 6.5, 8.2, -3.0, 0.0, label=None)
+            # Poles define B direction (N -> S) vertically through the gap
+            if self.B_dir == 1:  # field up
+                ax.text(5.0, 2.2, "N", ha="center", va="center", fontsize=14)
+                ax.text(5.0, 7.8, "S", ha="center", va="center", fontsize=14)
+                arrow(ax, 8.8, 3.5, 0.0, 3.0, label=None)
+            else:                # field down
+                ax.text(5.0, 2.2, "S", ha="center", va="center", fontsize=14)
+                ax.text(5.0, 7.8, "N", ha="center", va="center", fontsize=14)
+                arrow(ax, 8.8, 6.5, 0.0, -3.0, label=None)
 
-        # Wire at center with current symbol
-        draw_current_symbol(ax, x=5, y=5, direction=self.I_dir, r=0.40, lw=2)
+        # Current symbol at the wire (must be visible!)
+        draw_current_symbol(ax, x=xW, y=yW, direction=self.I_dir, r=0.40, lw=2)
 
-        # Option arrows around the wire: A up, B right, C down, D left
-        arrow(ax, 5, 5, 0, 1.5, label="A", label_offset=(0.0, 0.25))
-        arrow(ax, 5, 5, 1.5, 0, label="B", label_offset=(0.25, 0.0))
-        arrow(ax, 5, 5, 0, -1.5, label="C", label_offset=(0.0, -0.25))
-        arrow(ax, 5, 5, -1.5, 0, label="D", label_offset=(-0.25, 0.0))
+        # Option arrows around the wire with SHUFFLED labels
+        L = 1.5
+        arrow(ax, xW, yW, 0,  L, label=self.dir_to_label["up"],    label_offset=(0.0,  0.25))
+        arrow(ax, xW, yW, L,  0, label=self.dir_to_label["right"], label_offset=(0.25, 0.0))
+        arrow(ax, xW, yW, 0, -L, label=self.dir_to_label["down"],  label_offset=(0.0, -0.25))
+        arrow(ax, xW, yW, -L, 0, label=self.dir_to_label["left"],  label_offset=(-0.25, 0.0))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -696,4 +832,290 @@ class Phy058:
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy059:
+    """
+    SI units (prefixes), uses Q = I t
+    """
+    def __init__(self):
+        # Randomised readings
+        self.I_mA = rnd.randint(10, 99) / 10      # 1.0 to 9.9 mA (1 d.p.)
+        self.t_ms = rnd.randint(20, 250)          # 20 to 250 ms
+
+        # Calculation
+        self.q_C = self.I_mA * self.t_ms * 1e-6   # (mA)(ms) = microcoulomb = 1e-6 C
+        self.answer = sig_figs(self.q_C, 3)      # answer stored in C (3 s.f.)
+
+        # Metadata
+        self.topic = "Physical quantities and units"
+        self.subtopic = "SI units"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.description = (
+            f"An ammeter shows a current of {self.I_mA:.1f} mA flowing for {self.t_ms} ms (see image). "
+            "Calculate the charge transferred. Give your answer in coulombs (C).\n"
+            "Charge transferred = (_) C"
+        )
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Current, }} I &= {self.I_mA:.1f}\\,\\text{{mA}}\\\\"
+            f"\\text{{Time, }} t &= {self.t_ms}\\,\\text{{ms}}\\\\"
+            "\\text{{Convert to SI base units:}} &\\\\"
+            f"I &= {self.I_mA:.1f} \\times 10^{{-3}}\\,\\text{{A}} = {round(self.I_mA * 1e-3, 10)}\\,\\text{{A}}\\\\"
+            f"t &= {self.t_ms} \\times 10^{{-3}}\\,\\text{{s}} = {round(self.t_ms * 1e-3, 10)}\\,\\text{{s}}\\\\"
+            "\\text{{The charge transferred is given by:}} &\\\\"
+            "Q &= I \\times t\\\\"
+            f"&= ({round(self.I_mA * 1e-3, 10)}\\,\\text{{A}}) \\times ({round(self.t_ms * 1e-3, 10)}\\,\\text{{s}})\\\\"
+            f"&= {self.answer}\\,\\text{{C}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        # Draw a simple “ammeter + timer” diagram with randomised readings
+        fig, ax = plt.subplots(figsize=(7, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 5)
+        ax.axis("off")
+
+        # Ammeter body
+        am = patches.FancyBboxPatch(
+            (0.7, 1.6), 4.0, 2.8,
+            boxstyle="round,pad=0.25,rounding_size=0.25",
+            linewidth=2, edgecolor="black", facecolor="white"
+        )
+        ax.add_patch(am)
+        ax.text(2.7, 3.6, "A", fontsize=28, fontweight="bold", ha="center", va="center")
+        ax.text(
+            2.7, 2.4, f"{self.I_mA:.1f} mA",
+            fontsize=14, ha="center", va="center",
+            bbox=dict(facecolor="white", edgecolor="black", pad=0.4)
+        )
+        ax.text(2.7, 4.35, "ammeter", fontsize=10, ha="center", va="bottom")
+
+        # Timer / stopwatch
+        sw = patches.Circle((7.4, 3.0), 1.35, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(sw)
+        ax.add_patch(
+            patches.Rectangle((7.05, 4.45), 0.7, 0.35,
+                              fill=True, facecolor="white", edgecolor="black", linewidth=2)
+        )
+        ax.text(
+            7.4, 3.0, f"{self.t_ms} ms",
+            fontsize=14, ha="center", va="center",
+            bbox=dict(facecolor="white", edgecolor="black", pad=0.35)
+        )
+        ax.text(7.4, 4.85, "timer", fontsize=10, ha="center", va="bottom")
+
+        ax.text(5.0, 0.7, "Current flows for the time shown", fontsize=10, ha="center", va="center")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+
+class Phy060:
+    """
+    Errors and uncertainties, propagation for v = L/t
+    """
+    def __init__(self):
+        # Randomised measurements
+        self.L = rnd.randint(60, 180) / 100                 # 0.60 to 1.80 m (2 d.p.)
+        self.dL = rnd.choice([0.001, 0.002, 0.003, 0.005])  # m
+        self.t = rnd.randint(15, 60) / 10                   # 1.5 to 6.0 s (1 d.p.)
+        self.dt = rnd.choice([0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.10, 0.12, 0.15])  # s
+
+        # Calculations
+        self.v = self.L / self.t
+        self.frac_unc = (self.dL / self.L) + (self.dt / self.t)   # add fractional uncertainties
+        self.perc_unc = self.frac_unc * 100
+        self.dv = self.v * self.frac_unc
+
+        self.v_ans = sig_figs(self.v, 3)
+        self.dv_ans = sig_figs(self.dv, 2)  # uncertainty typically 1–2 s.f.
+        self.answer = f"{self.v_ans} ± {self.dv_ans} m s⁻¹"
+        self.topic = "Physical quantities and units"
+        self.subtopic = "Errors and uncertainties"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.description = (
+            "A trolley travels a measured distance and the time taken is recorded (see image).\n"
+            f"Distance: L = {self.L:.2f} ± {self.dL:.3f} m\n"
+            f"Time: t = {self.t:.1f} ± {self.dt:.2f} s\n"
+            "Calculate the speed v and the absolute uncertainty in v.\n"
+            "v = (_) ± (_) m s⁻¹"
+        )
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Measured distance, }} L &= {self.L:.2f} \\pm {self.dL:.3f}\\,\\text{{m}}\\\\"
+            f"\\text{{Measured time, }} t &= {self.t:.1f} \\pm {self.dt:.2f}\\,\\text{{s}}\\\\"
+            "\\text{{The speed }} v \\text{{ is calculated using:}} &\\\\"
+            "v &= \\frac{L}{t}\\\\"
+            f"&= \\frac{{{self.L:.2f}}}{{{self.t:.1f}}}\\\\"
+            f"&= {round(self.v, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{For a quotient, fractional uncertainties are added:}} &\\\\"
+            "\\frac{\\Delta v}{v} &= \\frac{\\Delta L}{L} + \\frac{\\Delta t}{t}\\\\"
+            f"&= \\frac{{{self.dL:.3f}}}{{{self.L:.2f}}} + \\frac{{{self.dt:.2f}}}{{{self.t:.1f}}}\\\\"
+            f"&= {round(self.dL / self.L, 10)} + {round(self.dt / self.t, 10)}\\\\"
+            f"&= {round(self.frac_unc, 10)}\\\\"
+            "\\text{{Calculate absolute uncertainty }} \\Delta v: &\\\\"
+            "\\Delta v &= v \\times \\left( \\frac{\\Delta v}{v} \\right)\\\\"
+            f"&= {round(self.v, 10)} \\times {round(self.frac_unc, 10)}\\\\"
+            f"&= {round(self.dv, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(7, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 5)
+        ax.axis("off")
+
+        # Distance double-arrow (cleaner than manual arrows)
+        ax.annotate(
+            "", xy=(1.0, 1.0), xytext=(9.0, 1.0),
+            arrowprops=dict(arrowstyle="<->", linewidth=2, color="black")
+        )
+        ax.text(
+            5.0, 1.35, f"L = {self.L:.2f} ± {self.dL:.3f} m",
+            fontsize=12, ha="center", va="bottom",
+            bbox=dict(facecolor="white", edgecolor="black", pad=0.35)
+        )
+
+        # Stopwatch
+        sw = patches.Circle((2.3, 3.4), 1.0, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(sw)
+        ax.add_patch(
+            patches.Rectangle((2.0, 4.45), 0.6, 0.3,
+                              fill=True, facecolor="white", edgecolor="black", linewidth=2)
+        )
+        ax.text(
+            2.3, 3.4, f"t = {self.t:.1f} ± {self.dt:.2f} s",
+            fontsize=11, ha="center", va="center",
+            bbox=dict(facecolor="white", edgecolor="black", pad=0.25)
+        )
+
+        # Simple trolley
+        cart = patches.Rectangle((6.8, 2.8), 1.8, 1.0, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(cart)
+        ax.add_patch(patches.Circle((7.2, 2.8), 0.18, fill=False, linewidth=2, edgecolor="black"))
+        ax.add_patch(patches.Circle((8.2, 2.8), 0.18, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(7.7, 3.35, "trolley", fontsize=10, ha="center", va="center")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+
+class Phy061:
+    """
+    Scalars and vectors (coplanar addition via components)
+    """
+    def __init__(self):
+        # Randomised forces and angles
+        self.F1 = rnd.randint(4, 10)            # N
+        self.F2 = rnd.randint(3, 9)             # N
+        self.theta1 = rnd.randrange(20, 71, 5)  # degrees above +x
+        self.theta2 = -rnd.randrange(20, 71, 5) # degrees below +x (negative)
+
+        # Components
+        th1 = math.radians(self.theta1)
+        th2 = math.radians(self.theta2)
+
+        self.F1x = self.F1 * math.cos(th1)
+        self.F1y = self.F1 * math.sin(th1)
+        self.F2x = self.F2 * math.cos(th2)
+        self.F2y = self.F2 * math.sin(th2)
+
+        self.Rx = self.F1x + self.F2x
+        self.Ry = self.F1y + self.F2y
+        self.R = math.hypot(self.Rx, self.Ry)
+        self.answer = sig_figs(self.R, 3)      # magnitude (3 s.f.)
+        self.topic = "Physical quantities and units"
+        self.subtopic = "Scalars and vectors"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.description = (
+            "Two forces act at a point as shown (see image).\n"
+            f"F₁ = {self.F1} N at {self.theta1}° above the +x-axis.\n"
+            f"F₂ = {self.F2} N at {abs(self.theta2)}° below the +x-axis.\n"
+            "Calculate the magnitude of the resultant force.\n"
+            "Resultant magnitude = (_) N"
+        )
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Force }} F_1 &= {self.F1}\\,\\text{{N at }} {self.theta1}^\\circ \\text{{ above }} +x\\\\"
+            f"\\text{{Force }} F_2 &= {self.F2}\\,\\text{{N at }} {abs(self.theta2)}^\\circ \\text{{ below }} +x\\\\"
+            "\\text{{Resolve each force into its components:}} &\\\\"
+            "F_{1x} &= F_1 \\cos(\\theta_1) = " + f"{self.F1} \\cos({self.theta1}^\\circ) = {round(self.F1x, 10)}\\,\\text{{N}}\\\\"
+            "F_{1y} &= F_1 \\sin(\\theta_1) = " + f"{self.F1} \\sin({self.theta1}^\\circ) = {round(self.F1y, 10)}\\,\\text{{N}}\\\\"
+            "F_{2x} &= F_2 \\cos(\\theta_2) = " + f"{self.F2} \\cos({self.theta2}^\\circ) = {round(self.F2x, 10)}\\,\\text{{N}}\\\\"
+            "F_{2y} &= F_2 \\sin(\\theta_2) = " + f"{self.F2} \\sin({self.theta2}^\\circ) = {round(self.F2y, 10)}\\,\\text{{N}}\\\\"
+            "\\text{{Sum the components to find the resultant components:}} &\\\\"
+            "R_x &= F_{1x} + F_{2x} = " + f"{round(self.F1x, 10)} + {round(self.F2x, 10)} = {round(self.Rx, 10)}\\,\\text{{N}}\\\\"
+            "R_y &= F_{1y} + F_{2y} = " + f"{round(self.F1y, 10)} + {round(self.F2y, 10)} = {round(self.Ry, 10)}\\,\\text{{N}}\\\\"
+            "\\text{{Calculate the magnitude of the resultant force }} R: &\\\\"
+            "R &= \\sqrt{R_x^2 + R_y^2}\\\\"
+            f"&= \\sqrt{{({round(self.Rx, 10)})^2 + ({round(self.Ry, 10)})^2}}\\\\"
+            f"&= \\sqrt{{{round(self.Rx**2, 10)} + {round(self.Ry**2, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        # Endpoints for arrows
+        th1 = math.radians(self.theta1)
+        th2 = math.radians(self.theta2)
+        x1, y1 = self.F1 * math.cos(th1), self.F1 * math.sin(th1)
+        x2, y2 = self.F2 * math.cos(th2), self.F2 * math.sin(th2)
+
+        max_extent = max(abs(x1), abs(y1), abs(x2), abs(y2), self.F1, self.F2) + 2
+
+        fig, ax = plt.subplots(figsize=(5, 5))
+        ax.set_aspect("equal")
+        ax.set_xlim(-1, max_extent)
+        ax.set_ylim(-max_extent / 1.5, max_extent / 1.2)
+        ax.axis("off")
+
+        # Axes
+        ax.annotate("", xy=(max_extent - 0.4, 0), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.annotate("", xy=(0, max_extent / 1.25), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(max_extent - 0.2, -0.45, "+x", fontsize=10, ha="right", va="top")
+        ax.text(-0.25, max_extent / 1.25, "+y", fontsize=10, ha="right", va="bottom")
+        ax.plot(0, 0, "ko", markersize=5)
+
+        # Vectors (labels include randomised magnitudes)
+        draw_labeled_arrow(ax, (0, 0), (x1, y1), label=f"F₁ = {self.F1} N",
+                           label_position="top", label_offset=0.6, fontsize=10)
+        draw_labeled_arrow(ax, (0, 0), (x2, y2), label=f"F₂ = {self.F2} N",
+                           label_position="bottom", label_offset=0.6, fontsize=10)
+
+        # Angle arcs + labels
+        r1 = min(2.5, self.F1 * 0.5 + 1.2)
+        arc1 = patches.Arc((0, 0), 2 * r1, 2 * r1, angle=0, theta1=0, theta2=self.theta1,
+                           linewidth=1.6, color="black")
+        ax.add_patch(arc1)
+        mid1 = math.radians(self.theta1 / 2)
+        ax.text(r1 * math.cos(mid1) + 0.15, r1 * math.sin(mid1) + 0.15,
+                f"{self.theta1}°", fontsize=10,
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        r2 = min(2.1, self.F2 * 0.5 + 1.0)
+        arc2 = patches.Arc((0, 0), 2 * r2, 2 * r2, angle=0, theta1=self.theta2, theta2=0,
+                           linewidth=1.6, color="black")
+        ax.add_patch(arc2)
+        mid2 = math.radians(self.theta2 / 2)
+        ax.text(r2 * math.cos(mid2) + 0.15, r2 * math.sin(mid2) - 0.15,
+                f"{abs(self.theta2)}°", fontsize=10,
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.1)
         plt.close()

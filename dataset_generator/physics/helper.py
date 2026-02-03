@@ -1,6 +1,7 @@
 # helper functions
 import numpy as np
 import matplotlib.patches as patches
+import math
 
 def val_mapper(val, new_min, new_max, old_min, old_max):
     """Convert a value from a range to another range (e.g., real world measurements to pixel ranges of an image)"""
@@ -250,3 +251,10 @@ def arrow(ax, x, y, dx, dy, label=None, label_offset=(0, 0), fontsize=12):
     if label is not None:
         draw_text(ax, x + dx + label_offset[0], y + dy + label_offset[1], label,
                   fontsize=fontsize, boxed=True)
+        
+
+def sig_figs(x: float, n: int = 3) -> float:
+    """Round x to n significant figures (returns float)."""
+    if x == 0:
+        return 0.0
+    return round(x, n - int(math.floor(math.log10(abs(x)))) - 1)
