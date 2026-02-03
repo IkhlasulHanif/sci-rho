@@ -1119,3 +1119,248 @@ class Phy061:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.1)
         plt.close()
+
+
+class Phy062:
+    """
+    Displacement–time graph.
+    Use gradient of displacement–time graph to find velocity between two points.
+    """
+
+    def __init__(self):
+        # Choose uniform velocity so graph is a straight line through origin
+        self.v = rnd.randint(2, 6)  # m s^-1
+        self.tA = rnd.randint(2, 4)                  # s
+        self.tB = rnd.randint(self.tA + 2, self.tA + 5)  # s (ensure separation)
+        if self.tB > 9:
+            self.tB = 9
+
+        self.sA = self.v * self.tA  # m
+        self.sB = self.v * self.tB  # m
+
+        self.answer = round(self.v, 2)
+
+        self.description = (
+            "The displacement–time graph shows the motion of a particle. "
+            "Determine the velocity between points A and B. (_) m s⁻¹"
+        )
+        self.topic = "Kinematics"
+        self.subtopic = "Equations of motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Point A}} &= ({self.tA}\\,\\text{{s}}, {self.sA}\\,\\text{{m}})\\\\"
+            f"\\text{{Point B}} &= ({self.tB}\\,\\text{{s}}, {self.sB}\\,\\text{{m}})\\\\"
+            "\\text{{The velocity is the gradient of the displacement--time graph:}} &\\\\"
+            "v &= \\frac{\\Delta s}{\\Delta t}\\\\"
+            "v &= \\frac{s_B - s_A}{t_B - t_A}\\\\"
+            f"&= \\frac{{{self.sB} - {self.sA}}}{{{self.tB} - {self.tA}}}\\\\"
+            f"&= \\frac{{{round(self.sB - self.sA, 10)}}}{{{round(self.tB - self.tA, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 4))
+
+        # Axes ranges (comfortable padding)
+        t_max = 10
+        s_max = max(60, self.sB + 6)
+
+        style_graph(
+            ax,
+            xlabel="time / s",
+            ylabel="displacement / m",
+            xlim=(0, t_max),
+            ylim=(0, s_max),
+            xticks=list(range(0, t_max + 1, 1)),
+            yticks=list(range(0, s_max + 1, 5)),
+        )
+
+        # Main line (uniform motion)
+        ax.plot([0, self.tB], [0, self.sB], linewidth=2)
+
+        # Points A and B
+        ax.plot(self.tA, self.sA, marker="o", markersize=5)
+        ax.plot(self.tB, self.sB, marker="o", markersize=5)
+
+        ax.text(
+            self.tA + 0.2, self.sA + 1.5, f"A({self.tA} s, {self.sA} m)",
+            fontsize=10, ha="left", va="bottom",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.9, pad=0.2)
+        )
+        ax.text(
+            self.tB + 0.2, self.sB + 1.5, f"B({self.tB} s, {self.sB} m)",
+            fontsize=10, ha="left", va="bottom",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.9, pad=0.2)
+        )
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy063:
+    """
+    Velocity–time graph.
+    Use area under velocity–time graph to find displacement for constant acceleration.
+    """
+
+    def __init__(self):
+        # Choose values that give a neat integer displacement
+        while True:
+            self.u = rnd.randint(2, 10)        # m s^-1
+            self.a = rnd.randint(1, 4)         # m s^-2
+            self.t = rnd.choice([4, 6, 8])     # s (even -> displacement integer)
+            self.v = self.u + self.a * self.t  # m s^-1
+            if self.v <= 28:
+                break
+
+        self.s = self.u * self.t + 0.5 * self.a * self.t**2  # m
+        self.answer = round(self.s, 2)
+
+        self.description = (
+            "The velocity–time graph shows the motion of a particle for the first "
+            f"{self.t} s. Determine the displacement in this time. (_) m"
+        )
+        self.topic = "Kinematics"
+        self.subtopic = "Equations of motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial velocity, }} u &= {self.u}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Final velocity, }} v &= {self.v}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Time interval, }} t &= {self.t}\\,\\text{{s}}\\\\"
+            "\\text{{The displacement is the area under the velocity--time graph.}} &\\\\"
+            "\\text{{For constant acceleration, the area is a trapezium:}} &\\\\"
+            "s &= \\text{Area} = \\frac{1}{2}(u + v)t\\\\"
+            f"&= \\frac{{1}}{{2}}({self.u} + {self.v}) \\times {self.t}\\\\"
+            f"&= \\frac{{1}}{{2}}({round(self.u + self.v, 10)}) \\times {self.t}\\\\"
+            f"&= {round(0.5 * (self.u + self.v), 10)} \\times {self.t}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 4))
+
+        t_max = max(10, self.t + 2)
+        v_max = max(30, self.v + 6)
+
+        style_graph(
+            ax,
+            xlabel="time / s",
+            ylabel="velocity / m s$^{-1}$",
+            xlim=(0, t_max),
+            ylim=(0, v_max),
+            xticks=list(range(0, t_max + 1, 1)),
+            yticks=list(range(0, v_max + 1, 5)),
+        )
+
+        # Line from (0,u) to (t,v)
+        ax.plot([0, self.t], [self.u, self.v], linewidth=2)
+
+        # Shade area under graph
+        ax.fill_between([0, self.t], [self.u, self.v], [0, 0], alpha=0.25)
+
+        # Mark endpoints
+        ax.plot(0, self.u, marker="o", markersize=5)
+        ax.plot(self.t, self.v, marker="o", markersize=5)
+
+        ax.text(
+            0.2, self.u + 1.5, f"(0 s, {self.u} m s⁻¹)",
+            fontsize=10, ha="left", va="bottom",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.9, pad=0.2)
+        )
+        ax.text(
+            self.t + 0.2, self.v + 1.5, f"({self.t} s, {self.v} m s⁻¹)",
+            fontsize=10, ha="left", va="bottom",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.9, pad=0.2)
+        )
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy064:
+    """
+    Uniformly accelerated motion in a gravitational field (no air resistance).
+    Drop from rest: use v^2 = u^2 + 2as to find impact speed.
+    """
+
+    def __init__(self):
+        self.h = rnd.randrange(10, 85, 5)  # m
+        self.g = 9.81                      # m s^-2
+        self.v = math.sqrt(2 * self.g * self.h)  # m s^-1
+        self.answer = sig_figs(self.v, 3)
+
+        self.description = (
+            f"A ball is dropped from rest from a height of {self.h} m as shown. "
+            "Neglect air resistance. Take g = 9.81 m s⁻². "
+            "Calculate the speed just before it hits the ground. (_) m s⁻¹"
+        )
+        self.topic = "Kinematics"
+        self.subtopic = "Equations of motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial velocity, }} u &= 0\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Height (displacement), }} s &= {self.h}\\,\\text{{m}}\\\\"
+            f"\\text{{Acceleration due to gravity, }} a &= {self.g}\\,\\text{{m s}}^{{-2}}\\\\"
+            "\\text{{Using the equation of motion:}} &\\\\"
+            "v^2 &= u^2 + 2as\\\\"
+            f"v^2 &= 0^2 + 2({self.g})({self.h})\\\\"
+            f"v^2 &= {round(2 * self.g * self.h, 10)}\\\\"
+            f"v &= \\sqrt{{{round(2 * self.g * self.h, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.axis("off")
+
+        # Ground
+        ax.plot([0.5, 9.5], [1.0, 1.0], linewidth=2)
+
+        # Cliff / platform
+        ax.add_patch(plt.Rectangle((1.0, 1.0), 2.0, 7.0, fill=False, linewidth=2))
+        ax.text(2.0, 8.2, "platform", fontsize=10, ha="center", va="bottom")
+
+        # Ball at top edge
+        ball_x, ball_y = 3.4, 8.0
+        ax.add_patch(plt.Circle((ball_x, ball_y), 0.18, fill=False, linewidth=2))
+
+        # Fall arrow
+        ax.annotate(
+            "", xy=(ball_x, 1.2), xytext=(ball_x, ball_y - 0.2),
+            arrowprops=dict(arrowstyle="->", linewidth=2)
+        )
+        ax.text(ball_x + 0.35, 4.8, "fall", fontsize=10, ha="left", va="center")
+
+        # Height bracket
+        ax.annotate(
+            "", xy=(4.8, 8.0), xytext=(4.8, 1.0),
+            arrowprops=dict(arrowstyle="<->", linewidth=2)
+        )
+        ax.text(
+            5.1, 4.5, f"h = {self.h} m",
+            fontsize=10, ha="left", va="center",
+            bbox=dict(facecolor="white", edgecolor="none", alpha=0.9, pad=0.2)
+        )
+
+        # g label
+        ax.text(6.8, 2.0, "g = 9.81 m s⁻²", fontsize=10, ha="left", va="center")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()

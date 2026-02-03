@@ -258,3 +258,17 @@ def sig_figs(x: float, n: int = 3) -> float:
     if x == 0:
         return 0.0
     return round(x, n - int(math.floor(math.log10(abs(x)))) - 1)
+
+
+def style_graph(ax, xlabel, ylabel, xlim, ylim, xticks, yticks):
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_xlabel(xlabel, fontsize=10)
+    ax.set_ylabel(ylabel, fontsize=10)
+    ax.set_xticks(xticks)
+    ax.set_yticks(yticks)
+    ax.tick_params(axis="both", labelsize=10)
+    ax.grid(True, linestyle="--", alpha=0.5)
+    # keep it clean
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
