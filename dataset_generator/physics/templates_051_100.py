@@ -1364,3 +1364,673 @@ class Phy064:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
+
+class Phy065:
+    """
+    Momentum & Newton’s laws: impulse from force–time graph
+    Force–time triangular pulse on a trolley.
+    Use impulse = area under F–t graph and Δp = impulse to find final speed.
+    """
+
+    def __init__(self):
+        while True:
+            self.m = rnd.choice([0.50, 0.80, 1.00, 1.20, 1.50, 2.00])  # kg
+            self.Fmax = rnd.choice([80, 100, 120, 140, 160, 180, 200, 220])  # N
+            self.T = rnd.choice([0.10, 0.15, 0.20, 0.25, 0.30])  # s
+            self.u = rnd.randint(0, 5)  # m s^-1
+
+            self.impulse = 0.5 * self.Fmax * self.T  # N s
+            self.v = self.u + self.impulse / self.m  # m s^-1
+
+            if 4 <= self.v <= 30:
+                break
+
+        self.answer = sig_figs(self.v, 3)
+
+        self.description = (
+            f"A trolley of mass {self.m:.2f} kg moves in a straight line with initial speed {self.u} m s⁻¹. "
+            "A resultant force acts in the direction of motion. The force varies with time as shown in the graph.\n"
+            "Determine the speed of the trolley at the end of the force pulse. (_) m s⁻¹"
+        )
+
+        self.topic = "Dynamics"
+        self.subtopic = "Momentum and Newton’s laws of motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m:.2f}\\,\\text{{kg}}\\\\"
+            f"\\text{{Initial speed, }} u &= {self.u}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Peak force, }} F_{{max}} &= {self.Fmax}\\,\\text{{N}}\\\\"
+            f"\\text{{Duration, }} T &= {self.T:.2f}\\,\\text{{s}}\\\\"
+            "\\text{{The impulse is the area under the force--time graph.}} &\\\\"
+            "\\text{{For a triangular pulse:}} &\\\\"
+            "J &= \\text{Area} = \\frac{1}{2} \\times \\text{base} \\times \\text{height}\\\\"
+            f"J &= \\frac{{1}}{{2}} \\times {self.T:.2f} \\times {self.Fmax}\\\\"
+            f"&= {round(self.impulse, 10)}\\,\\text{{N s}}\\\\"
+            "\\text{{Impulse is equal to the change in momentum:}} &\\\\"
+            "J &= \\Delta p = m(v - u)\\\\"
+            "\\text{{Rearranging for final speed }} v: &\\\\"
+            "v &= u + \\frac{J}{m}\\\\"
+            f"&= {self.u} + \\frac{{{round(self.impulse, 10)}}}{{{self.m:.2f}}}\\\\"
+            f"&= {self.u} + {round(self.impulse / self.m, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+
+        # Triangle pulse: 0 -> T/2 -> T
+        ax.plot([0, self.T / 2, self.T], [0, self.Fmax, 0], linewidth=2, color="black")
+
+        ax.set_xlabel("time / s", fontsize=10)
+        ax.set_ylabel("force / N", fontsize=10)
+        ax.tick_params(axis="both", labelsize=10)
+
+        ax.set_xlim(0, self.T * 1.25)
+        ax.set_ylim(0, self.Fmax * 1.25)
+        ax.grid(True, linestyle="--", alpha=0.5)
+
+        # Labels: Fmax and duration
+        ax.plot(self.T / 2, self.Fmax, "ko", markersize=4)
+        ax.text(self.T / 2, self.Fmax * 1.05, f"{self.Fmax} N", fontsize=10,
+                ha="center", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy066:
+    """
+    Two blocks on a smooth horizontal surface, connected by a light inextensible taut string.
+    A horizontal force F is applied to the RIGHT block (m2) pulling the system to the right.
+    Ask for the tension in the string.
+
+    Assumptions: smooth surface, light string, taut, no slack.
+    """
+
+    def __init__(self):
+        # Construct neat integers using F = (m1+m2)a
+        while True:
+            self.m1 = rnd.randint(1, 6)  # kg (left block)
+            self.m2 = rnd.randint(1, 6)  # kg (right block)
+            self.a = rnd.randint(1, 4)   # m s^-2
+            self.F = self.a * (self.m1 + self.m2)  # N
+            if 12 <= self.F <= 90:
+                break
+
+        # With force applied to m2, tension accelerates m1:
+        self.T = self.m1 * self.a
+        self.answer = round(self.T, 2)
+
+        self.description = (
+            f"Two blocks of masses {self.m1} kg and {self.m2} kg are connected by a light inextensible string "
+            "on a smooth horizontal surface. A horizontal force is applied to the right-hand block as shown.\n"
+            f"The applied force is F = {self.F} N. Determine the tension in the string. (_) N"
+        )
+
+        self.topic = "Dynamics"
+        self.subtopic = "Momentum and Newton’s laws of motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass of left block, }} m_1 &= {self.m1}\\,\\text{{kg}}\\\\"
+            f"\\text{{Mass of right block, }} m_2 &= {self.m2}\\,\\text{{kg}}\\\\"
+            f"\\text{{Applied force, }} F &= {self.F}\\,\\text{{N}}\\\\"
+            "\\text{{Step 1: Calculate the acceleration of the whole system.}} &\\\\"
+            "\\text{{Since the string is inextensible and taut, both blocks move with the same acceleration, }} a. &\\\\"
+            "F &= (m_1 + m_2)a\\\\"
+            f"a &= \\frac{{F}}{{m_1 + m_2}}\\\\"
+            f"&= \\frac{{{self.F}}}{{{self.m1} + {self.m2}}}\\\\"
+            f"&= \\frac{{{self.F}}}{{{self.m1 + self.m2}}}\\\\"
+            f"&= {round(self.a, 10)}\\,\\text{{m s}}^{{-2}}\\\\"
+            "\\text{{Step 2: Consider the forces on the left block (}} m_1 \\text{{) to find tension.}} &\\\\"
+            "\\text{{The only horizontal force acting on }} m_1 \\text{{ is the tension, }} T, \\text{{ pulling it to the right.}} &\\\\"
+            "T &= m_1 \\times a\\\\"
+            f"&= {self.m1} \\times {round(self.a, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        # Enforce global font size = 10
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6.4, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Track / ground
+        ax.plot([0.5, 9.5], [0.9, 0.9], linewidth=2, color="black")
+        ax.text(0.6, 0.55, "smooth surface", fontsize=10, ha="left", va="center")
+
+        # Block geometry
+        y0 = 0.9
+        h = 1.2
+        w = 2.2
+
+        # Place blocks with a clear gap
+        x1 = 1.6          # left block
+        gap = 1.4
+        x2 = x1 + w + gap # right block
+
+        # Draw blocks
+        b1 = patches.Rectangle((x1, y0), w, h, fill=False, linewidth=2, edgecolor="black")
+        b2 = patches.Rectangle((x2, y0), w, h, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(b1)
+        ax.add_patch(b2)
+
+        # Mass labels (above blocks)
+        ax.text(x1 + w/2, y0 + h + 0.35, f"m₁ = {self.m1} kg", fontsize=10, ha="center", va="bottom")
+        ax.text(x2 + w/2, y0 + h + 0.35, f"m₂ = {self.m2} kg", fontsize=10, ha="center", va="bottom")
+
+        # String (distinct and clearly between blocks)
+        y_string = y0 + 0.75*h
+        xL = x1 + w
+        xR = x2
+        ax.plot([xL, xR], [y_string, y_string], linewidth=2, color="black")
+        # little "hooks" so it reads as a string connection
+        ax.add_patch(patches.Circle((xL, y_string), 0.06, fill=True, color="black"))
+        ax.add_patch(patches.Circle((xR, y_string), 0.06, fill=True, color="black"))
+        ax.text((xL + xR)/2, y_string + 0.25, "string", fontsize=10, ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Applied force on RIGHT block (clear, no overlap)
+        yF = y0 + 0.35*h
+        ax.annotate("", xy=(x2 + w + 0.9, yF), xytext=(x2 + w, yF),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(x2 + w + 0.95, yF, f"F = {self.F} N", fontsize=10, ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Acceleration arrow above both blocks (single arrow)
+        yA = 3.35
+        ax.annotate("", xy=(8.9, yA), xytext=(7.7, yA),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(9.05, yA, "a", fontsize=10, ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy067:
+    """
+    Momentum & Newton’s laws: lift scale reading (Newton’s 2nd law)
+    Person in a lift accelerating vertically.
+    Use Newton's 2nd law: N - mg = ma (sign depends on direction).
+    """
+
+    def __init__(self):
+        self.m = rnd.randint(50, 90)  # kg
+        self.a = rnd.choice([0.5, 0.8, 1.0, 1.2, 1.5, 2.0])  # m s^-2
+        self.g = 9.81
+
+        self.direction = rnd.choice(["up", "down"])
+
+        if self.direction == "up":
+            self.N = self.m * (self.g + self.a)
+            dir_text = "upwards"
+        else:
+            self.N = self.m * (self.g - self.a)
+            dir_text = "downwards"
+
+        self.answer = sig_figs(self.N, 3)
+
+        self.description = (
+            f"A person of mass {self.m} kg stands on a scale in a lift. "
+            f"The lift accelerates {dir_text} at {self.a:.1f} m s⁻². "
+            "Take g = 9.81 m s⁻².\n"
+            "Determine the reading of the scale (the normal reaction). (_) N"
+        )
+
+        self.topic = "Dynamics"
+        self.subtopic = "Momentum and Newton’s laws of motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass of the person, }} m &= {self.m}\\,\\text{{kg}}\\\\"
+            f"\\text{{Acceleration, }} a &= {self.a:.1f}\\,\\text{{m s}}^{{-2}}\\\\"
+            f"\\text{{Acceleration due to gravity, }} g &= 9.81\\,\\text{{m s}}^{{-2}}\\\\"
+            "\\text{{Identify the forces acting on the person:}} &\\\\"
+            "\\text{1. Weight (downward)} &= mg\\\\"
+            "\\text{2. Normal reaction/Scale reading (upward)} &= N\\\\"
+            "\\text{{Apply Newton's Second Law (}} F_{{net}} = ma \\text{{):}} &\\\\"
+            f"{'\\text{Since acceleration is upwards, the net force is } N - mg: ' if self.direction == 'up' else '\\text{Since acceleration is downwards, the net force is } mg - N: '}\\\\"
+            f"{'N - mg &= ma' if self.direction == 'up' else 'mg - N &= ma'}\\\\"
+            "\\text{{Rearrange to solve for the normal reaction }} N: &\\\\"
+            f"{'N &= m(g + a)' if self.direction == 'up' else 'N &= m(g - a)'}\\\\"
+            f"N &= {self.m} \\times ({9.81} {'+' if self.direction == 'up' else '-'} {self.a:.1f})\\\\"
+            f"N &= {self.m} \\times {round(self.g + self.a if self.direction == 'up' else self.g - self.a, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(5.5, 4))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Lift box
+        lift = patches.Rectangle((2, 2), 6, 6, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(lift)
+        ax.text(5, 8.2, "lift", fontsize=10, ha="center", va="bottom")
+
+        # Floor line inside lift
+        ax.plot([2.2, 7.8], [3.0, 3.0], linewidth=2, color="black")
+        ax.text(8.5, 3.0, "scale", fontsize=10, ha="left", va="center")
+
+        # Person (simple)
+        head = patches.Circle((5, 5.3), 0.45, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(head)
+        ax.plot([5, 5], [4.85, 3.5], linewidth=2, color="black")  # body
+        ax.plot([5, 4.4], [4.3, 3.9], linewidth=2, color="black")  # left arm
+        ax.plot([5, 5.6], [4.3, 3.9], linewidth=2, color="black")  # right arm
+        ax.plot([5, 4.6], [3.5, 3.1], linewidth=2, color="black")  # left leg
+        ax.plot([5, 5.4], [3.5, 3.1], linewidth=2, color="black")  # right leg
+
+        # Forces on person
+        # Normal reaction N (up)
+        ax.annotate("", xy=(5, 6.9), xytext=(5, 5.9),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(5.2, 6.4, "N", fontsize=10, ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Weight mg (down)
+        ax.annotate("", xy=(5, 2.0), xytext=(5, 2.9),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(5.2, 2.5, "mg", fontsize=10, ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Acceleration arrow (outside)
+        if self.direction == "up":
+            ax.annotate("", xy=(8.9, 7.8), xytext=(8.9, 6.3),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            ax.text(9.1, 7.05, f"a = {self.a:.1f} m s⁻²", fontsize=10, ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.annotate("", xy=(8.9, 6.3), xytext=(8.9, 7.8),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            ax.text(9.1, 7.05, f"a = {self.a:.1f} m s⁻²", fontsize=10, ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(2.2, 1.4, f"m = {self.m} kg", fontsize=10, ha="left", va="center")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy068:
+    """
+    Linear momentum conservation: perfectly inelastic collision (stick)
+    1D collision: one trolley moves and hits the other trolley (initially stationary).
+    After collision they stick together.
+    Dynamic direction: Sometimes m1 moves right into m2, Sometimes m2 moves left into m1
+    """
+
+    def __init__(self):
+        self.m1 = rnd.choice([0.50, 0.80, 1.00, 1.20, 1.50, 2.00])  # kg (left trolley)
+        self.m2 = rnd.choice([0.50, 0.80, 1.00, 1.20, 1.50, 2.00])  # kg (right trolley)
+        self.u = rnd.randint(2, 10)  # speed magnitude, m s^-1
+
+        # Choose which trolley is moving (minimal diagram: only one arrow)
+        # Sign convention: right is positive.
+        self.moving = rnd.choice([1, 2])  # 1 => m1 moves right, 2 => m2 moves left
+
+        if self.moving == 1:
+            self.u1 = +self.u
+            self.u2 = 0
+            self.motion_text = f"trolley 1 (mass {self.m1:.2f} kg) moves to the right with speed {self.u} m s⁻¹"
+        else:
+            self.u1 = 0
+            self.u2 = -self.u
+            self.motion_text = f"trolley 2 (mass {self.m2:.2f} kg) moves to the left with speed {self.u} m s⁻¹"
+
+        # Conservation of momentum: m1*u1 + m2*u2 = (m1+m2)*v
+        self.v = (self.m1 * self.u1 + self.m2 * self.u2) / (self.m1 + self.m2)  # signed velocity
+        self.speed = abs(self.v)  # asked for speed (magnitude)
+        self.answer = sig_figs(self.speed, 3)
+
+        self.description = (
+            f"Two trolleys move on a smooth horizontal track. {self.motion_text} and collides with the other trolley, "
+            "which is initially at rest. The trolleys stick together after the collision (see diagram).\n"
+            "Determine the common speed immediately after the collision. (_) m s⁻¹"
+        )
+
+        self.topic = "Dynamics"
+        self.subtopic = "Linear momentum and its conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass of trolley 1, }} m_1 &= {self.m1:.2f}\\,\\text{{kg}}\\\\"
+            f"\\text{{Mass of trolley 2, }} m_2 &= {self.m2:.2f}\\,\\text{{kg}}\\\\"
+            f"\\text{{Initial velocity of trolley 1, }} u_1 &= {self.u1}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Initial velocity of trolley 2, }} u_2 &= {self.u2}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{Using the Principle of Conservation of Momentum:}} &\\\\"
+            "\\text{Total momentum before} &= \\text{Total momentum after}\\\\"
+            "m_1 u_1 + m_2 u_2 &= (m_1 + m_2)v\\\\"
+            "\\text{{Substitute the values into the equation:}} &\\\\"
+            f"({self.m1:.2f} \\times {self.u1}) + ({self.m2:.2f} \\times {self.u2}) &= ({self.m1:.2f} + {self.m2:.2f})v\\\\"
+            f"{round(self.m1 * self.u1, 10)} + {round(self.m2 * self.u2, 10)} &= {round(self.m1 + self.m2, 10)} \\times v\\\\"
+            "\\text{{Solve for the common final velocity }} v: &\\\\"
+            f"v &= \\frac{{{round(self.m1 * self.u1 + self.m2 * self.u2, 10)}}}{{{round(self.m1 + self.m2, 10)}}}\\\\"
+            f"&= {round(self.v, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{The common speed is the magnitude of the velocity:}} &\\\\"
+            f"\\text{{Speed}} &= |v| = {self.answer}\\,\\text{{m s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6, 3))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Track
+        ax.plot([0.5, 9.5], [0.9, 0.9], linewidth=2, color="black")
+
+        # Two trolleys (minimal)
+        t1 = patches.Rectangle((1.6, 0.9), 2.2, 1.2, fill=False, linewidth=2, edgecolor="black")
+        t2 = patches.Rectangle((6.2, 0.9), 2.2, 1.2, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(t1)
+        ax.add_patch(t2)
+
+        ax.text(2.7, 2.3, f"m₁={self.m1:.2f} kg", fontsize=10, ha="center", va="bottom")
+        ax.text(7.3, 2.3, f"m₂={self.m2:.2f} kg", fontsize=10, ha="center", va="bottom")
+
+        if self.moving == 1:
+            # m1 moves right
+            ax.annotate("", xy=(4.2, 1.5), xytext=(3.4, 1.5),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            ax.text(4.25, 1.5, f"u = {self.u} m s⁻¹", fontsize=10, ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            # m2 moves left
+            ax.annotate("", xy=(5.8, 1.5), xytext=(6.6, 1.5),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            ax.text(5.75, 1.5, f"u = {self.u} m s⁻¹", fontsize=10, ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy069:
+    """
+    Linear momentum conservation: explosion from rest (1D)
+    """
+
+    def __init__(self):
+        while True:
+            self.m_total = rnd.randint(3, 10)  # kg
+            self.mA = rnd.randint(1, self.m_total - 1)
+            self.mB = self.m_total - self.mA
+
+            # Choose which fragment is the UNKNOWN
+            self.target = rnd.choice(["A", "B"])
+
+            # Given speed magnitude (always positive magnitude)
+            given_speed = rnd.randint(3, 12)
+
+            # Directions fixed for clarity: A to the right, B to the left
+            if self.target == "B":
+                # A is given, find B
+                self.vA = +given_speed
+                self.vB = -(self.mA / self.mB) * self.vA  # negative => left
+                unknown_speed = abs(self.vB)
+                if 2 <= unknown_speed <= 20:
+                    break
+            else:
+                # B is given, find A
+                self.vB = -given_speed
+                self.vA = -(self.mB / self.mA) * self.vB  # vB is negative => vA positive
+                unknown_speed = abs(self.vA)
+                if 2 <= unknown_speed <= 20:
+                    break
+
+        # Final answers (speed + direction)
+        if self.target == "B":
+            self.answer = f"{sig_figs(abs(self.vB), 3)} m s⁻¹ to the left"
+        else:
+            self.answer = f"{sig_figs(abs(self.vA), 3)} m s⁻¹ to the right"
+
+        # Description changes depending on target
+        if self.target == "B":
+            self.description = (
+                f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
+                "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
+                f"Fragment A has mass {self.mA} kg and moves to the right with speed {self.vA} m s⁻¹.\n"
+                f"Fragment B has mass {self.mB} kg. Determine the speed and direction of fragment B.\n"
+                "Speed of B = (_) m s⁻¹, direction = (_)"
+            )
+        else:
+            self.description = (
+                f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
+                "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
+                f"Fragment B has mass {self.mB} kg and moves to the left with speed {abs(self.vB)} m s⁻¹.\n"
+                f"Fragment A has mass {self.mA} kg. Determine the speed and direction of fragment A.\n"
+                "Speed of A = (_) m s⁻¹, direction = (_)"
+            )
+
+        self.topic = "Dynamics"
+        self.subtopic = "Linear momentum and its conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial total momentum, }} p_{{initial}} &= 0\\,\\text{{kg m s}}^{{-1}}\\\\"
+            f"\\text{{Mass of fragment A, }} m_A &= {self.mA}\\,\\text{{kg}}\\\\"
+            f"\\text{{Mass of fragment B, }} m_B &= {self.mB}\\,\\text{{kg}}\\\\"
+            f"{'\\text{Given velocity of A, } v_A &= ' + str(self.vA) + '\\,\\text{m s}^{-1}' if self.target == 'B' else '\\text{Given velocity of B, } v_B &= ' + str(self.vB) + '\\,\\text{m s}^{-1}'}\\\\"
+            "\\text{{Using the Principle of Conservation of Momentum:}} &\\\\"
+            "p_{{initial}} &= p_{{final}}\\\\"
+            "0 &= m_A v_A + m_B v_B\\\\"
+            "\\text{{Rearranging for the unknown velocity:}} &\\\\"
+            f"{'v_B &= -\\frac{m_A v_A}{m_B}' if self.target == 'B' else 'v_A &= -\\frac{m_B v_B}{m_A}'}\\\\"
+            f"{'v_B' if self.target == 'B' else 'v_A'} &= -\\frac{{{self.mA if self.target == 'B' else self.mB} \\times {self.vA if self.target == 'B' else self.vB}}}{{{self.mB if self.target == 'B' else self.mA}}}\\\\"
+            f"{'v_B' if self.target == 'B' else 'v_A'} &= {round(self.vB if self.target == 'B' else self.vA, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6, 3))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Surface line
+        ax.plot([0.5, 9.5], [0.9, 0.9], linewidth=2, color="black")
+
+        # Explosion point
+        ax.add_patch(patches.Circle((5.0, 1.6), 0.18, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(5.0, 2.0, "explosion", fontsize=10, ha="center", va="bottom")
+
+        # Right arrow = fragment A (to the right)
+        ax.annotate("", xy=(8.7, 1.6), xytext=(5.2, 1.6),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        # Left arrow = fragment B (to the left)
+        ax.annotate("", xy=(1.3, 1.6), xytext=(4.8, 1.6),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        # Labels depend on which is unknown (keep minimal: one side has value, other has v=?)
+        if self.target == "B":
+            # A known, B unknown
+            ax.text(8.75, 1.6, f"A: {self.mA} kg, {self.vA} m s⁻¹", fontsize=10,
+                    ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.25, 1.6, f"B: {self.mB} kg, v = ?", fontsize=10,
+                    ha="right", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            # B known, A unknown
+            ax.text(8.75, 1.6, f"A: {self.mA} kg, v = ?", fontsize=10,
+                    ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.25, 1.6, f"B: {self.mB} kg, {abs(self.vB)} m s⁻¹", fontsize=10,
+                    ha="right", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(5.0, 3.2, "initially at rest", fontsize=10, ha="center", va="center")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy070:
+    """
+    Linear momentum conservation: 2D collision (stick), find speed & direction
+    Two trolleys moving at right angles collide and stick (2D).
+    Use momentum conservation in x and y, then find resultant speed and angle.
+    """
+
+    def __init__(self):
+        # Choose neat momentum ratios to give common exam angles (e.g. 3:4, 1:1, 1:2, 2:1, 4:3)
+        ratios = [(3, 4), (4, 3), (1, 1), (1, 2), (2, 1)]
+        while True:
+            self.rx, self.ry = rnd.choice(ratios)
+            self.k = rnd.randint(2, 10)
+
+            # total momenta in x and y (kg m s^-1)
+            self.px = self.rx * self.k
+            self.py = self.ry * self.k
+
+            # choose masses that divide px and py to keep speeds as integers
+            mA_choices = [d for d in range(1, 6) if self.px % d == 0]
+            mB_choices = [d for d in range(1, 6) if self.py % d == 0]
+            if not mA_choices or not mB_choices:
+                continue
+
+            self.mA = rnd.choice(mA_choices)
+            self.mB = rnd.choice(mB_choices)
+
+            self.uA = self.px / self.mA  # east (+x)
+            self.uB = self.py / self.mB  # north (+y)
+
+            if 1 <= self.uA <= 12 and 1 <= self.uB <= 12:
+                break
+
+        self.M = self.mA + self.mB
+        self.vx = self.px / self.M
+        self.vy = self.py / self.M
+        self.v = math.hypot(self.vx, self.vy)
+        self.theta = math.degrees(math.atan2(self.vy, self.vx))  # degrees above +x
+
+        self.answer = f"{sig_figs(self.v, 3)} m s⁻¹ at {round(self.theta, 1)}° above +x"
+
+        self.description = (
+            "Two trolleys move on a smooth horizontal surface and collide at a point, then stick together.\n"
+            "Both Trolley A and B's masses, directions, and speeds are shown in the diagram."
+            # f"Trolley A has mass {self.mA} kg and moves east with speed {self.uA:.0f} m s⁻¹.\n"
+            # f"Trolley B has mass {self.mB} kg and moves north with speed {self.uB:.0f} m s⁻¹.\n"
+            "Determine the speed of the combined trolley and its direction (angle above the +x axis).\n"
+            "Speed = (_) m s⁻¹, angle = (_)°"
+        )
+
+        self.topic = "Dynamics"
+        self.subtopic = "Linear momentum and its conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass of trolley A, }} m_A &= {self.mA}\\,\\text{{kg}}\\\\"
+            f"\\text{{Mass of trolley B, }} m_B &= {self.mB}\\,\\text{{kg}}\\\\"
+            f"\\text{{Initial velocity of A, }} u_A &= {self.uA:.0f}\\,\\text{{m s}}^{{-1}}\\text{{ (east)}}\\\\"
+            f"\\text{{Initial velocity of B, }} u_B &= {self.uB:.0f}\\,\\text{{m s}}^{{-1}}\\text{{ (north)}}\\\\"
+            "\\text{{Step 1: Conservation of momentum in the x-direction (east):}} &\\\\"
+            "p_x &= m_A u_A + m_B(0) = (m_A + m_B) v_x\\\\"
+            f"{self.px} &= {self.M} v_x\\\\"
+            f"v_x &= \\frac{{{self.px}}}{{{self.M}}} = {round(self.vx, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{Step 2: Conservation of momentum in the y-direction (north):}} &\\\\"
+            "p_y &= m_A(0) + m_B u_B = (m_A + m_B) v_y\\\\"
+            f"{self.py} &= {self.M} v_y\\\\"
+            f"v_y &= \\frac{{{self.py}}}{{{self.M}}} = {round(self.vy, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{Step 3: Calculate the resultant speed }} v: &\\\\"
+            "v &= \\sqrt{v_x^2 + v_y^2}\\\\"
+            f"&= \\sqrt{{{round(self.vx, 10)}^2 + {round(self.vy, 10)}^2}}\\\\"
+            f"&= {round(self.v, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{Step 4: Calculate the angle }} \\theta \\text{{ above the +x axis:}} &\\\\"
+            "\\theta &= \\tan^{-1}\\left(\\frac{v_y}{v_x}\\right)\\\\"
+            f"&= \\tan^{-1}\\left(\\frac{{{round(self.vy, 10)}}}{{{round(self.vx, 10)}}}\\right)\\\\"
+            f"&= {round(self.theta, 10)}^\\circ\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(5.5, 5.0))
+        ax.set_xlim(-0.5, 10)
+        ax.set_ylim(-0.5, 10)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Axes (x to right, y up)
+        ax.annotate("", xy=(9.6, 0), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.annotate("", xy=(0, 9.6), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(9.7, -0.2, "+x (east)", fontsize=10, ha="right", va="top")
+        ax.text(-0.2, 9.7, "+y (north)", fontsize=10, ha="right", va="top")
+
+        # Collision point
+        ax.plot(0, 0, "ko", markersize=5)
+        ax.text(0.2, 0.2, "collision", fontsize=10, ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Incoming velocity arrows
+        # A along +x
+        ax.annotate("", xy=(4.5, 0), xytext=(0.3, 0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(4.6, 0.0, f"A: m={self.mA} kg, u={self.uA:.0f}", fontsize=10,
+                ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # B along +y
+        ax.annotate("", xy=(0, 4.5), xytext=(0, 0.3),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(0.0, 4.6, f"B: m={self.mB} kg, u={self.uB:.0f}", fontsize=10,
+                ha="center", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Resultant velocity arrow after sticking (scaled for display)
+        # Use direction based on vx, vy; scale to fit nicely on plot
+        scale = 6.0 / max(1e-9, math.hypot(self.vx, self.vy))
+        dx = self.vx * scale
+        dy = self.vy * scale
+
+        ax.annotate("", xy=(dx, dy), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(dx * 0.55, dy * 0.55, "v", fontsize=10, ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(6.2, 8.8, "after: stick together", fontsize=10, ha="center", va="center")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
