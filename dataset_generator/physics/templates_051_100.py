@@ -2788,3 +2788,887 @@ class Phy076:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
+
+class Phy077:
+    """
+    Energy conservation (work done -> change in kinetic energy).
+    Block pulled on a rough horizontal surface: work input - work against friction = gain in KE.
+    """
+
+    def __init__(self):
+        while True:
+            self.m = rnd.choice([1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0])  # kg
+            self.s = rnd.choice([1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])  # m
+            self.F = rnd.choice([20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100])  # N
+            self.f = rnd.choice([5, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50])  # N
+
+            if self.F <= self.f:
+                continue
+
+            self.work_net = (self.F - self.f) * self.s
+            self.v = math.sqrt(2 * self.work_net / self.m)
+
+            if 1.0 <= self.v <= 25.0:
+                break
+
+        self.answer = sig_figs(self.v, 3)
+
+        self.description = (
+            "A block moves on a rough horizontal surface. The mass (m), applied force (F), friction force (f) and distance moved (s) "
+            "are shown in the diagram. The block starts from rest.\n"
+            "Determine the speed of the block after moving the distance shown.\n"
+            "v = (_) m s⁻¹"
+        )
+        self.topic = "Work, energy and power"
+        self.subtopic = "Energy conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m:.1f}\\,\\text{{kg}}\\\\"
+            f"\\text{{Applied force, }} F &= {self.F}\\,\\text{{N}}\\\\"
+            f"\\text{{Friction force, }} f &= {self.f}\\,\\text{{N}}\\\\"
+            f"\\text{{Distance moved, }} s &= {self.s:.1f}\\,\\text{{m}}\\\\"
+            "\\text{{Step 1: Calculate the resultant (net) force acting on the block:}} &\\\\"
+            "F_{net} &= F - f\\\\"
+            f"&= {self.F} - {self.f}\\\\"
+            f"&= {self.F - self.f}\\,\\text{{N}}\\\\"
+            "\\text{{Step 2: Calculate the net work done on the block:}} &\\\\"
+            "W_{net} &= F_{net} \\times s\\\\"
+            f"&= {self.F - self.f} \\times {self.s:.1f}\\\\"
+            f"&= {round(self.work_net, 10)}\\,\\text{{J}}\\\\"
+            "\\text{{Step 3: Use the work-energy theorem (Work done = Change in Kinetic Energy):}} &\\\\"
+            "W_{net} &= \\frac{1}{2}mv^2 - \\frac{1}{2}mu^2\\\\"
+            "\\text{{Since the block starts from rest (}} u = 0 \\text{{):}} &\\\\"
+            f"{round(self.work_net, 10)} &= \\frac{1}{2} \\times {self.m:.1f} \\times v^2\\\\"
+            "\\text{{Step 4: Solve for the final speed }} v: &\\\\"
+            "v^2 &= \\frac{2 \\times W_{net}}{m}\\\\"
+            f"v^2 &= \\frac{{2 \\times {round(self.work_net, 10)}}}{{{self.m:.1f}}}\\\\"
+            f"v^2 &= {round(2 * self.work_net / self.m, 10)}\\\\"
+            f"v &= \\sqrt{{{round(2 * self.work_net / self.m, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.2, 3.1))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Ground line
+        y_ground = 1.0
+        ax.plot([0.6, 9.4], [y_ground, y_ground], linewidth=2, color="black")
+
+        # Block
+        bx, by = 2.2, y_ground
+        bw, bh = 2.0, 1.2
+        ax.add_patch(patches.Rectangle((bx, by), bw, bh, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(bx + bw/2, by + bh + 0.25, f"m = {self.m:.1f} kg", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Applied force arrow (right)
+        yF = by + 0.75*bh
+        ax.annotate("", xy=(bx + bw + 1.2, yF), xytext=(bx + bw, yF),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(bx + bw + 1.25, yF, f"F = {self.F} N", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Friction arrow (left)
+        yf = by + 0.35*bh
+        ax.annotate("", xy=(bx - 1.2, yf), xytext=(bx, yf),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(bx - 1.25, yf, f"f = {self.f} N", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Distance moved bracket
+        x_start = bx + 0.2
+        x_end = x_start + 5.8
+        y_s = 0.35
+        ax.annotate("", xy=(x_start, y_s), xytext=(x_end, y_s),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((x_start + x_end)/2, y_s - 0.15, f"s = {self.s:.1f} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Start from rest and unknown final speed (VLM reads)
+        ax.text(bx + 0.15, by + bh/2, "u = 0", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(8.7, 2.7, "v = ?", ha="center", va="center",
+                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy078:
+    """
+    Energy conservation with efficiency (useful energy out / total energy in).
+    Motor lifts a load through a height.
+    Dynamic target: find efficiency OR time OR input power.
+    """
+
+    def __init__(self):
+        self.g = 9.81
+        self.target = rnd.choice(["eta", "t", "P"])
+
+        eta_choices = [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]  # percent
+
+        while True:
+            self.m = rnd.choice([20, 25, 30, 40, 50, 60, 80, 100, 120])  # kg
+            self.h = rnd.choice([2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20])  # m
+
+            if self.target == "eta":
+                self.P = rnd.choice([200, 250, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000])  # W
+                self.t = rnd.choice([5, 8, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80])  # s
+                self.E_out = self.m * self.g * self.h
+                self.E_in = self.P * self.t
+                self.eta = self.E_out / self.E_in
+                if 0.15 <= self.eta <= 0.95:
+                    break
+
+            elif self.target == "t":
+                self.P = rnd.choice([200, 250, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000])  # W
+                self.eta_percent = rnd.choice(eta_choices)
+                self.eta = self.eta_percent / 100
+                self.t = (self.m * self.g * self.h) / (self.eta * self.P)
+                if 3 <= self.t <= 120:
+                    break
+
+            else:  # target == "P"
+                self.t = rnd.choice([5, 8, 10, 12, 15, 20, 25, 30, 40, 50, 60, 80])  # s
+                self.eta_percent = rnd.choice(eta_choices)
+                self.eta = self.eta_percent / 100
+                self.P = (self.m * self.g * self.h) / (self.eta * self.t)
+                if 100 <= self.P <= 3000:
+                    break
+
+        if self.target == "eta":
+            self.answer = sig_figs(self.eta * 100, 3)  # %
+            self.description = (
+                "A motor lifts a load vertically at constant speed. The load mass (m), lifting height (h), input power (P) and time (t) "
+                "are shown in the diagram.\n"
+                "Determine the efficiency of the motor.\n"
+                "η = (_) %"
+            )
+        elif self.target == "t":
+            self.answer = sig_figs(self.t, 3)  # s
+            self.description = (
+                "A motor lifts a load vertically at constant speed. The load mass (m), lifting height (h), input power (P) and efficiency (η) "
+                "are shown in the diagram.\n"
+                "Determine the time taken for the lift.\n"
+                "t = (_) s"
+            )
+        else:
+            self.answer = sig_figs(self.P, 3)  # W
+            self.description = (
+                "A motor lifts a load vertically at constant speed. The load mass (m), lifting height (h), time (t) and efficiency (η) "
+                "are shown in the diagram.\n"
+                "Determine the input power of the motor.\n"
+                "P = (_) W"
+            )
+
+        self.topic = "Work, energy and power"
+        self.subtopic = "Energy conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m}\\,\\text{{kg}}\\\\"
+            f"\\text{{Height, }} h &= {self.h}\\,\\text{{m}}\\\\"
+            f"\\text{{Acceleration of free fall, }} g &= 9.81\\,\\text{{m s}}^{{-2}}\\\\"
+            "\\text{{Useful work output (Gain in GPE):}} &\\\\"
+            "W_{out} &= mgh\\\\"
+            f"&= {self.m} \\times 9.81 \\times {self.h}\\\\"
+            f"&= {round(self.m * 9.81 * self.h, 10)}\\,\\text{{J}}\\\\"
+            "\\text{{Relationship between power, time, and efficiency:}} &\\\\"
+            "\\eta &= \\frac{W_{out}}{W_{in}} = \\frac{mgh}{P \\times t}\\\\"
+            "\\text{{Solving for the unknown variable:}} &\\\\"
+            + (
+                f"\\eta &= \\frac{{{round(self.m * 9.81 * self.h, 10)}}}{{{self.P} \\times {self.t}}}\\\\"
+                f"&= {round((self.m * 9.81 * self.h) / (self.P * self.t), 10)}\\\\"
+                f"\\text{{Efficiency (\\%)}} &= {self.answer}\\%"
+                if self.target == "eta" else
+                f"t &= \\frac{{mgh}}{{\\eta \\times P}}\\\\"
+                f"&= \\frac{{{round(self.m * 9.81 * self.h, 10)}}}{{{self.eta} \\times {self.P}}}\\\\"
+                f"&= {self.answer}\\,\\text{{s}}"
+                if self.target == "t" else
+                f"P &= \\frac{{mgh}}{{\\eta \\times t}}\\\\"
+                f"&= \\frac{{{round(self.m * 9.81 * self.h, 10)}}}{{{self.eta} \\times {self.t}}}\\\\"
+                f"&= {self.answer}\\,\\text{{W}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+          
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.2, 4.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Ground
+        ax.plot([0.8, 9.2], [1.2, 1.2], linewidth=2, color="black")
+
+        # Pulley/motor box
+        ax.add_patch(patches.Rectangle((4.2, 8.0), 1.6, 1.1, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(5.0, 9.25, "motor", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Rope
+        ax.plot([5.0, 5.0], [8.0, 3.0], linewidth=2, color="black")
+
+        # Load
+        ax.add_patch(patches.Rectangle((4.5, 2.0), 1.0, 1.0, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(5.0, 3.25, f"m = {self.m} kg", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Height arrow
+        ax.annotate("", xy=(7.8, 8.0), xytext=(7.8, 2.0),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text(8.05, 5.0, f"h = {self.h} m", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # g label
+        ax.text(9.2, 0.6, "g = 9.81 m s⁻²", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Show / hide given values according to target
+        # Keep values in image (not in statement)
+        if self.target == "eta":
+            ax.text(1.0, 9.1, f"P = {self.P} W", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.0, 8.2, f"t = {self.t} s", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.0, 7.3, "η = ?", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        elif self.target == "t":
+            ax.text(1.0, 9.1, f"P = {self.P} W", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.0, 8.2, f"η = {self.eta_percent} %", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.0, 7.3, "t = ?", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(1.0, 9.1, f"t = {self.t} s", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.0, 8.2, f"η = {self.eta_percent} %", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(1.0, 7.3, "P = ?", ha="left", va="top",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy079:
+    """
+    Energy conservation (kinetic energy -> work done by braking force).
+    Dynamic target: find braking force OR stopping distance OR initial speed.
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["F", "s", "u"])
+
+        while True:
+            self.m = rnd.choice([800, 900, 1000, 1100, 1200, 1400, 1600])  # kg
+
+            if self.target == "F":
+                self.u = rnd.randint(12, 35)  # m s^-1
+                self.s = rnd.choice([15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90])  # m
+                self.F = 0.5 * self.m * self.u**2 / self.s
+                if 800 <= self.F <= 10000:
+                    break
+
+            elif self.target == "s":
+                self.u = rnd.randint(12, 35)  # m s^-1
+                self.F = rnd.choice([1200, 1500, 1800, 2200, 2600, 3000, 3500, 4000, 5000, 6000, 7000, 8000])  # N
+                self.s = 0.5 * self.m * self.u**2 / self.F
+                if 10 <= self.s <= 150:
+                    break
+
+            else:  # target == "u"
+                self.F = rnd.choice([1200, 1500, 1800, 2200, 2600, 3000, 3500, 4000, 5000, 6000, 7000, 8000])  # N
+                self.s = rnd.choice([15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100])  # m
+                self.u = math.sqrt(2 * self.F * self.s / self.m)
+                if 10 <= self.u <= 40:
+                    break
+
+        if self.target == "F":
+            self.answer = sig_figs(self.F, 3)
+            self.description = (
+                "A car moves on a level road and is brought to rest by a constant braking force. The mass, initial speed "
+                "and stopping distance are shown in the diagram.\n"
+                "Determine the magnitude of the braking force.\n"
+                "F = (_) N"
+            )
+        elif self.target == "s":
+            self.answer = sig_figs(self.s, 3)
+            self.description = (
+                "A car moves on a level road and is brought to rest by a constant braking force. The mass, initial speed "
+                "and braking force are shown in the diagram.\n"
+                "Determine the stopping distance.\n"
+                "s = (_) m"
+            )
+        else:
+            self.answer = sig_figs(self.u, 3)
+            self.description = (
+                "A car moves on a level road and is brought to rest by a constant braking force. The mass, braking force "
+                "and stopping distance are shown in the diagram.\n"
+                "Determine the initial speed of the car.\n"
+                "u = (_) m s⁻¹"
+            )
+
+        self.topic = "Work, energy and power"
+        self.subtopic = "Energy conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m}\\,\\text{{kg}}\\\\"
+            f"\\text{{Initial speed, }} u &= {float(f'{self.u:.3g}') if self.target != 'u' else '\\text{?}'}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Braking force, }} F &= {float(f'{self.F:.3g}') if self.target != 'F' else '\\text{?}'}\\,\\text{{N}}\\\\"
+            f"\\text{{Stopping distance, }} s &= {float(f'{self.s:.3g}') if self.target != 's' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            "\\text{{The work done by the braking force equals the change in kinetic energy:}} &\\\\"
+            "W &= \\Delta E_k\\\\"
+            "F \\times s &= \\frac{1}{2} m u^2 - \\frac{1}{2} m v^2\\\\"
+            "\\text{{Since the final speed }} v = 0\\text{{:}} &\\\\"
+            "F \\times s &= \\frac{1}{2} m u^2\\\\"
+            "\\text{{Substituting the known values and solving:}} &\\\\"
+            + (
+                f"F \\times {float(f'{self.s:.3g}')} &= \\frac{{1}}{{2}} ({self.m}) ({float(f'{self.u:.3g}')})^2\\\\"
+                f"F &= \\frac{{0.5 \\times {self.m} \\times {round(self.u**2, 10)}}}{{{float(f'{self.s:.3g}')}}}\\\\"
+                f"F &= {self.answer}\\,\\text{{N}}"
+                if self.target == "F" else
+                f"{float(f'{self.F:.3g}')} \\times s &= \\frac{{1}}{{2}} ({self.m}) ({float(f'{self.u:.3g}')})^2\\\\"
+                f"s &= \\frac{{0.5 \\times {self.m} \\times {round(self.u**2, 10)}}}{{{float(f'{self.F:.3g}')}}}\\\\"
+                f"s &= {self.answer}\\,\\text{{m}}"
+                if self.target == "s" else
+                f"{float(f'{self.F:.3g}')} \\times {float(f'{self.s:.3g}')} &= \\frac{{1}}{{2}} ({self.m}) u^2\\\\"
+                f"u^2 &= \\frac{{2 \\times {float(f'{self.F:.3g}')} \\times {float(f'{self.s:.3g}')}}}{{{self.m}}}\\\\"
+                f"u &= \\sqrt{{{round(2 * self.F * self.s / self.m, 10)}}}\\\\"
+                f"u &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.4, 3.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Road
+        y_road = 1.0
+        ax.plot([0.6, 9.4], [y_road, y_road], linewidth=2, color="black")
+
+        # Car block
+        cx, cy = 2.0, y_road
+        cw, ch = 2.2, 1.1
+        ax.add_patch(patches.Rectangle((cx, cy), cw, ch, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(cx + cw/2, cy + ch + 0.25, f"m = {self.m} kg", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Stop marker
+        x_stop = 8.6
+        ax.plot([x_stop, x_stop], [y_road, y_road + 1.2], linewidth=2, color="black")
+        ax.text(x_stop, y_road + 1.35, "stop", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Stopping distance bracket
+        y_s = 0.35
+        ax.annotate("", xy=(cx + cw, y_s), xytext=(x_stop, y_s),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        if self.target == "s":
+            ax.text((cx + cw + x_stop)/2, y_s - 0.15, "s = ?", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text((cx + cw + x_stop)/2, y_s - 0.15, f"s = {float(f'{self.s:.3g}')} m", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Speed arrow (to right)
+        y_u = cy + ch + 0.05
+        ax.annotate("", xy=(cx + cw + 1.4, y_u), xytext=(cx + cw + 0.2, y_u),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        if self.target == "u":
+            ax.text(cx + cw + 1.55, y_u, "u = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(cx + cw + 1.55, y_u, f"u = {float(f'{self.u:.3g}')} m s⁻¹", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Braking force arrow (left)
+        y_F = cy + 0.55*ch
+        ax.annotate("", xy=(cx - 1.3, y_F), xytext=(cx, y_F),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        if self.target == "F":
+            ax.text(cx - 1.45, y_F, "F = ?", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(cx - 1.45, y_F, f"F = {float(f'{self.F:.3g}')} N", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy080:
+    """
+    Gravitational potential energy and kinetic energy.
+    Vertical throw: KE at launch -> GPE at maximum height.
+    Dynamic target: find maximum height OR find launch speed.
+    """
+
+    def __init__(self):
+        self.g = 9.81
+        self.target = rnd.choice(["h", "u"])
+
+        if self.target == "h":
+            self.u = rnd.randint(8, 28)  # m s^-1
+            self.h = self.u**2 / (2 * self.g)
+        else:
+            self.h = rnd.choice([2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0, 15.0, 18.0, 20.0, 25.0, 30.0])
+            self.u = math.sqrt(2 * self.g * self.h)
+
+        # mass shown but cancels
+        self.m = rnd.choice([0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50])  # kg
+
+        if self.target == "h":
+            self.answer = sig_figs(self.h, 3)
+            self.description = (
+                "A small ball is projected vertically upwards. The launch speed and mass are shown in the diagram.\n"
+                "Neglect air resistance. Determine the maximum vertical height gained above the launch point.\n"
+                "h = (_) m"
+            )
+        else:
+            self.answer = sig_figs(self.u, 3)
+            self.description = (
+                "A small ball is projected vertically upwards. The maximum vertical height gained and mass are shown in the diagram.\n"
+                "Neglect air resistance. Determine the launch speed.\n"
+                "u = (_) m s⁻¹"
+            )
+
+        self.topic = "Work, energy and power"
+        self.subtopic = "Gravitational potential energy and kinetic energy"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m:.2f}\\,\\text{{kg}}\\\\"
+            f"\\text{{Acceleration of free fall, }} g &= 9.81\\,\\text{{m s}}^{{-2}}\\\\"
+            f"\\text{{Initial speed, }} u &= {self.u if self.target == 'h' else '\\text{?}'}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Maximum height, }} h &= {self.h if self.target == 'u' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            "\\text{{Using the Principle of Conservation of Energy:}} &\\\\"
+            "\\text{{Kinetic Energy at launch}} &= \\text{{Potential Energy at maximum height}}\\\\"
+            "\\frac{1}{2} m u^2 &= m g h\\\\"
+            "\\text{{The mass }} m \\text{{ cancels out from both sides:}} &\\\\"
+            "\\frac{1}{2} u^2 &= g h\\\\"
+            "\\text{{Substituting the known values and solving:}} &\\\\"
+            + (
+                f"\\frac{{1}}{{2}} ({self.u})^2 &= 9.81 \\times h\\\\"
+                f"h &= \\frac{{0.5 \\times {self.u**2}}}{{9.81}}\\\\"
+                f"h &= {round(0.5 * self.u**2 / 9.81, 10)}\\,\\text{{m}}\\\\"
+                f"\\text{{Final Answer}} &= {self.answer}"
+                if self.target == "h" else
+                f"\\frac{{1}}{{2}} u^2 &= 9.81 \\times {self.h}\\\\"
+                f"u^2 &= 2 \\times 9.81 \\times {self.h}\\\\"
+                f"u &= \\sqrt{{{round(2 * 9.81 * self.h, 10)}}}\\\\"
+                f"u &= {round(math.sqrt(2 * 9.81 * self.h), 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+                f"\\text{{Final Answer}} &= {self.answer}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(5.8, 4.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Ground
+        y0 = 1.4
+        ax.plot([1.0, 9.0], [y0, y0], linewidth=2, color="black")
+        ax.text(1.0, 0.7, "g = 9.81 m s⁻²", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Launch point and max point
+        x = 4.0
+        y_launch = y0
+        y_max = 8.6
+
+        ax.add_patch(patches.Circle((x, y_launch), 0.18, fill=False, linewidth=2, edgecolor="black"))
+        ax.add_patch(patches.Circle((x, y_max), 0.14, fill=False, linewidth=2, edgecolor="black"))
+        ax.text(x + 0.4, y_max, "max", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Height bracket
+        ax.annotate("", xy=(6.8, y_max), xytext=(6.8, y_launch),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        if self.target == "h":
+            ax.text(7.05, (y_max + y_launch)/2, "h = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(7.05, (y_max + y_launch)/2, f"h = {self.h:.1f} m", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Velocity arrow at launch
+        ax.annotate("", xy=(x, y_launch + 2.6), xytext=(x, y_launch + 0.3),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        if self.target == "u":
+            ax.text(x + 0.35, y_launch + 1.5, "u = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(x + 0.35, y_launch + 1.5, f"u = {self.u} m s⁻¹", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Mass label (shown but not needed)
+        ax.text(8.9, 9.4, f"m = {self.m:.2f} kg", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy081:
+    """
+    Gravitational potential energy and kinetic energy.
+    """
+
+    def __init__(self):
+        self.g = 9.81
+        self.m = rnd.choice([100, 150, 200, 250, 300, 400, 500])  # kg (shown; cancels)
+
+        self.motion = rnd.choice(["downhill", "uphill"])  # A -> B as drawn
+        self.target = rnd.choice(["v", "dh"])            # unknown speed at B or vertical height change
+
+        if self.target == "v":
+            # Given u and Δh; find v
+            while True:
+                if self.motion == "downhill":
+                    self.u = rnd.choice([0, 2, 4, 6, 8, 10, 12, 14])  # m s^-1
+                    self.dh = rnd.choice([2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30])  # m (drop magnitude)
+                    self.v = math.sqrt(self.u**2 + 2 * self.g * self.dh)
+                    if 4 <= self.v <= 45:
+                        break
+                else:  # uphill
+                    self.u = rnd.randint(10, 28)
+                    self.dh = rnd.choice([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0, 7.0, 8.0, 10.0, 12.0])
+                    val = self.u**2 - 2 * self.g * self.dh
+                    if val > 1.0:
+                        self.v = math.sqrt(val)
+                        if 2 <= self.v <= self.u and self.v <= 35:
+                            break
+
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "A cart moves from A to B on a smooth track as shown. The mass, g, the speed at A and the vertical height change "
+                "between A and B are shown in the diagram.\n"
+                "Determine the speed of the cart at B.\n"
+                "v = (_) m s⁻¹"
+            )
+
+        else:
+            # Given u and v; find Δh
+            while True:
+                if self.motion == "downhill":
+                    self.u = rnd.choice([0, 2, 4, 6, 8, 10, 12, 14])
+                    self.v = rnd.randint(max(4, self.u + 3), min(45, self.u + 28))
+                    self.dh = (self.v**2 - self.u**2) / (2 * self.g)
+                    if 1.0 <= self.dh <= 30.0:
+                        break
+                else:  # uphill
+                    self.u = rnd.randint(12, 30)
+                    self.v = rnd.randint(2, self.u - 2)
+                    self.dh = (self.u**2 - self.v**2) / (2 * self.g)
+                    if 0.8 <= self.dh <= 20.0:
+                        break
+
+            self.answer = sig_figs(self.dh, 3)
+            self.description = (
+                "A cart moves from A to B on a smooth track as shown. The mass, g, and the speeds at A and B are shown in the diagram.\n"
+                "Determine the vertical height change between A and B.\n"
+                "Δh = (_) m"
+            )
+
+        self.topic = "Work, energy and power"
+        self.subtopic = "Gravitational potential energy and kinetic energy"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m}\\,\\text{{kg}}\\\\"
+            f"\\text{{Initial speed at A, }} u &= {self.u}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Acceleration due to gravity, }} g &= 9.81\\,\\text{{m s}}^{{-2}}\\\\"
+            "\\text{{Using the Principle of Conservation of Energy:}} &\\\\"
+            "\\text{{Total Energy at A}} &= \\text{{Total Energy at B}}\\\\"
+            "E_{kA} + E_{pA} &= E_{kB} + E_{pB}\\\\"
+            "\\frac{1}{2}mu^2 + mgh_A &= \\frac{1}{2}mv^2 + mgh_B\\\\"
+            "\\text{{The mass }} m \\text{{ cancels out from all terms:}} &\\\\"
+            "\\frac{1}{2}u^2 + gh_A &= \\frac{1}{2}v^2 + gh_B\\\\"
+            "\\text{{Rearranging in terms of the vertical height change, }} \\Delta h = |h_A - h_B|: &\\\\"
+            + (
+                "\\text{{For downhill motion, }} g\\Delta h = \\frac{1}{2}v^2 - \\frac{1}{2}u^2\\\\"
+                if self.motion == "downhill" else
+                "\\text{{For uphill motion, }} g\\Delta h = \\frac{1}{2}u^2 - \\frac{1}{2}v^2\\\\"
+            ) +
+            "\\text{{Substituting the known values and solving:}} &\\\\"
+            + (
+                f"v^2 &= u^2 {'+' if self.motion == 'downhill' else '-'} 2g\\Delta h\\\\"
+                f"v^2 &= ({self.u})^2 {'+' if self.motion == 'downhill' else '-'} 2(9.81)({sig_figs(self.dh, 3)})\\\\"
+                f"v &= \\sqrt{{{round(self.u**2 + (1 if self.motion == 'downhill' else -1) * 2 * 9.81 * self.dh, 10)}}}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+                if self.target == "v" else
+                f"9.81 \\times \\Delta h &= \\left| \\frac{1}{2}({self.v})^2 - \\frac{1}{2}({self.u})^2 \\right|\\\\"
+                f"\\Delta h &= \\frac{{|{round(0.5 * self.v**2, 10)} - {round(0.5 * self.u**2, 10)}|}}{{9.81}}\\\\"
+                f"\\Delta h &= {self.answer}\\,\\text{{m}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        self.layout = rnd.choice(["A_left", "A_right"])
+
+        fig, ax = plt.subplots(figsize=(6.4, 4.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 7)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Baseline
+        ax.plot([0.8, 9.2], [1.0, 1.0], linewidth=2, color="black")
+
+        # Coordinates (A and B)
+        xA, xB = (2.0, 8.2) if self.layout == "A_left" else (8.2, 2.0)
+        y_high, y_low = 5.6, 2.2
+
+        if self.motion == "downhill":
+            yA, yB = y_high, y_low
+        else:
+            yA, yB = y_low, y_high
+
+        # Track
+        ax.plot([xA, xB], [yA, yB], linewidth=3, color="black")
+
+        # Points and small carts
+        ax.add_patch(patches.Circle((xA, yA), 0.12, fill=True, color="black"))
+        ax.add_patch(patches.Circle((xB, yB), 0.12, fill=True, color="black"))
+
+        ax.add_patch(patches.Rectangle((xA - 0.35, yA - 0.25), 0.7, 0.5, fill=False, linewidth=2, edgecolor="black"))
+        ax.add_patch(patches.Rectangle((xB - 0.35, yB - 0.25), 0.7, 0.5, fill=False, linewidth=2, edgecolor="black"))
+
+        ax.text(xA - 0.2, yA + 0.25, "A", ha="right", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(xB + 0.2, yB + 0.25, "B", ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Unit direction along track A->B for arrows
+        dx, dy = (xB - xA), (yB - yA)
+        L = math.hypot(dx, dy)
+        ux, uy = dx / L, dy / L
+
+        # Speed arrow at A
+        ax.annotate("", xy=(xA + 1.2 * ux, yA + 1.2 * uy), xytext=(xA + 0.2 * ux, yA + 0.2 * uy),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(xA + 1.35 * ux, yA + 1.35 * uy, f"u = {self.u} m s⁻¹", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Speed arrow at B
+        ax.annotate("", xy=(xB + 1.0 * ux, yB + 1.0 * uy), xytext=(xB + 0.2 * ux, yB + 0.2 * uy),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        if self.target == "v":
+            ax.text(xB + 1.15 * ux, yB + 1.15 * uy, "v = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(xB + 1.15 * ux, yB + 1.15 * uy, f"v = {self.v} m s⁻¹", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Vertical height change bracket (always magnitude)
+        top_y = max(yA, yB)
+        bot_y = min(yA, yB)
+        x_br = 9.1  # keep consistent and readable
+        ax.annotate("", xy=(x_br, top_y), xytext=(x_br, bot_y),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+
+        if self.target == "dh":
+            ax.text(x_br - 0.15, (top_y + bot_y) / 2, "Δh = ?", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(x_br - 0.15, (top_y + bot_y) / 2, f"Δh = {sig_figs(self.dh,3)} m", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Labels
+        ax.text(1.0, 0.45, "g = 9.81 m s⁻²", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(9.2, 6.6, f"m = {self.m} kg", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy082:
+    """
+    Resultant force varies linearly with displacement x from 0 to s (triangle/trapezium).
+    Object starts from rest on a smooth horizontal surface.
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["W", "v"])
+
+        # Choose shape
+        self.shape = rnd.choice(["triangle", "trapezium"])
+
+        while True:
+            self.m = rnd.choice([0.50, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00])  # kg
+            self.s = rnd.choice([2, 3, 4, 5, 6, 7, 8, 9, 10])  # m
+
+            if self.shape == "triangle":
+                self.F0 = 0
+                self.F1 = rnd.choice([20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 100, 120, 140])  # N
+            else:
+                self.F0 = rnd.choice([10, 15, 20, 25, 30, 35, 40, 50, 60])  # N
+                self.F1 = rnd.choice([40, 50, 60, 70, 80, 90, 100, 120, 140, 160])  # N
+                if self.F1 <= self.F0:
+                    continue
+
+            # Work = area under straight-line F-x (trapezium)
+            self.W = 0.5 * (self.F0 + self.F1) * self.s  # J
+
+            if self.target == "v":
+                self.v = math.sqrt(2 * self.W / self.m)
+                if 2 <= self.v <= 40:
+                    break
+            else:
+                if 100 <= self.W <= 5000:
+                    break
+
+        if self.target == "W":
+            self.answer = sig_figs(self.W, 3)
+            self.description = (
+                "The graph shows how the resultant force varies with displacement x from 0 to s. "
+                "All required values are shown in the diagram.\n"
+                "Determine the work done by the force from x = 0 to x = s.\n"
+                "W = (_) J"
+            )
+        else:
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "The graph shows how the resultant force varies with displacement x from 0 to s. A trolley of mass m starts from rest "
+                "on a smooth horizontal surface. All required values are shown in the diagram.\n"
+                "Determine the speed of the trolley after moving through displacement s.\n"
+                "v = (_) m s⁻¹"
+            )
+
+        self.topic = "Work, energy and power"
+        self.subtopic = "Energy conservation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial force, }} F_0 &= {self.F0}\\,\\text{{N}}\\\\"
+            f"\\text{{Final force, }} F_1 &= {self.F1}\\,\\text{{N}}\\\\"
+            f"\\text{{Total displacement, }} s &= {self.s}\\,\\text{{m}}\\\\"
+            f"\\text{{Mass of trolley, }} m &= {self.m:.2f}\\,\\text{{kg}}\\\\"
+            "\\text{{Step 1: Calculate the work done (}} W \\text{{).}} &\\\\"
+            "\\text{{Work done is equal to the area under the force-displacement graph.}} &\\\\"
+            + (
+                f"\\text{{Since the shape is a triangle:}} &\\\\"
+                f"W &= \\frac{{1}}{{2}} \\times \\text{{base}} \\times \\text{{height}}\\\\"
+                f"W &= \\frac{{1}}{{2}} \\times s \\times F_1\\\\"
+                if self.shape == "triangle" else
+                f"\\text{{Since the shape is a trapezium:}} &\\\\"
+                f"W &= \\frac{{1}}{{2}} \\times (F_0 + F_1) \\times s\\\\"
+            ) +
+            f"W &= \\frac{{1}}{{2}} \\times ({self.F0} + {self.F1}) \\times {self.s}\\\\"
+            f"W &= {round(self.W, 10)}\\,\\text{{J}}\\\\"
+            + (
+                "\\text{{Final Answer}} &= " + str(self.answer) + "\\,\\text{{J}}"
+                if self.target == "W" else
+                "\\text{{Step 2: Calculate the final speed (}} v \\text{{).}} &\\\\"
+                "\\text{{Using the work-energy theorem, where useful work done = gain in kinetic energy:}} &\\\\"
+                "W &= \\frac{1}{2}mv^2 - \\frac{1}{2}mu^2\\\\"
+                "\\text{{As the trolley starts from rest (}} u = 0 \\text{{):}} &\\\\"
+                f"{round(self.W, 10)} &= \\frac{{1}}{{2}} \\times {self.m:.2f} \\times v^2\\\\"
+                f"v^2 &= \\frac{{2 \\times {round(self.W, 10)}}}{{{self.m:.2f}}}\\\\"
+                f"v &= \\sqrt{{{round(2 * self.W / self.m, 10)}}}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6.2, 4.0))
+
+        # Axes limits
+        Fmax = max(self.F0, self.F1)
+        ax.set_xlim(-0.2, self.s * 1.15)
+        ax.set_ylim(0, Fmax * 1.35)
+
+        ax.set_xlabel("displacement x / m", fontsize=10)
+        ax.set_ylabel("force F / N", fontsize=10)
+        ax.tick_params(axis="both", labelsize=10)
+
+        # Plot line (0,F0) -> (s,F1)
+        ax.plot([0, self.s], [self.F0, self.F1], linewidth=2, color="black")
+        ax.fill_between([0, self.s], [self.F0, self.F1], [0, 0], alpha=0.18)
+
+        ax.plot([0, self.s], [self.F0, self.F1], "ko", markersize=4)
+        ax.text(0, self.F0 + 0.06 * Fmax, f"F₀ = {self.F0} N", fontsize=10,
+                ha="left", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(self.s, self.F1 + 0.06 * Fmax, f"F₁ = {self.F1} N", fontsize=10,
+                ha="right", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Show s clearly
+        ax.text(self.s, -0.10 * Fmax, f"s = {self.s} m", fontsize=10,
+                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Extra info in-figure (mass + from rest)
+        ax.text(0.02, 0.98, f"m = {self.m:.2f} kg", transform=ax.transAxes,
+                ha="left", va="top", fontsize=10,
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(0.02, 0.90, "u = 0", transform=ax.transAxes,
+                ha="left", va="top", fontsize=10,
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Unknown indicator
+        if self.target == "W":
+            ax.text(0.98, 0.98, "W = ?", transform=ax.transAxes,
+                    ha="right", va="top", fontsize=10,
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(0.98, 0.98, "v = ?", transform=ax.transAxes,
+                    ha="right", va="top", fontsize=10,
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        ax.grid(True, linestyle="--", alpha=0.45)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
