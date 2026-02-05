@@ -2034,3 +2034,757 @@ class Phy070:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
+
+class Phy071:
+    """
+    Turning effects of forces (moment of a force).
+    Beam pivoted at P with a downward force W and an upward force F as shown.
+    Find F for equilibrium (principle of moments).
+    """
+
+    def __init__(self):
+        self.orientation = rnd.choice(["left", "right"])  # Randomly mirror the diagram
+        self.W = rnd.choice([10, 12, 14, 16, 18, 20, 24, 30, 36, 40])  # N
+        self.d2 = rnd.choice([0.60, 0.80, 1.00, 1.20, 1.40])          # m (pivot to F)
+        d1_choices = [0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.60, 0.70, 0.80, 0.90, 1.00]
+        self.d1 = rnd.choice([d for d in d1_choices if d < self.d2])  # m (pivot to W)
+
+        # Calculate required force
+        self.F = self.W * self.d1 / self.d2
+        self.answer = float(f"{self.F:.3g}")
+
+        self.description = (
+            "A light horizontal beam is pivoted at P. The forces and distances are shown in the diagram.\n"
+            "Determine the magnitude of the force F required to keep the beam in equilibrium.\n"
+            "F = (_) N"
+        )
+        self.topic = "Forces, density and pressure"
+        self.subtopic = "Turning effects of forces"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Weight (downward force), }} W &= {self.W}\\,\\text{{N}}\\\\"
+            f"\\text{{Distance from pivot to }} W, d_1 &= {self.d1:.2f}\\,\\text{{m}}\\\\"
+            f"\\text{{Distance from pivot to }} F, d_2 &= {self.d2:.2f}\\,\\text{{m}}\\\\"
+            "\\text{{For the beam to be in equilibrium, the total moment about pivot P must be zero.}} &\\\\"
+            "\\text{{Sum of clockwise moments}} &= \\text{{Sum of anticlockwise moments}}\\\\"
+            "\\text{{Assuming the configuration in the diagram:}} &\\\\"
+            "W \\times d_1 &= F \\times d_2\\\\"
+            "\\text{{Substitute the known values:}} &\\\\"
+            f"{self.W} \\times {self.d1:.2f} &= F \\times {self.d2:.2f}\\\\"
+            f"{round(self.W * self.d1, 10)} &= F \\times {self.d2:.2f}\\\\"
+            "\\text{{Rearrange to solve for }} F: &\\\\"
+            f"F &= \\frac{{{round(self.W * self.d1, 10)}}}{{{self.d2:.2f}}}\\\\"
+            f"F &= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.6, 3.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Geometry
+        y_beam = 2.4
+        x_left_end = 1.4
+        x_right_end = 9.2
+
+        # Choose pivot/endpoints based on orientation
+        if self.orientation == "left":
+            xP = x_left_end
+            xEnd = x_right_end
+        else:
+            xP = x_right_end
+            xEnd = x_left_end
+
+        # Beam
+        ax.plot([x_left_end, x_right_end], [y_beam, y_beam], linewidth=3, color="black")
+
+        # Pivot triangle
+        tri = patches.Polygon([[xP, y_beam], [xP - 0.5, y_beam - 0.9], [xP + 0.5, y_beam - 0.9]],
+                              closed=True, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(tri)
+        ax.text(xP, y_beam - 1.15, "P", ha="center", va="top")
+
+        # Position mapping along beam
+        L_pix = abs(xEnd - xP)
+        direction = 1 if xEnd > xP else -1
+
+        # Force positions: F at far end, W somewhere between
+        xF = xEnd
+        xW = xP + direction * L_pix * (self.d1 / self.d2)
+
+        # Downward force W
+        ax.annotate("", xy=(xW, y_beam - 0.1), xytext=(xW, y_beam + 1.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(xW, y_beam + 1.25, f"W = {self.W} N", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Upward force F (unknown)
+        ax.annotate("", xy=(xF, y_beam + 1.1), xytext=(xF, y_beam - 0.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(xF, y_beam + 1.25, "F = ?", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Distance d1 (pivot to W)
+        y1 = 1.4
+        ax.annotate("", xy=(xP, y1), xytext=(xW, y1),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((xP + xW) / 2, y1 - 0.15, f"d₁ = {self.d1:.2f} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Distance d2 (pivot to F)
+        y2 = 0.9
+        ax.annotate("", xy=(xP, y2), xytext=(xF, y2),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((xP + xF) / 2, y2 - 0.15, f"d₂ = {self.d2:.2f} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy072:
+    """
+    Turning effects of forces (couple and torque).
+    Dynamic target: sometimes find torque, sometimes force, sometimes separation.
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["tau", "F", "d"])  # what to find
+
+        self.F = rnd.choice([10, 15, 20, 25, 30, 40, 50, 60])  # N (magnitude of each force)
+        self.d = rnd.choice([0.10, 0.12, 0.15, 0.18, 0.20, 0.25, 0.30, 0.35])  # m
+        self.tau = self.F * self.d  # N m
+
+        if self.target == "tau":
+            self.answer = float(f"{self.tau:.3g}")
+            self.description = (
+                "Two equal and opposite forces form a couple as shown. The force magnitude and separation are shown in the diagram.\n"
+                "Determine the torque of the couple.\n"
+                "Torque = (_) N m"
+            )
+            self.unknown_label = "τ = ?"
+        elif self.target == "F":
+            self.answer = float(f"{self.F:.3g}")
+            self.description = (
+                "Two equal and opposite forces form a couple as shown. The torque and separation are shown in the diagram.\n"
+                "Determine the magnitude of each force.\n"
+                "Force magnitude = (_) N"
+            )
+            self.unknown_label = "F = ?"
+        else:
+            self.answer = float(f"{self.d:.3g}")
+            self.description = (
+                "Two equal and opposite forces form a couple as shown. The torque and force magnitude are shown in the diagram.\n"
+                "Determine the perpendicular separation between the forces.\n"
+                "Separation = (_) m"
+            )
+            self.unknown_label = "d = ?"
+
+        self.topic = "Forces, density and pressure"
+        self.subtopic = "Turning effects of forces"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Magnitude of each force, }} F &= {self.F if self.target != 'F' else '\\text{?}'}\\,\\text{{N}}\\\\"
+            f"\\text{{Perpendicular separation, }} d &= {self.d if self.target != 'd' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            f"\\text{{Torque of the couple, }} \\tau &= {self.tau if self.target != 'tau' else '\\text{?}'}\\,\\text{{N m}}\\\\"
+            "\\text{{The torque of a couple is given by:}} &\\\\"
+            "\\tau &= F \\times d\\\\"
+            "\\text{{Substituting the known values:}} &\\\\"
+            f"{'\\tau' if self.target == 'tau' else str(float(f'{self.tau:.3g}'))} &= "
+            f"{self.F if self.target != 'F' else 'F'} \\times {self.d if self.target != 'd' else 'd'}\\\\"
+            "\\text{{Solving for the unknown variable:}} &\\\\"
+            + (f"\\tau &= {self.F} \\times {self.d}\\\\" if self.target == "tau" else "")
+            + (f"F &= \\frac{{{float(f'{self.tau:.3g}')}}}{{{self.d}}}\\\\" if self.target == "F" else "")
+            + (f"d &= \\frac{{{float(f'{self.tau:.3g}')}}}{{{self.F}}}\\\\" if self.target == "d" else "")
+            + f"\\text{{Final Answer}} &= {self.answer}\\,\\text{{{ 'N m' if self.target == 'tau' else ('N' if self.target == 'F' else 'm') }}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.2, 3.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Bar
+        y_bar = 2.0
+        xL, xR = 3.0, 7.0
+        ax.plot([xL, xR], [y_bar, y_bar], linewidth=3, color="black")
+
+        # Forces (up on left, down on right)
+        ax.annotate("", xy=(xL, y_bar + 1.2), xytext=(xL, y_bar + 0.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.annotate("", xy=(xR, y_bar - 1.2), xytext=(xR, y_bar - 0.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        # Decide what values to show
+        show_F = (self.target != "F")
+        show_d = (self.target != "d")
+        show_tau = (self.target != "tau")
+
+        # Labels for forces
+        if show_F:
+            ax.text(xL, y_bar + 1.35, f"F = {self.F} N", ha="center", va="bottom",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(xR, y_bar - 1.35, f"F = {self.F} N", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(xL, y_bar + 1.35, "F = ?", ha="center", va="bottom",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(xR, y_bar - 1.35, "F = ?", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Separation d (horizontal)
+        y_d = 0.9
+        ax.annotate("", xy=(xL, y_d), xytext=(xR, y_d),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        if show_d:
+            ax.text((xL + xR) / 2, y_d - 0.15, f"d = {self.d:.2f} m", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text((xL + xR) / 2, y_d - 0.15, "d = ?", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Torque text (top right)
+        if show_tau:
+            ax.text(9.6, 3.6, f"τ = {float(f'{self.tau:.3g}')} N m", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(9.6, 3.6, "τ = ?", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy073:
+    """
+    Equilibrium of forces (three coplanar forces in equilibrium at a point).
+    Ring with two tensions at angles and a weight downward.
+    Dynamic target: find T1 or T2.
+    """
+
+    def __init__(self):
+        self.g = 9.81
+        self.m = rnd.choice([1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0])
+        self.W = self.m * self.g
+
+        angles = [25, 30, 35, 40, 45, 50, 55, 60]
+        while True:
+            self.theta1 = rnd.choice(angles)  # left string angle above horizontal
+            self.theta2 = rnd.choice(angles)  # right string angle above horizontal
+            # Avoid extreme imbalance
+            if abs(self.theta1 - self.theta2) <= 25:
+                break
+
+        th1 = math.radians(self.theta1)
+        th2 = math.radians(self.theta2)
+
+        # Solve tensions from equilibrium:
+        # T1 cosθ1 = T2 cosθ2
+        # T1 sinθ1 + T2 sinθ2 = W
+        denom = (math.sin(th1) + math.cos(th1) * math.tan(th2))
+        self.T1 = self.W / denom
+        self.T2 = self.T1 * math.cos(th1) / math.cos(th2)
+
+        self.target = rnd.choice(["T1", "T2"])
+        if self.target == "T1":
+            self.answer = float(f"{self.T1:.3g}")
+            self.description = (
+                "A small ring is in equilibrium under three coplanar forces as shown. The mass and angles are shown in the diagram.\n"
+                "Take g = 9.81 m s⁻². Determine the tension T₁ in the left string.\n"
+                "T₁ = (_) N"
+            )
+        else:
+            self.answer = float(f"{self.T2:.3g}")
+            self.description = (
+                "A small ring is in equilibrium under three coplanar forces as shown. The mass and angles are shown in the diagram.\n"
+                "Take g = 9.81 m s⁻². Determine the tension T₂ in the right string.\n"
+                "T₂ = (_) N"
+            )
+
+        self.topic = "Forces, density and pressure"
+        self.subtopic = "Equilibrium of forces"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Mass, }} m &= {self.m:.1f}\\,\\text{{kg}}\\\\"
+            f"\\text{{Weight, }} W &= m \\times g = {self.m:.1f} \\times 9.81 = {round(self.W, 10)}\\,\\text{{N}}\\\\"
+            f"\\text{{Angle 1, }} \\theta_1 &= {self.theta1}^\\circ\\\\"
+            f"\\text{{Angle 2, }} \\theta_2 &= {self.theta2}^\\circ\\\\"
+            "\\text{{For equilibrium, the sum of horizontal components must be zero:}} &\\\\"
+            "T_1 \\cos(\\theta_1) &= T_2 \\cos(\\theta_2) \\implies T_2 = T_1 \\frac{\\cos(\\theta_1)}{\\cos(\\theta_2)}\\\\"
+            "\\text{{The sum of vertical components must equal the weight:}} &\\\\"
+            "T_1 \\sin(\\theta_1) + T_2 \\sin(\\theta_2) &= W\\\\"
+            "\\text{{Substituting }} T_2 \\text{{ into the vertical equation:}} &\\\\"
+            "T_1 \\sin(\\theta_1) + \\left( T_1 \\frac{\\cos(\\theta_1)}{\\cos(\\theta_2)} \\right) \\sin(\\theta_2) &= W\\\\"
+            "T_1 \\left[ \\sin(\\theta_1) + \\cos(\\theta_1) \\tan(\\theta_2) \\right] &= W\\\\"
+            "\\text{{Solving for }} T_1: &\\\\"
+            f"T_1 &= \\frac{{{round(self.W, 10)}}}{{\\sin({self.theta1}^\\circ) + \\cos({self.theta1}^\\circ) \\tan({self.theta2}^\\circ)}}\\\\"
+            f"T_1 &= {round(self.T1, 10)}\\,\\text{{N}}\\\\"
+            + (f"\\text{{Solving for }} T_2: &\\\\"
+            f"T_2 &= {round(self.T1, 10)} \\times \\frac{{\\cos({self.theta1}^\\circ)}}{{\\cos({self.theta2}^\\circ)}}\\\\"
+            f"T_2 &= {round(self.T2, 10)}\\,\\text{{N}}\\\\" if self.target == "T2" else "")
+            + f"\\text{{Final Answer}} &= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6.2, 4.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 8)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Ring (node)
+        x0, y0 = 5.0, 3.2
+        ax.add_patch(patches.Circle((x0, y0), 0.10, fill=True, color="black"))
+
+        # Reference horizontal line (subtle)
+        ax.plot([3.5, 6.5], [y0, y0], linewidth=1.5, color="black")
+
+        # String directions
+        L = 3.2
+        th1 = math.radians(180 - self.theta1)  # up-left
+        th2 = math.radians(self.theta2)        # up-right
+
+        x1, y1 = x0 + L * math.cos(th1), y0 + L * math.sin(th1)
+        x2, y2 = x0 + L * math.cos(th2), y0 + L * math.sin(th2)
+
+        # Tension arrows (from ring along strings)
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.annotate("", xy=(x2, y2), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        ax.text((x0 + x1)/2 - 0.2, (y0 + y1)/2 + 0.1, "T₁", ha="right", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text((x0 + x2)/2 + 0.2, (y0 + y2)/2 + 0.1, "T₂", ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Weight arrow
+        ax.annotate("", xy=(x0, 1.0), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(x0 + 0.25, (y0 + 1.0)/2, "W", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Mass label (shown in diagram)
+        ax.text(5.0, 0.55, f"m = {self.m:.1f} kg", ha="center", va="center",
+                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        # Angle labels (shown in diagram)
+        ax.text(3.35, y0 + 0.35, f"θ₁ = {self.theta1}°", ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(6.65, y0 + 0.35, f"θ₂ = {self.theta2}°", ha="right", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy074:
+    """
+    Equilibrium of forces (no resultant force and no resultant torque).
+    Simply-supported uniform beam with loads; find reaction at A or B (dynamic target).
+    """
+
+    def __init__(self):
+        self.L = rnd.choice([2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0])  # m
+        x_choices = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0]
+        self.x = rnd.choice([v for v in x_choices if v < self.L])  # m from A
+
+        self.W_load = rnd.choice([100, 120, 140, 160, 180, 200, 240, 300, 360])  # N
+        self.W_beam = rnd.choice([50, 80, 100, 120, 150, 180, 200])              # N
+
+        # Equilibrium:
+        # Taking moments about A: RB*L = W_load*x + W_beam*(L/2)
+        self.RB = (self.W_load * self.x + self.W_beam * (self.L / 2)) / self.L
+        self.RA = self.W_load + self.W_beam - self.RB
+
+        self.target = rnd.choice(["RA", "RB"])
+        if self.target == "RA":
+            self.answer = float(f"{self.RA:.3g}")
+            self.description = (
+                "A uniform beam is in equilibrium supported at A and B. The loads and distances are shown in the diagram.\n"
+                "Determine the vertical reaction at support A.\n"
+                "R_A = (_) N"
+            )
+        else:
+            self.answer = float(f"{self.RB:.3g}")
+            self.description = (
+                "A uniform beam is in equilibrium supported at A and B. The loads and distances are shown in the diagram.\n"
+                "Determine the vertical reaction at support B.\n"
+                "R_B = (_) N"
+            )
+
+        self.topic = "Forces, density and pressure"
+        self.subtopic = "Equilibrium of forces"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Length of the beam, }} L &= {self.L:.1f}\\,\\text{{m}}\\\\"
+            f"\\text{{Weight of the beam (at center), }} W_{{beam}} &= {self.W_beam}\\,\\text{{N}}\\\\"
+            f"\\text{{Load weight, }} W_{{load}} &= {self.W_load}\\,\\text{{N}}\\\\"
+            f"\\text{{Distance of load from A, }} x &= {self.x:.1f}\\,\\text{{m}}\\\\"
+            "\\text{{For equilibrium, the sum of clockwise moments about A equals the sum of anticlockwise moments about A.}} &\\\\"
+            "\\sum M_A &= 0\\\\"
+            "R_B \\times L &= W_{{load}} \\times x + W_{{beam}} \\times \\left(\\frac{L}{2}\\right)\\\\"
+            f"R_B \\times {self.L:.1f} &= {self.W_load} \\times {self.x:.1f} + {self.W_beam} \\times {self.L / 2:.2f}\\\\"
+            f"R_B \\times {self.L:.1f} &= {round(self.W_load * self.x, 10)} + {round(self.W_beam * (self.L / 2), 10)}\\\\"
+            f"R_B \\times {self.L:.1f} &= {round(self.W_load * self.x + self.W_beam * (self.L / 2), 10)}\\\\"
+            f"R_B &= \\frac{{{round(self.W_load * self.x + self.W_beam * (self.L / 2), 10)}}}{{{self.L:.1f}}}\\\\"
+            f"R_B &= {round(self.RB, 10)}\\,\\text{{N}}\\\\"
+            "\\text{{Using the vertical equilibrium condition:}} &\\\\"
+            "R_A + R_B &= W_{{load}} + W_{{beam}}\\\\"
+            f"R_A &= {self.W_load} + {self.W_beam} - {round(self.RB, 10)}\\\\"
+            f"R_A &= {round(self.RA, 10)}\\,\\text{{N}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(7.0, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 5)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Beam geometry
+        xA, xB = 1.2, 9.2
+        y_beam = 3.2
+        ax.plot([xA, xB], [y_beam, y_beam], linewidth=3, color="black")
+
+        # Supports (triangles)
+        triA = patches.Polygon([[xA, y_beam], [xA - 0.5, y_beam - 1.0], [xA + 0.5, y_beam - 1.0]],
+                               closed=True, fill=False, linewidth=2, edgecolor="black")
+        triB = patches.Polygon([[xB, y_beam], [xB - 0.5, y_beam - 1.0], [xB + 0.5, y_beam - 1.0]],
+                               closed=True, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(triA)
+        ax.add_patch(triB)
+        ax.text(xA, y_beam - 1.25, "A", ha="center", va="top")
+        ax.text(xB, y_beam - 1.25, "B", ha="center", va="top")
+
+        # Reaction arrows (shown as labels; values not shown)
+        ax.annotate("", xy=(xA, y_beam + 0.9), xytext=(xA, y_beam),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.annotate("", xy=(xB, y_beam + 0.9), xytext=(xB, y_beam),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(xA + 0.15, y_beam + 0.6, "R_A", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(xB - 0.15, y_beam + 0.6, "R_B", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Position mapping for load x
+        beam_pix = xB - xA
+        x_load = xA + beam_pix * (self.x / self.L)
+
+        # Point load
+        ax.annotate("", xy=(x_load, y_beam - 0.1), xytext=(x_load, y_beam + 1.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(x_load, y_beam + 1.25, f"W = {self.W_load} N", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Beam weight at centre
+        x_c = (xA + xB) / 2
+        ax.annotate("", xy=(x_c, y_beam - 0.1), xytext=(x_c, y_beam + 0.9),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(x_c, y_beam + 1.05, f"W_beam = {self.W_beam} N", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Distance labels (shown)
+        y_d1 = 1.5
+        ax.annotate("", xy=(xA, y_d1), xytext=(x_load, y_d1),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((xA + x_load) / 2, y_d1 - 0.15, f"x = {self.x:.1f} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        y_d2 = 1.1
+        ax.annotate("", xy=(xA, y_d2), xytext=(xB, y_d2),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((xA + xB) / 2, y_d2 - 0.15, f"L = {self.L:.1f} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy075:
+    """
+    Density and pressure (hydrostatic pressure).
+    Dynamic target: find pressure difference OR find vertical separation.
+    Uses Δp = ρ g Δh.
+    """
+
+    def __init__(self):
+        self.g = 9.81
+        self.rho = rnd.choice([800, 900, 1000, 1100, 1200, 1300])  # kg m^-3
+        self.dh = rnd.choice([0.40, 0.60, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00])  # m
+        self.dp = self.rho * self.g * self.dh  # Pa
+
+        self.target = rnd.choice(["dp", "dh"])
+
+        if self.target == "dp":
+            self.answer = float(f"{(self.dp/1000):.3g}")  # kPa
+            self.description = (
+                "Two points A and B are at different depths in a liquid. The density and vertical separation are shown in the diagram.\n"
+                "Take g = 9.81 m s⁻². Determine the pressure difference p_B − p_A.\n"
+                "p_B − p_A = (_) kPa"
+            )
+        else:
+            self.answer = float(f"{self.dh:.3g}")  # m
+            self.description = (
+                "Two points A and B are in a liquid. The density of the liquid and the pressure difference p_B − p_A are shown in the diagram.\n"
+                "Take g = 9.81 m s⁻². Determine the vertical separation Δh between A and B.\n"
+                "Δh = (_) m"
+            )
+
+        self.topic = "Forces, density and pressure"
+        self.subtopic = "Density and pressure"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Density of liquid, }} \\rho &= {self.rho}\\,\\text{{kg m}}^{{-3}}\\\\"
+            f"\\text{{Acceleration of free fall, }} g &= 9.81\\,\\text{{m s}}^{{-2}}\\\\"
+            f"\\text{{Vertical separation, }} \\Delta h &= {self.dh if self.target == 'dp' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            f"\\text{{Pressure difference, }} \\Delta p &= {f'{self.dp/1000:.3g}' if self.target == 'dh' else '\\text{?}'}\\,\\text{{kPa}}\\\\"
+            "\\text{{The hydrostatic pressure difference is given by:}} &\\\\"
+            "\\Delta p &= \\rho g \\Delta h\\\\"
+            "\\text{{Substituting the known values:}} &\\\\"
+            + (f"\\Delta p &= {self.rho} \\times 9.81 \\times {self.dh}\\\\" if self.target == "dp" else 
+            f"{self.dp/1000:.3g} \\times 10^3 &= {self.rho} \\times 9.81 \\times \\Delta h\\\\")
+            + "\\text{{Solving for the unknown variable:}} &\\\\"
+            + (f"\\Delta p &= {round(self.dp, 10)}\\,\\text{{Pa}}\\\\" if self.target == "dp" else "")
+            + (f"\\Delta p &= {round(self.dp/1000, 10)}\\,\\text{{kPa}}\\\\" if self.target == "dp" else "")
+            + (f"\\Delta h &= \\frac{{{self.dp/1000:.3g} \\times 10^3}}{{{self.rho} \\times 9.81}}\\\\" if self.target == "dh" else "")
+            + (f"\\Delta h &= {round(self.dh, 10)}\\,\\text{{m}}\\\\" if self.target == "dh" else "")
+            + f"\\text{{Final Answer}} &= {self.answer}\\,\\text{{{ 'kPa' if self.target == 'dp' else 'm' }}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(5.8, 4.4))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 7)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Container
+        xL, xR = 3.0, 7.0
+        yB, yT = 1.0, 6.0
+        ax.add_patch(patches.Rectangle((xL, yB), xR - xL, yT - yB, fill=False, linewidth=2, edgecolor="black"))
+
+        # Liquid fill (simple)
+        y_surface = 5.4
+        ax.add_patch(patches.Rectangle((xL + 0.05, yB + 0.05), (xR - xL) - 0.10, (y_surface - yB) - 0.05,
+                                       fill=True, linewidth=0, facecolor="#dbefff"))
+
+        ax.plot([xL, xR], [y_surface, y_surface], linewidth=2, color="black")
+        ax.text((xL + xR) / 2, y_surface + 0.25, f"ρ = {self.rho} kg m⁻³", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Points A (higher) and B (lower)
+        xP = 5.0
+        yA = 4.4
+        yBpt = yA - 1.4  # base separation visually
+        # Use diagram separation label rather than exact scaling; A and B are shown with a bracket value.
+        ax.plot(xP, yA, "ko", markersize=4)
+        ax.plot(xP, yBpt, "ko", markersize=4)
+        ax.text(xP + 0.25, yA, "A", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(xP + 0.25, yBpt, "B", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Bracket between A and B (Δh)
+        x_br = 6.4
+        ax.annotate("", xy=(x_br, yA), xytext=(x_br, yBpt),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+
+        if self.target == "dp":
+            ax.text(x_br + 0.25, (yA + yBpt) / 2, f"Δh = {self.dh:.2f} m", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(9.6, 6.6, "Δp = ?", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(x_br + 0.25, (yA + yBpt) / 2, "Δh = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(9.6, 6.6, f"p_B − p_A = {float(f'{(self.dp/1000):.3g}')} kPa", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(9.6, 0.5, "g = 9.81 m s⁻²", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy076:
+    """
+    Density and pressure (upthrust / Archimedes' principle).
+    Block fully submerged and held by a string.
+    Dynamic target: find upthrust OR find tension.
+    Uses U = ρ g V and (equilibrium) T + U = mg.
+    """
+
+    def __init__(self):
+        self.g = 9.81
+        self.rho = rnd.choice([800, 900, 1000, 1100, 1200])  # kg m^-3
+        self.s_cm = rnd.randint(5, 12)  # cube side in cm (shown)
+        self.V = (self.s_cm / 100) ** 3  # m^3
+
+        # Choose a mass that ensures tension positive (object heavier than displaced fluid)
+        while True:
+            self.m = rnd.choice([0.4, 0.5, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0])
+            self.U = self.rho * self.g * self.V
+            self.W = self.m * self.g
+            self.T = self.W - self.U
+            if self.T > 0.8:  # avoid tiny tension
+                break
+
+        self.target = rnd.choice(["T", "U"])
+
+        if self.target == "T":
+            self.answer = float(f"{self.T:.3g}")
+            self.description = (
+                "A cube is fully submerged in a liquid and held at rest by a light string as shown. The cube dimensions, mass and liquid density are shown in the diagram.\n"
+                "Take g = 9.81 m s⁻². Determine the tension in the string.\n"
+                "T = (_) N"
+            )
+        else:
+            self.answer = float(f"{self.U:.3g}")
+            self.description = (
+                "A cube is fully submerged in a liquid as shown. The cube dimensions and liquid density are shown in the diagram.\n"
+                "Take g = 9.81 m s⁻². Determine the upthrust acting on the cube.\n"
+                "Upthrust = (_) N"
+            )
+
+        self.topic = "Forces, density and pressure"
+        self.subtopic = "Density and pressure"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Side of the cube, }} s &= {self.s_cm}\\,\\text{{cm}} = {self.s_cm / 100:.2f}\\,\\text{{m}}\\\\"
+            f"\\text{{Volume of the cube, }} V &= s^3 = ({self.s_cm / 100:.2f})^3 = {round(self.V, 10)}\\,\\text{{m}}^3\\\\"
+            f"\\text{{Density of liquid, }} \\rho &= {self.rho}\\,\\text{{kg m}}^{{-3}}\\\\"
+            f"\\text{{Mass of the cube, }} m &= {self.m:.1f}\\,\\text{{kg}}\\\\"
+            "\\text{{Step 1: Calculate the upthrust (}} U \\text{{) using Archimedes' principle:}} &\\\\"
+            "U &= \\rho g V\\\\"
+            f"&= {self.rho} \\times 9.81 \\times {round(self.V, 10)}\\\\"
+            f"&= {round(self.U, 10)}\\,\\text{{N}}\\\\"
+            "\\text{{Step 2: Calculate the weight (}} W \\text{{) of the cube:}} &\\\\"
+            "W &= mg\\\\"
+            f"&= {self.m:.1f} \\times 9.81\\\\"
+            f"&= {round(self.W, 10)}\\,\\text{{N}}\\\\"
+            "\\text{{Step 3: Apply the equilibrium condition (}} \\sum F_y = 0 \\text{{):}} &\\\\"
+            "\\text{{The upward forces (}} T + U \\text{{) must equal the downward force (}} W \\text{{):}} &\\\\"
+            "T + U &= W\\\\"
+            "\\text{{Solving for the unknown variable:}} &\\\\"
+            + (f"T &= W - U\\\\" if self.target == "T" else "")
+            + (f"T &= {round(self.W, 10)} - {round(self.U, 10)}\\\\" if self.target == "T" else "")
+            + (f"T &= {round(self.T, 10)}\\,\\text{{N}}\\\\" if self.target == "T" else "")
+            + f"\\text{{Final Answer}} &= {self.answer}\\,\\text{{N}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6.0, 4.4))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 7)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Container
+        xL, xR = 3.0, 7.2
+        yB, yT = 1.0, 6.2
+        ax.add_patch(patches.Rectangle((xL, yB), xR - xL, yT - yB, fill=False, linewidth=2, edgecolor="black"))
+
+        # Liquid fill
+        y_surface = 5.5
+        ax.add_patch(patches.Rectangle((xL + 0.05, yB + 0.05), (xR - xL) - 0.10, (y_surface - yB) - 0.05,
+                                       fill=True, linewidth=0, facecolor="#dbefff"))
+        ax.plot([xL, xR], [y_surface, y_surface], linewidth=2, color="black")
+        ax.text((xL + xR) / 2, y_surface + 0.25, f"ρ = {self.rho} kg m⁻³", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Cube (submerged)
+        cube_w = 1.2
+        cx, cy = 5.1, 3.1
+        ax.add_patch(patches.Rectangle((cx - cube_w/2, cy - cube_w/2), cube_w, cube_w,
+                                       fill=False, linewidth=2, edgecolor="black"))
+
+        # String
+        ax.plot([cx, cx], [y_surface, cy + cube_w/2], linewidth=2, color="black")
+
+        # Labels shown in diagram (values)
+        ax.text(9.5, 5.9, f"m = {self.m:.1f} kg", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(9.5, 5.3, f"side = {self.s_cm} cm", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Forces on cube (minimal but readable)
+        # Upthrust arrow (up)
+        ax.annotate("", xy=(cx + 1.6, cy + 0.9), xytext=(cx + 1.6, cy - 0.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(cx + 1.85, cy + 0.4, "U", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Weight arrow (down)
+        ax.annotate("", xy=(cx + 2.4, cy - 0.9), xytext=(cx + 2.4, cy + 0.1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(cx + 2.65, cy - 0.4, "W", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Tension label near string (unknown or just T)
+        if self.target == "T":
+            ax.text(cx - 0.4, (y_surface + cy)/2, "T = ?", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(cx - 0.4, (y_surface + cy)/2, "T", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Upthrust unknown or given? Keep minimal: show unknown label if target is U
+        if self.target == "U":
+            ax.text(9.2, 6.6, "Upthrust U = ?", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(9.2, 0.6, "g = 9.81 m s⁻²", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
