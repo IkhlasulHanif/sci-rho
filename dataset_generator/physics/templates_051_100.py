@@ -3672,3 +3672,491 @@ class Phy082:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
+
+class Phy083:
+    """
+    Stress and strain (tensile stress / tensile force).
+    Uses: σ = F / A,  A = π(d/2)^2
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["stress", "force"])      # what to find
+        self.force_symbol = rnd.choice(["F", "T"])         # label style on diagram
+
+        d_choices = [0.50, 0.60, 0.75, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50]  # mm
+
+        while True:
+            self.d_mm = rnd.choice(d_choices)
+            d = self.d_mm * 1e-3
+            self.A = math.pi * (d / 2) ** 2
+
+            if self.target == "stress":
+                # given force -> find stress
+                self.F = rnd.choice([150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900])  # N
+                self.sigma = self.F / self.A
+                self.sigma_MPa = self.sigma / 1e6
+                if 20 <= self.sigma_MPa <= 900:
+                    break
+            else:
+                # given stress -> find force (tension)
+                self.sigma_MPa = rnd.choice([30, 40, 50, 60, 80, 100, 120, 150, 180, 200, 250, 300, 350, 400, 500])
+                self.sigma = self.sigma_MPa * 1e6
+                self.F = self.sigma * self.A
+                if 50 <= self.F <= 2000:
+                    break
+
+        if self.target == "stress":
+            self.answer = sig_figs(self.sigma_MPa, 3)
+            self.description = (
+                "A wire is in tension. The tensile force and wire diameter are shown in the diagram.\n"
+                "Determine the tensile stress in the wire.\n"
+                "σ = (_) MPa"
+            )
+        else:
+            self.answer = sig_figs(self.F, 3)
+            self.description = (
+                "A wire is in tension. The tensile stress and wire diameter are shown in the diagram.\n"
+                "Determine the tension (tensile force) in the wire.\n"
+                f"{self.force_symbol} = (_) N"
+            )
+
+        self.topic = "Deformation of solids"
+        self.subtopic = "Stress and strain"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Diameter, }} d &= {self.d_mm}\\,\\text{{mm}} = {self.d_mm} \\times 10^{{-3}}\\,\\text{{m}}\\\\"
+            "\\text{{Step 1: Calculate the cross-sectional area }} A: &\\\\"
+            "A &= \\pi \\left( \\frac{d}{2} \\right)^2\\\\"
+            f"&= \\pi \\left( \\frac{{{self.d_mm} \\times 10^{{-3}}}}{2} \\right)^2\\\\"
+            f"&= {round(self.A, 10)}\\,\\text{{m}}^2\\\\"
+            "\\text{{Step 2: Relate tensile stress (}} \\sigma \\text{{) and force (}} F \\text{{):}} &\\\\"
+            "\\sigma &= \\frac{F}{A}\\\\"
+            "\\text{{Step 3: Solve for the unknown variable:}} &\\\\"
+            + (
+                f"\\sigma &= \\frac{{{sig_figs(self.F, 3)}}}{{{round(self.A, 10)}}}\\\\"
+                f"\\sigma &= {round(self.sigma, 10)}\\,\\text{{Pa}}\\\\"
+                f"\\sigma &= {self.answer}\\,\\text{{MPa}}"
+                if self.target == "stress" else
+                f"F &= \\sigma \\times A\\\\"
+                f"F &= ({self.sigma_MPa} \\times 10^6) \\times {round(self.A, 10)}\\\\"
+                f"F &= {self.answer}\\,\\text{{N}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.6, 2.8))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Wire (horizontal)
+        x1, x2 = 2.0, 8.0
+        y = 2.0
+        h = 0.6
+        ax.add_patch(patches.Rectangle((x1, y - h/2), x2 - x1, h, fill=False, linewidth=2, edgecolor="black"))
+
+        # Tension/force arrows outward
+        ax.annotate("", xy=(x1 - 1.2, y), xytext=(x1, y),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.annotate("", xy=(x2 + 1.2, y), xytext=(x2, y),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        # Force labels depend on target
+        if self.target == "stress":
+            ax.text(x1 - 1.25, y + 0.45, f"{self.force_symbol} = {sig_figs(self.F,3)} N", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(x2 + 1.25, y + 0.45, f"{self.force_symbol} = {sig_figs(self.F,3)} N", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(9.6, 3.6, "σ = ?", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        else:
+            ax.text(x1 - 1.25, y + 0.45, f"{self.force_symbol} = ?", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+            ax.text(x2 + 1.25, y + 0.45, f"{self.force_symbol} = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+            ax.text(9.6, 3.6, f"σ = {sig_figs(self.sigma_MPa,3)} MPa", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Diameter marker
+        xm = (x1 + x2) / 2
+        ax.annotate("", xy=(xm, y + h/2), xytext=(xm, y - h/2),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text(xm + 0.35, y, f"d = {self.d_mm} mm", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy084:
+    """
+    Stress and strain: tensile strain in a wire.
+    Strain ε = ΔL / L.
+    Values are shown in the diagram.
+    """
+
+    def __init__(self):
+        while True:
+            self.L = rnd.choice([1.2, 1.5, 1.8, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0])  # m
+            self.dL_mm = rnd.choice([0.40, 0.50, 0.60, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00])  # mm
+            self.dL = self.dL_mm * 1e-3  # m
+            self.strain = self.dL / self.L
+            if 1e-5 <= self.strain <= 5e-3:
+                break
+
+        self.answer = float(f"{self.strain:.3g}")
+
+        self.description = (
+            "A wire is stretched. The original length and the extension are shown in the diagram.\n"
+            "Determine the tensile strain in the wire.\n"
+            "strain = (_)"
+        )
+        self.topic = "Deformation of solids"
+        self.subtopic = "Stress and strain"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Original length, }} L &= {self.L}\\,\\text{{m}}\\\\"
+            f"\\text{{Extension, }} \\Delta L &= {self.dL_mm}\\,\\text{{mm}} = {self.dL_mm} \\times 10^{{-3}}\\,\\text{{m}}\\\\"
+            "\\text{{Step 1: Apply the definition of tensile strain.}} &\\\\"
+            "\\text{{Tensile strain (}} \\epsilon \\text{{) is defined as the extension per unit original length:}} &\\\\"
+            "\\epsilon &= \\frac{\\Delta L}{L}\\\\"
+            "\\text{{Step 2: Substitute the values into the equation (ensuring units are consistent):}} &\\\\"
+            f"\\epsilon &= \\frac{{{self.dL_mm} \\times 10^{{-3}}}}{{{self.L}}}\\\\"
+            f"\\epsilon &= \\frac{{{self.dL}}}{{{self.L}}}\\\\"
+            f"\\epsilon &= {round(self.strain, 10)}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.2, 3.8))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 7)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Wire (vertical)
+        x = 5.0
+        w = 0.7
+        y_bottom = 1.1
+
+        y_original_top = 5.4
+        ext_pix = 0.6 + 0.18 * self.dL_mm   # 0.67 to 1.5 approx
+        y_actual_top = min(6.85, y_original_top + ext_pix)
+
+        # Draw wire to actual length
+        ax.add_patch(patches.Rectangle((x - w/2, y_bottom), w, y_actual_top - y_bottom,
+                                       fill=False, linewidth=2, edgecolor="black"))
+
+        # Original length marker (dashed)
+        ax.plot([x - 1.4, x + 1.4], [y_original_top, y_original_top],
+                linewidth=2, color="black", linestyle="--")
+
+        # Length L bracket (bottom to dashed line)
+        xL = 3.0
+        ax.annotate("", xy=(xL, y_original_top), xytext=(xL, y_bottom),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text(xL - 0.2, (y_original_top + y_bottom) / 2, f"L = {self.L} m",
+                ha="right", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Extension ΔL bracket (dashed line to actual top)
+        xE = 7.0
+        ax.annotate("", xy=(xE, y_actual_top), xytext=(xE, y_original_top),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text(xE + 0.25, (y_actual_top + y_original_top) / 2, f"ΔL = {self.dL_mm} mm",
+                ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Unknown label
+        ax.text(2.6, 6.6, "strain = ?", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy085:
+    """
+    Elastic and plastic behaviour: Hooke’s law (linear force–extension).
+    Determine spring constant k from a force–extension graph (straight line).
+    """
+
+    def __init__(self):
+        while True:
+            self.k = rnd.choice([80, 100, 120, 150, 180, 200, 240, 250, 300, 320, 350, 400, 450, 500])  # N m^-1
+            self.x_m = rnd.choice([0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.10, 0.12, 0.15])               # m
+            self.F = self.k * self.x_m
+            if 6 <= self.F <= 60:
+                break
+
+        self.answer = sig_figs(self.k, 3)
+
+        self.description = (
+            "The force–extension graph for a spring is shown. The spring obeys Hooke’s law over the range shown.\n"
+            "Determine the spring constant k.\n"
+            "k = (_) N m⁻¹"
+        )
+        self.topic = "Deformation of solids"
+        self.subtopic = "Elastic and plastic behaviour"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Extension, }} x &= {self.x_m * 100:.1f}\\,\\text{{cm}} = {self.x_m:.2f}\\,\\text{{m}}\\\\"
+            f"\\text{{Force applied, }} F &= {self.F:.1f}\\,\\text{{N}}\\\\"
+            "\\text{{Step 1: Apply Hooke's Law.}} &\\\\"
+            "\\text{{Hooke's Law states that the force }} F \\text{{ is proportional to the extension }} x: &\\\\"
+            "F &= kx\\\\"
+            "\\text{{Step 2: Rearrange the equation to solve for the spring constant }} k: &\\\\"
+            "k &= \\frac{F}{x}\\\\"
+            "\\text{{Step 3: Substitute the values (ensuring }} x \\text{{ is in meters):}} &\\\\"
+            f"k &= \\frac{{{self.F:.1f}}}{{{self.x_m:.2f}}}\\\\"
+            f"k &= {round(self.k, 10)}\\,\\text{{N m}}^{{-1}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6.0, 4.0))
+
+        # Use extension in cm for readability
+        x_cm = self.x_m * 100
+        ax.plot([0, x_cm], [0, self.F], linewidth=2, color="black")
+        ax.scatter([x_cm], [self.F], s=25, color="black")
+
+        ax.set_xlabel("extension x / cm", fontsize=10)
+        ax.set_ylabel("force F / N", fontsize=10)
+        ax.tick_params(axis="both", labelsize=10)
+
+        ax.set_xlim(0, x_cm * 1.30)
+        ax.set_ylim(0, self.F * 1.35)
+        ax.grid(True, linestyle="--", alpha=0.45)
+
+        ax.text(x_cm, self.F + 0.06 * self.F, f"({x_cm:.1f} cm, {self.F:.1f} N)",
+                ha="right", va="bottom", fontsize=10,
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(0.98, 0.98, "k = ?", transform=ax.transAxes,
+                ha="right", va="top", fontsize=10,
+                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy086:
+    """
+    Elastic and plastic behaviour: elastic potential energy in a spring.
+    Spring obeys Hooke’s law. Energy stored = area under F–x graph = 1/2 F x.
+    Values are shown in the diagram.
+    """
+
+    def __init__(self):
+        while True:
+            self.x_m = rnd.choice([0.04, 0.05, 0.06, 0.08, 0.10, 0.12, 0.15, 0.18, 0.20, 0.25])  # m
+            self.F = rnd.choice([10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 60])                # N
+            self.E = 0.5 * self.F * self.x_m
+            if 0.2 <= self.E <= 20:
+                break
+
+        self.answer = sig_figs(self.E, 3)
+
+        self.description = (
+            "A spring obeys Hooke’s law. The force applied and the extension are shown in the diagram.\n"
+            "Determine the elastic potential energy stored in the spring.\n"
+            "E = (_) J"
+        )
+        self.topic = "Deformation of solids"
+        self.subtopic = "Elastic and plastic behaviour"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Extension, }} x &= {self.x_m * 100:.1f}\\,\\text{{cm}} = {self.x_m:.2f}\\,\\text{{m}}\\\\"
+            f"\\text{{Applied force, }} F &= {self.F}\\,\\text{{N}}\\\\"
+            "\\text{{Step 1: Apply the formula for elastic potential energy.}} &\\\\"
+            "\\text{{Since the spring obeys Hooke's law, the work done in stretching is given by:}} &\\\\"
+            "E &= \\frac{1}{2} F x\\\\"
+            "\\text{{Step 2: Substitute the known values into the equation:}} &\\\\"
+            f"E &= \\frac{{1}}{{2}} \\times {self.F} \\times {self.x_m:.2f}\\\\"
+            f"E &= {round(self.E, 10)}\\,\\text{{J}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.6, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4.5)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Wall (left)
+        ax.plot([1.3, 1.3], [1.2, 3.6], linewidth=3, color="black")
+        ax.plot([1.0, 1.3], [3.6, 3.3], linewidth=2, color="black")
+        ax.plot([1.0, 1.3], [1.2, 1.5], linewidth=2, color="black")
+
+        # Extension mapping (visual only)
+        x_cm = self.x_m * 100
+        dx = min(3.0, max(0.6, 0.15 * x_cm))  # keep within a nice range
+
+        x_anchor = 1.3
+        x_nat = 5.0
+        x_end = x_nat + dx
+        y_mid = 2.4
+
+        # Spring zig-zag
+        n = 8
+        xs = [x_anchor, x_anchor + 0.4]
+        ys = [y_mid, y_mid]
+        x_start = x_anchor + 0.4
+        x_stop = x_end - 0.6
+
+        for i in range(n):
+            t = i / (n - 1)
+            x_i = x_start + t * (x_stop - x_start)
+            y_i = y_mid + (0.35 if i % 2 == 0 else -0.35)
+            xs.append(x_i)
+            ys.append(y_i)
+
+        xs += [x_stop + 0.25, x_end - 0.6]
+        ys += [y_mid, y_mid]
+        ax.plot(xs, ys, linewidth=2, color="black")
+
+        # End block
+        ax.add_patch(patches.Rectangle((x_end - 0.6, y_mid - 0.35), 0.6, 0.7,
+                                       fill=False, linewidth=2, edgecolor="black"))
+
+        # Natural length marker (dashed)
+        ax.plot([x_nat, x_nat], [1.2, 3.6], linewidth=2, color="black", linestyle="--")
+        ax.text(x_nat, 3.8, "unstretched\nend", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Force arrow
+        ax.annotate("", xy=(x_end + 1.2, y_mid), xytext=(x_end, y_mid),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(x_end + 1.25, y_mid + 0.45, f"F = {self.F} N", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Extension bracket (from natural to stretched)
+        y_ext = 0.9
+        ax.annotate("", xy=(x_nat, y_ext), xytext=(x_end, y_ext),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((x_nat + x_end) / 2, y_ext - 0.15, f"x = {x_cm:.1f} cm", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Unknown label
+        ax.text(9.6, 4.2, "E = ?", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy087:
+    """
+    Elastic and plastic behaviour: permanent extension from a force–extension graph.
+    Load to a maximum, then unload. Permanent extension is the x-intercept of the unloading line.
+    """
+
+    def __init__(self):
+        while True:
+            self.xp_mm = rnd.choice([2, 3, 4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30])  # permanent extension (mm)
+            self.xmax_mm = self.xp_mm + rnd.choice([25, 30, 40, 50, 60, 70, 80, 100])  # mm
+            self.k_N_per_mm = rnd.choice([0.6, 0.8, 1.0, 1.2, 1.5, 2.0])               # N/mm (unloading gradient)
+            self.Fmax = self.k_N_per_mm * (self.xmax_mm - self.xp_mm)                  # N
+            if 30 <= self.Fmax <= 160 and self.xmax_mm <= 140:
+                break
+
+        self.answer = self.xp_mm  # mm (exact integer)
+
+        self.description = (
+            "The force–extension graph for a wire is shown. The wire is loaded and then unloaded along the line shown.\n"
+            "Determine the permanent extension of the wire after unloading.\n"
+            "permanent extension = (_) mm"
+        )
+        self.topic = "Deformation of solids"
+        self.subtopic = "Elastic and plastic behaviour"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Maximum extension reached, }} x_{{max}} &= {self.xmax_mm}\\,\\text{{mm}}\\\\"
+            f"\\text{{Maximum force applied, }} F_{{max}} &= {self.Fmax:.1f}\\,\\text{{N}}\\\\"
+            f"\\text{{Unloading gradient (spring constant), }} k &= {self.k_N_per_mm:.1f}\\,\\text{{N/mm}}\\\\"
+            "\\text{{Step 1: Understand the unloading process.}} &\\\\"
+            "\\text{{When a wire is deformed plastically, it unloads along a line parallel}} &\\\\"
+            "\\text{{to the initial linear elastic region. The permanent extension }} x_p &\\\\"
+            "\\text{{is the extension remaining when the force is returned to zero.}} &\\\\"
+            "\\text{{Step 2: Use the equation of the unloading line.}} &\\\\"
+            "\\text{{The change in extension during unloading (elastic recovery) is:}} &\\\\"
+            "\\Delta x &= \\frac{F_{max}}{k}\\\\"
+            f"\\Delta x &= \\frac{{{self.Fmax:.1f}}}{{{self.k_N_per_mm:.1f}}}\\\\"
+            f"&= {round(self.Fmax / self.k_N_per_mm, 10)}\\,\\text{{mm}}\\\\"
+            "\\text{{Step 3: Calculate the permanent extension }} x_p. &\\\\"
+            "x_p &= x_{max} - \\Delta x\\\\"
+            f"x_p &= {self.xmax_mm} - {round(self.Fmax / self.k_N_per_mm, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{mm}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 10})
+
+        fig, ax = plt.subplots(figsize=(6.2, 4.0))
+
+        # Plot loading and unloading lines
+        ax.plot([0, self.xmax_mm], [0, self.Fmax], linewidth=2, color="black", label="loading")
+        ax.plot([self.xmax_mm, self.xp_mm], [self.Fmax, 0], linewidth=2, color="black", linestyle="--", label="unloading")
+
+        # Mark important points
+        ax.scatter([0, self.xmax_mm, self.xp_mm], [0, self.Fmax, 0], s=25, color="black")
+
+        # Labels
+        ax.set_xlabel("extension / mm", fontsize=10)
+        ax.set_ylabel("force / N", fontsize=10)
+        ax.tick_params(axis="both", labelsize=10)
+
+        ax.set_xlim(0, max(40, int(self.xmax_mm * 1.20)))
+        ax.set_ylim(0, max(60, self.Fmax * 1.30))
+        ax.grid(True, linestyle="--", alpha=0.45)
+
+        ax.text(self.xmax_mm, self.Fmax + 0.06 * self.Fmax, f"({self.xmax_mm} mm, {self.Fmax:.1f} N)",
+                ha="right", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Unknown label at x-intercept of unloading line
+        ax.text(self.xp_mm, -0.08 * self.Fmax, "xₚ = ?", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+
+        # Show unloading gradient (helps interpret the dashed line; still minimal)
+        ax.text(0.98, 0.98, f"unloading gradient = {self.k_N_per_mm:.1f} N/mm",
+                transform=ax.transAxes, ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
