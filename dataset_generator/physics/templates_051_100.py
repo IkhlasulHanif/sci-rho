@@ -4160,3 +4160,771 @@ class Phy087:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
+
+class Phy088:
+    """
+    Progressive waves: wave equation v = fλ.
+    Dynamic target: find v OR f OR λ (two are shown in the diagram).
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["v", "f", "lam"])
+
+        # Pick nice values so λ is sensible for the diagram
+        while True:
+            self.v = rnd.choice([20, 25, 30, 40, 50, 60, 80, 100, 120, 150, 200])  # m s^-1
+            self.f = rnd.choice([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50])  # Hz
+            self.lam = self.v / self.f  # m
+            if 0.20 <= self.lam <= 4.00:
+                break
+
+        if self.target == "v":
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
+                "Determine the wave speed.\n"
+                "v = (_) m s⁻¹"
+            )
+        elif self.target == "f":
+            self.answer = sig_figs(self.f, 3)
+            self.description = (
+                "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
+                "Determine the frequency.\n"
+                "f = (_) Hz"
+            )
+        else:
+            self.answer = sig_figs(self.lam, 3)
+            self.description = (
+                "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
+                "Determine the wavelength.\n"
+                "λ = (_) m"
+            )
+
+        self.topic = "Waves"
+        self.subtopic = "Progressive waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Wave speed, }} v &= {self.v if self.target != 'v' else '\\text{?}'}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Frequency, }} f &= {self.f if self.target != 'f' else '\\text{?}'}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= {sig_figs(self.lam, 3) if self.target != 'lam' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            "\\text{{Step 1: Use the wave equation.}} &\\\\"
+            "\\text{{The wave speed is related to the frequency and wavelength by the equation:}} &\\\\"
+            "v &= f \\lambda\\\\"
+            "\\text{{Step 2: Rearrange and substitute the known values to solve for the unknown:}} &\\\\"
+            + (
+                f"v &= {self.f} \\times {sig_figs(self.lam, 3)}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+                if self.target == "v" else
+                f"f &= \\frac{{v}}{{\\lambda}} = \\frac{{{self.v}}}{{{sig_figs(self.lam, 3)}}}\\\\"
+                f"f &= {self.answer}\\,\\text{{Hz}}"
+                if self.target == "f" else
+                f"\\lambda &= \\frac{{v}}{{f}} = \\frac{{{self.v}}}{{{self.f}}}\\\\"
+                f"\\lambda &= {self.answer}\\,\\text{{m}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        A = 1.0
+        lam = self.lam
+        x_end = 2.5 * lam
+        n = 500
+
+        xs = [x_end * i / (n - 1) for i in range(n)]
+        ys = [A * math.sin(2 * math.pi * x / lam) for x in xs]
+
+        fig, ax = plt.subplots(figsize=(6.4, 3.0))
+        ax.set_xlim(-0.05 * x_end, 1.05 * x_end)
+        ax.set_ylim(-2.0, 2.0)
+        ax.set_aspect("auto")
+        ax.axis("off")
+
+        # Axis line
+        ax.plot([0, x_end], [0, 0], linewidth=2, color="black")
+
+        # Wave
+        ax.plot(xs, ys, linewidth=2, color="black")
+
+        # Wavelength bracket (use actual λ for spacing)
+        x1 = 0.7 * lam
+        x2 = 1.8 * lam
+        yb = -1.35
+        ax.annotate("", xy=(x1, yb), xytext=(x2, yb),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+
+        if self.target == "lam":
+            lam_text = "λ = ?"
+        else:
+            lam_text = f"λ = {sig_figs(self.lam,3)} m"
+
+        ax.text((x1 + x2) / 2, yb - 0.15, lam_text, ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Corner values (two given, one unknown)
+        if self.target == "v":
+            ax.text(0.02, 0.92, f"f = {self.f} Hz", transform=ax.transAxes,
+                    ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(0.98, 0.92, "v = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        elif self.target == "f":
+            ax.text(0.02, 0.92, f"v = {self.v} m s⁻¹", transform=ax.transAxes,
+                    ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(0.98, 0.92, "f = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(0.02, 0.92, f"v = {self.v} m s⁻¹", transform=ax.transAxes,
+                    ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+            ax.text(0.98, 0.92, f"f = {self.f} Hz", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy089:
+    """
+    Progressive waves: phase difference between two points on a wave.
+    Uses:  φ = 2π(Δx/λ)
+    Dynamic target: sometimes find phase difference φ (rad), sometimes find separation Δx (m)
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["phi", "dx"])
+
+        # Choose λ and a neat fraction of λ for Δx so φ is a neat multiple of π/4
+        self.lam = rnd.choice([0.40, 0.50, 0.60, 0.80, 1.00, 1.20, 1.50, 2.00])  # m
+        self.k = rnd.randint(1, 7)  # Δx = (k/8)λ  -> φ = kπ/4
+        self.dx = (self.k / 8) * self.lam
+        self.phi = 2 * math.pi * (self.dx / self.lam)
+
+        if self.target == "phi":
+            self.answer = sig_figs(self.phi, 3)
+            self.description = (
+                "A snapshot of a progressive wave is shown. The wavelength and separation of points A and B are shown in the diagram.\n"
+                "Determine the phase difference between A and B.\n"
+                "phase difference = (_) rad"
+            )
+        else:
+            self.answer = sig_figs(self.dx, 3)
+            self.description = (
+                "A snapshot of a progressive wave is shown. The wavelength and the phase difference between points A and B are shown in the diagram.\n"
+                "Determine the separation Δx between A and B.\n"
+                "Δx = (_) m"
+            )
+
+        self.topic = "Waves"
+        self.subtopic = "Progressive waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Wavelength, }} \\lambda &= {sig_figs(self.lam, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Separation, }} \\Delta x &= {sig_figs(self.dx, 3) if self.target != 'dx' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            f"\\text{{Phase difference, }} \\phi &= {sig_figs(self.phi, 3) if self.target != 'phi' else '\\text{?}'}\\,\\text{{rad}}\\\\"
+            "\\text{{Step 1: Use the relationship between phase difference and path difference.}} &\\\\"
+            "\\text{{The phase difference }} \\phi \\text{{ is proportional to the separation }} \\Delta x \\text{{ relative to the wavelength:}} &\\\\"
+            "\\phi &= 2\\pi \\left( \\frac{\\Delta x}{\\lambda} \\right)\\\\"
+            "\\text{{Step 2: Rearrange and substitute the known values to solve for the unknown:}} &\\\\"
+            + (
+                f"\\phi &= 2\\pi \\times \\frac{{{sig_figs(self.dx, 3)}}}{{{sig_figs(self.lam, 3)}}}\\\\"
+                f"\\phi &= 2\\pi \\times {round(self.dx / self.lam, 10)}\\\\"
+                f"\\phi &= {self.answer}\\,\\text{{rad}}"
+                if self.target == "phi" else
+                f"\\Delta x &= \\frac{{\\phi \\lambda}}{{2\\pi}}\\\\"
+                f"\\Delta x &= \\frac{{{sig_figs(self.phi, 3)} \\times {sig_figs(self.lam, 3)}}}{{2\\pi}}\\\\"
+                f"\\Delta x &= {self.answer}\\,\\text{{m}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        A = 1.0
+        lam = self.lam
+        x_end = 2.0 * lam
+        n = 500
+
+        xs = [x_end * i / (n - 1) for i in range(n)]
+        ys = [A * math.sin(2 * math.pi * x / lam) for x in xs]
+
+        # Pick A and B positions
+        xA = 0.30 * lam
+        xB = xA + self.dx
+        yA = A * math.sin(2 * math.pi * xA / lam)
+        yB = A * math.sin(2 * math.pi * xB / lam)
+
+        fig, ax = plt.subplots(figsize=(6.6, 3.2))
+        ax.set_xlim(-0.05 * x_end, 1.05 * x_end)
+        ax.set_ylim(-2.2, 2.2)
+        ax.axis("off")
+
+        # Axis line
+        ax.plot([0, x_end], [0, 0], linewidth=2, color="black")
+
+        # Wave
+        ax.plot(xs, ys, linewidth=2, color="black")
+
+        # Mark points A and B
+        ax.plot([xA, xB], [yA, yB], "ko", markersize=4)
+        ax.text(xA, yA + 0.25, "A", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(xB, yB + 0.25, "B", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Δx bracket
+        y_dx = -1.35
+        ax.annotate("", xy=(xA, y_dx), xytext=(xB, y_dx),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        if self.target == "dx":
+            dx_text = "Δx = ?"
+        else:
+            dx_text = f"Δx = {sig_figs(self.dx,3)} m"
+        ax.text((xA + xB) / 2, y_dx - 0.15, dx_text, ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # λ bracket (one full wavelength)
+        y_l = -1.85
+        ax.annotate("", xy=(0.2 * lam, y_l), xytext=(1.3 * lam, y_l),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text(0.7 * lam, y_l - 0.15, f"λ = {sig_figs(self.lam,3)} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Phase label in corner
+        if self.target == "phi":
+            ax.text(0.98, 0.92, "φ = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(0.98, 0.92, f"φ = {sig_figs(self.phi,3)} rad", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy090:
+    """
+    Doppler effect (sound): moving source, stationary observer.
+    Dynamic direction: source approaches or recedes.
+    Find observed frequency at the observer.
+    """
+
+    def __init__(self):
+        self.v_sound = 340  # m s^-1 (shown)
+        self.direction = rnd.choice(["approaching", "receding"])
+
+        while True:
+            self.f0 = rnd.choice([400, 450, 500, 550, 600, 650, 700, 800, 900, 1000, 1100, 1200])  # Hz
+            self.vs = rnd.choice([10, 12, 15, 18, 20, 22, 25, 28, 30, 35, 40])  # m s^-1
+            if self.vs < 0.3 * self.v_sound:
+                break
+
+        if self.direction == "approaching":
+            self.f_obs = self.f0 * (self.v_sound / (self.v_sound - self.vs))
+        else:
+            self.f_obs = self.f0 * (self.v_sound / (self.v_sound + self.vs))
+
+        self.answer = int(round(self.f_obs))
+
+        self.description = (
+            "A sound source emits sound of frequency f₀. The source moves as shown and an observer is stationary.\n"
+            "All required values are shown in the diagram.\n"
+            "Determine the frequency heard by the observer.\n"
+            "f = (_) Hz"
+        )
+
+        self.topic = "Waves"
+        self.subtopic = "Doppler effect for sound waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Source frequency, }} f_0 &= {self.f0}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Speed of sound, }} v &= {self.v_sound}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Speed of source, }} v_s &= {self.vs}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Direction of motion: }} &\\text{{{self.direction.capitalize()}}}\\\\"
+            "\\text{{Step 1: Identify the Doppler effect formula for a moving source.}} &\\\\"
+            "\\text{{The observed frequency }} f_{{obs}} \\text{{ is given by:}} &\\\\"
+            "f_{{obs}} &= f_0 \\left( \\frac{v}{v \\mp v_s} \\right)\\\\"
+            "\\text{{Step 2: Apply the correct sign based on the direction of motion.}} &\\\\"
+            + (
+                "\\text{{Since the source is approaching, the denominator is }} (v - v_s): &\\\\"
+                f"f_{{obs}} &= {self.f0} \\times \\left( \\frac{{{self.v_sound}}}{{{self.v_sound} - {self.vs}}} \\right)\\\\"
+                if self.direction == "approaching" else
+                "\\text{{Since the source is receding, the denominator is }} (v + v_s): &\\\\"
+                f"f_{{obs}} &= {self.f0} \\times \\left( \\frac{{{self.v_sound}}}{{{self.v_sound} + {self.vs}}} \\right)\\\\"
+            ) +
+            f"f_{{obs}} &= {self.f0} \\times \\left( \\frac{{{self.v_sound}}}{{{self.v_sound - self.vs if self.direction == 'approaching' else self.v_sound + self.vs}}} \\right)\\\\"
+            f"f_{{obs}} &= {round(self.f_obs, 10)}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}\\,\\text{{Hz}}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.6, 2.9))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Baseline
+        ax.plot([0.8, 9.2], [1.0, 1.0], linewidth=2, color="black")
+
+        # Source (left) and Observer (right)
+        src = patches.Rectangle((1.6, 1.4), 1.4, 1.0, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(src)
+        ax.text(2.3, 2.55, "source", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        obs = patches.Circle((8.2, 1.9), 0.45, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(obs)
+        ax.text(8.2, 2.55, "observer", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Source motion arrow
+        y_arrow = 3.1
+        if self.direction == "approaching":
+            ax.annotate("", xy=(4.2, y_arrow), xytext=(2.6, y_arrow),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            ax.text(4.25, y_arrow, f"vₛ = {self.vs} m s⁻¹", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.annotate("", xy=(1.0, y_arrow), xytext=(2.6, y_arrow),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            ax.text(0.95, y_arrow, f"vₛ = {self.vs} m s⁻¹", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Values in diagram
+        ax.text(1.6, 3.7, f"f₀ = {self.f0} Hz", ha="left", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(9.2, 3.7, "f = ?", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        ax.text(9.2, 0.35, f"speed of sound v = {self.v_sound} m s⁻¹", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy091:
+    """
+    Doppler effect (sound): moving observer, stationary source.
+    Dynamic target: find observed frequency f, OR observer speed v_o
+    """
+
+    def __init__(self):
+        self.v_sound = 340  # m s^-1 (shown)
+        self.direction = rnd.choice(["towards", "away"])
+        self.target = rnd.choice(["f_obs", "vo"])
+
+        while True:
+            self.f0 = rnd.choice([300, 350, 400, 450, 500, 550, 600, 700, 800, 900, 1000])  # Hz
+            self.vo = rnd.choice([5, 6, 8, 10, 12, 15, 18, 20, 22, 25])  # m s^-1
+            if self.vo < 0.25 * self.v_sound:
+                break
+
+        if self.direction == "towards":
+            self.f_obs_exact = self.f0 * (self.v_sound + self.vo) / self.v_sound
+        else:
+            self.f_obs_exact = self.f0 * (self.v_sound - self.vo) / self.v_sound
+
+        self.f_obs = int(round(self.f_obs_exact))
+
+        if self.target == "f_obs":
+            self.answer = self.f_obs
+            self.description = (
+                "A sound source is stationary and an observer moves as shown.\n"
+                "All required values are shown in the diagram.\n"
+                "Determine the frequency heard by the observer.\n"
+                "f = (_) Hz"
+            )
+        else:
+            self.answer = sig_figs(self.vo, 3)
+            self.description = (
+                "A sound source is stationary and an observer moves as shown.\n"
+                "All required values are shown in the diagram.\n"
+                "Determine the speed of the observer.\n"
+                "vₒ = (_) m s⁻¹"
+            )
+
+        self.topic = "Waves"
+        self.subtopic = "Doppler effect for sound waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Source frequency, }} f_0 &= {self.f0}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Speed of sound, }} v &= {self.v_sound}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Observer speed, }} v_o &= {self.vo if self.target == 'f_obs' else '\\text{?}'}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Observed frequency, }} f &= {self.f_obs if self.target == 'vo' else '\\text{?}'}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Direction of motion: }} &\\text{{Moving {self.direction} the source}}\\\\"
+            "\\text{{Step 1: Identify the Doppler effect formula for a moving observer.}} &\\\\"
+            "\\text{{The observed frequency }} f \\text{{ is given by:}} &\\\\"
+            "f &= f_0 \\left( \\frac{v \\pm v_o}{v} \\right)\\\\"
+            "\\text{{Step 2: Apply the correct sign based on the direction of motion.}} &\\\\"
+            + (
+                "\\text{{Since the observer is moving towards the source, the numerator is }} (v + v_o): &\\\\"
+                if self.direction == "towards" else
+                "\\text{{Since the observer is moving away from the source, the numerator is }} (v - v_o): &\\\\"
+            ) +
+            "\\text{{Step 3: Substitute the known values and solve for the unknown.}} &\\\\"
+            + (
+                f"f &= {self.f0} \\times \\left( \\frac{{{self.v_sound} {'+' if self.direction == 'towards' else '-'} {self.vo}}}{{{self.v_sound}}} \\right)\\\\"
+                f"f &= {self.f0} \\times {round((self.v_sound + (self.vo if self.direction == 'towards' else -self.vo)) / self.v_sound, 10)}\\\\"
+                f"f &= {round(self.f_obs_exact, 10)}\\,\\text{{Hz}}\\\\"
+                if self.target == "f_obs" else
+                f"{self.f_obs} &= {self.f0} \\times \\left( \\frac{{{self.v_sound} {'+' if self.direction == 'towards' else '-'} v_o}}{{{self.v_sound}}} \\right)\\\\"
+                f"\\frac{{{self.f_obs}}}{{{self.f0}}} &= \\frac{{{self.v_sound} {'+' if self.direction == 'towards' else '-'} v_o}}{{{self.v_sound}}}\\\\"
+                f"{round(self.f_obs / self.f0, 10)} \\times {self.v_sound} &= {self.v_sound} {'+' if self.direction == 'towards' else '-'} v_o\\\\"
+                f"{round((self.f_obs / self.f0) * self.v_sound, 10)} &= {self.v_sound} {'+' if self.direction == 'towards' else '-'} v_o\\\\"
+                f"v_o &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.6, 2.9))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Baseline
+        ax.plot([0.8, 9.2], [1.0, 1.0], linewidth=2, color="black")
+
+        # Source (left, stationary)
+        src = patches.Rectangle((1.6, 1.4), 1.4, 1.0, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(src)
+        ax.text(2.3, 2.55, "source", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Observer (right, moving)
+        obs = patches.Circle((8.2, 1.9), 0.45, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(obs)
+        ax.text(8.2, 2.55, "observer", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Observer motion arrow
+        y_arrow = 3.1
+        if self.direction == "towards":
+            ax.annotate("", xy=(6.8, y_arrow), xytext=(8.0, y_arrow),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            vo_text = "vₒ = ?" if self.target == "vo" else f"vₒ = {sig_figs(self.vo,3)} m s⁻¹"
+            ax.text(6.75, y_arrow, vo_text, ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.annotate("", xy=(9.4, y_arrow), xytext=(8.2, y_arrow),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            vo_text = "vₒ = ?" if self.target == "vo" else f"vₒ = {sig_figs(self.vo,3)} m s⁻¹"
+            ax.text(9.45, y_arrow, vo_text, ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+
+        # Values in diagram
+        ax.text(1.6, 3.7, f"f₀ = {self.f0} Hz", ha="left", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        if self.target == "f_obs":
+            ax.text(9.2, 3.7, "f = ?", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(9.2, 3.7, f"f = {self.f_obs} Hz", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(9.2, 0.35, f"speed of sound v = {self.v_sound} m s⁻¹", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy092:
+    """
+    Doppler effect (sound): source and observer move towards each other.
+    Uses: f = f0 * (v + v_o) / (v - v_s)
+    Dynamic target: find observed frequency f, OR find source speed v_s
+    """
+
+    def __init__(self):
+        self.v_sound = 340  # m s^-1 (shown)
+        self.target = rnd.choice(["f_obs", "vs"])
+
+        # Choose values and display-friendly results
+        while True:
+            self.f0 = rnd.choice([400, 450, 500, 550, 600, 650, 700, 800, 900, 1000])  # Hz
+            self.vo = rnd.choice([5, 6, 8, 10, 12, 15, 18, 20])  # m s^-1 (observer towards source)
+            self.vs_true = rnd.choice([10, 12, 15, 18, 20, 22, 25, 28, 30, 35, 40])  # m s^-1 (source towards observer)
+
+            if self.vo >= 0.25 * self.v_sound or self.vs_true >= 0.3 * self.v_sound:
+                continue
+
+            f_calc = self.f0 * (self.v_sound + self.vo) / (self.v_sound - self.vs_true)
+            self.f_obs = int(round(f_calc))
+            if 350 <= self.f_obs <= 2000:
+                break
+
+        if self.target == "f_obs":
+            self.answer = self.f_obs
+            self.description = (
+                "A sound source and an observer move towards each other as shown.\n"
+                "All required values are shown in the diagram.\n"
+                "Determine the frequency heard by the observer.\n"
+                "f = (_) Hz"
+            )
+        else:
+            # For consistency with what is shown, compute v_s from displayed values
+            self.vs = self.v_sound - (self.f0 * (self.v_sound + self.vo) / self.f_obs)
+            self.answer = sig_figs(self.vs, 3)
+            self.description = (
+                "A sound source and an observer move towards each other as shown.\n"
+                "All required values are shown in the diagram.\n"
+                "Determine the speed of the source.\n"
+                "vₛ = (_) m s⁻¹"
+            )
+
+        self.topic = "Waves"
+        self.subtopic = "Doppler effect for sound waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Source frequency, }} f_0 &= {self.f0}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Speed of sound, }} v &= {self.v_sound}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Observer speed, }} v_o &= {self.vo}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Source speed, }} v_s &= {self.vs_true if self.target == 'f_obs' else '\\text{?}'}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Observed frequency, }} f &= {self.f_obs if self.target == 'vs' else '\\text{?}'}\\,\\text{{Hz}}\\\\"
+            "\\text{{Step 1: Identify the general Doppler effect formula.}} &\\\\"
+            "\\text{{When both the source and observer are moving, the observed frequency is:}} &\\\\"
+            "f &= f_0 \\left( \\frac{v \\pm v_o}{v \\mp v_s} \\right)\\\\"
+            "\\text{{Step 2: Determine the signs for moving towards each other.}} &\\\\"
+            "\\text{{Observer moving towards source increases frequency (}} +v_o \\text{{).}} &\\\\"
+            "\\text{{Source moving towards observer increases frequency (}} -v_s \\text{{ denominator).}} &\\\\"
+            "f &= f_0 \\left( \\frac{v + v_o}{v - v_s} \\right)\\\\"
+            "\\text{{Step 3: Substitute the known values and solve for the unknown.}} &\\\\"
+            + (
+                f"f &= {self.f0} \\times \\left( \\frac{{{self.v_sound} + {self.vo}}}{{{self.v_sound} - {self.vs_true}}} \\right)\\\\"
+                f"f &= {self.f0} \\times \\left( \\frac{{{self.v_sound + self.vo}}}{{{self.v_sound - self.vs_true}}} \\right)\\\\"
+                f"f &= {round(self.f0 * (self.v_sound + self.vo) / (self.v_sound - self.vs_true), 10)}\\,\\text{{Hz}}\\\\"
+                if self.target == "f_obs" else
+                f"{self.f_obs} &= {self.f0} \\times \\left( \\frac{{{self.v_sound} + {self.vo}}}{{{self.v_sound} - v_s}} \\right)\\\\"
+                f"\\frac{{{self.f_obs}}}{{{self.f0}}} &= \\frac{{{self.v_sound + self.vo}}}{{{self.v_sound} - v_s}}\\\\"
+                f"{self.v_sound} - v_s &= \\frac{{{self.f0} \\times {self.v_sound + self.vo}}}{{{self.f_obs}}}\\\\"
+                f"{self.v_sound} - v_s &= {round((self.f0 * (self.v_sound + self.vo)) / self.f_obs, 10)}\\\\"
+                f"v_s &= {self.v_sound} - {round((self.f0 * (self.v_sound + self.vo)) / self.f_obs, 10)}\\\\"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.8, 3.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        ax.plot([0.8, 9.2], [1.0, 1.0], linewidth=2, color="black")
+
+        # Source (left) and observer (right)
+        src = patches.Rectangle((1.6, 1.4), 1.4, 1.0, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(src)
+        ax.text(2.3, 2.55, "source", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        obs = patches.Circle((8.2, 1.9), 0.45, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(obs)
+        ax.text(8.2, 2.55, "observer", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Motion arrows towards each other
+        y_arrow = 3.1
+
+        # Source to right
+        ax.annotate("", xy=(3.8, y_arrow), xytext=(2.2, y_arrow),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        if self.target == "vs":
+            ax.text(3.85, y_arrow, "vₛ = ?", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(3.85, y_arrow, f"vₛ = {self.vs_true} m s⁻¹", ha="left", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Observer to left
+        ax.annotate("", xy=(7.1, y_arrow), xytext=(8.2, y_arrow),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(7.05, y_arrow, f"vₒ = {self.vo} m s⁻¹", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Values in diagram
+        ax.text(1.6, 3.7, f"f₀ = {self.f0} Hz", ha="left", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        if self.target == "f_obs":
+            ax.text(9.2, 3.7, "f = ?", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(9.2, 3.7, f"f = {self.f_obs} Hz", ha="right", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(9.2, 0.35, f"speed of sound v = {self.v_sound} m s⁻¹", ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy093:
+    """
+    Polarisation (Malus' law).
+    Unpolarised light passes through two polaroids with angle θ between their transmission axes.
+    Use: I1 = I0/2 (after first polaroid); I = I1 cos^2 θ
+    Dynamic target: find transmitted intensity I, OR angle θ
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["I", "theta"])
+
+        # Choose angles with neat cos^2 values
+        self.theta = rnd.choice([0, 30, 45, 60])  # degrees
+        self.I0 = rnd.choice([16, 24, 32, 40, 48, 64])  # W m^-2 (arbitrary but consistent units)
+
+        self.I1 = self.I0 / 2
+        self.I = self.I1 * (math.cos(math.radians(self.theta)) ** 2)
+
+        # Make I display neat
+        self.I_disp = float(f"{self.I:.3g}")
+
+        if self.target == "I":
+            self.answer = sig_figs(self.I_disp, 3)
+            self.description = (
+                "Unpolarised light passes through two polaroids. The intensity and the angle between the polaroid axes are shown in the diagram.\n"
+                "Determine the transmitted intensity after the second polaroid.\n"
+                "I = (_) W m⁻²"
+            )
+        else:
+            self.answer = self.theta  # chosen from neat set
+            self.description = (
+                "Unpolarised light passes through two polaroids. The incident intensity and the transmitted intensity are shown in the diagram.\n"
+                "Determine the angle θ between the transmission axes.\n"
+                "θ = (_)°"
+            )
+
+        self.topic = "Waves"
+        self.subtopic = "Polarisation"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Incident intensity of unpolarised light, }} I_0 &= {self.I0}\\,\\text{{W m}}^{{-2}}\\\\"
+            f"\\text{{Angle between transmission axes, }} \\theta &= {self.theta if self.target == 'I' else '\\theta'}^\\circ\\\\"
+            "\\text{{Step 1: Calculate intensity after the first polaroid (}} I_1 \\text{{).}} &\\\\"
+            "\\text{{When unpolarised light passes through a polaroid, its intensity is halved:}} &\\\\"
+            "I_1 &= \\frac{I_0}{2}\\\\"
+            f"&= \\frac{{{self.I0}}}{{2}} = {round(self.I1, 10)}\\,\\text{{W m}}^{{-2}}\\\\"
+            "\\text{{Step 2: Apply Malus's Law for the second polaroid.}} &\\\\"
+            "\\text{{The transmitted intensity }} I \\text{{ is given by:}} &\\\\"
+            "I &= I_1 \\cos^2 \\theta\\\\"
+            "\\text{{Step 3: Solve for the unknown variable:}} &\\\\"
+            + (
+                f"I &= {round(self.I1, 10)} \\times \\cos^2({self.theta}^\\circ)\\\\"
+                f"I &= {round(self.I1, 10)} \\times {round(math.cos(math.radians(self.theta))**2, 10)}\\\\"
+                f"I &= {self.answer}\\,\\text{{W m}}^{{-2}}"
+                if self.target == "I" else
+                f"{self.I_disp} &= {round(self.I1, 10)} \\times \\cos^2 \\theta\\\\"
+                f"\\cos^2 \\theta &= \\frac{{{self.I_disp}}}{{{round(self.I1, 10)}}}\\\\"
+                f"\\cos^2 \\theta &= {round(self.I_disp / self.I1, 10)}\\\\"
+                f"\\cos \\theta &= \\sqrt{{{round(self.I_disp / self.I1, 10)}}}\\\\"
+                f"\\theta &= \\cos^{{-1}}\\left({round(math.sqrt(self.I_disp / self.I1), 10)}\\right)\\\\"
+                f"\\theta &= {self.answer}^\\circ"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 2.9))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        y = 2.0
+
+        # Incoming light arrow
+        ax.annotate("", xy=(3.2, y), xytext=(0.8, y),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(0.8, 3.4, "unpolarised", ha="left", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(0.8, 0.6, f"I₀ = {self.I0} W m⁻²", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Polaroid 1
+        p1 = patches.Rectangle((3.3, 1.2), 0.8, 1.6, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(p1)
+        ax.text(3.7, 3.1, "P1", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        # Transmission axis of P1 (vertical)
+        ax.plot([3.7, 3.7], [1.35, 2.65], linewidth=2, color="black")
+
+        # Polaroid 2
+        p2 = patches.Rectangle((5.6, 1.2), 0.8, 1.6, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(p2)
+        ax.text(6.0, 3.1, "P2", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Transmission axis of P2 at angle theta to vertical
+        cx, cy = 6.0, 2.0
+        L = 0.75
+        # angle measured from vertical
+        th = math.radians(self.theta)
+        dx = L * math.sin(th)
+        dy = L * math.cos(th)
+        ax.plot([cx - dx, cx + dx], [cy - dy, cy + dy], linewidth=2, color="black")
+
+        # Angle label
+        if self.target == "theta":
+            ax.text(4.95, 3.55, "θ = ?", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(4.95, 3.55, f"θ = {self.theta}°", ha="center", va="top",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Outgoing light arrow
+        ax.annotate("", xy=(9.2, y), xytext=(6.5, y),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        # Output intensity label
+        if self.target == "I":
+            ax.text(9.2, 0.6, "I = ?", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(9.2, 0.6, f"I = {self.I_disp} W m⁻²", ha="right", va="center",
+                    bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
