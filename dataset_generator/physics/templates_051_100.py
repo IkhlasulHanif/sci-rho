@@ -4928,3 +4928,947 @@ class Phy093:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
+
+class Phy094:
+    """
+    Stationary waves (string fixed at both ends).
+    Relationships: λ = 2L / n; f = v / λ = n v / (2L)
+    Dynamic target: find f, OR λ, OR harmonic number n
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["f", "lam", "n"])
+
+        while True:
+            self.L = rnd.choice([0.50, 0.60, 0.80, 1.00, 1.20, 1.50, 2.00])  # m
+            self.v = rnd.choice([80, 100, 120, 150, 180, 200, 220, 250])      # m s^-1
+            self.n = rnd.randint(1, 5)
+
+            self.lam = 2 * self.L / self.n
+            self.f = (self.n * self.v) / (2 * self.L)
+
+            if 20 <= self.f <= 800 and 0.15 <= self.lam <= 4.0:
+                break
+
+        if self.target == "f":
+            self.answer = sig_figs(self.f, 3)
+            self.description = (
+                "A stationary wave is set up on a stretched string fixed at both ends. The pattern and values are shown in the diagram.\n"
+                "Determine the frequency of the wave.\n"
+                "f = (_) Hz"
+            )
+        elif self.target == "lam":
+            self.answer = sig_figs(self.lam, 3)
+            self.description = (
+                "A stationary wave is set up on a stretched string fixed at both ends. The pattern and values are shown in the diagram.\n"
+                "Determine the wavelength of the progressive waves forming the stationary wave.\n"
+                "λ = (_) m"
+            )
+        else:
+            self.answer = self.n
+            self.description = (
+                "A stationary wave is set up on a stretched string fixed at both ends. Values are shown in the diagram.\n"
+                "Determine the harmonic number n (number of half-wavelengths along the string).\n"
+                "n = (_)"
+            )
+
+        self.topic = "Superposition"
+        self.subtopic = "Stationary waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Length of the string, }} L &= {self.L}\\,\\text{{m}}\\\\"
+            f"\\text{{Wave speed, }} v &= {self.v}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Harmonic number, }} n &= {self.n if self.target != 'n' else '\\text{?}'}\\\\"
+            f"\\text{{Frequency, }} f &= {sig_figs(self.f, 3) if self.target != 'f' else '\\text{?}'}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= {sig_figs(self.lam, 3) if self.target != 'lam' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            "\\text{{Step 1: Relate wavelength to the length of the string and harmonic number.}} &\\\\"
+            "\\text{{For a string fixed at both ends, the length }} L \\text{{ contains }} n \\text{{ half-wavelengths:}} &\\\\"
+            "L &= n \\frac{\\lambda}{2} \\implies \\lambda = \\frac{2L}{n}\\\\"
+            "\\text{{Step 2: Relate frequency to wave speed and wavelength.}} &\\\\"
+            "f &= \\frac{v}{\\lambda} = \\frac{nv}{2L}\\\\"
+            "\\text{{Step 3: Substitute the known values and solve for the target variable:}} &\\\\"
+            + (
+                f"\\lambda &= \\frac{{2 \\times {self.L}}}{{{self.n}}}\\\\"
+                f"\\lambda &= {self.answer}\\,\\text{{m}}"
+                if self.target == "lam" else
+                f"f &= \\frac{{{self.n} \\times {self.v}}}{{2 \\times {self.L}}}\\\\"
+                f"f &= {self.answer}\\,\\text{{Hz}}"
+                if self.target == "f" else
+                f"n &= \\frac{{2L f}}{{v}} = \\frac{{2 \\times {self.L} \\times {sig_figs(self.f, 3)}}}{{{self.v}}}\\\\"
+                f"n &= {self.answer}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 3.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # String endpoints (fixed)
+        x0, x1 = 1.4, 8.8
+        y0 = 2.0
+        ax.plot([x0, x0], [y0 - 0.7, y0 + 0.7], linewidth=3, color="black")
+        ax.plot([x1, x1], [y0 - 0.7, y0 + 0.7], linewidth=3, color="black")
+
+        # Standing wave snapshot: y = y0 + A sin(nπ (x-x0)/Lpix)
+        A = 0.65
+        npts = 500
+        xs = [x0 + (x1 - x0) * i / (npts - 1) for i in range(npts)]
+        ys = [y0 + A * math.sin(self.n * math.pi * (x - x0) / (x1 - x0)) for x in xs]
+        ax.plot(xs, ys, linewidth=2, color="black")
+
+        # Length bracket
+        yL = 0.85
+        ax.annotate("", xy=(x0, yL), xytext=(x1, yL),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((x0 + x1) / 2, yL - 0.15, f"L = {self.L} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Values / unknowns (kept in the diagram)
+        ax.text(0.02, 0.95, f"v = {self.v} m s⁻¹", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        if self.target == "f":
+            ax.text(0.98, 0.95, "f = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"n = {self.n}", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        elif self.target == "lam":
+            ax.text(0.98, 0.95, "λ = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"n = {self.n}", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(0.98, 0.95, "n = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"f = {sig_figs(self.f,3)} Hz", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy095:
+    """
+    Stationary waves (air column): closed at one end, open at the other.
+    Resonance condition: L = (2m-1) λ / 4; f = (2m-1) v / (4L)
+    Dynamic target: find resonant frequency f, OR tube length L
+    """
+
+    def __init__(self):
+        self.v = 340  # m s^-1 (speed of sound; shown)
+        self.target = rnd.choice(["f", "L"])
+
+        if self.target == "f":
+            # Choose L, m then calculate f
+            while True:
+                self.m = rnd.choice([1, 2, 3])  # mode number
+                self.L = rnd.choice([0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.60, 0.70, 0.80, 1.00, 1.20])  # m
+                self.f = (2 * self.m - 1) * self.v / (4 * self.L)
+                if 80 <= self.f <= 1500:
+                    break
+            self.answer = sig_figs(self.f, 3)
+            self.description = (
+                "A tube is closed at one end and open at the other. The stationary-wave pattern and values are shown in the diagram.\n"
+                "Determine the resonant frequency.\n"
+                "f = (_) Hz"
+            )
+        else:
+            # Choose f, m then calculate L (keeps values tidy)
+            while True:
+                self.m = rnd.choice([1, 2, 3])
+                self.f = rnd.choice([170, 200, 255, 300, 340, 400, 425, 510, 600, 680, 850, 1020, 1200])  # Hz
+                self.L = (2 * self.m - 1) * self.v / (4 * self.f)
+                if 0.20 <= self.L <= 1.50:
+                    break
+            self.answer = sig_figs(self.L, 3)
+            self.description = (
+                "A tube is closed at one end and open at the other. The stationary-wave pattern and values are shown in the diagram.\n"
+                "Determine the length of the air column.\n"
+                "L = (_) m"
+            )
+
+        self.topic = "Superposition"
+        self.subtopic = "Stationary waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of sound, }} v &= {self.v}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Mode number, }} m &= {self.m}\\\\"
+            f"\\text{{Length of column, }} L &= {sig_figs(self.L, 3) if self.target != 'L' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            f"\\text{{Resonant frequency, }} f &= {self.f if self.target != 'f' else '\\text{?}'}\\,\\text{{Hz}}\\\\"
+            "\\text{{Step 1: Identify the resonance condition for a tube closed at one end.}} &\\\\"
+            "\\text{{For a tube closed at one end, a node exists at the closed end and an}} &\\\\"
+            "\\text{{antinode at the open end. The length }} L \\text{{ is an odd multiple of quarter-wavelengths:}} &\\\\"
+            "L &= (2m - 1) \\frac{\\lambda}{4}\\\\"
+            "\\text{{Step 2: Relate frequency to wave speed and wavelength.}} &\\\\"
+            "f &= \\frac{v}{\\lambda} \\implies \\lambda = \\frac{v}{f}\\\\"
+            "\\text{{Combining these gives the frequency formula:}} &\\\\"
+            "f &= \\frac{(2m - 1)v}{4L}\\\\"
+            "\\text{{Step 3: Substitute the known values and solve for the target variable:}} &\\\\"
+            + (
+                f"f &= \\frac{{(2 \\times {self.m} - 1) \\times {self.v}}}{{4 \\times {sig_figs(self.L, 3)}}}\\\\"
+                f"f &= \\frac{{{2 * self.m - 1} \\times {self.v}}}{{{round(4 * self.L, 10)}}}\\\\"
+                f"f &= {self.answer}\\,\\text{{Hz}}"
+                if self.target == "f" else
+                f"L &= \\frac{{(2 \\times {self.m} - 1) \\times {self.v}}}{{4 \\times {self.f}}}\\\\"
+                f"L &= \\frac{{{2 * self.m - 1} \\times {self.v}}}{{{4 * self.f}}}\\\\"
+                f"L &= {self.answer}\\,\\text{{m}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 2.9))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Tube
+        x0, x1 = 2.0, 8.6
+        y0, h = 1.6, 1.2
+        ax.add_patch(patches.Rectangle((x0, y0), x1 - x0, h, fill=False, linewidth=2, edgecolor="black"))
+
+        # Closed end (left): heavy line
+        ax.plot([x0, x0], [y0, y0 + h], linewidth=4, color="black")
+        ax.text(x0, y0 - 0.2, "closed", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(x1, y0 - 0.2, "open", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Standing wave in tube: y = mid + A sin(kx), node at closed end
+        mid = y0 + h / 2
+        A = 0.42
+        Lpix = x1 - x0
+        k = (2 * self.m - 1) * math.pi / (2 * Lpix)  # shape only (diagrammatic)
+        npts = 400
+        xs = [x0 + Lpix * i / (npts - 1) for i in range(npts)]
+        ys = [mid + A * math.sin(k * (x - x0)) for x in xs]
+        ax.plot(xs, ys, linewidth=2, color="black")
+
+        # Length bracket
+        yL = 0.85
+        ax.annotate("", xy=(x0, yL), xytext=(x1, yL),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        if self.target == "L":
+            L_text = "L = ?"
+        else:
+            L_text = f"L = {sig_figs(self.L,3)} m"
+        ax.text((x0 + x1) / 2, yL - 0.15, L_text, ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+
+        # Mode label + speed of sound
+        ax.text(0.02, 0.95, f"mode m = {self.m}", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(0.02, 0.84, f"v = {self.v} m s⁻¹", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Frequency label
+        if self.target == "f":
+            ax.text(0.98, 0.95, "f = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(0.98, 0.95, f"f = {self.f} Hz", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy096:
+    """
+    Stationary waves (string): tension / mass per unit length using a harmonic.
+    For a string fixed at both ends: f_n = (n / 2L) * sqrt(T / μ)
+    Dynamic target: find tension T, OR mass per unit length μ
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["T", "mu"])
+
+        while True:
+            self.L = rnd.choice([0.60, 0.80, 1.00, 1.20, 1.50])  # m
+            self.n = rnd.randint(1, 5)
+
+            self.mu = rnd.choice([0.0020, 0.0030, 0.0040, 0.0050, 0.0060, 0.0080, 0.0100, 0.0120, 0.0150, 0.0200])  # kg m^-1
+            self.T = rnd.choice([20, 30, 40, 50, 60, 80, 100, 120, 150, 180, 200, 250, 300])  # N
+
+            self.f = (self.n / (2 * self.L)) * math.sqrt(self.T / self.mu)
+            if 30 <= self.f <= 600:
+                break
+
+        if self.target == "T":
+            self.answer = sig_figs(self.T, 3)
+            self.description = (
+                "A stationary wave is produced on a string fixed at both ends. The pattern and values are shown in the diagram.\n"
+                "Determine the tension in the string.\n"
+                "T = (_) N"
+            )
+        else:
+            self.answer = sig_figs(self.mu, 3)
+            self.description = (
+                "A stationary wave is produced on a string fixed at both ends. The pattern and values are shown in the diagram.\n"
+                "Determine the mass per unit length of the string.\n"
+                "μ = (_) kg m⁻¹"
+            )
+
+        self.topic = "Superposition"
+        self.subtopic = "Stationary waves"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Length of the string, }} L &= {self.L}\\,\\text{{m}}\\\\"
+            f"\\text{{Frequency, }} f &= {sig_figs(self.f, 3)}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Harmonic number, }} n &= {self.n}\\\\"
+            f"\\text{{Tension, }} T &= {sig_figs(self.T, 3) if self.target != 'T' else '\\text{?}'}\\,\\text{{N}}\\\\"
+            f"\\text{{Mass per unit length, }} \\mu &= {sig_figs(self.mu, 3) if self.target != 'mu' else '\\text{?}'}\\,\\text{{kg m}}^{{-1}}\\\\"
+            "\\text{{Step 1: Use the formula for the frequency of the }} n\\text{{-th harmonic on a string:}} &\\\\"
+            "f_n &= \\frac{n}{2L} \\sqrt{\\frac{T}{\\mu}}\\\\"
+            "\\text{{Step 2: Rearrange to solve for wave speed (}} v = \\sqrt{T/\\mu} \\text{{) or directly for the target variable:}} &\\\\"
+            "v &= \\sqrt{\\frac{T}{\\mu}} = \\frac{2L f}{n}\\\\"
+            f"v &= \\frac{{2 \\times {self.L} \\times {sig_figs(self.f, 3)}}}{{{self.n}}}\\\\"
+            f"v &= {round(2 * self.L * self.f / self.n, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
+            "\\text{{Step 3: Solve for the unknown variable using }} v^2 = \\frac{T}{\\mu}: &\\\\"
+            + (
+                f"T &= \\mu v^2\\\\"
+                f"T &= {sig_figs(self.mu, 3)} \\times ({round(2 * self.L * self.f / self.n, 10)})^2\\\\"
+                f"T &= {self.answer}\\,\\text{{N}}"
+                if self.target == "T" else
+                f"\\mu &= \\frac{{T}}{{v^2}}\\\\"
+                f"\\mu &= \\frac{{{sig_figs(self.T, 3)}}}{{({round(2 * self.L * self.f / self.n, 10)})^2}}\\\\"
+                f"\\mu &= {self.answer}\\,\\text{{kg m}}^{{-1}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 3.0))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 4)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # String endpoints
+        x0, x1 = 1.4, 8.8
+        y0 = 2.0
+        ax.plot([x0, x0], [y0 - 0.7, y0 + 0.7], linewidth=3, color="black")
+        ax.plot([x1, x1], [y0 - 0.7, y0 + 0.7], linewidth=3, color="black")
+
+        # Standing wave snapshot with n loops
+        A = 0.65
+        npts = 500
+        xs = [x0 + (x1 - x0) * i / (npts - 1) for i in range(npts)]
+        ys = [y0 + A * math.sin(self.n * math.pi * (x - x0) / (x1 - x0)) for x in xs]
+        ax.plot(xs, ys, linewidth=2, color="black")
+
+        # Length bracket
+        yL = 0.85
+        ax.annotate("", xy=(x0, yL), xytext=(x1, yL),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((x0 + x1) / 2, yL - 0.15, f"L = {self.L} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Given values in diagram
+        ax.text(0.02, 0.95, f"n = {self.n}", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(0.02, 0.84, f"f = {sig_figs(self.f,3)} Hz", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        if self.target == "T":
+            ax.text(0.98, 0.95, "T = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"μ = {sig_figs(self.mu,3)} kg m⁻¹", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(0.98, 0.95, "μ = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"T = {sig_figs(self.T,3)} N", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy097:
+    """
+    Interference (Young double-slit).
+    Fringe spacing: w = λD / s
+    Dynamic target: find fringe spacing w, OR wavelength λ, OR slit separation s
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["w", "lam", "s"])
+
+        while True:
+            self.D = rnd.choice([1.0, 1.2, 1.5, 1.8, 2.0, 2.5, 3.0])  # m
+            self.s_mm = rnd.choice([0.20, 0.25, 0.30, 0.40, 0.50, 0.60, 0.75, 0.80])  # mm
+            self.lam_nm = rnd.choice([420, 450, 480, 500, 520, 550, 580, 600, 620, 650, 680])  # nm
+
+            self.s = self.s_mm * 1e-3       # m
+            self.lam = self.lam_nm * 1e-9   # m
+            self.w = (self.lam * self.D) / self.s  # m
+            self.w_mm = self.w * 1e3
+
+            if 0.6 <= self.w_mm <= 25:
+                break
+
+        if self.target == "w":
+            self.answer = sig_figs(self.w_mm, 3)
+            self.description = (
+                "Light passes through a double slit and forms an interference pattern on a screen.\n"
+                "The slit separation s and screen distance D are shown, and the fringe spacing w is measured on the screen.\n"
+                "Determine the fringe spacing.\n"
+                "w = (_) mm"
+            )
+        elif self.target == "lam":
+            self.answer = sig_figs(self.lam_nm, 3)
+            self.description = (
+                "Light passes through a double slit and forms an interference pattern on a screen.\n"
+                "The slit separation s, screen distance D and fringe spacing w are shown in the diagram.\n"
+                "Determine the wavelength of the light.\n"
+                "λ = (_) nm"
+            )
+        else:
+            self.answer = sig_figs(self.s_mm, 3)
+            self.description = (
+                "Light passes through a double slit and forms an interference pattern on a screen.\n"
+                "The screen distance D, wavelength λ and fringe spacing w are shown in the diagram.\n"
+                "Determine the slit separation.\n"
+                "s = (_) mm"
+            )
+
+        self.topic = "Superposition"
+        self.subtopic = "Interference"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance to screen, }} D &= {self.D}\\,\\text{{m}}\\\\"
+            f"\\text{{Slit separation, }} s &= {sig_figs(self.s_mm, 3) if self.target != 's' else '\\text{?}'}\\,\\text{{mm}} = {self.s}\\,\\text{{m}}\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= {self.lam_nm if self.target != 'lam' else '\\text{?}'}\\,\\text{{nm}} = {self.lam}\\,\\text{{m}}\\\\"
+            f"\\text{{Fringe spacing, }} w &= {sig_figs(self.w_mm, 3) if self.target != 'w' else '\\text{?}'}\\,\\text{{mm}} = {round(self.w, 10)}\\,\\text{{m}}\\\\"
+            "\\text{{Step 1: Use the Young double-slit equation.}} &\\\\"
+            "\\text{{The fringe spacing }} w \\text{{ is given by:}} &\\\\"
+            "w &= \\frac{\\lambda D}{s}\\\\"
+            "\\text{{Step 2: Rearrange and substitute the known values to solve for the unknown:}} &\\\\"
+            + (
+                f"w &= \\frac{{{self.lam} \\times {self.D}}}{{{self.s}}}\\\\"
+                f"w &= {round(self.w, 10)}\\,\\text{{m}}\\\\"
+                f"w &= {self.answer}\\,\\text{{mm}}"
+                if self.target == "w" else
+                f"\\lambda &= \\frac{{w s}}{{D}} = \\frac{{{round(self.w, 10)} \\times {self.s}}}{{{self.D}}}\\\\"
+                f"\\lambda &= {round(self.lam, 12)}\\,\\text{{m}}\\\\"
+                f"\\lambda &= {self.answer}\\,\\text{{nm}}"
+                if self.target == "lam" else
+                f"s &= \\frac{{\\lambda D}}{{w}} = \\frac{{{self.lam} \\times {self.D}}}{{{round(self.w, 10)}}}\\\\"
+                f"s &= {round(self.s, 10)}\\,\\text{{m}}\\\\"
+                f"s &= {self.answer}\\,\\text{{mm}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(7.6, 3.6))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 6)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        x_slit = 2.4
+        x_scr = 10.2
+
+        ax.plot([x_slit, x_slit], [0.9, 5.1], linewidth=6, color="black")
+
+        y_top = 3.9
+        y_bot = 2.1
+        slit_half = 0.28
+        ax.plot([x_slit, x_slit], [y_top - slit_half, y_top + slit_half], linewidth=8, color="white")
+        ax.plot([x_slit, x_slit], [y_bot - slit_half, y_bot + slit_half], linewidth=8, color="white")
+
+        ax.text(x_slit, 5.45, "Double slit", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(x_slit + 0.25, y_top, "S1", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(x_slit + 0.25, y_bot, "S2", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Slit separation bracket
+        ax.annotate("", xy=(x_slit - 1.0, y_top), xytext=(x_slit - 1.0, y_bot),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+
+        s_text = "s = ?" if self.target == "s" else f"s = {sig_figs(self.s_mm,3)} mm"
+        ax.text(x_slit - 1.15, (y_top + y_bot) / 2, s_text, ha="right", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # screen
+        ax.plot([x_scr, x_scr], [0.9, 5.1], linewidth=6, color="black")
+        ax.text(x_scr, 5.45, "Screen", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Distance D (slits to screen)
+        yD = 0.55
+        ax.annotate("", xy=(x_slit, yD), xytext=(x_scr, yD),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+        ax.text((x_slit + x_scr) / 2, yD - 0.18, f"D = {self.D} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dy = min(2.2, max(0.70, 0.085 * self.w_mm))
+        y_central = 2.8
+        y_first = y_central + dy
+        y_below = y_central - dy
+
+        dot_style = dict(
+            marker="o",
+            markersize=7,
+            markerfacecolor="white",
+            markeredgecolor="black",
+            markeredgewidth=2,
+            linestyle="None",
+            zorder=10
+        )
+
+        ax.plot([x_scr], [y_central], **dot_style)
+        ax.plot([x_scr], [y_first], **dot_style)
+        # ax.plot([x_scr], [y_below], **dot_style)
+
+        # w bracket next to screen
+        xw = x_scr + 1.0
+        ax.annotate("", xy=(xw, y_first), xytext=(xw, y_central),
+                    arrowprops=dict(arrowstyle="<->", linewidth=1.8, color="black"))
+
+        w_text = "w = ?" if self.target == "w" else f"w = {sig_figs(self.w_mm,3)} mm"
+        ax.text(xw + 0.2, (y_first + y_central) / 2, w_text, ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Wavelength label
+        lam_text = "λ = ?" if self.target == "lam" else f"λ = {self.lam_nm} nm"
+        ax.text(1.0, 0.75, lam_text, transform=ax.transAxes,
+                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
+
+
+class Phy098:
+    """
+    Interference (path difference at a point). Two coherent sources S1 and S2 are in phase.
+    For a maximum (constructive interference): Δ = |r2 - r1| = mλ
+    Dynamic target: find λ, OR m
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["lam", "m"])
+
+        while True:
+            self.m = rnd.randint(1, 4)
+            self.lam = rnd.choice([0.20, 0.25, 0.30, 0.40, 0.50, 0.60, 0.80])  # m
+            self.r1 = rnd.choice([3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 7.0, 8.0, 9.0])  # m
+
+            # Make r2 differ by exactly mλ (and keep positive)
+            sign = rnd.choice([1, -1])
+            self.r2 = self.r1 + sign * (self.m * self.lam)
+            if self.r2 > 0.8 and self.r2 < 12.0:
+                break
+
+        self.delta = abs(self.r2 - self.r1)
+
+        if self.target == "lam":
+            self.answer = sig_figs(self.lam, 3)
+            self.description = (
+                "Two coherent sources S1 and S2 emit waves in phase. Point P is a point of maximum (constructive) interference.\n"
+                "The distances from S1 and S2 to P are shown in the diagram.\n"
+                "Determine the wavelength.\n"
+                "λ = (_) m"
+            )
+        else:
+            self.answer = self.m
+            self.description = (
+                "Two coherent sources S1 and S2 emit waves in phase. Point P is a point of maximum (constructive) interference.\n"
+                "The distances from S1 and S2 to P and the wavelength are shown in the diagram.\n"
+                "Determine the order number m of the maximum at P.\n"
+                "m = (_)"
+            )
+
+        self.topic = "Superposition"
+        self.subtopic = "Interference"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance from }} S_1 \\text{{ to }} P, r_1 &= {sig_figs(self.r1, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Distance from }} S_2 \\text{{ to }} P, r_2 &= {sig_figs(self.r2, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= {sig_figs(self.lam, 3) if self.target != 'lam' else '\\text{?}'}\\,\\text{{m}}\\\\"
+            f"\\text{{Order number, }} m &= {self.m if self.target != 'm' else '\\text{?}'}\\\\"
+            "\\text{{Step 1: Calculate the path difference (}} \\Delta \\text{{) at point }} P. &\\\\"
+            "\\Delta &= |r_2 - r_1|\\\\"
+            f"&= |{sig_figs(self.r2, 3)} - {sig_figs(self.r1, 3)}|\\\\"
+            f"&= {round(self.delta, 10)}\\,\\text{{m}}\\\\"
+            "\\text{{Step 2: Apply the condition for constructive interference.}} &\\\\"
+            "\\text{{For a maximum, the path difference must be an integer multiple of the wavelength:}} &\\\\"
+            "\\Delta &= m \\lambda\\\\"
+            "\\text{{Step 3: Substitute the known values and solve for the target variable:}} &\\\\"
+            + (
+                f"\\lambda &= \\frac{{\\Delta}}{{m}} = \\frac{{{round(self.delta, 10)}}}{{{self.m}}}\\\\"
+                f"\\lambda &= {self.answer}\\,\\text{{m}}"
+                if self.target == "lam" else
+                f"m &= \\frac{{\\Delta}}{{\\lambda}} = \\frac{{{round(self.delta, 10)}}}{{{sig_figs(self.lam, 3)}}}\\\\"
+                f"m &= {self.answer}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 6)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Source points and point P
+        S1 = (1.6, 4.6)
+        S2 = (1.6, 1.6)
+        P = (8.6, 3.1)
+
+        ax.plot([S1[0], S2[0], P[0]], [S1[1], S2[1], P[1]], "ko", markersize=5)
+        ax.text(S1[0] - 0.2, S1[1] + 0.25, "S1", ha="right", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(S2[0] - 0.2, S2[1] - 0.25, "S2", ha="right", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+        ax.text(P[0] + 0.2, P[1], "P", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
+
+        # Rays
+        ax.plot([S1[0], P[0]], [S1[1], P[1]], linewidth=2, color="black")
+        ax.plot([S2[0], P[0]], [S2[1], P[1]], linewidth=2, color="black")
+
+        # Label distances (shown in diagram)
+        mid1 = ((S1[0] + P[0]) / 2, (S1[1] + P[1]) / 2)
+        mid2 = ((S2[0] + P[0]) / 2, (S2[1] + P[1]) / 2)
+        ax.text(mid1[0], mid1[1] + 0.25, f"r₁ = {sig_figs(self.r1,3)} m", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(mid2[0], mid2[1] - 0.25, f"r₂ = {sig_figs(self.r2,3)} m", ha="center", va="top",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        if self.target == "lam":
+            ax.text(0.98, 0.95, "λ = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"m = {self.m}", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        else:
+            ax.text(0.98, 0.95, "m = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+            ax.text(0.98, 0.84, f"λ = {sig_figs(self.lam,3)} m", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy099:
+    """
+    Diffraction grating: d sinθ = nλ,   with d = 1/(N*1000) if N is lines per mm.
+    Dynamic target: find wavelength λ, OR angle θ
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["lam", "theta"])
+
+        while True:
+            self.N = rnd.choice([300, 400, 500, 600, 800, 1000, 1200])  # lines per mm
+            self.n = rnd.choice([1, 2, 3])
+
+            # Choose visible wavelength and compute theta
+            self.lam_nm = rnd.choice([400, 420, 450, 480, 500, 520, 550, 580, 600, 620, 650, 680])  # nm
+            self.lam = self.lam_nm * 1e-9  # m
+            self.d = 1 / (self.N * 1000)   # m
+
+            sin_theta = (self.n * self.lam) / self.d
+            if 0 < sin_theta < 1:
+                self.theta = math.degrees(math.asin(sin_theta))
+                if 10 <= self.theta <= 75:
+                    break
+
+        if self.target == "theta":
+            self.answer = sig_figs(self.theta, 3)
+            self.description = (
+                "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
+                "Determine the angle θ of the nth-order maximum.\n"
+                "θ = (_)°"
+            )
+        else:
+            self.answer = sig_figs(self.lam_nm, 3)
+            self.description = (
+                "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
+                "Determine the wavelength of the light.\n"
+                "λ = (_) nm"
+            )
+
+        self.topic = "Superposition"
+        self.subtopic = "The diffraction grating"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Lines per mm, }} N &= {self.N}\\,\\text{{lines mm}}^{{-1}}\\\\"
+            f"\\text{{Order number, }} n &= {self.n}\\\\"
+            f"\\text{{Angle of diffraction, }} \\theta &= { '\\text{?}' if self.target == 'theta' else sig_figs(self.theta, 3) }^\\circ\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= { '\\text{?}' if self.target == 'lam' else self.lam_nm }\\,\\text{{nm}}\\\\"
+            "\\text{{Step 1: Calculate the grating spacing }} d. &\\\\"
+            "d &= \\frac{1}{N \\times 10^3}\\\\"
+            f"&= \\frac{1}{{{self.N} \\times 1000}}\\\\"
+            f"&= {round(self.d, 12)}\\,\\text{{m}}\\\\"
+            "\\text{{Step 2: Apply the diffraction grating equation.}} &\\\\"
+            "d \\sin \\theta &= n \\lambda\\\\"
+            "\\text{{Step 3: Solve for the unknown variable:}} &\\\\"
+            + (
+                f"\\sin \\theta &= \\frac{{n \\lambda}}{{d}}\\\\"
+                f"\\sin \\theta &= \\frac{{{self.n} \\times {self.lam}}}{{{round(self.d, 12)}}}\\\\"
+                f"\\sin \\theta &= {round((self.n * self.lam) / self.d, 10)}\\\\"
+                f"\\theta &= \\sin^{{-1}}({round((self.n * self.lam) / self.d, 10)})\\\\"
+                f"\\theta &= {self.answer}^\\circ"
+                if self.target == "theta" else
+                f"\\lambda &= \\frac{{d \\sin \\theta}}{{n}}\\\\"
+                f"\\lambda &= \\frac{{{round(self.d, 12)} \\times \\sin({sig_figs(self.theta, 3)}^\\circ)}}{{{self.n}}}\\\\"
+                f"\\lambda &= {round(self.lam, 12)}\\,\\text{{m}}\\\\"
+                f"\\lambda &= {self.answer}\\,\\text{{nm}}"
+            ) +
+            "\\end{aligned}\\]"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 8})
+
+        fig, ax = plt.subplots(figsize=(6.8, 3.2))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 6)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        # Grating as vertical line
+        xg = 3.0
+        ax.plot([xg, xg], [1.0, 5.0], linewidth=3, color="black")
+        ax.text(xg, 5.25, "grating", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Incident ray (along normal)
+        y0 = 3.0
+        ax.annotate("", xy=(xg, y0), xytext=(0.8, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(0.8, y0 + 0.35, "incident", ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Diffracted ray at angle theta
+        th = math.radians(self.theta)
+        x_max = 9.6
+        y_max = 5.6
+        y_min = 0.4
+
+        Lx = (x_max - xg) / max(1e-9, math.cos(th))
+        if math.sin(th) > 0:
+            Ly = (y_max - y0) / max(1e-9, math.sin(th))
+        else:
+            Ly = (y0 - y_min) / max(1e-9, -math.sin(th))
+
+        L = 0.95 * min(Lx, Ly)
+
+        x2 = xg + L * math.cos(th)
+        y2 = y0 + L * math.sin(th)
+
+        ax.annotate("", xy=(x2, y2), xytext=(xg, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        ax.text(xg + 2.8, y0 + 1.6, f"order n = {self.n}", ha="left", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Angle label
+        if self.target == "theta":
+            th_text = "θ = ?"
+        else:
+            th_text = f"θ = {sig_figs(self.theta,3)}°"
+
+        ax.text(xg + 0.55, y0 + 0.35, th_text, ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+
+        # N and lambda labels
+        ax.text(0.02, 0.15, f"N = {self.N} lines mm⁻¹", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        if self.target == "lam":
+            ax.text(0.98, 0.95, "λ = ?", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        else:
+            ax.text(0.98, 0.95, f"λ = {self.lam_nm} nm", transform=ax.transAxes,
+                    ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.close()
+
+
+class Phy100:
+    """
+    Diffraction grating: maximum observable order and its angle.
+    Condition: d sinθ = nλ; sinθ <= 1  =>  n_max = floor(d/λ)
+    """
+
+    def __init__(self):
+        while True:
+            self.N = rnd.choice([300, 400, 500, 600, 800, 1000, 1200, 1500])  # lines per mm
+            self.lam_nm = rnd.choice([400, 420, 450, 480, 500, 520, 550, 580, 600, 620, 650, 680, 700])  # nm
+            self.lam = self.lam_nm * 1e-9
+            self.d = 1 / (self.N * 1000)
+
+            self.n_max = int(self.d // self.lam)
+            if self.n_max >= 2 and self.n_max <= 6:
+                sin_t = (self.n_max * self.lam) / self.d
+                if 0 < sin_t <= 1:
+                    self.theta_max = math.degrees(math.asin(min(1.0, sin_t)))
+                    if 25 <= self.theta_max <= 85:
+                        break
+
+        self.answer = f"{self.n_max}, {sig_figs(self.theta_max,3)}"
+
+        self.description = (
+            "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
+            "Determine the highest order maximum that can be observed and the corresponding angle.\n"
+            "n_max = (_),  θ_max = (_)°"
+        )
+
+        self.topic = "Superposition"
+        self.subtopic = "The diffraction grating"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            f"\\begin{{aligned}}"
+            f"\\text{{Lines per mm, }} N &= {self.N}\\,\\text{{lines mm}}^{{-1}}\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= {self.lam_nm}\\,\\text{{nm}} = {self.lam}\\,\\text{{m}}\\\\"
+            f"\\text{{Highest observable order, }} n_{{max}} &= \\text{{?}}\\\\"
+            f"\\text{{Angle of highest order, }} \\theta_{{max}} &= \\text{{?}}\\\\"
+            f"\\text{{Step 1: Calculate the grating spacing }} d. &\\\\"
+            f"d &= \\frac{{1}}{{N \\times 10^3}}\\\\"
+            f"&= \\frac{{1}}{{{self.N} \\times 1000}}\\\\"
+            f"&= {round(self.d, 12)}\\,\\text{{m}}\\\\"
+            f"\\text{{Step 2: Determine the maximum possible order }} n_{{max}}. &\\\\"
+            f"\\text{{The condition for a maximum is }} d \\sin \\theta = n \\lambda. \\text{{ Since }} \\sin \\theta \\leq 1: &\\\\"
+            f"n &\\leq \\frac{{d}}{{\\lambda}}\\\\"
+            f"n &\\leq \\frac{{{round(self.d, 12)}}}{{{self.lam}}}\\\\"
+            f"n &\\leq {round(self.d / self.lam, 10)}\\\\"
+            f"\\text{{Since }} n \\text{{ must be an integer:}} &\\\\"
+            f"n_{{max}} &= {self.n_max}\\\\"
+            f"\\text{{Step 3: Calculate the angle }} \\theta_{{max}} \\text{{ for the }} n_{{max}}\\text{{-th order.}} &\\\\"
+            f"\\sin \\theta_{{max}} &= \\frac{{n_{{max}} \\lambda}}{{d}}\\\\"
+            f"\\sin \\theta_{{max}} &= \\frac{{{self.n_max} \\times {self.lam}}}{{{round(self.d, 12)}}}\\\\"
+            f"\\sin \\theta_{{max}} &= {round((self.n_max * self.lam) / self.d, 10)}\\\\"
+            f"\\theta_{{max}} &= \\sin^{{-1}}({round((self.n_max * self.lam) / self.d, 10)})\\\\"
+            f"\\theta_{{max}} &= {sig_figs(self.theta_max, 3)}^\\circ\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            f"\\end{{aligned}}"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(7.6, 3.6))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 6)
+        ax.set_aspect("equal", adjustable="box")
+        ax.axis("off")
+
+        xg = 4.0
+        y0 = 3.0
+        y_bottom, y_top = 1.0, 5.0
+
+        # grating
+        ax.plot([xg, xg], [y_bottom, y_top], linewidth=6, color="black")
+        ax.text(xg, y_top + 0.45, "Grating", ha="center", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Incident ray (normal incidence)
+        ax.annotate("", xy=(xg, y0), xytext=(1.0, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        ax.text(1.0, y0 + 0.35, "incident", ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Highest order diffracted ray at theta_max
+        th = math.radians(self.theta_max)
+
+        x_max = 11.4
+        y_max = 5.6
+        y_min = 0.4
+
+        Lx = (x_max - xg) / max(1e-9, math.cos(th))
+        if math.sin(th) > 0:
+            Ly = (y_max - y0) / max(1e-9, math.sin(th))
+        else:
+            Ly = (y0 - y_min) / max(1e-9, -math.sin(th))
+
+        L = 0.95 * min(Lx, Ly)
+        x2 = xg + L * math.cos(th)
+        y2 = y0 + L * math.sin(th)
+
+        ax.annotate("", xy=(x2, y2), xytext=(xg, y0),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        # Label near the ray
+        xm = xg + 0.55 * (x2 - xg)
+        ym = y0 + 0.55 * (y2 - y0)
+        ax.text(xm + 0.2, ym + 0.2, "highest order", ha="left", va="bottom",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        # Angle arc for theta_max
+        r = 1.2
+        arc = patches.Arc((xg, y0), 2*r, 2*r, angle=0, theta1=0, theta2=self.theta_max,
+                        linewidth=2, color="black")
+        ax.add_patch(arc)
+
+        # theta label near the arc
+        th_mid = math.radians(self.theta_max / 2)
+        ax.text(xg + (r + 0.2) * math.cos(th_mid),
+                y0 + (r + 0.2) * math.sin(th_mid),
+                "θₘₐₓ", ha="center", va="center",
+                bbox=dict(facecolor="white", edgecolor="none", pad=0.1))
+
+        ax.text(0.02, 0.95, f"N = {self.N} lines mm⁻¹", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(0.02, 0.84, f"λ = {self.lam_nm} nm", transform=ax.transAxes,
+                ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        ax.text(0.98, 0.95, "nₘₐₓ = ?", transform=ax.transAxes,
+                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        ax.text(0.98, 0.84, "θₘₐₓ = ?", transform=ax.transAxes,
+                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
