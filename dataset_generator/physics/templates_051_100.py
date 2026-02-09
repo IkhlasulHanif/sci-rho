@@ -4,7 +4,6 @@ import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-from PIL import Image
 from physics.helper import *
 
 # target folder : "root/dataset/physics/image"
