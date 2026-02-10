@@ -1344,8 +1344,8 @@ class Phy029:
         img = Image.open('physics/temp_image/Phy029temp.png')
         fig, ax = plt.subplots()
         ax.imshow(img)
-        ax.text(200, 376, f"v = {format(self.speed_medium_a, ",").replace(",", ".")} m/s", fontsize=8)
-        ax.text(900, 376, f"v = {format(self.speed_medium_b, ",").replace(",", ".")} m/s", fontsize=8)
+        ax.text(200, 376, f"v = {format(self.speed_medium_a, ',').replace(',', '.')} m/s", fontsize=8)
+        ax.text(900, 376, f"v = {format(self.speed_medium_b, ',').replace(',', '.')} m/s", fontsize=8)
         plt.axis("off")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1390,7 +1390,7 @@ class Phy030:
         img = Image.open('physics/temp_image/Phy030temp.png')
         fig, ax = plt.subplots()
         ax.imshow(img)
-        ax.text(200, 376, f"v = {format(self.speed_medium_a, ",").replace(",", ".")} m/s", fontsize=8)
+        ax.text(200, 376, f"v = {format(self.speed_medium_a, ',').replace(',', '.')} m/s", fontsize=8)
         ax.text(1000, 376, f"v = ... m/s", fontsize=8)
         plt.axis("off")
 
