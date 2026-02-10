@@ -1571,3 +1571,125 @@ class Phy034:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
         plt.close()
+
+class Phy035:
+
+    def __init__(self):
+        self.current = rnd.randint(5, 50) / 10
+        self.resistance = rnd.randint(100, 1000)
+        self.time = rnd.randint(10, 60)
+        self.total_charge = self.current * self.time
+        self.answer = self.total_charge
+        self.description = (
+            f"An electric circuit is shown in the image. "
+            f"Calculate the total charge (in Coulombs) that passes through the resistor in {self.time} seconds!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Current, }} I &= {self.current}\\,\\text{{A}}\\\\"
+            f"\\text{{Time, }} t &= {self.time}\\,\\text{{s}}\\\\"
+            "\\text{{The charge is calculated using the formula:}} &\\\\"
+            "Q &= I \\times t\\\\"
+            f"&= {self.current} \\times {self.time}\\\\"
+            f"&= {self.answer}\\,\\text{{C}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy035temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(444, 20, f"R = {self.resistance} Ω", fontsize=16)
+        ax.text(592, 274, f"I = {self.current} A", fontsize=16)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.2)
+        plt.close()
+
+class Phy036:
+
+    def __init__(self):
+        self.current = rnd.randint(5, 50) / 10
+        self.resistance = rnd.randint(100, 1000)
+        self.time = rnd.randint(10, 60)
+        self.total_charge = self.current * self.time
+        self.answer = self.time
+        self.description = (
+            f"An electric circuit is shown in the image. "
+            f"Calculate the time taken for a total charge of {self.total_charge} C to pass through the resistor!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total charge (Q)}} &= {self.total_charge}\\,\\text{{C}}\\\\"
+            f"\\text{{Current (I)}} &= {self.current}\\,\\text{{A}}\\\\"
+            f"\\text{{The relationship between charge, current, and time is:}} &\\\\"
+            f"Q &= I \\times t\\\\"
+            f"\\text{{Rearranging for time (t):}} &\\\\"
+            f"t &= \\frac{{Q}}{{I}}\\\\"
+            f"&= \\frac{{{self.total_charge}}}{{{self.current}}}\\\\"
+            f"&= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy036temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(444, 20, f"R = {self.resistance} Ω", fontsize=16)
+        ax.text(592, 274, f"I = {self.current} A", fontsize=16)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.2)
+        plt.close()
+
+class Phy037:
+
+    def __init__(self):
+        self.current = rnd.randint(5, 50) / 10
+        self.resistance_A = rnd.randint(100, 1000)
+        self.resistance_B = rnd.randint(100, 1000)
+        self.time = rnd.randint(10, 60)
+        self.total_charge = self.current * self.time
+        self.answer = self.current
+        self.description = (
+            f"In the circuit provided, it is observed that a total charge of {self.total_charge} C "
+            f"passes through resistor B in {self.time} seconds. Calculate the current flowing through resistor A!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total charge at resistor B (Q)}} &= {self.total_charge}\\,\\text{{C}}\\\\"
+            f"\\text{{Time interval (t)}} &= {self.time}\\,\\text{{s}}\\\\"
+            f"\\text{{In a series circuit, the charge flowing past resistor B is the same as at resistor A.}}\\\\"
+            f"\\text{{The current (I) is defined as the rate of flow of charge:}}\\\\"
+            f"I &= \\frac{{Q}}{{t}}\\\\"
+            f"&= \\frac{{{self.total_charge}}}{{{self.time}}}\\\\"
+            f"&= {round(self.total_charge / self.time, 10)}\\,\\text{{A}}\\\\"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy037temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(448, 276, f"R = {self.resistance_A} Ω", fontsize=12)
+        ax.text(209, 443, f"R = {self.resistance_B} Ω", fontsize=12)
+        ax.text(623, 99, f"I = ... A", fontsize=16)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
