@@ -13,7 +13,6 @@ DESTINATION_FOLDER = os.path.join(
 )
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
 
-
 class Chem001:
     """
     Topic: 1.2 Isotopes / 1.1 Particles in the atom
@@ -929,8 +928,6 @@ class Chem009:
                     facecolor='lightgreen',
                     edgecolor='black', linewidth=2)
         
-        # REMOVED: Answer label that gave away the solution
-        # Students must calculate which reagent is limiting themselves
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1511,7 +1508,6 @@ class Chem017:
 class Chem018:
     """
     Chapter 4.1: States of matter particle arrangements
-    REFACTORED: Uses draw_circle_atom() for particles
     """
     
     def __init__(self):
@@ -1600,7 +1596,6 @@ class Chem018:
 class Chem019:
     """
     Chapter 4.2: Heating curve with phase changes
-    REFACTORED: Uses draw_line_graph()
     """
     
     def __init__(self):
@@ -1667,7 +1662,6 @@ class Chem019:
 class Chem020:
     """
     Chapter 5.1: Enthalpy profile diagram
-    REFACTORED: Uses draw_enthalpy_profile() and draw_vertical_annotation()
     """
     
     def __init__(self):
@@ -1732,7 +1726,6 @@ class Chem020:
 class Chem021:
     """
     Chapter 5.2: Hess's Law cycle
-    REFACTORED: Uses draw_labeled_box() and draw_arrow()
     """
     
     def __init__(self):
@@ -1795,7 +1788,6 @@ class Chem021:
 class Chem022:
     """
     Chapter 6.1: Electrochemical cell
-    REFACTORED: Uses draw_labeled_box(), draw_beaker(), draw_arrow()
     """
     
     def __init__(self):
@@ -1866,7 +1858,6 @@ class Chem022:
 class Chem023:
     """
     Chapter 7.1: Equilibrium concentration vs time
-    REFACTORED: Uses draw_line_graph()
     """
     
     def __init__(self):
@@ -1927,7 +1918,6 @@ class Chem023:
 class Chem024:
     """
     Chapter 7.2: Equilibrium constant calculation
-    REFACTORED: Uses draw_data_table()
     """
     
     def __init__(self):
@@ -1984,7 +1974,6 @@ class Chem024:
 class Chem025:
     """
     Chapter 8.1: Maxwell-Boltzmann distribution
-    REFACTORED: Custom curve drawing
     """
     
     def __init__(self):
@@ -2052,7 +2041,6 @@ class Chem025:
 class Chem026:
     """
     Chapter 8.2: First-order kinetics graph
-    REFACTORED: Uses draw_line_graph()
     """
     
     def __init__(self):
@@ -2107,7 +2095,6 @@ class Chem026:
 class Chem027:
     """
     Chapter 9.1: Ionization energies across Period 3
-    REFACTORED: Uses draw_bar_chart()
     """
     
     def __init__(self):
@@ -2168,7 +2155,6 @@ class Chem027:
 class Chem028:
     """
     Chapter 9.2: Atomic radii across period
-    REFACTORED: Uses draw_line_graph()
     """
     
     def __init__(self):
@@ -2222,7 +2208,6 @@ class Chem028:
 class Chem029:
     """
     Chapter 11.1: Halogen displacement reactions
-    REFACTORED: Uses draw_test_tube()
     """
     
     def __init__(self):
@@ -2295,7 +2280,6 @@ class Chem029:
 class Chem030:
     """
     Chapter 13.1: Structural isomers
-    REFACTORED: Uses draw_labeled_box()
     """
     
     def __init__(self):
@@ -2348,7 +2332,6 @@ class Chem030:
 class Chem031:
     """
     Chapter 13.2: E/Z isomerism
-    REFACTORED: Uses draw_circle_atom(), draw_bond()
     """
     
     def __init__(self):
@@ -2426,7 +2409,6 @@ class Chem031:
 class Chem032:
     """
     Chapter 13.3: Homologous series
-    REFACTORED: Uses draw_labeled_box()
     """
     
     def __init__(self):
@@ -2485,7 +2467,6 @@ class Chem032:
 class Chem033:
     """
     Chapter 14.1: Electrophilic addition mechanism
-    REFACTORED: Uses draw_curly_arrow(), draw_circle_atom()
     """
     
     def __init__(self):
@@ -2562,7 +2543,6 @@ class Chem033:
 class Chem034:
     """
     Chapter 15-17: Functional groups identification
-    REFACTORED: Uses draw_functional_group(), draw_labeled_box()
     """
     
     def __init__(self):
@@ -2606,6 +2586,1087 @@ class Chem034:
             draw_labeled_box(ax, x-1.5, 3, 3, 1.2,
                            comp['formula'], comp['name'],
                            facecolor=color)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem035:
+    """
+    Chapter 19: Amide formation
+    """
+    
+    def __init__(self):
+        self.answer = 'R—CO—NH—R\' (amide linkage)'
+        
+        self.description = (
+            "The diagram shows the formation of an amide from a carboxylic acid and an amine. "
+            "Identify the functional group formed."
+        )
+        
+        self.topic = "Nitrogen compounds"
+        self.subtopic = "Amides"
+        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.curriculum = "A-Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Reaction: Carboxylic acid + Amine} &\\rightarrow \\text{Amide + Water}\\\\"
+            "\\text{Type: Condensation reaction} &\\\\"
+            "\\text{Functional group formed: Amide linkage} &\\\\"
+            "\\text{Structure: -CO-NH-} &\\\\"
+            "\\text{Also called peptide bond in proteins} &\\\\"
+            "\\text{Small molecule eliminated: H}_2\\text{O}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 10)
+        ax.axis('off')
+        
+        add_title_box(ax, 6, 9, 'Amide Formation', fontsize=16)
+        
+        draw_labeled_box(ax, 0.5, 6.5, 3, 1.5, 'R—COOH', 'Carboxylic acid',
+                        facecolor='lightblue')
+        
+        ax.text(4.5, 7.2, '+', fontsize=20, ha='center', fontweight='bold')
+        
+        draw_labeled_box(ax, 5.5, 6.5, 3, 1.5, "R'—NH₂", 'Amine',
+                        facecolor='lightgreen')
+        
+        draw_arrow(ax, 6, 6.2, 6, 5, label='Condensation\n(heat)', 
+                  label_position='side', label_offset=1.2, color='red', linewidth=3)
+        
+        draw_labeled_box(ax, 3, 3, 6, 1.5, "R—CO—NH—R'", 'Amide',
+                        facecolor='yellow')
+        
+        draw_functional_group(ax, 4.5, 3.4, 3, 0.6, 'Amide linkage', '—CO—NH—',
+                             highlight_color='red', alpha=0.2, edgecolor='red')
+        
+        ax.text(9.5, 5.5, '+ H₂O', fontsize=12, ha='center', fontweight='bold')
+        ax.text(9.5, 5, '(eliminated)', fontsize=9, ha='center', style='italic')
+        
+        ax.text(6, 1.5, 'Also called: Peptide bond (in proteins)', 
+               fontsize=11, ha='center', style='italic',
+               bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.7))
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem036:
+    """
+    Chapter 20: Addition polymerization
+    """
+    
+    def __init__(self):
+        self.monomer = 'CH₂=CH₂'
+        self.polymer_name = 'Poly(ethene)'
+        self.repeating_unit = '—CH₂—CH₂—'
+        
+        self.answer = f'{self.polymer_name} with repeating unit {self.repeating_unit}'
+        
+        self.description = (
+            f"The diagram shows addition polymerization of {self.monomer}. "
+            f"Identify the polymer formed."
+        )
+        
+        self.topic = "Polymerization"
+        self.subtopic = "Addition polymerization"
+        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.curriculum = "A-Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Type: Addition polymerization} &\\\\"
+            "\\text{Monomer: Ethene (CH}_2\\text{=CH}_2\\text{)} &\\\\"
+            "\\text{Polymer: Poly(ethene) or polyethylene} &\\\\"
+            "\\text{Process:} &\\\\"
+            "\\text{1. C=C double bond breaks} &\\\\"
+            "\\text{2. Monomers join via C-C single bonds} &\\\\"
+            "\\text{3. Long chain forms} &\\\\"
+            "\\text{Repeating unit: -CH}_2\\text{-CH}_2\\text{-} &\\\\"
+            "\\text{No small molecule eliminated}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 10)
+        ax.axis('off')
+        
+        add_title_box(ax, 6, 9, 'Addition Polymerization of Ethene', fontsize=16)
+        
+        ax.text(2, 7.5, 'MONOMER', fontsize=13, ha='center', fontweight='bold',
+               bbox=dict(boxstyle='round', facecolor='lightblue'))
+        
+        for i, x in enumerate([1, 2.5, 4]):
+            ax.text(x, 6.5, 'H₂C=CH₂', fontsize=12, ha='center', fontweight='bold')
+            if i < 2:
+                ax.text(x+0.7, 6.5, '+', fontsize=14, ha='center')
+        
+        ax.text(4.8, 6.5, '+ ...', fontsize=12, ha='center')
+        ax.text(2.5, 5.8, 'n molecules of ethene', fontsize=10, ha='center', style='italic')
+        
+        draw_arrow(ax, 6, 6.5, 6, 5, label='Polymerization\n(high pressure,\ncatalyst)',
+                  label_position='side', label_offset=1.2, color='red', linewidth=3)
+        
+        ax.text(6, 4, 'POLYMER', fontsize=13, ha='center', fontweight='bold',
+               bbox=dict(boxstyle='round', facecolor='lightgreen'))
+        
+        ax.text(3, 3, '...', fontsize=14, ha='center', fontweight='bold')
+        
+        draw_bracket(ax, 3.5, 2.5, 0.8, bracket_type='square', direction='left', linewidth=3)
+        ax.text(5, 3, 'CH₂—CH₂', fontsize=12, ha='center', fontweight='bold')
+        draw_bracket(ax, 6.5, 2.5, 0.8, bracket_type='square', direction='right', linewidth=3, subscript='n')
+        
+        ax.text(7.5, 3, '...', fontsize=14, ha='center', fontweight='bold')
+        
+        ax.text(5, 1.8, 'Repeating unit', fontsize=10, ha='center', style='italic',
+               color='red', fontweight='bold')
+        
+        ax.text(6, 1, f'{self.polymer_name} (Polyethylene)', 
+               fontsize=11, ha='center', fontweight='bold')
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem037:
+    """
+    Chapter 21: Multi-step synthesis pathway
+    """
+    
+    def __init__(self):
+        self.steps = [
+            {'from': 'CH₂=CH₂', 'to': 'CH₃CH₂Br', 'reagent': 'HBr', 'conditions': 'Room temp'},
+            {'from': 'CH₃CH₂Br', 'to': 'CH₃CH₂OH', 'reagent': 'NaOH(aq)', 'conditions': 'Heat, reflux'},
+            {'from': 'CH₃CH₂OH', 'to': 'CH₃COOH', 'reagent': 'K₂Cr₂O₇/H₂SO₄', 'conditions': 'Heat'},
+        ]
+        
+        self.answer = 'Ethene → Bromoethane → Ethanol → Ethanoic acid'
+        
+        self.description = (
+            "The multi-step synthesis pathway is shown. "
+            "Identify the reagents and conditions for each step."
+        )
+        
+        self.topic = "Organic synthesis"
+        self.subtopic = "Synthetic routes"
+        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.curriculum = "A-Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Step 1: Ethene → Bromoethane} &\\\\"
+            "\\text{Reagent: HBr} &\\\\"
+            "\\text{Mechanism: Electrophilic addition} &\\\\[10pt]"
+            "\\text{Step 2: Bromoethane → Ethanol} &\\\\"
+            "\\text{Reagent: NaOH(aq), heat} &\\\\"
+            "\\text{Mechanism: Nucleophilic substitution} &\\\\[10pt]"
+            "\\text{Step 3: Ethanol → Ethanoic acid} &\\\\"
+            "\\text{Reagent: K₂Cr₂O₇/H₂SO₄, heat} &\\\\"
+            "\\text{Mechanism: Oxidation (via ethanal)}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 10))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 10)
+        ax.axis('off')
+        
+        add_title_box(ax, 6, 9.5, 'Multi-Step Synthesis Pathway', fontsize=16)
+        ax.text(6, 9, 'Ethene → Ethanoic Acid', fontsize=13, ha='center', style='italic')
+        
+        compounds = [
+            {'formula': 'CH₂=CH₂', 'name': 'Ethene', 'y': 7.5},
+            {'formula': 'CH₃CH₂Br', 'name': 'Bromoethane', 'y': 5},
+            {'formula': 'CH₃CH₂OH', 'name': 'Ethanol', 'y': 2.5},
+            {'formula': 'CH₃COOH', 'name': 'Ethanoic acid', 'y': 0},
+        ]
+        
+        for comp in compounds:
+            draw_labeled_box(ax, 1, comp['y'], 2, 1, 
+                           comp['formula'], comp['name'], 
+                           facecolor='lightblue')
+        
+        for i, step in enumerate(self.steps):
+            y_arrow = compounds[i]['y'] + 0.5
+            
+            draw_arrow(ax, 2, y_arrow, 2, y_arrow - 1.5, 
+                      arrowstyle='->', color='red', linewidth=2)
+            
+            draw_labeled_box(ax, 2.5, y_arrow - 1.2, 3, 1, 
+                           f'Step {i+1}', 
+                           f'{step["reagent"]}\n{step["conditions"]}',
+                           facecolor='yellow', label_fontsize=10, sublabel_fontsize=8)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem038:
+    """
+    Chapter 22: Mass spectrum of organic molecule
+    """
+    
+    def __init__(self):
+        self.molecule = 'Ethanol (C₂H₅OH)'
+        self.M_plus = 46
+        self.fragments = [
+            {'mz': 45, 'intensity': 25, 'ion': '[M-H]⁺'},
+            {'mz': 31, 'intensity': 60, 'ion': '[CH₂OH]⁺'},
+            {'mz': 29, 'intensity': 40, 'ion': '[CHO]⁺'},
+            {'mz': 15, 'intensity': 30, 'ion': '[CH₃]⁺'},
+        ]
+        
+        self.answer = f'M⁺ = {self.M_plus}, major fragments at m/z = 31, 29, 15'
+        
+        self.description = (
+            f"The mass spectrum of {self.molecule} is shown. "
+            f"Identify the molecular ion peak and major fragment ions."
+        )
+        
+        self.topic = "Analytical techniques"
+        self.subtopic = "Mass spectrometry"
+        self.source = "Adapted from Cambridge A-Level Chemistry 9701"
+        self.curriculum = "A-Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Molecular ion peak (M⁺): m/z = {self.M_plus}}} &\\\\"
+            "\\text{Fragment ions:} &\\\\"
+            f"\\text{{m/z = 45: [M-H]⁺ (loss of H)}} &\\\\"
+            f"\\text{{m/z = 31: [CH₂OH]⁺ (loss of CH₃)}} &\\\\"
+            f"\\text{{m/z = 29: [CHO]⁺ (loss of OH)}} &\\\\"
+            f"\\text{{m/z = 15: [CH₃]⁺ (methyl cation)}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        
+        draw_mass_spectrum_peak(ax, self.M_plus, 100, width=0.8, 
+                               color='darkblue', label_offset=5)
+        
+        for frag in self.fragments:
+            draw_mass_spectrum_peak(ax, frag['mz'], frag['intensity'], 
+                                   width=0.8, color='steelblue', label_offset=3)
+        
+        ax.text(self.M_plus, 110, 'M⁺', fontsize=12, ha='center', 
+               fontweight='bold', color='red')
+        
+        ax.set_xlabel('m/z (mass-to-charge ratio)', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Relative Intensity (%)', fontsize=14, fontweight='bold')
+        ax.set_title(f'Mass Spectrum of {self.molecule}', fontsize=16, fontweight='bold')
+        
+        ax.set_xlim(0, 50)
+        ax.set_ylim(0, 120)
+        ax.grid(axis='y', alpha=0.3, linestyle='--')
+        ax.set_axisbelow(True)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem039:
+    """
+    Chapter 22: IR spectrum with functional groups
+    """
+    
+    def __init__(self):
+        self.molecule = 'Ethanoic acid (CH₃COOH)'
+        self.peaks = [
+            {'wavenumber': 3000, 'absorption': 'O-H (carboxylic acid, broad)'},
+            {'wavenumber': 1715, 'absorption': 'C=O (carbonyl)'},
+            {'wavenumber': 1200, 'absorption': 'C-O (ester/acid)'},
+        ]
+        
+        self.answer = 'O-H (3000), C=O (1715), C-O (1200)'
+        
+        self.description = (
+            f"The IR spectrum of {self.molecule} is shown. "
+            f"Identify the key absorption peaks."
+        )
+        
+        self.topic = "Analytical techniques"
+        self.subtopic = "Infrared spectroscopy"
+        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.curriculum = "A-Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Key IR absorptions for carboxylic acid:} &\\\\"
+            "\\text{O-H: 2500-3300 cm⁻¹ (broad)} &\\\\"
+            "\\text{C=O: 1680-1750 cm⁻¹ (strong, sharp)} &\\\\"
+            "\\text{C-O: 1000-1300 cm⁻¹ (medium)} &"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        
+        wavenumbers = np.linspace(4000, 500, 1000)
+        transmittance = np.ones_like(wavenumbers) * 90
+        
+        for peak in self.peaks:
+            center = peak['wavenumber']
+            if center == 3000:
+                width = 500
+                depth = 70
+            else:
+                width = 100
+                depth = 60
+            
+            mask = np.abs(wavenumbers - center) < width
+            transmittance[mask] -= depth * np.exp(-((wavenumbers[mask] - center)**2) / (2 * (width/3)**2))
+        
+        ax.plot(wavenumbers, transmittance, 'b-', linewidth=2)
+        
+        for peak in self.peaks:
+            ax.annotate(peak['absorption'], 
+                       xy=(peak['wavenumber'], 20), 
+                       xytext=(peak['wavenumber'], 10),
+                       fontsize=10, ha='center', fontweight='bold',
+                       bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7),
+                       arrowprops=dict(arrowstyle='->', color='red', lw=2))
+        
+        ax.set_xlabel('Wavenumber (cm⁻¹)', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Transmittance (%)', fontsize=14, fontweight='bold')
+        ax.set_title(f'IR Spectrum of {self.molecule}', fontsize=16, fontweight='bold')
+        
+        ax.set_xlim(4000, 500)
+        ax.set_ylim(0, 100)
+        ax.grid(True, alpha=0.3)
+        ax.invert_xaxis()
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem040:
+    """
+    Chapter 22: ¹H NMR spectrum
+    """
+    
+    def __init__(self):
+        self.molecule = 'Ethanol (CH₃CH₂OH)'
+        self.peaks = [
+            {'shift': 1.2, 'integration': 3, 'splitting': 'triplet', 'assignment': 'CH₃'},
+            {'shift': 3.7, 'integration': 2, 'splitting': 'quartet', 'assignment': 'CH₂'},
+            {'shift': 5.3, 'integration': 1, 'splitting': 'singlet', 'assignment': 'OH'},
+        ]
+        
+        self.answer = 'δ 1.2 (triplet, 3H, CH₃), δ 3.7 (quartet, 2H, CH₂), δ 5.3 (singlet, 1H, OH)'
+        
+        self.description = (
+            f"The ¹H NMR spectrum of {self.molecule} is shown. "
+            f"Assign each peak to the hydrogen environment."
+        )
+        
+        self.topic = "Analytical techniques"
+        self.subtopic = "NMR spectroscopy"
+        self.source = "Adapted from Cambridge A-Level Chemistry 9701"
+        self.curriculum = "A-Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Peak assignments for ethanol:} &\\\\"
+            "\\text{δ 1.2: CH₃ group (triplet, 3H)} &\\\\"
+            "\\text{Reason: Split by 2 adjacent H on CH₂} &\\\\"
+            "\\text{δ 3.7: CH₂ group (quartet, 2H)} &\\\\"
+            "\\text{Reason: Split by 3 adjacent H on CH₃} &\\\\"
+            "\\text{δ 5.3: OH group (singlet, 1H)} &\\\\"
+            "\\text{Reason: No splitting due to exchange} &"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        
+        for peak in self.peaks:
+            draw_nmr_peak(ax, peak['shift'], peak['integration'], 
+                         splitting=peak['splitting'], 
+                         j_coupling=0.007, sigma=0.02, max_height=100)
+        
+        for peak in self.peaks:
+            ax.text(peak['shift'], 110, peak['assignment'], 
+                   fontsize=11, ha='center', fontweight='bold',
+                   bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
+            ax.text(peak['shift'], 120, f"{peak['splitting']}, {peak['integration']}H", 
+                   fontsize=9, ha='center', style='italic')
+        
+        ax.set_xlabel('δ (ppm)', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Intensity', fontsize=14, fontweight='bold')
+        ax.set_title(f'¹H NMR Spectrum of {self.molecule}', fontsize=16, fontweight='bold')
+        
+        ax.set_xlim(10, 0)
+        ax.set_ylim(0, 140)
+        ax.set_yticks([])
+        ax.grid(True, alpha=0.3, axis='x')
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem041:
+    """
+    Topic: 23.1 Standard enthalpy changes
+    Visual: Enthalpy profile diagram showing exothermic reaction
+    Task: Calculate enthalpy change from profile
+    """
+    
+    def __init__(self):
+        self.reactant_E = rnd.randint(50, 100)
+        self.product_E = rnd.randint(20, 50)
+        self.activation_E = self.reactant_E + rnd.randint(30, 80)
+        
+        self.delta_H = self.product_E - self.reactant_E
+        self.Ea = self.activation_E - self.reactant_E
+        
+        self.answer = self.delta_H
+        
+        self.description = (
+            f"The enthalpy profile diagram shows an exothermic reaction. "
+            f"Calculate the enthalpy change, ΔH, for this reaction in kJ mol⁻¹."
+        )
+        
+        self.topic = "Chemical energetics"
+        self.subtopic = "Standard enthalpy changes"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Enthalpy change is calculated as:}} &\\\\"
+            f"\\Delta H &= H_{{\\text{{products}}}} - H_{{\\text{{reactants}}}}\\\\"
+            f"&= {self.product_E} - {self.reactant_E}\\\\"
+            f"&= {self.delta_H}\\,\\text{{kJ mol}}^{{-1}}\\\\"
+            f"\\text{{Since }} \\Delta H < 0, \\text{{ the reaction is exothermic.}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        
+        profile_data = draw_enthalpy_profile(
+            ax, self.reactant_E, self.product_E, self.activation_E,
+            x_start=0, x_end=10, curve_smoothness=50
+        )
+        
+        draw_vertical_annotation(
+            ax, profile_data['reactant_x'] - 1, self.product_E, self.reactant_E,
+            f"ΔH = {self.delta_H} kJ/mol", color='red', linewidth=2.5
+        )
+        
+        draw_vertical_annotation(
+            ax, profile_data['reactant_x'] + 0.5, self.reactant_E, self.activation_E,
+            f"Ea = {self.Ea} kJ/mol", color='blue', linewidth=2.5
+        )
+        
+        ax.set_ylim(0, self.activation_E * 1.2)
+        ax.set_title('Enthalpy Profile Diagram', fontsize=16, fontweight='bold')
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem042:
+    """
+    Topic: 23.2 Hess's Law
+    Visual: Hess's Law cycle diagram
+    Task: Calculate enthalpy of formation using Hess's Law
+    """
+    
+    def __init__(self):
+        self.delta_Hc_X = -rnd.randint(800, 1200)
+        self.delta_Hc_Y = -rnd.randint(1500, 2500)
+        self.delta_Hc_Z = -rnd.randint(300, 600)
+        
+        self.delta_Hf = self.delta_Hc_X - (self.delta_Hc_Y + self.delta_Hc_Z)
+        self.answer = round(self.delta_Hf, 1)
+        
+        self.description = (
+            f"The diagram shows a Hess's Law cycle for the formation of compound XYZ. "
+            f"Given the enthalpy changes of combustion, calculate ΔH°f for XYZ."
+        )
+        
+        self.topic = "Chemical energetics"
+        self.subtopic = "Hess's Law"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Using Hess's Law:}} &\\\\"
+            f"\\Delta H_f &= \\Delta H_c(\\text{{reactants}}) - \\Delta H_c(\\text{{products}})\\\\"
+            f"&= [{self.delta_Hc_Y} + {self.delta_Hc_Z}] - {self.delta_Hc_X}\\\\"
+            f"&= {self.delta_Hc_Y + self.delta_Hc_Z} - ({self.delta_Hc_X})\\\\"
+            f"&= {self.answer}\\,\\text{{kJ mol}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 8)
+        ax.axis('off')
+        
+        draw_labeled_box(ax, 1, 6, 3, 1, "X + Y + Z", facecolor='lightblue')
+        draw_labeled_box(ax, 8, 6, 3, 1, "XYZ", facecolor='lightgreen')
+        draw_labeled_box(ax, 4, 1.5, 4, 1, "CO₂ + H₂O", facecolor='lightyellow')
+        
+        draw_arrow(ax, 4, 6.5, 8, 6.5, label=f"ΔH°f = ?", 
+                  label_position='above', color='red', linewidth=2.5)
+        
+        draw_arrow(ax, 2.5, 6, 6, 2.5, label=f"ΔH°c(Y+Z)\n{self.delta_Hc_Y + self.delta_Hc_Z} kJ/mol",
+                  label_position='side', color='blue', linewidth=2)
+        
+        draw_arrow(ax, 9.5, 6, 6, 2.5, label=f"ΔH°c(XYZ)\n{self.delta_Hc_X} kJ/mol",
+                  label_position='side', color='blue', linewidth=2)
+        
+        ax.set_title("Hess's Law Cycle", fontsize=16, fontweight='bold', pad=20)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem043:
+    """
+    Topic: 23.3 Bond energy
+    Visual: Molecular structures showing bonds to break and form
+    Task: Calculate enthalpy change using bond energies
+    """
+    
+    def __init__(self):
+        self.BE_CH = rnd.randint(410, 415)
+        self.BE_HH = rnd.randint(435, 438)
+        self.BE_CC = rnd.randint(345, 350)
+        
+        bonds_broken = 4 * self.BE_CH + self.BE_HH
+        bonds_formed = self.BE_CC + 6 * self.BE_CH
+        
+        self.delta_H = bonds_broken - bonds_formed
+        self.answer = round(self.delta_H, 1)
+        
+        self.description = (
+            f"Calculate the enthalpy change for the reaction: CH₄ + H₂ → C₂H₆ "
+            f"using the bond energies shown in the diagram."
+        )
+        
+        self.topic = "Chemical energetics"
+        self.subtopic = "Bond energy"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Bonds broken:}} &\\\\"
+            f"4 \\times \\text{{C-H}} + 1 \\times \\text{{H-H}} &= 4({self.BE_CH}) + {self.BE_HH}\\\\"
+            f"&= {bonds_broken}\\,\\text{{kJ mol}}^{{-1}}\\\\"
+            f"\\text{{Bonds formed:}} &\\\\"
+            f"1 \\times \\text{{C-C}} + 6 \\times \\text{{C-H}} &= {self.BE_CC} + 6({self.BE_CH})\\\\"
+            f"&= {bonds_formed}\\,\\text{{kJ mol}}^{{-1}}\\\\"
+            f"\\Delta H &= \\text{{bonds broken}} - \\text{{bonds formed}}\\\\"
+            f"&= {bonds_broken} - {bonds_formed}\\\\"
+            f"&= {self.answer}\\,\\text{{kJ mol}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 6)
+        ax.axis('off')
+        
+        add_formula_label(ax, 2, 4, "CH₄", fontsize=18, weight='bold')
+        add_formula_label(ax, 2, 2.5, f"C-H: {self.BE_CH} kJ/mol", fontsize=12)
+        
+        add_formula_label(ax, 5, 4, "+", fontsize=20, weight='bold')
+        
+        add_formula_label(ax, 7, 4, "H₂", fontsize=18, weight='bold')
+        add_formula_label(ax, 7, 2.5, f"H-H: {self.BE_HH} kJ/mol", fontsize=12)
+        
+        draw_arrow(ax, 8.5, 3, 9.5, 3, color='black', linewidth=3)
+        
+        add_formula_label(ax, 11, 4, "C₂H₆", fontsize=18, weight='bold')
+        add_formula_label(ax, 11, 2.5, f"C-C: {self.BE_CC} kJ/mol", fontsize=12)
+        add_formula_label(ax, 11, 2, f"C-H: {self.BE_CH} kJ/mol", fontsize=12)
+        
+        ax.set_title("Bond Energy Calculation", fontsize=16, fontweight='bold', pad=20)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem044:
+    """
+    Topic: 23.4 Entropy and free energy
+    Visual: Graph showing ΔG vs temperature
+    Task: Determine temperature at which reaction becomes spontaneous
+    """
+    
+    def __init__(self):
+        self.delta_H = rnd.randint(50, 150)
+        self.delta_S = round(rnd.uniform(0.2, 0.5), 2)
+        
+        self.T_equilibrium = self.delta_H / self.delta_S
+        self.answer = round(self.T_equilibrium, 0)
+        
+        self.description = (
+            f"The graph shows how Gibbs free energy (ΔG) varies with temperature for a reaction. "
+            f"At what temperature (in K) does the reaction become spontaneous?"
+        )
+        
+        self.topic = "Chemical energetics"
+        self.subtopic = "Entropy and free energy"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{At equilibrium:}} \\Delta G &= 0\\\\"
+            f"\\Delta G &= \\Delta H - T\\Delta S\\\\"
+            f"0 &= {self.delta_H} - T({self.delta_S})\\\\"
+            f"T &= \\frac{{{self.delta_H}}}{{{self.delta_S}}}\\\\"
+            f"&= {self.answer}\\,\\text{{K}}\\\\"
+            f"\\text{{Reaction spontaneous when }} T > {self.answer}\\,\\text{{K}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        
+        T_range = np.linspace(0, self.T_equilibrium * 1.5, 100)
+        delta_G = self.delta_H - T_range * self.delta_S
+        
+        draw_line_graph(ax, T_range, delta_G, color='blue', linewidth=3,
+                       xlabel='Temperature (K)', ylabel='ΔG (kJ mol⁻¹)',
+                       title='Gibbs Free Energy vs Temperature')
+        
+        ax.axhline(0, color='black', linewidth=2, linestyle='--')
+        ax.axvline(self.T_equilibrium, color='red', linewidth=2, linestyle='--')
+        
+        ax.plot(self.T_equilibrium, 0, 'ro', markersize=12)
+        ax.text(self.T_equilibrium, -10, f'T = {self.answer} K', 
+               ha='center', fontsize=12, fontweight='bold')
+        
+        ax.text(self.T_equilibrium * 0.4, self.delta_H * 0.7, 
+               'Non-spontaneous\n(ΔG > 0)', fontsize=12, ha='center',
+               bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5))
+        
+        ax.text(self.T_equilibrium * 1.2, -self.delta_H * 0.3, 
+               'Spontaneous\n(ΔG < 0)', fontsize=12, ha='center',
+               bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.5))
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem045:
+    """
+    Topic: 24.1 Redox reactions
+    Visual: Half-cell diagram
+    Task: Calculate standard cell potential
+    """
+    
+    def __init__(self):
+        half_cells = [
+            ("Zn²⁺/Zn", -0.76),
+            ("Fe²⁺/Fe", -0.44),
+            ("Cu²⁺/Cu", +0.34),
+            ("Ag⁺/Ag", +0.80),
+            ("Fe³⁺/Fe²⁺", +0.77),
+            ("MnO₄⁻/Mn²⁺", +1.51)
+        ]
+        
+        self.half_cell_1 = rnd.choice(half_cells)
+        remaining = [hc for hc in half_cells if hc != self.half_cell_1]
+        self.half_cell_2 = rnd.choice(remaining)
+        
+        self.E_cell = self.half_cell_2[1] - self.half_cell_1[1]
+        self.answer = round(self.E_cell, 2)
+        
+        self.description = (
+            f"Calculate the standard cell potential (E°cell) for a cell consisting of "
+            f"{self.half_cell_1[0]} and {self.half_cell_2[0]} half-cells."
+        )
+        
+        self.topic = "Electrochemistry"
+        self.subtopic = "Redox reactions"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"E^\\circ_{{\\text{{cell}}}} &= E^\\circ_{{\\text{{cathode}}}} - E^\\circ_{{\\text{{anode}}}}\\\\"
+            f"&= {self.half_cell_2[1]} - ({self.half_cell_1[1]})\\\\"
+            f"&= {self.answer}\\,\\text{{V}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 8))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 8)
+        ax.axis('off')
+        
+        draw_beaker(ax, 1, 2, width=3, height=4, liquid_height=3, 
+                   liquid_color='lightblue', beaker_linewidth=2)
+        add_formula_label(ax, 2.5, 5.5, self.half_cell_1[0], fontsize=14, weight='bold')
+        add_formula_label(ax, 2.5, 1, f"E° = {self.half_cell_1[1]} V", fontsize=12)
+        
+        draw_beaker(ax, 8, 2, width=3, height=4, liquid_height=3, 
+                   liquid_color='lightgreen', beaker_linewidth=2)
+        add_formula_label(ax, 9.5, 5.5, self.half_cell_2[0], fontsize=14, weight='bold')
+        add_formula_label(ax, 9.5, 1, f"E° = {self.half_cell_2[1]} V", fontsize=12)
+        
+        ax.plot([4, 8], [4, 4], 'k-', linewidth=3)
+        add_formula_label(ax, 6, 4.5, "Salt bridge", fontsize=11)
+        
+        draw_arrow(ax, 6, 7, 7, 7, label=f"e⁻", color='red', linewidth=2.5)
+        
+        add_title_box(ax, 6, 7.5, "Electrochemical Cell", fontsize=16)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem046:
+    """
+    Topic: 24.2 Electrolysis
+    Visual: Electrolysis cell diagram
+    Task: Calculate mass of product formed during electrolysis
+    """
+    
+    def __init__(self):
+        self.current = rnd.randint(2, 10)
+        self.time_min = rnd.randint(20, 60)
+        self.time_s = self.time_min * 60
+        
+        self.charge = self.current * self.time_s
+        self.moles_e = self.charge / 96500
+        
+        self.element = rnd.choice([
+            ("Cu", 63.5, 2),
+            ("Ag", 108, 1),
+            ("Al", 27, 3),
+            ("Zn", 65, 2)
+        ])
+        
+        self.mass = (self.moles_e / self.element[2]) * self.element[1]
+        self.answer = round(self.mass, 2)
+        
+        self.description = (
+            f"In the electrolysis of {self.element[0]}²⁺ solution, a current of {self.current} A "
+            f"flows for {self.time_min} minutes. Calculate the mass of {self.element[0]} deposited."
+        )
+        
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electrolysis"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"Q &= I \\times t = {self.current} \\times {self.time_s} = {self.charge}\\,\\text{{C}}\\\\"
+            f"\\text{{Moles of electrons}} &= \\frac{{Q}}{{F}} = \\frac{{{self.charge}}}{{96500}} = {round(self.moles_e, 4)}\\\\"
+            f"\\text{{Moles of {self.element[0]}}} &= \\frac{{\\text{{moles of e}}^-}}{{{self.element[2]}}} = {round(self.moles_e / self.element[2], 4)}\\\\"
+            f"\\text{{Mass}} &= n \\times M = {round(self.moles_e / self.element[2], 4)} \\times {self.element[1]}\\\\"
+            f"&= {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.axis('off')
+        
+        draw_beaker(ax, 2, 2, width=6, height=5, liquid_height=4, 
+                   liquid_color='lightblue', beaker_linewidth=3)
+        
+        ax.plot([3.5, 3.5], [6.5, 2], 'gray', linewidth=8)
+        ax.plot([6.5, 6.5], [6.5, 2], 'gray', linewidth=8)
+        
+        add_formula_label(ax, 3.5, 7, "−", fontsize=24, weight='bold', color='blue')
+        add_formula_label(ax, 6.5, 7, "+", fontsize=24, weight='bold', color='red')
+        
+        add_formula_label(ax, 5, 3.5, f"{self.element[0]}²⁺(aq)", fontsize=14)
+        
+        ax.plot([3.5, 3.5], [7, 8.5], 'k-', linewidth=3)
+        ax.plot([6.5, 6.5], [7, 8.5], 'k-', linewidth=3)
+        ax.plot([3.5, 6.5], [8.5, 8.5], 'k-', linewidth=3)
+        
+        draw_labeled_box(ax, 4, 8.5, 2, 0.8, f"{self.current} A\n{self.time_min} min",
+                        facecolor='yellow', edgecolor='black', linewidth=2)
+        
+        add_title_box(ax, 5, 9.5, "Electrolysis Cell", fontsize=16)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem047:
+    """
+    Topic: 25.1 Chemical equilibria
+    Visual: Concentration vs time graph showing equilibrium
+    Task: Determine equilibrium concentrations from graph
+    """
+    
+    def __init__(self):
+        self.initial_A = round(rnd.uniform(1.0, 2.0), 2)
+        self.initial_B = round(rnd.uniform(1.0, 2.0), 2)
+        
+        self.eq_A = round(self.initial_A * rnd.uniform(0.3, 0.6), 2)
+        self.eq_B = round(self.initial_B * rnd.uniform(0.3, 0.6), 2)
+        self.eq_C = round((self.initial_A - self.eq_A), 2)
+        
+        self.answer = self.eq_C
+        
+        self.description = (
+            f"The graph shows concentration changes for the reaction A + B ⇌ C. "
+            f"What is the equilibrium concentration of C?"
+        )
+        
+        self.topic = "Equilibria"
+        self.subtopic = "Chemical equilibria"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the graph at equilibrium:}} &\\\\"
+            f"[\\text{{A}}]_{{eq}} &= {self.eq_A}\\,\\text{{mol dm}}^{{-3}}\\\\"
+            f"[\\text{{B}}]_{{eq}} &= {self.eq_B}\\,\\text{{mol dm}}^{{-3}}\\\\"
+            f"[\\text{{C}}]_{{eq}} &= {self.eq_C}\\,\\text{{mol dm}}^{{-3}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        
+        time = np.linspace(0, 10, 100)
+        
+        conc_A = self.eq_A + (self.initial_A - self.eq_A) * np.exp(-0.5 * time)
+        conc_B = self.eq_B + (self.initial_B - self.eq_B) * np.exp(-0.5 * time)
+        conc_C = self.eq_C * (1 - np.exp(-0.5 * time))
+        
+        ax.plot(time, conc_A, 'b-', linewidth=2.5, label='[A]')
+        ax.plot(time, conc_B, 'r-', linewidth=2.5, label='[B]')
+        ax.plot(time, conc_C, 'g-', linewidth=2.5, label='[C]')
+        
+        ax.axvline(7, color='gray', linestyle='--', linewidth=1.5, alpha=0.7)
+        ax.text(7, max(self.initial_A, self.initial_B) * 0.9, 'Equilibrium', 
+               rotation=90, va='bottom', fontsize=11)
+        
+        ax.set_xlabel('Time', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Concentration (mol dm⁻³)', fontsize=14, fontweight='bold')
+        ax.set_title('Concentration vs Time', fontsize=16, fontweight='bold')
+        ax.legend(fontsize=12)
+        ax.grid(True, alpha=0.3)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem048:
+    """
+    Topic: 25.2 Equilibrium constant Kc
+    Visual: Equilibrium expression and data table
+    Task: Calculate Kc from equilibrium concentrations
+    """
+    
+    def __init__(self):
+        self.eq_A = round(rnd.uniform(0.2, 0.8), 2)
+        self.eq_B = round(rnd.uniform(0.2, 0.8), 2)
+        self.eq_C = round(rnd.uniform(0.5, 1.5), 2)
+        self.eq_D = round(rnd.uniform(0.5, 1.5), 2)
+        
+        self.Kc = (self.eq_C * self.eq_D) / (self.eq_A * self.eq_B)
+        self.answer = round(self.Kc, 2)
+        
+        self.description = (
+            f"For the equilibrium A + B ⇌ C + D, the equilibrium concentrations are shown. "
+            f"Calculate the equilibrium constant Kc."
+        )
+        
+        self.topic = "Equilibria"
+        self.subtopic = "Equilibrium constant Kc"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"K_c &= \\frac{{[\\text{{C}}][\\text{{D}}]}}{{[\\text{{A}}][\\text{{B}}]}}\\\\"
+            f"&= \\frac{{({self.eq_C})({self.eq_D})}}{{({self.eq_A})({self.eq_B})}}\\\\"
+            f"&= \\frac{{{round(self.eq_C * self.eq_D, 4)}}}{{{round(self.eq_A * self.eq_B, 4)}}}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 8)
+        ax.axis('off')
+        
+        add_title_box(ax, 5, 7, "A + B ⇌ C + D", fontsize=18)
+        
+        table_data = [
+            ["Species", "Equilibrium Concentration (mol dm⁻³)"],
+            ["A", f"{self.eq_A}"],
+            ["B", f"{self.eq_B}"],
+            ["C", f"{self.eq_C}"],
+            ["D", f"{self.eq_D}"]
+        ]
+        
+        draw_data_table(ax, table_data, start_x=2, start_y=5.5, 
+                       cell_width=3, cell_height=0.6, header_color='lightblue')
+        
+        add_formula_label(ax, 5, 1.5, "Kc = [C][D] / [A][B]", fontsize=16, weight='bold',
+                         bbox_style=dict(boxstyle='round', facecolor='lightyellow', pad=0.5))
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem049:
+    """
+    Topic: 26.1 Rate of reaction
+    Visual: Concentration-time graph with tangent
+    Task: Calculate rate of reaction from gradient
+    """
+    
+    def __init__(self):
+        self.initial_conc = round(rnd.uniform(1.5, 2.5), 2)
+        self.k = round(rnd.uniform(0.1, 0.3), 3)
+        
+        self.t_point = 5
+        self.conc_at_t = self.initial_conc * np.exp(-self.k * self.t_point)
+        self.rate = -self.k * self.conc_at_t
+        
+        self.answer = round(abs(self.rate), 4)
+        
+        self.description = (
+            f"The graph shows how concentration varies with time. "
+            f"Calculate the rate of reaction at t = {self.t_point} seconds."
+        )
+        
+        self.topic = "Reaction kinetics"
+        self.subtopic = "Rate of reaction"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Rate at t = {self.t_point}s is the gradient of the tangent:}} &\\\\"
+            f"\\text{{Rate}} &= -\\frac{{d[\\text{{A}}]}}{{dt}}\\\\"
+            f"&= {self.answer}\\,\\text{{mol dm}}^{{-3}}\\,\\text{{s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        
+        time = np.linspace(0, 20, 100)
+        conc = self.initial_conc * np.exp(-self.k * time)
+        
+        ax.plot(time, conc, 'b-', linewidth=2.5)
+        
+        tangent_x = np.array([self.t_point - 2, self.t_point + 2])
+        tangent_y = self.conc_at_t + self.rate * (tangent_x - self.t_point)
+        ax.plot(tangent_x, tangent_y, 'r--', linewidth=2, label='Tangent')
+        
+        ax.plot(self.t_point, self.conc_at_t, 'ro', markersize=10)
+        
+        ax.set_xlabel('Time (s)', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Concentration (mol dm⁻³)', fontsize=14, fontweight='bold')
+        ax.set_title('Concentration vs Time', fontsize=16, fontweight='bold')
+        ax.legend(fontsize=12)
+        ax.grid(True, alpha=0.3)
+        ax.set_xlim(0, 20)
+        ax.set_ylim(0, self.initial_conc * 1.1)
+        
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+class Chem050:
+    """
+    Topic: 26.2 Order of reaction and rate equations
+    Visual: Graph showing effect of concentration on rate
+    Task: Determine order of reaction from graph
+    """
+    
+    def __init__(self):
+        self.order = rnd.choice([0, 1, 2])
+        
+        concentrations = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
+        
+        if self.order == 0:
+            rates = np.full_like(concentrations, 0.05)
+            self.answer = 0
+            self.explanation = "zero order (rate independent of concentration)"
+        elif self.order == 1:
+            rates = 0.5 * concentrations
+            self.answer = 1
+            self.explanation = "first order (rate ∝ [A])"
+        else:
+            rates = 5 * concentrations**2
+            self.answer = 2
+            self.explanation = "second order (rate ∝ [A]²)"
+        
+        self.concentrations = concentrations
+        self.rates = rates
+        
+        self.description = (
+            f"The graph shows how the initial rate varies with concentration of reactant A. "
+            f"Determine the order of reaction with respect to A."
+        )
+        
+        self.topic = "Reaction kinetics"
+        self.subtopic = "Order of reaction and rate equations"
+        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.curriculum = "A Level"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{From the graph:}} &\\\\"
+            f"\\text{{The reaction is {self.explanation}}} &\\\\"
+            f"\\text{{Order}} &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+    
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 7))
+        
+        ax.plot(self.concentrations, self.rates, 'bo-', markersize=10, linewidth=2.5)
+        
+        ax.set_xlabel('[A] (mol dm⁻³)', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Rate (mol dm⁻³ s⁻¹)', fontsize=14, fontweight='bold')
+        ax.set_title('Rate vs Concentration', fontsize=16, fontweight='bold')
+        ax.grid(True, alpha=0.3)
+        ax.set_xlim(0, 0.6)
+        ax.set_ylim(0, max(self.rates) * 1.2)
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
