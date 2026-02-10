@@ -1397,3 +1397,177 @@ class Phy030:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
         plt.close()
+    
+class Phy031:
+
+    def __init__(self):
+        self.n1 = rnd.randint(11, 20) / 10
+        self.n2 = rnd.randint(11, 20) / 10
+        while self.n2 == self.n1:
+            self.n2 = rnd.randint(11, 20) / 10
+        self.theta_1 = rnd.choice([10, 15, 20, 25, 30, 45])
+        self.sin_theta_2 = (self.n1/self.n2)*math.sin(self.theta_1 * math.pi / 180)
+        self.answer = self.sin_theta_2
+        self.description = (
+            f"Light is incident on the boundary between two media. "
+            f"The refractive index of the first medium is n1 and that of the second medium is n2. "
+            f"Calculate the value of sin(θ2)."
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Refractive index of medium 1, }} n_1 &= {self.n1}\\\\"
+            f"\\text{{Refractive index of medium 2, }} n_2 &= {self.n2}\\\\"
+            f"\\text{{Angle of incidence, }} \\theta_1 &= {self.theta_1}^\\circ\\\\"
+            f"\\text{{According to Snell's Law:}} &\\\\"
+            f"n_1 \\sin(\\theta_1) &= n_2 \\sin(\\theta_2)\\\\"
+            f"\\sin(\\theta_2) &= \\frac{{n_1 \\sin(\\theta_1)}}{{n_2}}\\\\"
+            f"\\sin(\\theta_2) &= \\frac{{{self.n1} \\times \\sin({self.theta_1}^\\circ)}}{{{self.n2}}}\\\\"
+            f"\\sin(\\theta_2) &= \\frac{{{self.n1} \\times {round(math.sin(math.radians(self.theta_1)), 10)}}}{{{self.n2}}}\\\\"
+            f"\\sin(\\theta_2) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy031temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(525, 355, f"θ1 = {self.theta_1}°", fontsize=6)
+        ax.text(655, 740, f"θ2 = ...°", fontsize=6)
+        ax.text(28, 470, f"n1 = {self.n1}", fontsize=6)
+        ax.text(28, 515, f"n2 = {self.n2}", fontsize=6)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy032:
+
+    def __init__(self):
+        self.n1 = rnd.randint(11, 20) / 10
+        self.theta_1 = rnd.choice([10, 15, 20, 25, 30, 45])
+        self.theta_2 = rnd.choice([10, 15, 20, 25, 30, 45])
+        while self.theta_2 == self.theta_1:
+            self.theta_2 = rnd.choice([10, 15, 20, 25, 30, 45])
+        self.n2 = self.n1 * (math.sin(self.theta_1 * math.pi/180)/math.sin(self.theta_2 * math.pi/180))
+        self.answer = self.n2
+        self.description = (
+            f"Light is incident on the boundary between two media. "
+            f"The refractive index of the first medium is n1 and that of the second medium is n2. "
+            f"Calculate the value of n2."
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Refractive index of medium 1, }} n_1 &= {self.n1}\\\\"
+            f"\\text{{Angle of incidence, }} \\theta_1 &= {self.theta_1}^\\circ\\\\"
+            f"\\text{{Angle of refraction, }} \\theta_2 &= {self.theta_2}^\\circ\\\\"
+            f"\\text{{According to Snell's Law:}} &\\\\"
+            f"n_1 \\sin(\\theta_1) &= n_2 \\sin(\\theta_2)\\\\"
+            f"n_2 &= \\frac{{n_1 \\sin(\\theta_1)}}{{\\sin(\\theta_2)}}\\\\"
+            f"n_2 &= \\frac{{{self.n1} \\times \\sin({self.theta_1}^\\circ)}}{{\\sin({self.theta_2}^\\circ)}}\\\\"
+            f"n_2 &= \\frac{{{self.n1} \\times {round(math.sin(math.radians(self.theta_1)), 10)}}}{{{round(math.sin(math.radians(self.theta_2)), 10)}}}\\\\"
+            f"n_2 &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy031temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(525, 355, f"θ1 = {self.theta_1}°", fontsize=6)
+        ax.text(655, 740, f"θ2 = {self.theta_2}°", fontsize=6)
+        ax.text(28, 470, f"n1 = {self.n1}", fontsize=6)
+        ax.text(28, 515, f"n2 = ...", fontsize=6)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy033:
+
+    def __init__(self):
+        self.sound_speed = rnd.randint(330, 350)
+        self.distance = rnd.randint(10, 20) * 100
+        self.time = self.distance / self.sound_speed
+        self.answer = self.sound_speed
+        self.description = (
+            f"A student stands at point A and fires a pistol. "
+            f"Another student standing at point B starts a stopwatch when they see the flash of the pistol and stops it when they hear the bang. "
+            f"The recorded time on the stopwatch is {self.time} seconds. "
+            f"Calculate the speed of sound in air (in m/s) based on this experiment! (ignore the delay due to speed of light)"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Sound"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance between point A and B, }} d &= {self.distance}\\,\\text{{m}}\\\\"
+            f"\\text{{Time recorded, }} t &= {round(self.time, 10)}\\,\\text{{s}}\\\\"
+            f"\\text{{The speed of sound is calculated using the formula:}} &\\\\"
+            f"v &= \\frac{{d}}{{t}}\\\\"
+            f"&= \\frac{{{self.distance}}}{{{round(self.time, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{m/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy033temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(930, 160, f"d = {self.distance} m", fontsize=6)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy034:
+
+    def __init__(self):
+        self.sound_speed = rnd.randint(148, 153) * 10
+        self.time = rnd.randint(50, 200) / 100
+        self.depth = self.sound_speed * self.time / 2
+        self.answer = self.depth
+        self.description = (
+            f"A research ship is mapping the ocean floor. It sends a pulse of sound (sonar) straight down to the seabed. "
+            f"The ship then detects the reflection (echo) of the pulse. "
+            f"Calculate the depth of the water at this location (in meters)!"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Sound"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of sound in water}} &= {self.sound_speed}\\,\\text{{m/s}}\\\\"
+            f"\\text{{Total time for echo}} &= {self.time}\\,\\text{{s}}\\\\"
+            f"\\text{{The sound travels down to the seabed and reflects back up.}}\\\\"
+            f"\\text{{Total distance traveled}} &= 2 \\times \\text{{Depth}}\\\\"
+            f"\\text{{Using }} d &= v \\times t:\\\\"
+            f"2 \\times \\text{{Depth}} &= {self.sound_speed} \\times {self.time}\\\\"
+            f"\\text{{Depth}} &= \\frac{{{self.sound_speed} \\times {self.time}}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.sound_speed * self.time, 10)}}}{{2}}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy034temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(755, 1255, f"v = {self.sound_speed} m/s\nt = {self.time} s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
