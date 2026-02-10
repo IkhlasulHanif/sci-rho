@@ -525,3 +525,893 @@ class Chem105:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
+
+class Chem106:
+    
+    def __init__(self):
+
+        reactions = [
+            {
+                "name": "Magnesium and Hydrochloric Acid",
+                "reactant_A": "Mg",
+                "reactant_B": "HCl",
+                "product": "H2",
+                "coeff_A": 1,
+                "coeff_B": 2,
+                "Ar_A": 24,
+                "Ar_B": 36.5
+            },
+            {
+                "name": "Iron and Sulfur",
+                "reactant_A": "Fe",
+                "reactant_B": "S",
+                "product": "FeS",
+                "coeff_A": 1,
+                "coeff_B": 1,
+                "Ar_A": 56,
+                "Ar_B": 32
+            },
+            {
+                "name": "Aluminium and Oxygen",
+                "reactant_A": "Al",
+                "reactant_B": "O2",
+                "product": "Al2O3",
+                "coeff_A": 4,
+                "coeff_B": 3,
+                "Ar_A": 27,
+                "Ar_B": 32
+            }
+        ]
+
+        self.reaction = rnd.choice(reactions)
+
+        self.mass_A = rnd.randint(5, 25)
+        self.mass_B = rnd.randint(5, 40)
+
+        self.moles_A = self.mass_A / self.reaction["Ar_A"]
+        self.moles_B = self.mass_B / self.reaction["Ar_B"]
+
+        self.norm_A = self.moles_A / self.reaction["coeff_A"]
+        self.norm_B = self.moles_B / self.reaction["coeff_B"]
+
+        if self.norm_A < self.norm_B:
+            self.limiting = "A"
+            self.limiting_moles = self.moles_A
+            self.excess_initial = self.moles_B
+            self.excess_coeff = self.reaction["coeff_B"]
+            self.limiting_coeff = self.reaction["coeff_A"]
+            self.excess_Ar = self.reaction["Ar_B"]
+        else:
+            self.limiting = "B"
+            self.limiting_moles = self.moles_B
+            self.excess_initial = self.moles_A
+            self.excess_coeff = self.reaction["coeff_A"]
+            self.limiting_coeff = self.reaction["coeff_B"]
+            self.excess_Ar = self.reaction["Ar_A"]
+
+        self.excess_used = self.limiting_moles * (self.excess_coeff / self.limiting_coeff)
+        self.excess_leftover_moles = self.excess_initial - self.excess_used
+        self.answer = round(self.excess_leftover_moles * self.excess_Ar, 2)
+
+        self.description = (
+            f"The graph shows the concentration of two reactants during the reaction "
+            f"{self.reaction['reactant_A']} reacting with {self.reaction['reactant_B']}.\n\n"
+            f"Initial mass {self.reaction['reactant_A']} = {self.mass_A} g\n"
+            f"Initial mass {self.reaction['reactant_B']} = {self.mass_B} g\n\n"
+            "Using stoichiometry and the graph, calculate the mass of the excess reactant remaining."
+        )
+
+        self.topic = "Stoichiometry"
+        self.subtopic = "Limiting reagent and excess"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Moles of A}} &= \\frac{{{self.mass_A}}}{{{self.reaction['Ar_A']}}} = {round(self.moles_A,10)}\\\\"
+            f"\\text{{Moles of B}} &= \\frac{{{self.mass_B}}}{{{self.reaction['Ar_B']}}} = {round(self.moles_B,10)}\\\\"
+            f"\\text{{Limiting reagent determined by mole ratio}} &\\\\"
+            f"\\text{{Excess moles remaining}} &= {round(self.excess_leftover_moles,10)}\\\\"
+            f"\\text{{Mass remaining}} &= n \\times A_r\\\\"
+            f"&= {round(self.excess_leftover_moles,10)} \\times {self.excess_Ar}\\\\"
+            f"&= {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+
+        t = np.linspace(0, 10, 200)
+
+        if self.limiting == "A":
+            conc_A = np.exp(-0.4 * t)
+            conc_B = np.exp(-0.4 * t) + 0.2
+        else:
+            conc_B = np.exp(-0.4 * t)
+            conc_A = np.exp(-0.4 * t) + 0.2
+
+        ax.plot(t, conc_A, linewidth=3, color="#2E86C1", label=self.reaction["reactant_A"])
+        ax.plot(t, conc_B, linewidth=3, color="#C39A3A", label=self.reaction["reactant_B"])
+
+        ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
+        ax.set_ylabel("Concentration (mol dm$^{-3}$)", fontsize=14, fontweight='bold')
+        ax.set_title("Reactant Concentration vs Time", fontsize=16, fontweight='bold')
+
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, max(max(conc_A), max(conc_B)) * 1.2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem107:
+
+    def __init__(self):
+
+        chains = [
+            {
+                "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+                "stage1": "CaCO3 → CaO + CO2",
+                "stage2": "CaO + 2HCl → CaCl2 + H2O",
+                "Ar_start": 100,
+                "Ar_final": 111
+            },
+            {
+                "name": "Copper Carbonate Decomposition + Reduction",
+                "stage1": "CuCO3 → CuO + CO2",
+                "stage2": "CuO + H2 → Cu + H2O",
+                "Ar_start": 124,
+                "Ar_final": 63.5
+            },
+            {
+                "name": "Zinc Carbonate Decomposition + Acid Reaction",
+                "stage1": "ZnCO3 → ZnO + CO2",
+                "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+                "Ar_start": 125,
+                "Ar_final": 136
+            }
+        ]
+
+        self.chain = rnd.choice(chains)
+
+        self.start_mass = rnd.randint(20, 80)
+
+        self.start_moles = self.start_mass / self.chain["Ar_start"]
+
+        self.final_moles = self.start_moles
+
+        self.answer = round(self.final_moles * self.chain["Ar_final"], 2)
+
+        self.description = (
+            f"The graph shows the amount of substances during a multi-stage reaction chain.\n\n"
+            f"Stage 1: {self.chain['stage1']}\n"
+            f"Stage 2: {self.chain['stage2']}\n\n"
+            f"Initial mass of starting compound = {self.start_mass} g\n\n"
+            "Using stoichiometry and the graph, calculate the mass of final product formed."
+        )
+
+        self.topic = "Stoichiometry"
+        self.subtopic = "Multi-stage reaction chains"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Moles of starting compound}} &= \\frac{{{self.start_mass}}}{{{self.chain['Ar_start']}}}\\\\"
+            f"&= {round(self.start_moles,10)}\\\\"
+            f"\\text{{Mole ratio through reaction chain is 1:1}} &\\\\"
+            f"\\text{{Moles of final product}} &= {round(self.final_moles,10)}\\\\"
+            f"\\text{{Mass of final product}} &= n \\times A_r\\\\"
+            f"&= {round(self.final_moles,10)} \\times {self.chain['Ar_final']}\\\\"
+            f"&= {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+
+        t = np.linspace(0, 10, 200)
+
+        start_curve = np.exp(-0.35 * t)
+        intermediate_curve = np.exp(-0.35 * (t - 3)**2)
+        product_curve = 1 - np.exp(-0.35 * t)
+
+        ax.plot(t, start_curve, linewidth=3, color="#2E86C1", label="Starting compound")
+        ax.plot(t, intermediate_curve, linewidth=3, color="#F39C12", label="Intermediate")
+        ax.plot(t, product_curve, linewidth=3, color="#28B463", label="Final product")
+
+        ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
+        ax.set_ylabel("Relative amount", fontsize=14, fontweight='bold')
+        ax.set_title("Multi-Stage Reaction Chain Progress", fontsize=16, fontweight='bold')
+
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 1.2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem108: 
+
+    def __init__(self):
+
+        reactions = [
+            {
+                "name": "Iron and Sulfur",
+                "eq": "Fe + S → FeS",
+                "A": "Fe",
+                "B": "S",
+                "P": "FeS",
+                "coeff_A": 1,
+                "coeff_B": 1,
+                "coeff_P": 1,
+                "Ar_A": 56,
+                "Ar_B": 32,
+                "Ar_P": 88
+            },
+            {
+                "name": "Magnesium and Oxygen",
+                "eq": "2Mg + O2 → 2MgO",
+                "A": "Mg",
+                "B": "O2",
+                "P": "MgO",
+                "coeff_A": 2,
+                "coeff_B": 1,
+                "coeff_P": 2,
+                "Ar_A": 24,
+                "Ar_B": 32,
+                "Ar_P": 40
+            },
+            {
+                "name": "Aluminium and Oxygen",
+                "eq": "4Al + 3O2 → 2Al2O3",
+                "A": "Al",
+                "B": "O2",
+                "P": "Al2O3",
+                "coeff_A": 4,
+                "coeff_B": 3,
+                "coeff_P": 2,
+                "Ar_A": 27,
+                "Ar_B": 32,
+                "Ar_P": 102
+            }
+        ]
+
+        self.r = rnd.choice(reactions)
+
+        self.mass_A = rnd.randint(8, 40)
+        self.mass_B = rnd.randint(8, 60)
+
+        self.moles_A = self.mass_A / self.r["Ar_A"]
+        self.moles_B = self.mass_B / self.r["Ar_B"]
+
+        self.norm_A = self.moles_A / self.r["coeff_A"]
+        self.norm_B = self.moles_B / self.r["coeff_B"]
+
+        if self.norm_A < self.norm_B:
+            self.limiting_moles_norm = self.norm_A
+        else:
+            self.limiting_moles_norm = self.norm_B
+
+        self.product_moles_theoretical = self.limiting_moles_norm * self.r["coeff_P"]
+
+        self.theoretical_mass = self.product_moles_theoretical * self.r["Ar_P"]
+
+        self.percent_yield_actual = rnd.randint(65, 95)
+
+        self.actual_mass = self.theoretical_mass * self.percent_yield_actual / 100
+
+        self.answer = round(self.percent_yield_actual, 2)
+
+        self.description = (
+            f"The graph shows reactant consumption and product formation for the reaction:\n"
+            f"{self.r['eq']}\n\n"
+            f"Initial mass {self.r['A']} = {self.mass_A} g\n"
+            f"Initial mass {self.r['B']} = {self.mass_B} g\n\n"
+            f"The actual mass of product obtained = {round(self.actual_mass,2)} g\n\n"
+            "Using stoichiometry and the graph, calculate the percentage yield."
+        )
+
+        self.topic = "Stoichiometry"
+        self.subtopic = "Percentage yield with limiting reagent"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"n_{{A}} &= \\frac{{{self.mass_A}}}{{{self.r['Ar_A']}}} = {round(self.moles_A,10)}\\\\"
+            f"n_{{B}} &= \\frac{{{self.mass_B}}}{{{self.r['Ar_B']}}} = {round(self.moles_B,10)}\\\\"
+            f"\\text{{Limiting reagent determines theoretical product moles}}\\\\"
+            f"n_{{P,theoretical}} &= {round(self.product_moles_theoretical,10)}\\\\"
+            f"m_{{P,theoretical}} &= n \\times A_r\\\\"
+            f"&= {round(self.product_moles_theoretical,10)} \\times {self.r['Ar_P']}\\\\"
+            f"&= {round(self.theoretical_mass,10)}\\\\"
+            f"\\%\\text{{ yield}} &= \\frac{{m_{{actual}}}}{{m_{{theoretical}}}} \\times 100\\\\"
+            f"&= \\frac{{{round(self.actual_mass,10)}}}{{{round(self.theoretical_mass,10)}}} \\times 100\\\\"
+            f"&= {self.answer}\\,\\%"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+
+        t = np.linspace(0, 10, 200)
+
+        limiting_curve = np.exp(-0.45 * t)
+        excess_curve = np.exp(-0.45 * t) + 0.25
+        theoretical_product = 1 - np.exp(-0.45 * t)
+        actual_product = theoretical_product * (self.percent_yield_actual / 100)
+
+        ax.plot(t, limiting_curve, linewidth=3, color="#2E86C1", label=f"{self.r['A']} (or limiting)")
+        ax.plot(t, excess_curve, linewidth=3, color="#C39A3A", label=f"{self.r['B']} (or excess)")
+        ax.plot(t, theoretical_product, linewidth=3, color="#28B463", linestyle="--", label="Theoretical product")
+        ax.plot(t, actual_product, linewidth=3, color="#E74C3C", label="Actual product")
+
+        ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
+        ax.set_ylabel("Relative amount / concentration", fontsize=14, fontweight='bold')
+        ax.set_title("Limiting Reagent and Percentage Yield Reaction Progress", fontsize=16, fontweight='bold')
+
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 1.3)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem109:
+
+    def __init__(self):
+
+        reactions = [
+            {
+                "eq": "N2 + 3H2 → 2NH3",
+                "gas_A": "H2",
+                "gas_B": "NH3",
+                "coeff_A": 3,
+                "coeff_B": 2
+            },
+            {
+                "eq": "H2 + Cl2 → 2HCl",
+                "gas_A": "H2",
+                "gas_B": "HCl",
+                "coeff_A": 1,
+                "coeff_B": 2
+            },
+            {
+                "eq": "2SO2 + O2 → 2SO3",
+                "gas_A": "SO2",
+                "gas_B": "SO3",
+                "coeff_A": 2,
+                "coeff_B": 2
+            }
+        ]
+
+        self.r = rnd.choice(reactions)
+
+        self.volume_A = rnd.choice([24, 36, 48, 60, 72, 96])
+
+        self.moles_A = self.volume_A / 24
+
+        self.moles_B = self.moles_A * (self.r["coeff_B"] / self.r["coeff_A"])
+
+        self.volume_B = self.moles_B * 24
+
+        self.answer = round(self.volume_B, 2)
+
+        self.description = (
+            f"The bar chart shows gas volumes for the reaction:\n"
+            f"{self.r['eq']}\n\n"
+            f"Volume of {self.r['gas_A']} reacted = {self.volume_A} dm³\n\n"
+            "Using the 24 dm³ mol⁻¹ rule and stoichiometry, calculate the volume of product gas formed."
+        )
+
+        self.topic = "Stoichiometry"
+        self.subtopic = "Gas volumes using molar gas volume"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Moles of gas A}} &= \\frac{{V}}{{24}}\\\\"
+            f"&= \\frac{{{self.volume_A}}}{{24}}\\\\"
+            f"&= {round(self.moles_A,10)}\\\\"
+            f"\\text{{Mole ratio from equation}}\\\\"
+            f"n_{{B}} &= n_{{A}} \\times \\frac{{{self.r['coeff_B']}}}{{{self.r['coeff_A']}}}\\\\"
+            f"&= {round(self.moles_A,10)} \\times \\frac{{{self.r['coeff_B']}}}{{{self.r['coeff_A']}}}\\\\"
+            f"&= {round(self.moles_B,10)}\\\\"
+            f"V_{{B}} &= n_{{B}} \\times 24\\\\"
+            f"&= {round(self.moles_B,10)} \\times 24\\\\"
+            f"&= {self.answer}\\,\\text{{dm}}^3"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+
+        labels = [self.r["gas_A"], self.r["gas_B"]]
+        values = [self.volume_A, self.volume_B]
+
+        colors = ["#2E86C1", "#E67E22"]
+
+        bars = ax.bar(labels, values, color=colors, width=0.6)
+
+        ax.set_ylabel("Gas Volume (dm³)", fontsize=14, fontweight='bold')
+        ax.set_title("Gas Volume Stoichiometry", fontsize=16, fontweight='bold')
+
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2, height,
+                    f"{round(height,2)}",
+                    ha='center', va='bottom', fontsize=11)
+
+        ax.grid(True, axis='y', linestyle='--', alpha=0.6)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem110:
+
+    def __init__(self):
+
+        systems = [
+            {
+                "name": "Sulfur Oxide System",
+                "percent_A": 40,
+                "percent_B": 60,
+                "A": "S",
+                "B": "O",
+                "Ar_A": 32,
+                "Ar_B": 16,
+                "empirical": "SO2",
+                "reaction": "2SO2 + O2 → 2SO3",
+                "Ar_reactant": 64,
+                "Ar_product": 80
+            },
+            {
+                "name": "Nitrogen Oxide System",
+                "percent_A": 30,
+                "percent_B": 70,
+                "A": "N",
+                "B": "O",
+                "Ar_A": 14,
+                "Ar_B": 16,
+                "empirical": "NO2",
+                "reaction": "2NO2 + O2 → 2N2O5",
+                "Ar_reactant": 46,
+                "Ar_product": 108
+            }
+        ]
+
+        self.sys = rnd.choice(systems)
+
+        self.sample_mass = rnd.randint(10, 40)
+
+        self.mass_A = self.sample_mass * self.sys["percent_A"] / 100
+        self.mass_B = self.sample_mass * self.sys["percent_B"] / 100
+
+        self.moles_A = self.mass_A / self.sys["Ar_A"]
+        self.moles_B = self.mass_B / self.sys["Ar_B"]
+
+        self.ratio_A = self.moles_A / min(self.moles_A, self.moles_B)
+        self.ratio_B = self.moles_B / min(self.moles_A, self.moles_B)
+
+        self.reactant_mass_given = rnd.randint(20, 80)
+
+        self.reactant_moles = self.reactant_mass_given / self.sys["Ar_reactant"]
+
+        self.product_moles = self.reactant_moles
+
+        self.product_mass = self.product_moles * self.sys["Ar_product"]
+
+        self.answer = round(self.product_mass, 2)
+
+        self.description = (
+            f"A compound contains {self.sys['percent_A']}% {self.sys['A']} and "
+            f"{self.sys['percent_B']}% {self.sys['B']}.\n\n"
+            f"Empirical formula determined = {self.sys['empirical']}\n"
+            f"Reaction: {self.sys['reaction']}\n\n"
+            f"{self.reactant_mass_given} g of {self.sys['empirical']} reacts.\n\n"
+            "Calculate the mass of final product formed."
+        )
+
+        self.topic = "Stoichiometry"
+        self.subtopic = "Empirical formula → balanced equation → mass product"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"m_A &= {round(self.mass_A,10)}\\\\"
+            f"m_B &= {round(self.mass_B,10)}\\\\"
+            f"n_A &= \\frac{{m}}{{A_r}} = {round(self.moles_A,10)}\\\\"
+            f"n_B &= \\frac{{m}}{{A_r}} = {round(self.moles_B,10)}\\\\"
+            f"\\text{{Empirical ratio}} &\\\\"
+            f"&= {round(self.ratio_A,10)} : {round(self.ratio_B,10)}\\\\"
+            f"n_{{reactant}} &= \\frac{{{self.reactant_mass_given}}}{{{self.sys['Ar_reactant']}}}\\\\"
+            f"&= {round(self.reactant_moles,10)}\\\\"
+            f"m_{{product}} &= n \\times A_r\\\\"
+            f"&= {round(self.product_moles,10)} \\times {self.sys['Ar_product']}\\\\"
+            f"&= {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(8, 10))
+
+        beaker = Polygon([
+            (2, 8),
+            (6, 8),
+            (5.5, 2),
+            (2.5, 2)
+        ], closed=True, fill=False, linewidth=2)
+
+        ax.add_patch(beaker)
+
+        liquid = Polygon([
+            (2.4, 3),
+            (5.6, 3),
+            (5.3, 2.2),
+            (2.7, 2.2)
+        ], closed=True, color="#AED6F1")
+
+        ax.add_patch(liquid)
+
+        ax.text(4, 7.2, self.sys["empirical"], ha='center', fontsize=16, fontweight='bold')
+
+        ax.text(4, 1.5, f"{self.reactant_mass_given} g sample", ha='center', fontsize=12)
+
+        ax.text(4, 9, "Beaker Reaction Setup", ha='center', fontsize=14, fontweight='bold')
+
+        ax.set_xlim(0, 8)
+        ax.set_ylim(0, 10)
+        ax.axis('off')
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem111:
+
+    def __init__(self):
+
+        self.F = 96500
+        self.Ar_Cu = 63.5
+
+        self.current = rnd.choice([0.5, 0.8, 1.0, 1.2, 1.5, 2.0, 2.5])
+        self.time_min = rnd.choice([5, 8, 10, 12, 15, 20, 25, 30, 40])
+
+        self.time_s = self.time_min * 60
+        self.charge = self.current * self.time_s
+        self.moles_e = self.charge / self.F
+        self.moles_cu = self.moles_e / 2
+        self.mass_cu = self.moles_cu * self.Ar_Cu
+
+        self.answer = round(self.mass_cu, 2)
+
+        self.description = (
+            "The diagram shows a standard electrolysis setup with an ammeter.\n\n"
+            "Copper(II) ions are reduced at the cathode:\n"
+            "Cu^{2+} + 2e^- → Cu\n\n"
+            f"Current = {self.current} A\n"
+            f"Time = {self.time_min} minutes\n\n"
+            "Calculate the mass of copper deposited."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electrolysis mass / moles / charge chain"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"I &= {round(self.current,10)}\\,\\text{{A}}\\\\"
+            f"t &= {round(self.time_min,10)}\\,\\text{{min}} = {round(self.time_s,10)}\\,\\text{{s}}\\\\"
+            f"Q &= It\\\\"
+            f"&= {round(self.current,10)} \\times {round(self.time_s,10)}\\\\"
+            f"&= {round(self.charge,10)}\\,\\text{{C}}\\\\"
+            f"n(e^-) &= \\frac{{Q}}{{F}}\\\\"
+            f"&= \\frac{{{round(self.charge,10)}}}{{{round(self.F,10)}}}\\\\"
+            f"&= {round(self.moles_e,10)}\\,\\text{{mol}}\\\\"
+            f"\\text{{From }}\\,\\text{{Cu}}^{{2+}} + 2e^- \\rightarrow \\text{{Cu}}:\\quad n(\\text{{Cu}}) &= \\frac{{n(e^-)}}2\\\\"
+            f"&= \\frac{{{round(self.moles_e,10)}}}{2}\\\\"
+            f"&= {round(self.moles_cu,10)}\\,\\text{{mol}}\\\\"
+            f"m(\\text{{Cu}}) &= n(\\text{{Cu}})\\times A_r(\\text{{Cu}})\\\\"
+            f"&= {round(self.moles_cu,10)} \\times {round(self.Ar_Cu,10)}\\\\"
+            f"&= {round(self.mass_cu,10)}\\,\\text{{g}}\\\\"
+            f"&= {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(11, 7))
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        ax.set_xlim(0, 20)
+        ax.set_ylim(0, 12)
+
+        beaker = Rectangle((6, 2), 8, 7, fill=False, linewidth=2)
+        ax.add_patch(beaker)
+
+        solution = Rectangle((6.2, 2.2), 7.6, 4.4, facecolor="#CFE8FF", edgecolor="none", alpha=0.9)
+        ax.add_patch(solution)
+
+        ax.text(10, 6.9, "electrolyte", ha="center", va="bottom", fontsize=11, fontweight="bold", color="#1F4E79")
+
+        anode = Rectangle((7.2, 3), 0.4, 5.2, facecolor="#6E6E6E", edgecolor="none")
+        cathode = Rectangle((12.4, 3), 0.4, 5.2, facecolor="#6E6E6E", edgecolor="none")
+        ax.add_patch(anode)
+        ax.add_patch(cathode)
+
+        ax.text(7.4, 8.6, "anode (+)", ha="center", va="bottom", fontsize=10, fontweight="bold")
+        ax.text(12.6, 8.6, "cathode (−)", ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+        ax.text(7.4, 2.4, "oxidation", ha="center", va="top", fontsize=9, color="#7D2E2E")
+        ax.text(12.6, 2.4, "reduction", ha="center", va="top", fontsize=9, color="#1B5E20")
+
+        ax.text(7.4, 1.6, "2H2O → O2 + 4H+ + 4e−", ha="center", va="top", fontsize=9, color="#7D2E2E")
+        ax.text(12.6, 1.6, "Cu2+ + 2e− → Cu", ha="center", va="top", fontsize=9, color="#1B5E20")
+
+        psu = Rectangle((1.2, 6.8), 3.8, 3.0, fill=False, linewidth=2)
+        ax.add_patch(psu)
+        ax.text(3.1, 8.3, "DC supply", ha="center", va="center", fontsize=11, fontweight="bold")
+
+        ax.text(1.7, 7.3, "+", fontsize=14, fontweight="bold", color="#B03A2E")
+        ax.text(4.5, 7.3, "−", fontsize=14, fontweight="bold", color="#1F4E79")
+
+        ammeter_center = (4.0, 10.2)
+        ammeter = Circle(ammeter_center, 0.85, fill=False, linewidth=2)
+        ax.add_patch(ammeter)
+        ax.text(ammeter_center[0], ammeter_center[1] + 0.05, "A", ha="center", va="center", fontsize=14, fontweight="bold")
+        ax.text(ammeter_center[0], ammeter_center[1] - 1.3, f"{self.current} A", ha="center", va="center", fontsize=11, fontweight="bold", color="#1F4E79")
+
+        wire_color_pos = "#B03A2E"
+        wire_color_neg = "#1F4E79"
+
+        ax.plot([1.7, 1.7, 7.4, 7.4], [7.3, 10.2, 10.2, 8.2], color=wire_color_pos, linewidth=3)
+        ax.plot([4.85, 12.6, 12.6, 4.5], [10.2, 10.2, 8.2, 7.3], color=wire_color_neg, linewidth=3)
+
+        arrow1 = FancyArrowPatch((2.6, 10.2), (3.2, 10.2), arrowstyle="->", mutation_scale=15, linewidth=2, color=wire_color_pos)
+        arrow2 = FancyArrowPatch((10.8, 10.2), (10.2, 10.2), arrowstyle="->", mutation_scale=15, linewidth=2, color=wire_color_neg)
+        ax.add_patch(arrow1)
+        ax.add_patch(arrow2)
+
+        ax.text(10, 11.3, "current flow in circuit", ha="center", va="center", fontsize=11, fontweight="bold")
+
+        ax.set_title("Electrolysis Apparatus with Ammeter", fontsize=16, fontweight="bold")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem112:
+
+    def __init__(self):
+
+        systems = [
+            {
+                "cation": "Ag+",
+                "metal": "Ag",
+                "Ar_metal": 108,
+                "electron_ratio": 1,
+                "color": "#B0B0B0"
+            },
+            {
+                "cation": "Cu2+",
+                "metal": "Cu",
+                "Ar_metal": 63.5,
+                "electron_ratio": 2,
+                "color": "#C87533"
+            }
+        ]
+
+        self.sys = rnd.choice(systems)
+
+        self.F = 96500
+
+        self.volume_dm3 = rnd.choice([0.25, 0.5, 1.0])
+        self.conc = rnd.choice([0.2, 0.4, 0.6, 0.8])
+
+        self.current = rnd.choice([0.5, 1.0, 1.5, 2.0])
+        self.time_min = rnd.choice([5, 10, 15, 20, 30])
+
+        self.time_s = self.time_min * 60
+
+        self.initial_moles_ion = self.volume_dm3 * self.conc
+
+        self.charge = self.current * self.time_s
+        self.moles_e = self.charge / self.F
+        self.moles_metal_possible_from_charge = self.moles_e / self.sys["electron_ratio"]
+
+        self.moles_metal_possible_from_ion = self.initial_moles_ion
+
+        self.actual_moles_metal = min(
+            self.moles_metal_possible_from_charge,
+            self.moles_metal_possible_from_ion
+        )
+
+        self.answer = round(self.actual_moles_metal * self.sys["Ar_metal"], 2)
+
+        self.description = (
+            "The diagrams show ion concentration before and after electrolysis.\n\n"
+            f"Cation: {self.sys['cation']}\n"
+            f"Volume = {self.volume_dm3} dm³\n"
+            f"Concentration = {self.conc} mol dm⁻³\n"
+            f"Current = {self.current} A\n"
+            f"Time = {self.time_min} minutes\n\n"
+            "Calculate the mass of metal deposited."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electrolysis limiting ion in solution"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"n_{{ion,initial}} &= V \\times C\\\\"
+            f"&= {round(self.volume_dm3,10)} \\times {round(self.conc,10)}\\\\"
+            f"&= {round(self.initial_moles_ion,10)}\\\\"
+            f"Q &= It = {round(self.current,10)} \\times {round(self.time_s,10)} = {round(self.charge,10)}\\\\"
+            f"n(e^-) &= \\frac{{Q}}{{F}} = \\frac{{{round(self.charge,10)}}}{{{round(self.F,10)}}} = {round(self.moles_e,10)}\\\\"
+            f"n_{{metal,charge}} &= \\frac{{n(e^-)}}{{{self.sys['electron_ratio']}}} = {round(self.moles_metal_possible_from_charge,10)}\\\\"
+            f"n_{{metal,actual}} &= \\min({round(self.moles_metal_possible_from_charge,10)}, {round(self.moles_metal_possible_from_ion,10)})\\\\"
+            f"&= {round(self.actual_moles_metal,10)}\\\\"
+            f"m &= n \\times A_r = {round(self.actual_moles_metal,10)} \\times {self.sys['Ar_metal']}\\\\"
+            f"&= {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+
+    def _draw_beaker(self, ax, x_offset, label, ion_count_scale):
+
+        beaker = Rectangle((x_offset + 1, 2), 4, 6, fill=False, linewidth=2)
+        ax.add_patch(beaker)
+
+        solution = Rectangle((x_offset + 1.1, 2.1), 3.8, 3.5, facecolor="#D6EAF8", edgecolor="none")
+        ax.add_patch(solution)
+
+        ax.text(x_offset + 3, 8.5, label, ha="center", fontsize=12, fontweight="bold")
+
+        anode = Rectangle((x_offset + 1.5, 3), 0.3, 4.5, facecolor="#666666")
+        cathode = Rectangle((x_offset + 4.2, 3), 0.3, 4.5, facecolor="#666666")
+        ax.add_patch(anode)
+        ax.add_patch(cathode)
+
+        for i in range(int(ion_count_scale * 8)):
+            x = x_offset + rnd.uniform(1.3, 4.7)
+            y = rnd.uniform(2.3, 5.3)
+            ax.add_patch(Circle((x, y), 0.12, color=self.sys["color"]))
+            ax.text(x, y, self.sys["cation"], fontsize=6, ha="center", va="center")
+
+        for _ in range(6):
+            start = (x_offset + rnd.uniform(2, 4), rnd.uniform(4, 6))
+            end = (x_offset + 4.35, rnd.uniform(4, 6))
+            arrow = FancyArrowPatch(start, end, arrowstyle="->", mutation_scale=10, color="#1B5E20")
+            ax.add_patch(arrow)
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        ax.set_xlim(0, 14)
+        ax.set_ylim(0, 10)
+
+        self._draw_beaker(ax, 0, "Before Electrolysis", 1.0)
+        self._draw_beaker(ax, 7, "After Electrolysis", 0.3)
+
+        ax.text(7, 9.5, f"Initial concentration = {self.conc} mol dm⁻³", ha="center", fontsize=11)
+
+        ax.set_title("Electrolysis with Limiting Ion in Solution", fontsize=16, fontweight="bold")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem113:
+
+    def __init__(self):
+
+        self.ratio_H2 = 2
+        self.ratio_O2 = 1
+
+        self.volume_H2 = rnd.choice([24, 36, 48, 60, 72])
+        self.volume_O2 = self.volume_H2 / 2
+
+        if rnd.random() > 0.5:
+            self.given_gas = "H2"
+            self.given_volume = self.volume_H2
+            self.answer = round(self.volume_O2, 2)
+        else:
+            self.given_gas = "O2"
+            self.given_volume = self.volume_O2
+            self.answer = round(self.volume_H2, 2)
+
+        self.description = (
+            "The Hoffman voltameter shows electrolysis of water.\n\n"
+            "2H2O → 2H2 + O2\n\n"
+            f"Volume of {self.given_gas} collected = {self.given_volume} cm³\n\n"
+            "Calculate the volume of the other gas produced."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electrolysis gas volume and stoichiometry"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        if self.given_gas == "H2":
+            calc_ratio = self.ratio_O2 / self.ratio_H2
+        else:
+            calc_ratio = self.ratio_H2 / self.ratio_O2
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Balanced equation gives volume ratio H2:O2 = 2:1}}\\\\"
+            f"\\text{{Volume ratio used}} &= {round(calc_ratio,10)}\\\\"
+            f"V_{{unknown}} &= V_{{given}} \\times \\text{{ratio}}\\\\"
+            f"&= {round(self.given_volume,10)} \\times {round(calc_ratio,10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^3"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(8, 10))
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 16)
+
+        center_tube = Rectangle((4.5, 2), 1, 12, fill=False, linewidth=2)
+        ax.add_patch(center_tube)
+
+        left_tube = Rectangle((2, 6), 1, 8, fill=False, linewidth=2)
+        right_tube = Rectangle((7, 6), 1, 8, fill=False, linewidth=2)
+
+        ax.add_patch(left_tube)
+        ax.add_patch(right_tube)
+
+        left_height = 6 + (self.volume_H2 / max(self.volume_H2, self.volume_O2)) * 6
+        right_height = 6 + (self.volume_O2 / max(self.volume_H2, self.volume_O2)) * 6
+
+        left_gas = Rectangle((2.1, 6), 0.8, left_height - 6, facecolor="#AED6F1")
+        right_gas = Rectangle((7.1, 6), 0.8, right_height - 6, facecolor="#F5B7B1")
+
+        ax.add_patch(left_gas)
+        ax.add_patch(right_gas)
+
+        ax.text(2.5, 14.5, "H₂", ha="center", fontsize=14, fontweight="bold")
+        ax.text(7.5, 14.5, "O₂", ha="center", fontsize=14, fontweight="bold")
+
+        for y in np.linspace(6, 14, 9):
+            ax.plot([1.9, 2], [y, y], color="black", linewidth=1)
+            ax.plot([8, 8.1], [y, y], color="black", linewidth=1)
+
+        ax.text(2.5, 5.2, f"{round(self.volume_H2,1)} cm³", ha="center", fontsize=11)
+        ax.text(7.5, 5.2, f"{round(self.volume_O2,1)} cm³", ha="center", fontsize=11)
+
+        ax.text(5, 1.2, "Electrolysis of Water (Hoffman Voltameter)", ha="center", fontsize=13, fontweight="bold")
+
+        ax.text(5, 0.5, "Expected ratio H₂ : O₂ = 2 : 1", ha="center", fontsize=11)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
