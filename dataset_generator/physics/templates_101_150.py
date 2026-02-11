@@ -2224,3 +2224,642 @@ class Phy120:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
         plt.close()
+
+
+class Phy121:
+    """
+    Uniform circular motion (kinematics).
+    Use: v = 2πr / T
+    Dynamic target: find speed v, OR period T, OR radius r
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["v", "T", "r"])
+
+        while True:
+            self.r = rnd.choice([0.50, 0.75, 1.00, 1.25, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00])  # m
+            self.T = rnd.choice([0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00, 6.00, 8.00, 10.0, 12.0])  # s
+            self.v = (2 * math.pi * self.r) / self.T  # m/s
+
+            if 0.5 <= self.v <= 30:
+                break
+
+        if self.target == "v":
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "A particle moves with uniform circular motion in a horizontal circle.\n"
+                "The radius r and the period T are shown in the diagram.\n"
+                "Determine the speed of the marker.\n"
+                "v = (_) m s⁻¹"
+            )
+        elif self.target == "T":
+            self.answer = sig_figs(self.T, 3)
+            self.description = (
+                "A particle moves with uniform circular motion in a horizontal circle.\n"
+                "The radius r and the speed v are shown in the diagram.\n"
+                "Determine the period of the motion.\n"
+                "T = (_) s"
+            )
+        else:
+            self.answer = sig_figs(self.r, 3)
+            self.description = (
+                "A particle moves with uniform circular motion in a horizontal circle.\n"
+                "The speed v and the period T are shown in the diagram.\n"
+                "Determine the radius of the circle.\n"
+                "r = (_) m"
+            )
+
+        self.topic = "Motion in a circle"
+        self.subtopic = "Kinematics of uniform circular motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            f"\\begin{{aligned}}"
+            f"\\text{{Radius, }} r &= {'\\text{?}' if self.target == 'r' else sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Period, }} T &= {'\\text{?}' if self.target == 'T' else sig_figs(self.T, 3)}\\,\\text{{s}}\\\\"
+            f"\\text{{Orbital speed, }} v &= {'\\text{?}' if self.target == 'v' else sig_figs(self.v, 3)}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Step 1: Identify the relationship for uniform circular motion.}} &\\\\"
+            f"\\text{{The speed }} v \\text{{ is the distance traveled in one period (the circumference) divided}} &\\\\"
+            f"\\text{{by the period }} T: &\\\\"
+            f"v &= \\frac{{2 \\pi r}}{{T}}\\\\"
+            f"\\text{{Step 2: Rearrange and substitute the known values to solve for the target:}} &\\\\"
+            + (
+                f"v &= \\frac{{2 \\pi \\times {self.r}}}{{{self.T}}}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+                if self.target == "v" else
+                f"T &= \\frac{{2 \\pi r}}{{v}} = \\frac{{2 \\pi \\times {self.r}}}{{{sig_figs(self.v, 3)}}}\\\\"
+                f"T &= {self.answer}\\,\\text{{s}}"
+                if self.target == "T" else
+                f"r &= \\frac{{v T}}{{2 \\pi}} = \\frac{{{sig_figs(self.v, 3)} \\times {self.T}}}{{2 \\pi}}\\\\"
+                f"r &= {self.answer}\\,\\text{{m}}"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            f"\\end{{aligned}}"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 4.4))
+        setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
+
+        cx, cy = 4.7, 5.2
+        Rdisp = 3.0
+
+        circ = patches.Circle((cx, cy), Rdisp, fill=False, linewidth=2, edgecolor="black")
+        ax.add_patch(circ)
+
+        # point on circle
+        th = math.radians(40)
+        px = cx + Rdisp * math.cos(th)
+        py = cy + Rdisp * math.sin(th)
+        ax.plot([px], [py], "ko", markersize=4)
+
+        # radius arrow
+        ax.annotate("", xy=(px, py), xytext=(cx, cy),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        mx, my = (cx + px) / 2, (cy + py) / 2
+
+        r_text = "r = ?" if self.target == "r" else f"r = {sig_figs(self.r,3)} m"
+        draw_text(ax, mx - 0.1, my + 0.35, r_text, fontsize=9, boxed=True)
+
+        # tangential velocity arrow
+        tx, ty = -math.sin(th), math.cos(th)
+        L = 1.8
+        ax.annotate("", xy=(px + L * tx, py + L * ty), xytext=(px, py),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        v_text = "v = ?" if self.target == "v" else f"v = {sig_figs(self.v,3)} m s⁻¹"
+        draw_text(ax, px + L * tx + 0.2, py + L * ty + 0.1, v_text, fontsize=9, ha="left", boxed=True)
+
+        # period label near top
+        T_text = "T = ?" if self.target == "T" else f"T = {sig_figs(self.T,3)} s"
+        draw_text(ax, cx + 0.1, cy + Rdisp + 0.8, T_text, fontsize=9, boxed=True)
+
+        # direction hint (small curved arrow)
+        arc = patches.Arc((cx, cy), 2 * Rdisp, 2 * Rdisp, angle=0, theta1=10, theta2=70, linewidth=2)
+        ax.add_patch(arc)
+        ax.annotate("", xy=(cx + Rdisp * math.cos(math.radians(70)), cy + Rdisp * math.sin(math.radians(70))),
+                    xytext=(cx + Rdisp * math.cos(math.radians(66)), cy + Rdisp * math.sin(math.radians(66))),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
+
+
+class Phy122:
+    """
+    Uniform circular motion (angular displacement).
+    Use: ω = Δθ / Δt; v = rω; s = rΔθ
+    Dynamic target: find ω, OR v, OR arc length s from A to B
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["omega", "v", "s"])
+
+        while True:
+            self.r = rnd.choice([0.60, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00])  # m
+            self.dtheta = rnd.choice([math.pi/6, math.pi/4, math.pi/3, math.pi/2, 2*math.pi/3, 3*math.pi/4, 5*math.pi/6])  # rad
+            self.dt = rnd.choice([0.50, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00])  # s
+
+            self.omega = self.dtheta / self.dt  # rad/s
+            self.v = self.r * self.omega        # m/s
+            self.s = self.r * self.dtheta       # m
+
+            if 0.2 <= self.v <= 25 and 0.2 <= self.omega <= 15:
+                break
+
+        if self.target == "omega":
+            self.answer = sig_figs(self.omega, 3)
+            self.description = (
+                "A particle moves with uniform circular motion.\n"
+                "It moves from position A to position B in a time interval Δt, as shown.\n"
+                "Determine the angular speed.\n"
+                "ω = (_) rad s⁻¹"
+            )
+        elif self.target == "v":
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "A particle moves with uniform circular motion.\n"
+                "It moves from position A to position B in a time interval Δt, as shown.\n"
+                "Determine the speed of the particle.\n"
+                "v = (_) m s⁻¹"
+            )
+        else:
+            self.answer = sig_figs(self.s, 3)
+            self.description = (
+                "A particle moves with uniform circular motion.\n"
+                "It moves from position A to position B in a time interval Δt, as shown.\n"
+                "Determine the arc length travelled from A to B.\n"
+                "s = (_) m"
+            )
+
+        self.topic = "Motion in a circle"
+        self.subtopic = "Kinematics of uniform circular motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            f"\\begin{{aligned}}"
+            f"\\text{{Radius, }} r &= {sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Angular displacement, }} \\Delta\\theta &= {sig_figs(self.dtheta, 3)}\\,\\text{{rad}}\\\\"
+            f"\\text{{Time interval, }} \\Delta t &= {sig_figs(self.dt, 3)}\\,\\text{{s}}\\\\"
+            f"\\text{{Step 1: Calculate the angular speed (}} \\omega \\text{{).}} &\\\\"
+            f"\\text{{Angular speed is the rate of change of angular displacement:}} &\\\\"
+            f"\\omega &= \\frac{{\\Delta\\theta}}{{\\Delta t}}\\\\"
+            f"\\omega &= \\frac{{{sig_figs(self.dtheta, 3)}}}{{{sig_figs(self.dt, 3)}}}\\\\"
+            f"\\omega &= {sig_figs(self.omega, 3)}\\,\\text{{rad s}}^{{-1}}\\\\"
+            f"\\text{{Step 2: Solve for the specific target variable.}} &\\\\"
+            + (
+                f"\\text{{The requested value is the angular speed:}} &\\\\"
+                f"\\omega &= {self.answer}\\,\\text{{rad s}}^{{-1}}"
+                if self.target == "omega" else
+                f"\\text{{The linear speed }} v \\text{{ is related to angular speed by }} v = r\\omega: &\\\\"
+                f"v &= {sig_figs(self.r, 3)} \\times {sig_figs(self.omega, 3)}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+                if self.target == "v" else
+                f"\\text{{The arc length }} s \\text{{ is given by the product of radius and angular displacement:}} &\\\\"
+                f"s &= r \\Delta\\theta\\\\"
+                f"s &= {sig_figs(self.r, 3)} \\times {sig_figs(self.dtheta, 3)}\\\\"
+                f"s &= {self.answer}\\,\\text{{m}}"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            f"\\end{{aligned}}"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(7.0, 4.4))
+        setup_ax(ax, xlim=(0, 12), ylim=(0, 10))
+
+        cx, cy = 5.0, 5.2
+        Rdisp = 3.0
+
+        ax.add_patch(patches.Circle((cx, cy), Rdisp, fill=False, linewidth=2, edgecolor="black"))
+
+        # Choose a start angle for A; B is A + Δθ
+        thA = math.radians(20)
+        thB = thA + self.dtheta
+
+        Ax = cx + Rdisp * math.cos(thA)
+        Ay = cy + Rdisp * math.sin(thA)
+        Bx = cx + Rdisp * math.cos(thB)
+        By = cy + Rdisp * math.sin(thB)
+
+        ax.plot([Ax], [Ay], "ko", markersize=4)
+        ax.plot([Bx], [By], "ko", markersize=4)
+
+        draw_text(ax, Ax + 0.2, Ay + 0.2, "A", fontsize=9, ha="left", boxed=True)
+        draw_text(ax, Bx + 0.2, By + 0.2, "B", fontsize=9, ha="left", boxed=True)
+
+        # Radii to A and B
+        ax.plot([cx, Ax], [cy, Ay], color="black", linewidth=2)
+        ax.plot([cx, Bx], [cy, By], color="black", linewidth=2)
+
+        # Radius label along radius to A
+        rm_x, rm_y = (cx + Ax) / 2, (cy + Ay) / 2
+        draw_text(ax, rm_x - 0.2, rm_y - 0.65, f"r = {sig_figs(self.r,3)} m", fontsize=9, boxed=True)
+
+        # Arc showing Δθ
+        theta1 = math.degrees(thA)
+        theta2 = math.degrees(thB)
+        arc = patches.Arc((cx, cy), 2 * Rdisp, 2 * Rdisp, angle=0,
+                          theta1=theta1, theta2=theta2, linewidth=2)
+        ax.add_patch(arc)
+
+        # Small arrow at end of arc for direction
+        th_arrow = thB - 0.12
+        x1 = cx + Rdisp * math.cos(th_arrow)
+        y1 = cy + Rdisp * math.sin(th_arrow)
+        x2 = cx + Rdisp * math.cos(thB)
+        y2 = cy + Rdisp * math.sin(thB)
+        ax.annotate("", xy=(x2, y2), xytext=(x1, y1),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        draw_text(ax, cx + 0.9, cy + 0.3, f"Δθ = {sig_figs(self.dtheta,3)} rad", fontsize=9, boxed=True)
+        draw_text(ax, cx - 0.2, cy - Rdisp - 1.0, f"Δt = {sig_figs(self.dt,3)} s", fontsize=9, boxed=True)
+
+        # Unknown label
+        if self.target == "omega":
+            draw_text(ax, 9.3, 8.2, "ω = ?", fontsize=9, ha="left", boxed=True)
+        elif self.target == "v":
+            draw_text(ax, 9.3, 8.2, "v = ?", fontsize=9, ha="left", boxed=True)
+        else:
+            draw_text(ax, 9.3, 8.2, "s = ?", fontsize=9, ha="left", boxed=True)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
+
+
+class Phy123:
+    """
+    Uniform circular motion with rotation rate.
+    Convert n (rpm) to frequency: f = n/60
+    Use: ω = 2πf; v = ωr; T = 1/f
+    Dynamic target: find ω, OR v (speed at radius r), OR T (period)
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["omega", "v", "T"])
+
+        while True:
+            self.n = rnd.choice([30, 45, 60, 75, 90, 120, 150, 180, 240])  # rpm
+            self.r = rnd.choice([0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.50])  # m
+
+            self.f = self.n / 60.0
+            self.T = 1 / self.f
+            self.omega = 2 * math.pi * self.f
+            self.v = self.omega * self.r
+
+            if 0.2 <= self.v <= 20:
+                break
+
+        if self.target == "omega":
+            self.answer = sig_figs(self.omega, 3)
+            self.description = (
+                "A turntable rotates at a constant rate.\n"
+                "A point P is at a distance r from the centre, as shown in the diagram.\n"
+                "Determine the angular speed of the turntable.\n"
+                "ω = (_) rad s⁻¹"
+            )
+        elif self.target == "v":
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "A turntable rotates at a constant rate.\n"
+                "A point P is at a distance r from the centre, as shown in the diagram.\n"
+                "Determine the speed of point P.\n"
+                "v = (_) m s⁻¹"
+            )
+        else:
+            self.answer = sig_figs(self.T, 3)
+            self.description = (
+                "A turntable rotates at a constant rate.\n"
+                "Values are shown in the diagram.\n"
+                "Determine the period of rotation.\n"
+                "T = (_) s"
+            )
+
+        self.topic = "Motion in a circle"
+        self.subtopic = "Kinematics of uniform circular motion"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            f"\\begin{{aligned}}"
+            f"\\text{{Rotation rate, }} n &= {self.n}\\,\\text{{rpm}}\\\\"
+            f"\\text{{Radius, }} r &= {sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Step 1: Convert the rotation rate from rpm to frequency (}} f \\text{{).}} &\\\\"
+            f"\\text{{Frequency in Hz is the number of rotations per second:}} &\\\\"
+            f"f &= \\frac{{n}}{{60}} = \\frac{{{self.n}}}{{60}} = {self.f}\\,\\text{{Hz}}\\\\"
+            f"\\text{{Step 2: Calculate the required quantities.}} &\\\\"
+            + (
+                f"\\text{{The angular speed }} \\omega \\text{{ is given by }} 2\\pi f: &\\\\"
+                f"\\omega &= 2 \\pi \\times {self.f}\\\\"
+                f"\\omega &= {self.answer}\\,\\text{{rad s}}^{{-1}}"
+                if self.target == "omega" else
+                f"\\text{{The period }} T \\text{{ is the time for one complete rotation:}} &\\\\"
+                f"T &= \\frac{{1}}{{f}} = \\frac{{1}}{{{self.f}}}\\\\"
+                f"T &= {self.answer}\\,\\text{{s}}"
+                if self.target == "T" else
+                f"\\text{{First, find the angular speed: }} \\omega = 2\\pi f = 2\\pi({self.f}) = {sig_figs(self.omega, 3)}\\,\\text{{rad s}}^{{-1}} &\\\\"
+                f"\\text{{Then, use }} v = r\\omega \\text{{ to find the tangential speed:}} &\\\\"
+                f"v &= {sig_figs(self.r, 3)} \\times {sig_figs(self.omega, 3)}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            f"\\end{{aligned}}"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 4.4))
+        setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
+
+        cx, cy = 5.0, 5.0
+        Rdisp = 3.0
+
+        ax.add_patch(patches.Circle((cx, cy), Rdisp, fill=False, linewidth=2, edgecolor="black"))
+
+        # Point P on rim-ish
+        th = math.radians(35)
+        px = cx + Rdisp * math.cos(th)
+        py = cy + Rdisp * math.sin(th)
+        ax.plot([px], [py], "ko", markersize=4)
+        draw_text(ax, px + 0.2, py + 0.2, "P", fontsize=9, ha="left", boxed=True)
+
+        # Radius arrow
+        ax.annotate("", xy=(px, py), xytext=(cx, cy),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        draw_text(ax, (cx + px) / 2 - 0.1, (cy + py) / 2 + 0.35, f"r = {sig_figs(self.r,3)} m", fontsize=9, boxed=True)
+
+        # Direction arc
+        arc = patches.Arc((cx, cy), 2 * Rdisp, 2 * Rdisp, angle=0, theta1=10, theta2=80, linewidth=2)
+        ax.add_patch(arc)
+        ax.annotate("", xy=(cx + Rdisp * math.cos(math.radians(80)), cy + Rdisp * math.sin(math.radians(80))),
+                    xytext=(cx + Rdisp * math.cos(math.radians(76)), cy + Rdisp * math.sin(math.radians(76))),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        draw_text(ax, 1.0, 9.2, f"n = {self.n} rpm", fontsize=9, ha="left", boxed=True)
+
+        # Show one derived label and one target
+        if self.target == "omega":
+            draw_text(ax, 7.3, 8.9, "ω = ?", fontsize=9, ha="left", boxed=True)
+        elif self.target == "v":
+            # tangential speed arrow at P
+            tx, ty = -math.sin(th), math.cos(th)
+            L = 1.6
+            ax.annotate("", xy=(px + L * tx, py + L * ty), xytext=(px, py),
+                        arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+            draw_text(ax, px + L * tx + 0.2, py + L * ty + 0.1, "v = ?", fontsize=9, ha="left", boxed=True)
+        else:
+            draw_text(ax, 7.3, 8.9, "T = ?", fontsize=9, ha="left", boxed=True)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
+
+
+class Phy124:
+    """
+    Centripetal acceleration.
+    Use: a = v^2 / r
+    Dynamic target: a, OR v, OR r
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["a", "v", "r"])
+
+        while True:
+            self.r = rnd.choice([1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 8.0, 10.0, 12.0, 15.0, 20.0])  # m
+            self.v = rnd.choice([4, 5, 6, 8, 10, 12, 15, 18, 20, 25, 30, 35, 40])  # m/s
+            self.a = (self.v ** 2) / self.r  # m/s^2
+
+            if 0.5 <= self.a <= 200:
+                break
+
+        if self.target == "a":
+            self.answer = sig_figs(self.a, 3)
+            self.description = (
+                "A particle moves at constant speed in a horizontal circle.\n"
+                "The radius r and speed v are shown in the diagram.\n"
+                "Determine the centripetal acceleration.\n"
+                "a = (_) m s⁻²"
+            )
+        elif self.target == "v":
+            self.answer = sig_figs(self.v, 3)
+            self.description = (
+                "A particle moves at constant speed in a horizontal circle.\n"
+                "The radius r and centripetal acceleration a are shown in the diagram.\n"
+                "Determine the speed v.\n"
+                "v = (_) m s⁻¹"
+            )
+        else:
+            self.answer = sig_figs(self.r, 3)
+            self.description = (
+                "A particle moves at constant speed in a horizontal circle.\n"
+                "The speed v and centripetal acceleration a are shown in the diagram.\n"
+                "Determine the radius r.\n"
+                "r = (_) m"
+            )
+
+        self.topic = "Motion in a circle"
+        self.subtopic = "Centripetal acceleration"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            f"\\begin{{aligned}}"
+            f"\\text{{Radius, }} r &= {'\\text{?}' if self.target == 'r' else sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Linear speed, }} v &= {'\\text{?}' if self.target == 'v' else sig_figs(self.v, 3)}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Centripetal acceleration, }} a &= {'\\text{?}' if self.target == 'a' else sig_figs(self.a, 3)}\\,\\text{{m s}}^{{-2}}\\\\"
+            f"\\text{{Step 1: Identify the formula for centripetal acceleration.}} &\\\\"
+            f"\\text{{For an object moving in a circle, the acceleration is directed towards the}} &\\\\"
+            f"\\text{{centre and its magnitude is given by:}} &\\\\"
+            f"a &= \\frac{{v^2}}{{r}}\\\\"
+            f"\\text{{Step 2: Substitute the known values and solve for the target variable:}} &\\\\"
+            + (
+                f"a &= \\frac{{{sig_figs(self.v, 3)}^2}}{{{sig_figs(self.r, 3)}}} = \\frac{{{round(self.v**2, 10)}}}{{{sig_figs(self.r, 3)}}}\\\\"
+                f"a &= {self.answer}\\,\\text{{m s}}^{{-2}}"
+                if self.target == "a" else
+                f"v^2 &= a \\times r = {sig_figs(self.a, 3)} \\times {sig_figs(self.r, 3)} = {round(self.a * self.r, 10)}\\\\"
+                f"v &= \\sqrt{{{round(self.a * self.r, 10)}}}\\\\"
+                f"v &= {self.answer}\\,\\text{{m s}}^{{-1}}"
+                if self.target == "v" else
+                f"r &= \\frac{{v^2}}{{a}} = \\frac{{{sig_figs(self.v, 3)}^2}}{{{sig_figs(self.a, 3)}}} = \\frac{{{round(self.v**2, 10)}}}{{{sig_figs(self.a, 3)}}}\\\\"
+                f"r &= {self.answer}\\,\\text{{m}}"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            f"\\end{{aligned}}"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 4.4))
+        setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
+
+        cx, cy = 4.8, 5.2
+        Rdisp = 3.0
+        ax.add_patch(patches.Circle((cx, cy), Rdisp, fill=False, linewidth=2, edgecolor="black"))
+
+        th = math.radians(35)
+        px = cx + Rdisp * math.cos(th)
+        py = cy + Rdisp * math.sin(th)
+        ax.plot([px], [py], "ko", markersize=4)
+
+        # Radius arrow + label
+        ax.annotate("", xy=(px, py), xytext=(cx, cy),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        r_text = "r = ?" if self.target == "r" else f"r = {sig_figs(self.r,3)} m"
+        draw_text(ax, (cx + px) / 2 - 0.1, (cy + py) / 2 + 0.35, r_text, fontsize=9, boxed=True)
+
+        # Velocity arrow tangent
+        tx, ty = -math.sin(th), math.cos(th)
+        L = 1.8
+        ax.annotate("", xy=(px + L * tx, py + L * ty), xytext=(px, py),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        v_text = "v = ?" if self.target == "v" else f"v = {sig_figs(self.v,3)} m s⁻¹"
+        draw_text(ax, px + L * tx + 0.2, py + L * ty + 0.1, v_text, fontsize=9, ha="left", boxed=True)
+
+        # Centripetal acceleration arrow (towards centre)
+        L2 = 1.6
+        ux, uy = (cx - px), (cy - py)
+        mag = (ux**2 + uy**2) ** 0.5
+        ux, uy = ux / mag, uy / mag
+        L2 = 0.90 * mag
+        ax.annotate("", xy=(px + L2 * ux, py + L2 * uy), xytext=(px, py),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        a_text = "a = ?" if self.target == "a" else f"a = {sig_figs(self.a,3)} m s⁻²"
+        draw_text(ax, px - 1.5, py - 1.5, a_text, fontsize=9, ha="left", boxed=True)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
+
+
+class Phy125:
+    """
+    Centripetal acceleration using period.
+    Use: a = 4π^2 r / T^2
+    Dynamic target: a, OR T, OR r
+    """
+
+    def __init__(self):
+        self.target = rnd.choice(["a", "T", "r"])
+
+        while True:
+            self.r = rnd.choice([0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00, 8.00, 10.0, 12.0, 15.0])  # m
+            self.T = rnd.choice([0.60, 0.80, 1.00, 1.20, 1.50, 2.00, 2.50, 3.00, 4.00, 5.00, 6.00, 8.00])  # s
+            self.a = (4 * (math.pi ** 2) * self.r) / (self.T ** 2)
+
+            if 0.5 <= self.a <= 200:
+                break
+
+        if self.target == "a":
+            self.answer = sig_figs(self.a, 3)
+            self.description = (
+                "A particle moves with uniform circular motion.\n"
+                "The radius r and period T are shown in the diagram.\n"
+                "Determine the centripetal acceleration.\n"
+                "a = (_) m s⁻²"
+            )
+        elif self.target == "T":
+            self.answer = sig_figs(self.T, 3)
+            self.description = (
+                "A particle moves with uniform circular motion.\n"
+                "The radius r and centripetal acceleration a are shown in the diagram.\n"
+                "Determine the period.\n"
+                "T = (_) s"
+            )
+        else:
+            self.answer = sig_figs(self.r, 3)
+            self.description = (
+                "A particle moves with uniform circular motion.\n"
+                "The period T and centripetal acceleration a are shown in the diagram.\n"
+                "Determine the radius.\n"
+                "r = (_) m"
+            )
+
+        self.topic = "Motion in a circle"
+        self.subtopic = "Centripetal acceleration"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.reasoning = (
+            f"\\begin{{aligned}}"
+            f"\\text{{Radius, }} r &= {'\\text{?}' if self.target == 'r' else sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
+            f"\\text{{Period, }} T &= {'\\text{?}' if self.target == 'T' else sig_figs(self.T, 3)}\\,\\text{{s}}\\\\"
+            f"\\text{{Centripetal acceleration, }} a &= {'\\text{?}' if self.target == 'a' else sig_figs(self.a, 3)}\\,\\text{{m s}}^{{-2}}\\\\"
+            f"\\text{{Step 1: Identify the formula for centripetal acceleration in terms of period.}} &\\\\"
+            f"\\text{{The centripetal acceleration is given by }} a = \\frac{{v^2}}{{r}}. \\text{{ Substituting }} v = \\frac{{2 \\pi r}}{{T}}: &\\\\"
+            f"a &= \\frac{{(2 \\pi r / T)^2}}{{r}} = \\frac{{4 \\pi^2 r^2}}{{T^2 r}}\\\\"
+            f"a &= \\frac{{4 \\pi^2 r}}{{T^2}}\\\\"
+            f"\\text{{Step 2: Rearrange and substitute the known values to solve for the target:}} &\\\\"
+            + (
+                f"a &= \\frac{{4 \\pi^2 \\times {self.r}}}{{{self.T}^2}} = \\frac{{4 \\pi^2 \\times {self.r}}}{{{round(self.T**2, 10)}}}\\\\"
+                f"a &= {self.answer}\\,\\text{{m s}}^{{-2}}"
+                if self.target == "a" else
+                f"T^2 &= \\frac{{4 \\pi^2 r}}{{a}} = \\frac{{4 \\pi^2 \\times {self.r}}}{{{sig_figs(self.a, 3)}}} = {round((4 * math.pi**2 * self.r) / self.a, 10)}\\\\"
+                f"T &= \\sqrt{{{round((4 * math.pi**2 * self.r) / self.a, 10)}}}\\\\"
+                f"T &= {self.answer}\\,\\text{{s}}"
+                if self.target == "T" else
+                f"r &= \\frac{{a T^2}}{{4 \\pi^2}} = \\frac{{{sig_figs(self.a, 3)} \\times {self.T}^2}}{{4 \\pi^2}}\\\\"
+                f"r &= \\frac{{{sig_figs(self.a, 3)} \\times {round(self.T**2, 10)}}}{{4 \\pi^2}}\\\\"
+                f"r &= {self.answer}\\,\\text{{m}}"
+            ) +
+            f"\\\\\\text{{Final Answer}} &= {self.answer}"
+            f"\\end{{aligned}}"
+        )
+
+
+    def generate(self, num):
+        plt.rcParams.update({"font.size": 9})
+
+        fig, ax = plt.subplots(figsize=(6.8, 4.4))
+        setup_ax(ax, xlim=(0, 10), ylim=(0, 10))
+
+        cx, cy = 4.7, 5.1
+        Rdisp = 3.0
+        ax.add_patch(patches.Circle((cx, cy), Rdisp, fill=False, linewidth=2, edgecolor="black"))
+
+        th = math.radians(50)
+        px = cx + Rdisp * math.cos(th)
+        py = cy + Rdisp * math.sin(th)
+        ax.plot([px], [py], "ko", markersize=4)
+
+        # radius arrow + label
+        ax.annotate("", xy=(px, py), xytext=(cx, cy),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+        r_text = "r = ?" if self.target == "r" else f"r = {sig_figs(self.r,3)} m"
+        draw_text(ax, (cx + px) / 2 - 0.1, (cy + py) / 2 + 0.35, r_text, fontsize=9, boxed=True)
+
+        # period label near top
+        T_text = "T = ?" if self.target == "T" else f"T = {sig_figs(self.T,3)} s"
+        draw_text(ax, cx + 0.3, cy + Rdisp + 0.8, T_text, fontsize=9, boxed=True)
+
+        # centripetal acceleration arrow towards centre
+        ux, uy = (cx - px), (cy - py)
+        mag = (ux**2 + uy**2) ** 0.5
+        ux, uy = ux / mag, uy / mag
+        L = 0.9 * mag
+        ax.annotate("", xy=(px + L * ux, py + L * uy), xytext=(px, py),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        a_text = "a = ?" if self.target == "a" else f"a = {sig_figs(self.a,3)} m s⁻²"
+        draw_text(ax, px - 1.3, py - 2.0, a_text, fontsize=9, ha="left", boxed=True)
+
+        # direction hint
+        arc = patches.Arc((cx, cy), 2 * Rdisp, 2 * Rdisp, angle=0, theta1=90, theta2=140, linewidth=2)
+        ax.add_patch(arc)
+        ax.annotate("", xy=(cx + Rdisp * math.cos(math.radians(140)), cy + Rdisp * math.sin(math.radians(140))),
+                    xytext=(cx + Rdisp * math.cos(math.radians(136)), cy + Rdisp * math.sin(math.radians(136))),
+                    arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
+        plt.close()
