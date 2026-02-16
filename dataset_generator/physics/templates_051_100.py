@@ -947,24 +947,23 @@ class Phy060:
             "v = (_) ± (_) m s⁻¹"
         )
         self.reasoning = (
-            "\\[\\begin{aligned}"
+            f"\\begin{{aligned}}"
             f"\\text{{Measured distance, }} L &= {self.L:.2f} \\pm {self.dL:.3f}\\,\\text{{m}}\\\\"
             f"\\text{{Measured time, }} t &= {self.t:.1f} \\pm {self.dt:.2f}\\,\\text{{s}}\\\\"
-            "\\text{{The speed }} v \\text{{ is calculated using:}} &\\\\"
-            "v &= \\frac{L}{t}\\\\"
+            f"\\text{{The speed }} v \\text{{ is calculated using:}} &\\\\"
+            f"v &= \\frac{{L}}{{t}}\\\\"
             f"&= \\frac{{{self.L:.2f}}}{{{self.t:.1f}}}\\\\"
-            f"&= {round(self.v, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
-            "\\text{{For a quotient, fractional uncertainties are added:}} &\\\\"
-            "\\frac{\\Delta v}{v} &= \\frac{\\Delta L}{L} + \\frac{\\Delta t}{t}\\\\"
+            f"&= {self.v:.4f}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{For a quotient, fractional uncertainties are added:}} &\\\\"
+            f"\\frac{{\\Delta v}}{{v}} &= \\frac{{\\Delta L}}{{L}} + \\frac{{\\Delta t}}{{t}}\\\\"
             f"&= \\frac{{{self.dL:.3f}}}{{{self.L:.2f}}} + \\frac{{{self.dt:.2f}}}{{{self.t:.1f}}}\\\\"
-            f"&= {round(self.dL / self.L, 10)} + {round(self.dt / self.t, 10)}\\\\"
-            f"&= {round(self.frac_unc, 10)}\\\\"
-            "\\text{{Calculate absolute uncertainty }} \\Delta v: &\\\\"
-            "\\Delta v &= v \\times \\left( \\frac{\\Delta v}{v} \\right)\\\\"
-            f"&= {round(self.v, 10)} \\times {round(self.frac_unc, 10)}\\\\"
-            f"&= {round(self.dv, 10)}\\,\\text{{m s}}^{{-1}}\\\\"
-            f"\\text{{Final Answer}} &= {self.answer}"
-            "\\end{aligned}\\]"
+            f"&= {self.frac_unc:.6f}\\\\"
+            f"\\text{{Calculate absolute uncertainty }} \\Delta v: &\\\\"
+            f"\\Delta v &= v \\times \\left( \\frac{{\\Delta v}}{{v}} \\right)\\\\"
+            f"&= {self.v:.4f} \\times {self.frac_unc:.6f}\\\\"
+            f"&= {self.dv:.4f}\\,\\text{{m s}}^{{-1}}\\\\"
+            f"\\text{{Final Answer}} &= ({sig_figs(self.v, 3)} \\pm {sig_figs(self.dv, 2)})\\,\\text{{m s}}^{{-1}}"
+            f"\\end{{aligned}}"
         )
 
 
@@ -5361,15 +5360,15 @@ class Phy097:
         self.source = "Original"
         self.curriculum = "A-Level"
         self.reasoning = (
-            "\\[\\begin{aligned}"
+            f"\\begin{{aligned}}"
             f"\\text{{Distance to screen, }} D &= {self.D}\\,\\text{{m}}\\\\"
-            f"\\text{{Slit separation, }} s &= {sig_figs(self.s_mm, 3) if self.target != 's' else '\\text{?}'}\\,\\text{{mm}} = {self.s}\\,\\text{{m}}\\\\"
-            f"\\text{{Wavelength, }} \\lambda &= {self.lam_nm if self.target != 'lam' else '\\text{?}'}\\,\\text{{nm}} = {self.lam}\\,\\text{{m}}\\\\"
-            f"\\text{{Fringe spacing, }} w &= {sig_figs(self.w_mm, 3) if self.target != 'w' else '\\text{?}'}\\,\\text{{mm}} = {round(self.w, 10)}\\,\\text{{m}}\\\\"
-            "\\text{{Step 1: Use the Young double-slit equation.}} &\\\\"
-            "\\text{{The fringe spacing }} w \\text{{ is given by:}} &\\\\"
-            "w &= \\frac{\\lambda D}{s}\\\\"
-            "\\text{{Step 2: Rearrange and substitute the known values to solve for the unknown:}} &\\\\"
+            f"\\text{{Slit separation, }} s &= {'\\text{?}' if self.target == 's' else f'{sig_figs(self.s_mm, 3)}\\,\\text{{mm}}'} {'= ' + str(self.s) + '\\,\\text{m}' if self.target != 's' else ''}\\\\"
+            f"\\text{{Wavelength, }} \\lambda &= {'\\text{?}' if self.target == 'lam' else f'{self.lam_nm}\\,\\text{{nm}}'} {'= ' + str(self.lam) + '\\,\\text{m}' if self.target != 'lam' else ''}\\\\"
+            f"\\text{{Fringe spacing, }} w &= {'\\text{?}' if self.target == 'w' else f'{sig_figs(self.w_mm, 3)}\\,\\text{{mm}}'} {'= ' + str(round(self.w, 10)) + '\\,\\text{m}' if self.target != 'w' else ''}\\\\"
+            f"\\text{{Step 1: Use the Young double-slit equation.}} &\\\\"
+            f"\\text{{The fringe spacing }} w \\text{{ is given by:}} &\\\\"
+            f"w &= \\frac{{\\lambda D}}{{s}}\\\\"
+            f"\\text{{Step 2: Rearrange and substitute the known values to solve for the unknown:}} &\\\\"
             + (
                 f"w &= \\frac{{{self.lam} \\times {self.D}}}{{{self.s}}}\\\\"
                 f"w &= {round(self.w, 10)}\\,\\text{{m}}\\\\"
@@ -5383,7 +5382,7 @@ class Phy097:
                 f"s &= {round(self.s, 10)}\\,\\text{{m}}\\\\"
                 f"s &= {self.answer}\\,\\text{{mm}}"
             ) +
-            "\\end{aligned}\\]"
+            f"\\end{{aligned}}"
         )
 
 
