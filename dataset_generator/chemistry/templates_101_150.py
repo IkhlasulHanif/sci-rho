@@ -13,6 +13,11 @@ DESTINATION_FOLDER = os.path.join(
 )
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
 
+FARADAY = 96500
+MOLAR_MASS_CU = 63.5
+MOLAR_MASS_AG = 108
+MOLAR_MASS_NI = 58.7 
+DENSITY_NI = 8.9
 
 class Chem101:
     """
@@ -1412,6 +1417,1200 @@ class Chem113:
 
         ax.text(5, 0.5, "Expected ratio H₂ : O₂ = 2 : 1", ha="center", fontsize=11)
 
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem114:
+
+    def __init__(self):
+
+        metals = [
+            {"metal": "Cu", "Ar": 63.5, "density": 8.96, "electron_ratio": 2, "color": "#C87533"},
+            {"metal": "Ag", "Ar": 108, "density": 10.5, "electron_ratio": 1, "color": "#C0C0C0"},
+            {"metal": "Ni", "Ar": 58.7, "density": 8.9, "electron_ratio": 2, "color": "#9FA6AD"}
+        ]
+
+        self.metal = rnd.choice(metals)
+
+        self.current = rnd.choice([0.5, 1.0, 1.5, 2.0, 2.5])
+        self.time_min = rnd.choice([10, 15, 20, 25, 30])
+        self.area_cm2 = rnd.choice([10, 20, 30, 40])
+
+        self.F = 96500
+
+        self.time_s = self.time_min * 60
+        self.charge = self.current * self.time_s
+        self.moles_e = self.charge / self.F
+        self.moles_metal = self.moles_e / self.metal["electron_ratio"]
+        self.mass = self.moles_metal * self.metal["Ar"]
+
+        self.volume_cm3 = self.mass / self.metal["density"]
+        self.thickness_cm = self.volume_cm3 / self.area_cm2
+        self.thickness_um = self.thickness_cm * 10000
+
+        self.answer = round(self.thickness_um, 2)
+
+        self.description = (
+            "The diagram shows an electroplating setup.\n\n"
+            f"Metal being plated = {self.metal['metal']}\n"
+            f"Current = {self.current} A\n"
+            f"Time = {self.time_min} minutes\n"
+            f"Surface area plated = {self.area_cm2} cm²\n\n"
+            "Calculate the coating thickness in micrometres (µm)."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electroplating thickness and mass deposition"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"Q &= It = {round(self.current,10)} \\times {round(self.time_s,10)} = {round(self.charge,10)}\\\\"
+            f"n(e^-) &= \\frac{{Q}}{{F}} = \\frac{{{round(self.charge,10)}}}{{{self.F}}} = {round(self.moles_e,10)}\\\\"
+            f"n(\\text{{metal}}) &= \\frac{{n(e^-)}}{{{self.metal['electron_ratio']}}} = {round(self.moles_metal,10)}\\\\"
+            f"m &= nA_r = {round(self.moles_metal,10)} \\times {self.metal['Ar']} = {round(self.mass,10)}\\\\"
+            f"V &= \\frac{{m}}{{\\rho}} = \\frac{{{round(self.mass,10)}}}{{{self.metal['density']}}} = {round(self.volume_cm3,10)}\\\\"
+            f"t &= \\frac{{V}}{{A}} = \\frac{{{round(self.volume_cm3,10)}}}{{{self.area_cm2}}} = {round(self.thickness_cm,10)}\\\\"
+            f"t &= {self.answer}\\,\\mu m"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        ax.set_xlim(0, 20)
+        ax.set_ylim(0, 14)
+
+        beaker = Rectangle((5, 3), 10, 8, fill=False, linewidth=2)
+        ax.add_patch(beaker)
+
+        solution = Rectangle((5.2, 3.2), 9.6, 5, facecolor="#D6EAF8")
+        ax.add_patch(solution)
+
+        anode = Rectangle((6.5, 4), 0.8, 6, facecolor=self.metal["color"])
+        ax.add_patch(anode)
+        ax.text(6.9, 10.5, f"{self.metal['metal']} anode", ha="center", fontsize=10)
+
+        coin = Circle = Polygon([(13,6),(14,6.5),(14,7.5),(13,8),(12,7.5),(12,6.5)], closed=True, facecolor="#888888")
+        ax.add_patch(coin)
+
+        coating = Polygon([(13,6),(14,6.5),(14,7.5),(13,8),(12,7.5),(12,6.5)],
+                          closed=True, fill=False, edgecolor=self.metal["color"], linewidth=3)
+        ax.add_patch(coating)
+
+        ax.text(13, 8.7, "Cathode object", ha="center", fontsize=10)
+        ax.text(13, 5.2, "Metal coating", ha="center", fontsize=9, color=self.metal["color"])
+
+        arrow = FancyArrowPatch((7.5, 7), (12, 7), arrowstyle="->", mutation_scale=15, linewidth=2)
+        ax.add_patch(arrow)
+
+        ax.text(10, 7.6, "Metal ions move", ha="center", fontsize=10)
+
+        ax.set_title("Electroplating Setup", fontsize=16, fontweight="bold")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem115:
+
+    def __init__(self):
+
+        metals = [
+            {"metal": "Cu", "Ar": 63.5, "electron_ratio": 2, "color": "#C87533"},
+            {"metal": "Ag", "Ar": 108, "electron_ratio": 1, "color": "#C0C0C0"},
+            {"metal": "Ni", "Ar": 58.7, "electron_ratio": 2, "color": "#9FA6AD"}
+        ]
+
+        self.metal = rnd.choice(metals)
+
+        self.ore_mass = rnd.choice([50, 80, 100, 120, 150])
+        self.purity_percent = rnd.choice([70, 75, 80, 85, 90, 95])
+
+        self.current = rnd.choice([1.0, 1.5, 2.0, 2.5, 3.0])
+        self.time_min = rnd.choice([20, 30, 40, 50, 60])
+
+        self.F = 96500
+
+        self.pure_metal_mass_available = self.ore_mass * self.purity_percent / 100
+        self.moles_metal_available = self.pure_metal_mass_available / self.metal["Ar"]
+
+        self.time_s = self.time_min * 60
+        self.charge = self.current * self.time_s
+        self.moles_e = self.charge / self.F
+        self.moles_metal_possible_from_charge = self.moles_e / self.metal["electron_ratio"]
+
+        self.actual_moles_deposited = min(
+            self.moles_metal_available,
+            self.moles_metal_possible_from_charge
+        )
+
+        self.mass_deposited = self.actual_moles_deposited * self.metal["Ar"]
+
+        self.answer = round(self.mass_deposited, 2)
+
+        self.description = (
+            "The diagram shows purification of an impure metal using electrolysis.\n\n"
+            f"Ore mass = {self.ore_mass} g\n"
+            f"Purity = {self.purity_percent}%\n"
+            f"Current = {self.current} A\n"
+            f"Time = {self.time_min} minutes\n\n"
+            "Calculate the mass of pure metal deposited."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electrolysis with impure ore and purity calculation"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"m_{{pure}} &= \\frac{{{self.purity_percent}}}{{100}} \\times {self.ore_mass} = {round(self.pure_metal_mass_available,10)}\\\\"
+            f"n_{{metal,available}} &= \\frac{{m}}{{A_r}} = \\frac{{{round(self.pure_metal_mass_available,10)}}}{{{self.metal['Ar']}}} = {round(self.moles_metal_available,10)}\\\\"
+            f"Q &= It = {round(self.current,10)} \\times {round(self.time_s,10)} = {round(self.charge,10)}\\\\"
+            f"n(e^-) &= \\frac{{Q}}{{F}} = \\frac{{{round(self.charge,10)}}}{{{self.F}}} = {round(self.moles_e,10)}\\\\"
+            f"n_{{metal,charge}} &= \\frac{{n(e^-)}}{{{self.metal['electron_ratio']}}} = {round(self.moles_metal_possible_from_charge,10)}\\\\"
+            f"n_{{actual}} &= \\min({round(self.moles_metal_available,10)}, {round(self.moles_metal_possible_from_charge,10)}) = {round(self.actual_moles_deposited,10)}\\\\"
+            f"m_{{deposited}} &= n \\times A_r = {round(self.actual_moles_deposited,10)} \\times {self.metal['Ar']} = {self.answer}\\,\\text{{g}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_aspect("equal")
+        ax.axis("off")
+
+        ax.set_xlim(0, 22)
+        ax.set_ylim(0, 14)
+
+        beaker = Rectangle((8, 3), 6, 8, fill=False, linewidth=2)
+        solution = Rectangle((8.2, 3.2), 5.6, 5.5, facecolor="#D6EAF8")
+        ax.add_patch(beaker)
+        ax.add_patch(solution)
+
+        anode = Rectangle((9, 4), 0.8, 6, facecolor="#777777")
+        ax.add_patch(anode)
+        ax.text(9.4, 10.5, "Impure anode", ha="center", fontsize=10)
+
+        cathode = Rectangle((12.5, 4), 0.8, 6, facecolor="#DDDDDD")
+        ax.add_patch(cathode)
+        ax.text(12.9, 10.5, "Pure cathode", ha="center", fontsize=10)
+
+        coating = Rectangle((12.4, 4), 1.0, 6, fill=False, edgecolor=self.metal["color"], linewidth=3)
+        ax.add_patch(coating)
+
+        for _ in range(6):
+            x = rnd.uniform(9.1, 9.7)
+            y = rnd.uniform(4.2, 8)
+            sludge = Circle((x, y), 0.15, color="#4D4D4D")
+            ax.add_patch(sludge)
+
+        ax.text(9.4, 3.3, "Anode sludge", ha="center", fontsize=9)
+
+        arrow = FancyArrowPatch((10, 7), (12.5, 7), arrowstyle="->", mutation_scale=15, linewidth=2, color=self.metal["color"])
+        ax.add_patch(arrow)
+        ax.text(11.3, 7.6, f"{self.metal['metal']} ions", ha="center", fontsize=10)
+
+        ore_box = Rectangle((2, 7), 3, 2, fill=False, linewidth=2)
+        ax.add_patch(ore_box)
+        ax.text(3.5, 8, "Ore", ha="center", fontsize=11)
+
+        furnace = Rectangle((5.5, 7), 3, 2, fill=False, linewidth=2)
+        ax.add_patch(furnace)
+        ax.text(7, 8, "Extraction", ha="center", fontsize=11)
+
+        arrow_flow1 = FancyArrowPatch((5, 8), (5.5, 8), arrowstyle="->", mutation_scale=15)
+        arrow_flow2 = FancyArrowPatch((8.5, 8), (8, 8), arrowstyle="->", mutation_scale=15)
+        ax.add_patch(arrow_flow1)
+        ax.add_patch(arrow_flow2)
+
+        ax.set_title("Impure Ore → Extraction → Electrolysis Purification", fontsize=16, fontweight="bold")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem116:
+    """
+    Topic: Electrolysis – Charge → Electrons → Ion Ratio → Mass
+    Vision-based electrolysis diagram
+    """
+
+    def __init__(self):
+
+        variations = [
+            (1.5, 20),
+            (1.8, 25),
+            (2.0, 30),
+            (2.2, 18),
+            (2.5, 15),
+            (1.6, 35),
+            (2.8, 12),
+            (3.0, 10),
+            (2.4, 22),
+            (1.9, 28),
+        ]
+
+        self.current, self.time_minutes = rnd.choice(variations)
+
+        self.time_seconds = self.time_minutes * 60
+        self.charge = self.current * self.time_seconds
+        self.moles_electrons = self.charge / FARADAY
+        self.moles_copper = self.moles_electrons / 2
+        self.mass_copper = self.moles_copper * MOLAR_MASS_CU
+
+        self.answer = round(self.mass_copper, 3)
+
+        self.description = (
+            "The diagram shows electrolysis of copper(II) sulfate solution.\n"
+            "Use the information in the diagram to calculate\n"
+            "the mass of copper produced."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electrolysis calculations"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE"
+
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            f"\n\\text{{Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
+            f"\n\\text{{Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
+            f"\n\\text{{n(e}}^-\t{{)}} &= {self.charge}/96500 = {self.moles_electrons:.5f} \\\\"
+            f"\n\\text{{n(Cu)}} &= {self.moles_electrons:.5f}/2 = {self.moles_copper:.5f} \\\\"
+            f"\n\\text{{Mass}} &= {self.answer} \\text{{ g}}"
+            r"\n\end{aligned}\]"
+        )
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 7)
+        ax.axis('off')
+
+        ax.text(6, 6.6, "Electrolysis of Copper(II) Sulfate",
+                fontsize=16, ha='center', fontweight='bold')
+
+        beaker = patches.Rectangle((3, 1.5), 6, 4, fill=False, linewidth=3)
+        ax.add_patch(beaker)
+
+        solution = patches.Rectangle((3.1, 1.6), 5.8, 3.5,
+                                     color="#6fa8dc")
+        ax.add_patch(solution)
+
+        ax.text(6, 4.8, "CuSO₄(aq)", ha='center',
+                fontsize=13, fontweight='bold')
+
+        cathode = patches.Rectangle((4.2, 2), 0.2, 3,
+                                    color="black")
+        anode = patches.Rectangle((7.6, 2), 0.2, 3,
+                                  color="black")
+        ax.add_patch(cathode)
+        ax.add_patch(anode)
+
+        ax.text(4.3, 5.3, "-", fontsize=18, ha='center')
+        ax.text(7.7, 5.3, "+", fontsize=18, ha='center')
+
+        ax.text(6, 6.2,
+                f"I = {self.current} A",
+                ha='center',
+                fontsize=13)
+
+        ax.text(6, 5.9,
+                f"Time = {self.time_minutes} min",
+                ha='center',
+                fontsize=13)
+
+        copper_deposit = patches.Rectangle((4.05, 2),
+                                           0.1, 3,
+                                           color="#b87333")
+        ax.add_patch(copper_deposit)
+
+        ax.text(4.05, 1.2,
+                "Cu deposited",
+                fontsize=11,
+                ha='left')
+
+        ax.text(6, 0.6,
+                "Cu²⁺ + 2e⁻ → Cu",
+                fontsize=12,
+                ha='center')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem117:
+    """
+    Topic: Electrolysis – Concentration + Volume → Limiting Ion vs Charge
+    Vision-based limiting ion electrolysis
+    """
+
+    def __init__(self):
+
+        variations = [
+            (0.40, 0.50, 2.0, 15),
+            (0.30, 0.60, 2.5, 20),
+            (0.50, 0.40, 1.8, 25),
+            (0.35, 0.55, 2.2, 18),
+            (0.45, 0.45, 3.0, 12),
+            (0.25, 0.70, 2.4, 22),
+            (0.60, 0.30, 1.5, 30),
+            (0.38, 0.52, 2.6, 16),
+            (0.42, 0.48, 2.1, 14),
+            (0.33, 0.65, 2.8, 19),
+        ]
+
+        self.concentration, self.volume_dm3, self.current, self.time_minutes = rnd.choice(variations)
+
+        self.moles_ag_available = self.concentration * self.volume_dm3
+        self.time_seconds = self.time_minutes * 60
+        self.charge = self.current * self.time_seconds
+        self.moles_electrons = self.charge / FARADAY
+        self.moles_ag_deposited = min(self.moles_ag_available, self.moles_electrons)
+        self.mass_silver = self.moles_ag_deposited * MOLAR_MASS_AG
+
+        self.answer = round(self.mass_silver, 3)
+
+        self.description = (
+            "The diagram shows electrolysis of silver nitrate solution.\n"
+            "Use the information shown to calculate\n"
+            "the mass of silver deposited."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Limiting ion vs charge"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE Higher Tier"
+
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            f"\n\\text{{1. Moles of Ag}}^+ &= c \\times V = {self.concentration} \\times {self.volume_dm3} = {round(self.moles_ag_available, 10)} \\\\"
+            f"\n\\text{{2. Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
+            f"\n\\text{{3. Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
+            f"\n\\text{{4. n(e}}^-) &= {self.charge}/96500 = {round(self.moles_electrons, 10)} \\\\"
+            f"\n\\text{{5. n(Ag from charge)}} &= {round(self.moles_electrons, 10)} \\\\"
+            f"\n\\text{{6. Limiting n(Ag)}} &= \\min({round(self.moles_ag_available, 10)}, {round(self.moles_electrons, 10)}) = {round(self.moles_ag_deposited, 10)} \\\\"
+            f"\n\\text{{7. Mass}} &= {round(self.moles_ag_deposited, 10)} \\times 108 = {self.answer} \\text{{ g}}"
+            r"\n\end{aligned}\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 7)
+        ax.axis('off')
+
+        ax.text(6, 6.6, "Electrolysis of Silver Nitrate",
+                fontsize=16, ha='center', fontweight='bold')
+
+        beaker = patches.Rectangle((3, 1.5), 6, 4, fill=False, linewidth=3)
+        ax.add_patch(beaker)
+
+        solution_height = 3.5 * (self.volume_dm3 / 0.70)
+        solution = patches.Rectangle((3.1, 1.6), 5.8, solution_height,
+                                     color="#d9f2ff")
+        ax.add_patch(solution)
+
+        ax.text(6, 4.9, "AgNO₃(aq)", ha='center',
+                fontsize=13, fontweight='bold')
+
+        cathode = patches.Rectangle((4.2, 2), 0.2, 3,
+                                    color="black")
+        anode = patches.Rectangle((7.6, 2), 0.2, 3,
+                                  color="black")
+        ax.add_patch(cathode)
+        ax.add_patch(anode)
+
+        ax.text(4.3, 5.3, "-", fontsize=18, ha='center')
+        ax.text(7.7, 5.3, "+", fontsize=18, ha='center')
+
+        silver_deposit = patches.Rectangle((4.05, 2),
+                                           0.1, 3,
+                                           color="silver")
+        ax.add_patch(silver_deposit)
+
+        ax.arrow(4.4, 6, 3.2, 0,
+                 head_width=0.15,
+                 head_length=0.3,
+                 linewidth=2,
+                 color='black')
+
+        ax.text(6, 6.2,
+                f"I = {self.current} A",
+                ha='center',
+                fontsize=13)
+
+        ax.text(6, 5.9,
+                f"Time = {self.time_minutes} min",
+                ha='center',
+                fontsize=13)
+
+        ax.text(2.1, 3.5,
+                f"{self.concentration} mol dm⁻³",
+                fontsize=12)
+
+        ax.text(6, 1.1,
+                f"Volume = {self.volume_dm3} dm³",
+                fontsize=12,
+                ha='center')
+
+        ax.text(6, 0.6,
+                "Ag⁺ + e⁻ → Ag",
+                fontsize=12,
+                ha='center')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem118:
+    """
+    Topic: Electrolysis → Mass → Volume → Thickness
+    Vision-based electroplating problem
+    """
+
+    def __init__(self):
+
+        variations = [
+            (1.5, 20, 18),
+            (2.0, 25, 22),
+            (2.5, 30, 20),
+            (3.0, 15, 24),
+            (1.8, 35, 19),
+            (2.2, 40, 23),
+            (1.6, 28, 21),
+            (2.8, 32, 26),
+            (3.2, 18, 17),
+            (2.4, 45, 25),
+        ]
+
+        self.current, self.time_minutes, self.area_cm2 = rnd.choice(variations)
+        self.density = DENSITY_NI
+
+        self.time_seconds = self.time_minutes * 60
+        self.charge = self.current * self.time_seconds
+        self.moles_e = self.charge / FARADAY
+        self.moles_ni = self.moles_e / 2
+        self.mass_ni = self.moles_ni * MOLAR_MASS_NI
+        self.volume_cm3 = self.mass_ni / self.density
+        self.thickness_cm = self.volume_cm3 / self.area_cm2
+        self.thickness_mm = self.thickness_cm * 10
+
+        self.answer = round(self.thickness_mm, 4)
+
+        self.description = (
+            "The diagram shows nickel electroplating.\n"
+            "Use the information shown to calculate\n"
+            "the thickness of nickel deposited."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electroplating thickness"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE Grade 8–9"
+
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            f"\n\\text{{1. Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
+            f"\n\\text{{2. Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
+            f"\n\\text{{3. n(e}}^-) &= {self.charge}/96500 = {round(self.moles_e, 10)} \\\\"
+            f"\n\\text{{4. n(Ni)}} &= {round(self.moles_e, 10)}/2 = {round(self.moles_ni, 10)} \\\\"
+            f"\n\\text{{5. Mass}} &= {round(self.moles_ni, 10)} \\times 58.7 = {round(self.mass_ni, 10)} \\\\"
+            f"\n\\text{{6. Volume}} &= {round(self.mass_ni, 10)}/8.9 = {round(self.volume_cm3, 10)} \\\\"
+            f"\n\\text{{7. Thickness (cm)}} &= {round(self.volume_cm3, 10)}/{self.area_cm2} = {round(self.thickness_cm, 10)} \\\\"
+            f"\n\\text{{8. Thickness (mm)}} &= {round(self.thickness_cm, 10)} \\times 10 = {self.answer} \\text{{ mm}}"
+            r"\n\end{aligned}\]"
+        )
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 7)
+        ax.axis('off')
+
+        ax.text(6, 6.6, "Nickel Electroplating Setup",
+                fontsize=16, ha='center', fontweight='bold')
+
+        beaker = patches.Rectangle((3, 1.5), 6, 4, fill=False, linewidth=3)
+        ax.add_patch(beaker)
+
+        solution = patches.Rectangle((3.1, 1.6), 5.8, 3.5,
+                                     color="#a2c4c9")
+        ax.add_patch(solution)
+
+        ax.text(6, 4.9, "Ni²⁺(aq)", ha='center',
+                fontsize=13, fontweight='bold')
+
+        cathode = patches.Rectangle((4.2, 2), 0.25, 3,
+                                    color="black")
+        anode = patches.Rectangle((7.6, 2), 0.25, 3,
+                                  color="black")
+        ax.add_patch(cathode)
+        ax.add_patch(anode)
+
+        ax.text(4.3, 5.3, "-", fontsize=18, ha='center')
+        ax.text(7.7, 5.3, "+", fontsize=18, ha='center')
+
+        plated_layer = patches.Rectangle((4.05, 2),
+                                         0.1, 3,
+                                         color="#c0c0c0")
+        ax.add_patch(plated_layer)
+
+        ax.text(3.5, 1.2,
+                f"Surface area = {self.area_cm2} cm²",
+                fontsize=12)
+
+        ax.text(8.5, 1.2,
+                f"Density Ni = {self.density} g/cm³",
+                fontsize=12)
+
+        ax.arrow(4.5, 6, 3, 0,
+                 head_width=0.15,
+                 head_length=0.3,
+                 linewidth=2,
+                 color='black')
+
+        ax.text(6, 6.2,
+                f"I = {self.current} A",
+                ha='center',
+                fontsize=13)
+
+        ax.text(6, 5.9,
+                f"Time = {self.time_minutes} min",
+                ha='center',
+                fontsize=13)
+
+        ax.text(6, 0.6,
+                "Ni²⁺ + 2e⁻ → Ni",
+                fontsize=12,
+                ha='center')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem119:
+    """
+    Topic: Electroplating Thickness Calculation
+    Vision-based realistic setup
+    """
+
+    def __init__(self):
+
+        variations = [
+            (1.5, 20, 20),
+            (2.0, 25, 30),
+            (2.5, 30, 20),
+            (3.0, 15, 25),
+            (1.8, 35, 30),
+            (2.2, 40, 18),
+            (1.6, 28, 22),
+            (2.8, 32, 24),
+            (3.2, 18, 26),
+            (2.4, 45, 20),
+        ]
+
+        self.current, self.time_minutes, self.area_cm2 = rnd.choice(variations)
+        self.density = DENSITY_NI
+
+        self.time_seconds = self.time_minutes * 60
+        self.charge = self.current * self.time_seconds
+        self.moles_e = self.charge / FARADAY
+        self.moles_ni = self.moles_e / 2
+        self.mass_ni = self.moles_ni * MOLAR_MASS_NI
+        self.volume_cm3 = self.mass_ni / self.density
+        self.thickness_cm = self.volume_cm3 / self.area_cm2
+        self.thickness_mm = self.thickness_cm * 10
+
+        self.answer = round(self.thickness_mm, 4)
+
+        self.description = (
+            "The diagram shows a nickel electroplating setup.\n"
+            "Use the information shown to calculate\n"
+            "the thickness of nickel deposited."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Electroplating thickness"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE Grade 8–9"
+
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            f"\n\\text{{1. Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
+            f"\n\\text{{2. Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
+            f"\n\\text{{3. n(e}}^-) &= {self.charge}/96500 = {round(self.moles_e, 10)} \\\\"
+            f"\n\\text{{4. n(Ni)}} &= {round(self.moles_e, 10)}/2 = {round(self.moles_ni, 10)} \\\\"
+            f"\n\\text{{5. Mass}} &= {round(self.moles_ni, 10)} \\times 58.7 = {round(self.mass_ni, 10)} \\\\"
+            f"\n\\text{{6. Volume}} &= {round(self.mass_ni, 10)}/8.9 = {round(self.volume_cm3, 10)} \\\\"
+            f"\n\\text{{7. Thickness (cm)}} &= {round(self.volume_cm3, 10)}/{self.area_cm2} = {round(self.thickness_cm, 10)} \\\\"
+            f"\n\\text{{8. Thickness (mm)}} &= {round(self.thickness_cm, 10)} \\times 10 = {self.answer} \\text{{ mm}}"
+            r"\n\end{aligned}\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 7)
+        ax.axis('off')
+
+        ax.text(6, 6.6, "Nickel Electroplating Apparatus",
+                fontsize=16, ha='center', fontweight='bold')
+
+        beaker = patches.Rectangle((3, 1.5), 6, 4, fill=False, linewidth=3)
+        ax.add_patch(beaker)
+
+        solution = patches.Rectangle((3.1, 1.6), 5.8, 3.5,
+                                     color="#9fc5e8")
+        ax.add_patch(solution)
+
+        ax.text(6, 4.9, "Ni²⁺(aq)", ha='center',
+                fontsize=13, fontweight='bold')
+
+        cathode = patches.Rectangle((4.2, 2), 0.3, 3,
+                                    color="black")
+        anode = patches.Rectangle((7.6, 2), 0.3, 3,
+                                  color="black")
+        ax.add_patch(cathode)
+        ax.add_patch(anode)
+
+        ax.text(4.35, 5.3, "-", fontsize=18, ha='center')
+        ax.text(7.75, 5.3, "+", fontsize=18, ha='center')
+
+        plated_layer = patches.Rectangle((4.05, 2),
+                                         0.1, 3,
+                                         color="#c0c0c0")
+        ax.add_patch(plated_layer)
+
+        plate_label = patches.Rectangle((4.05, 1.2), 0.7, 0.3,
+                                        color="white", ec="black")
+        ax.add_patch(plate_label)
+        ax.text(4.4, 1.35,
+                f"{self.area_cm2} cm²",
+                fontsize=10,
+                ha='center')
+
+        ammeter = patches.Circle((6, 6), 0.5, fill=False, linewidth=2)
+        ax.add_patch(ammeter)
+        ax.text(6, 6, f"{self.current} A",
+                ha='center', va='center', fontsize=10)
+
+        ax.plot([4.35, 5.5], [5.3, 6], linewidth=2, color='black')
+        ax.plot([7.75, 6.5], [5.3, 6], linewidth=2, color='black')
+
+        ax.text(6, 5.4,
+                f"Time = {self.time_minutes} min",
+                ha='center',
+                fontsize=12)
+
+        ax.text(9.3, 1.2,
+                f"Density = {self.density} g/cm³",
+                fontsize=11)
+
+        ax.text(6, 0.6,
+                "Ni²⁺ + 2e⁻ → Ni",
+                fontsize=12,
+                ha='center')
+
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem120:
+    """
+    Topic: Percentage Purity + Electrolysis (Extraction)
+    Vision-based extraction setup
+    """
+
+    def __init__(self):
+
+        variations = [
+            (80, 65),
+            (80, 75),
+            (100, 70),
+            (100, 80),
+            (120, 75),
+            (120, 85),
+            (150, 70),
+            (150, 90),
+            (200, 80),
+            (200, 85),
+        ]
+
+        self.ore_mass, self.purity_percent = rnd.choice(variations)
+
+        self.pure_cu_mass = self.ore_mass * (self.purity_percent / 100)
+        self.answer = round(self.pure_cu_mass, 2)
+
+        self.description = (
+            "The diagram shows copper extraction by electrolysis.\n"
+            "Use the information shown to calculate\n"
+            "the maximum mass of pure copper obtained."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Percentage purity + extraction"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE Higher Tier"
+
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            f"\n\\text{{1. Percentage purity formula}} & \\\\"
+            f"\\text{{Pure mass}} &= \\text{{Ore mass}} \\times \\frac{{\\text{{Purity}}}}{{100}} \\\\"
+            f"\n\\text{{2. Substitute values}} & \\\\"
+            f"m_{{\\text{{Cu}}}} &= {self.ore_mass} \\times \\frac{{{self.purity_percent}}}{{100}} \\\\"
+            f"&= {self.ore_mass} \\times {round(self.purity_percent/100, 10)} \\\\"
+            f"&= {self.answer} \\text{{ g}}"
+            r"\n\end{aligned}\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 7)
+        ax.axis('off')
+
+        ax.text(6, 6.6, "Copper Extraction by Electrolysis",
+                fontsize=16, ha='center', fontweight='bold')
+
+        ore = patches.Circle((2.5, 3.5), 1.2, color="#8d6e63")
+        ax.add_patch(ore)
+
+        ax.text(2.5, 3.7,
+                f"{self.ore_mass} g",
+                ha='center', fontsize=12, fontweight='bold')
+
+        ax.text(2.5, 3.2,
+                f"{self.purity_percent}% Cu",
+                ha='center', fontsize=11)
+
+        furnace = patches.Rectangle((5, 2.2), 2.5, 2.5,
+                                    fill=False, linewidth=3)
+        ax.add_patch(furnace)
+
+        ax.text(6.25, 4.5,
+                "Electrolysis\nCell",
+                ha='center', fontsize=11)
+
+        ax.arrow(3.8, 3.5, 0.9, 0,
+                 head_width=0.2,
+                 head_length=0.3,
+                 linewidth=2,
+                 color='black')
+
+        copper_bar = patches.Rectangle((9, 2.8), 1.5, 1.4,
+                                       color="#b87333")
+        ax.add_patch(copper_bar)
+
+        ax.text(9.75, 2.3,
+                "Pure Cu (s)",
+                ha='center',
+                fontsize=11)
+
+        ax.arrow(7.6, 3.5, 1.2, 0,
+                 head_width=0.2,
+                 head_length=0.3,
+                 linewidth=2,
+                 color='black')
+
+        ax.text(6, 1.2,
+                "Maximum yield depends on copper purity",
+                ha='center',
+                fontsize=11)
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem121:
+    def __init__(self):
+
+        variations = [
+            (1.0, 0.6, 0.50),
+            (0.8, 0.4, 0.50),
+            (1.2, 0.9, 0.40),
+            (1.5, 1.0, 0.30),
+            (0.9, 0.5, 0.60),
+            (1.1, 0.7, 0.45),
+            (0.7, 0.3, 0.50),
+            (1.3, 0.8, 0.35),
+            (1.0, 0.2, 0.25),
+            (0.6, 0.1, 0.40),
+        ]
+
+        self.initial_c, self.final_c, self.volume = rnd.choice(variations)
+
+        self.delta_c = self.initial_c - self.final_c
+        self.moles_cu = self.delta_c * self.volume
+        self.moles_e = self.moles_cu * 2
+        self.charge = self.moles_e * FARADAY
+
+        self.answer = round(self.charge, 0)
+
+        self.description = (
+            "The graph shows how Cu²⁺ concentration changes during electrolysis.\n"
+            "Use the graph and information shown to calculate\n"
+            "the total charge passed."
+        )
+
+        self.topic = "Electrochemistry"
+        self.subtopic = "Graph-based concentration change"
+        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "GCSE Grade 8–9"
+
+        self.reasoning = (
+            r"\[\begin{aligned}"
+            f"\n\\text{{1. Concentration change}} &= {self.initial_c} - {self.final_c} = {round(self.delta_c, 10)} \\\\"
+            f"\n\\text{{2. n(Cu}}^{{2+}}\text{{)}} &= \\Delta c \\times V = {round(self.delta_c, 10)} \\times {self.volume} = {round(self.moles_cu, 10)} \\\\"
+            f"\n\\text{{3. Half-equation}} &: \\text{{Cu}}^{{2+}} + 2e^- \\rightarrow \\text{{Cu}} \\\\"
+            f"\n\\text{{4. n(e}}^-) &= 2 \\times {round(self.moles_cu, 10)} = {round(self.moles_e, 10)} \\\\"
+            f"\n\\text{{5. Charge}} &= nF = {round(self.moles_e, 10)} \\times 96500 = {self.answer} \\text{{ C}}"
+            r"\n\end{aligned}\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(12, 7))
+
+        ax_graph = fig.add_axes([0.08, 0.35, 0.5, 0.55])
+        ax_graph.plot([0, 10], [self.initial_c, self.final_c], linewidth=3)
+        ax_graph.set_xlim(0, 10)
+        ax_graph.set_ylim(0, max(self.initial_c, self.final_c) + 0.3)
+        ax_graph.set_xlabel("Time")
+        ax_graph.set_ylabel("Cu²⁺ concentration (mol dm⁻³)")
+        ax_graph.set_title("Concentration vs Time")
+
+        ax_graph.scatter([0, 10], [self.initial_c, self.final_c], s=60)
+
+        ax_diagram = fig.add_axes([0.65, 0.2, 0.3, 0.6])
+        ax_diagram.set_xlim(0, 6)
+        ax_diagram.set_ylim(0, 7)
+        ax_diagram.axis('off')
+
+        beaker = patches.Rectangle((1, 1.5), 4, 3.5, fill=False, linewidth=2)
+        ax_diagram.add_patch(beaker)
+
+        solution = patches.Rectangle((1.1, 1.6), 3.8, 3.0, color="#6fa8dc")
+        ax_diagram.add_patch(solution)
+
+        ax_diagram.text(3, 4.8, "CuSO₄(aq)", ha='center', fontsize=10)
+
+        cathode = patches.Rectangle((2, 2), 0.2, 2.5, color="black")
+        anode = patches.Rectangle((4, 2), 0.2, 2.5, color="black")
+        ax_diagram.add_patch(cathode)
+        ax_diagram.add_patch(anode)
+
+        ax_diagram.text(2.1, 4.8, "-", fontsize=14, ha='center')
+        ax_diagram.text(4.1, 4.8, "+", fontsize=14, ha='center')
+
+        copper = patches.Rectangle((1.9, 2), 0.1, 2.5, color="#b87333")
+        ax_diagram.add_patch(copper)
+
+        ax_diagram.text(3, 1.1,
+                        f"Volume = {self.volume} dm³",
+                        ha='center',
+                        fontsize=10)
+
+        ax_diagram.text(3, 0.6,
+                        "Cu²⁺ + 2e⁻ → Cu",
+                        ha='center',
+                        fontsize=9)
+
+        fig.suptitle("Electrolysis of Copper(II) Sulfate",
+                     fontsize=15,
+                     fontweight='bold')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem122:
+    def __init__(self):
+
+        variations = [
+            (120, 40),
+            (150, 60),
+            (200, 80),
+            (180, 20),
+            (140, 50),
+            (160, 30),
+            (220, 100),
+            (130, 70),
+            (170, 90),
+            (190, 110),
+        ]
+
+        self.reactants_energy, self.products_energy = rnd.choice(variations)
+
+        self.delta_h = self.products_energy - self.reactants_energy
+        self.answer = self.delta_h
+
+        self.description = (
+            "The reaction pathway diagram shows the energy levels of reactants and products.\n"
+            "Calculate the enthalpy change, ΔH, in kJ."
+        )
+
+        self.topic = "Chemical Energetics"
+        self.subtopic = "Enthalpy change from reaction pathway"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{ΔH}} &= \\text{{Energy of products}} - \\text{{Energy of reactants}}\\\\"
+            f"&= {self.products_energy} - {self.reactants_energy}\\\\"
+            f"&= {self.answer}\\,\\text{{kJ}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig = plt.figure(figsize=(12, 7))
+
+        fig.text(0.5, 0.92,
+                "Reaction Pathway Diagram",
+                fontsize=18,
+                ha='center',
+                fontweight='bold')
+
+        ax = fig.add_axes([0.08, 0.12, 0.84, 0.72])
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, max(self.reactants_energy, self.products_energy) + 80)
+
+        ax.set_xlabel("Reaction Progress", fontsize=12)
+        ax.set_ylabel("Energy (kJ)", fontsize=12)
+
+        ax.spines['top'].set_visible(True)
+        ax.spines['right'].set_visible(True)
+        ax.spines['left'].set_linewidth(1.5)
+        ax.spines['bottom'].set_linewidth(1.5)
+
+        ax.plot([1, 4], [self.reactants_energy, self.reactants_energy], linewidth=4)
+        ax.plot([6, 9], [self.products_energy, self.products_energy], linewidth=4)
+
+        peak_energy = max(self.reactants_energy, self.products_energy) + 50
+
+        ax.plot([4, 5, 6],
+                [self.reactants_energy, peak_energy, self.products_energy],
+                linewidth=4)
+
+        ax.text(2.5, self.reactants_energy + 10,
+                f"Reactants\n{self.reactants_energy} kJ",
+                ha='center',
+                fontsize=12)
+
+        ax.text(7.5, self.products_energy + 10,
+                f"Products\n{self.products_energy} kJ",
+                ha='center',
+                fontsize=12)
+
+        ax.annotate("",
+                    xy=(8.8, self.products_energy),
+                    xytext=(8.8, self.reactants_energy),
+                    arrowprops=dict(arrowstyle="<->", linewidth=2.5))
+
+        ax.text(9.05,
+                (self.reactants_energy + self.products_energy) / 2,
+                "ΔH",
+                fontsize=13)
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem123:
+    def __init__(self):
+
+        variations = [
+            (60, 150, 20),
+            (80, 200, 50),
+            (40, 120, 10),
+            (100, 250, 60),
+            (70, 180, 30),
+            (90, 220, 40),
+            (50, 160, 25),
+            (110, 300, 70),
+            (75, 190, 35),
+            (65, 170, 15),
+        ]
+
+        self.reactants_energy, self.peak_energy, self.products_energy = rnd.choice(variations)
+
+        self.activation_energy = self.peak_energy - self.reactants_energy
+        self.answer = self.activation_energy
+
+        self.description = (
+            "The reaction pathway diagram shows energy levels of reactants and products.\n"
+            "Calculate the activation energy, Ea, for the forward reaction."
+        )
+
+        self.topic = "Chemical Energetics"
+        self.subtopic = "Activation energy from reaction pathway"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE Supplement"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{E}}_a &= \\text{{Peak}} - \\text{{Reactants}}\\\\"
+            f"&= {self.peak_energy} - {self.reactants_energy}\\\\"
+            f"&= {self.answer}\\,\\text{{kJ}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(12, 7))
+
+        fig.text(0.5, 0.94,
+                "Reaction Pathway Diagram",
+                fontsize=18,
+                ha='center',
+                fontweight='bold')
+
+        ax = fig.add_axes([0.08, 0.12, 0.84, 0.76])
+
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, self.peak_energy + 80)
+
+        ax.set_xlabel("Reaction Progress", fontsize=12)
+        ax.set_ylabel("Energy (kJ)", fontsize=12)
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)
+
+        center = 5
+        left = center - 3
+        right = center + 3
+        peak_x = center
+
+        ax.plot([left - 1.5, left], 
+                [self.reactants_energy, self.reactants_energy], 
+                linewidth=4)
+
+        ax.plot([left, peak_x, right],
+                [self.reactants_energy, self.peak_energy, self.products_energy],
+                linewidth=4)
+
+        ax.plot([right, right + 1.5], 
+                [self.products_energy, self.products_energy], 
+                linewidth=4)
+
+        ax.text(left - 0.75, self.reactants_energy + 12,
+                f"Reactants\n{self.reactants_energy} kJ",
+                ha='center',
+                fontsize=12)
+
+        ax.text(peak_x, self.peak_energy + 12,
+                f"Peak\n{self.peak_energy} kJ",
+                ha='center',
+                fontsize=12)
+
+        ax.text(right + 0.75, self.products_energy + 12,
+                f"Products\n{self.products_energy} kJ",
+                ha='center',
+                fontsize=12)
+
+        ax.annotate("",
+                    xy=(peak_x - 0.4, self.peak_energy),
+                    xytext=(peak_x - 0.4, self.reactants_energy),
+                    arrowprops=dict(arrowstyle="<->", linewidth=2.5))
+
+        ax.text(peak_x - 0.2,
+                (self.reactants_energy + self.peak_energy) / 2,
+                "Ea",
+                fontsize=13)
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150)
+        plt.close()
+
+class Chem124:
+    def __init__(self):
+
+        variations = [
+            (436, 242, 431),
+            (410, 200, 390),
+            (450, 250, 420),
+            (430, 240, 410),
+            (420, 230, 400),
+            (440, 260, 415),
+            (415, 220, 395),
+            (455, 270, 430),
+            (435, 245, 405),
+            (425, 235, 398),
+        ]
+
+        self.hh, self.clcl, self.hcl = rnd.choice(variations)
+
+        self.bonds_broken = self.hh + self.clcl
+        self.bonds_formed = 2 * self.hcl
+        self.delta_h = self.bonds_broken - self.bonds_formed
+
+        self.answer = self.delta_h
+
+        self.description = (
+            "Using the bond energies shown in the table,\n"
+            "calculate the enthalpy change of the reaction:\n"
+            "H₂ + Cl₂ → 2HCl"
+        )
+
+        self.topic = "Chemical Energetics"
+        self.subtopic = "Bond energy calculation"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE Supplement"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{ΔH}} &= \\text{{Bonds broken}} - \\text{{Bonds formed}}\\\\"
+            f"&= ({self.hh} + {self.clcl}) - (2 \\times {self.hcl})\\\\"
+            f"&= {self.bonds_broken} - {self.bonds_formed}\\\\"
+            f"&= {self.answer}\\,\\text{{kJ}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.axis('off')
+
+        ax.text(0.5, 0.9, "Bond Energy Table",
+                fontsize=16, ha='center', transform=ax.transAxes)
+
+        table_data = [
+            ["Bond", "Energy (kJ/mol)"],
+            ["H–H", str(self.hh)],
+            ["Cl–Cl", str(self.clcl)],
+            ["H–Cl", str(self.hcl)],
+        ]
+
+        table = ax.table(cellText=table_data,
+                         loc='center',
+                         cellLoc='center')
+
+        table.scale(1.5, 2)
+
+        ax.text(0.5, 0.25,
+                "Reaction:  H₂ + Cl₂ → 2HCl",
+                fontsize=14,
+                ha='center',
+                transform=ax.transAxes)
+
+        os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
