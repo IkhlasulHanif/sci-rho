@@ -4670,7 +4670,18 @@ class Mat200:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
-        self.reasoning = ""
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Sample size }} (n) &= {self.n}\\\\"
+            f"\\text{{Number of successes }} (x) &= {self.x}\\\\"
+            f"\\text{{The unbiased point estimate for }} p \\text{{ is the sample proportion }} \\hat{{p}}:\\\\"
+            f"\\hat{{p}} &= \\frac{{x}}{{n}}\\\\"
+            f"&= \\frac{{{self.x}}}{{{self.n}}}\\\\"
+            f"&= {round(self.x / self.n, 10)}\\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+        print(self.reasoning)
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -4712,7 +4723,7 @@ class Mat200:
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
         
-class Mat200:
+class Mat201:
     def __init__(self):
         # Population parameters
         self.mu = rnd.randint(60, 180)
