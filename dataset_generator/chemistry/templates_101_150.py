@@ -2614,3 +2614,595 @@ class Chem124:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
+
+class Chem125:
+    def __init__(self):
+
+        variations = [
+            ("Magnesium + Hydrochloric acid", 10, 30, 12, 36),
+            ("Calcium carbonate + Hydrochloric acid", 15, 45, 20, 50),
+            ("Zinc + Sulfuric acid", 5, 25, 8, 28),
+            ("Marble chips + Nitric acid", 20, 60, 25, 70),
+            ("Iron + Hydrochloric acid", 10, 40, 15, 45),
+            ("Magnesium ribbon + Sulfuric acid", 8, 28, 10, 34),
+            ("Calcium + Water", 12, 32, 18, 42),
+            ("Sodium carbonate + Hydrochloric acid", 10, 50, 14, 54),
+            ("Zinc granules + Nitric acid", 6, 26, 9, 29),
+            ("Marble chips + Hydrochloric acid", 10, 30, 16, 46),
+        ]
+
+        (self.reaction,
+         self.t1,
+         self.t2,
+         self.v1,
+         self.v2) = rnd.choice(variations)
+
+        self.delta_v = self.v2 - self.v1
+        self.delta_t = self.t2 - self.t1
+        self.rate = self.delta_v / self.delta_t
+        self.answer = round(self.rate, 2)
+
+        self.description = (
+            f"The graph shows the reaction between {self.reaction}.\n"
+            "Using the graph, calculate the rate of reaction."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Rate from gradient"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Rate}} &= \\frac{{\\Delta V}}{{\\Delta t}}\\\\"
+            f"&= \\frac{{{self.v2} - {self.v1}}}{{{self.t2} - {self.t1}}}\\\\"
+            f"&= \\frac{{{self.delta_v}}}{{{self.delta_t}}}\\\\"
+            f"&= {self.answer}\\,\\text{{cm}}^3\\,\\text{{s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(12, 7))
+        ax = fig.add_axes([0.12, 0.15, 0.75, 0.7])
+
+        times = [self.t1, self.t2]
+        volumes = [self.v1, self.v2]
+
+        ax.bar(times, volumes, width=5)
+
+        max_time = max(times) * 1.4
+        max_volume = max(volumes) * 1.4
+
+        ax.set_xlim(0, max_time)
+        ax.set_ylim(0, max_volume)
+
+        ax.set_xlabel("Time (s)", fontsize=13)
+        ax.set_ylabel("Volume of gas (cm³)", fontsize=13)
+
+        ax.grid(axis='y', linestyle='--', linewidth=0.6, alpha=0.6)
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)
+
+        for t, v in zip(times, volumes):
+            ax.text(t, v + max_volume * 0.03,
+                    f"{v} cm³",
+                    ha='center',
+                    fontsize=11)
+
+        fig.text(0.5, 0.93,
+                f"Rate of Reaction Data\n{self.reaction}",
+                ha='center',
+                fontsize=16,
+                fontweight='bold')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem126:
+    def __init__(self):
+
+        variations = [
+            ("Calcium carbonate + Hydrochloric acid", 150.0, 147.4, 80),
+            ("Magnesium + Hydrochloric acid", 120.0, 118.0, 60),
+            ("Zinc + Sulfuric acid", 200.0, 197.5, 100),
+            ("Marble chips + Nitric acid", 180.0, 177.0, 90),
+            ("Iron + Hydrochloric acid", 160.0, 158.5, 70),
+            ("Sodium carbonate + Hydrochloric acid", 140.0, 138.0, 50),
+            ("Calcium + Water", 130.0, 128.2, 75),
+            ("Magnesium ribbon + Sulfuric acid", 170.0, 167.5, 85),
+            ("Zinc granules + Hydrochloric acid", 155.0, 152.0, 95),
+            ("Marble chips + Hydrochloric acid", 190.0, 187.5, 110),
+        ]
+
+        self.reaction, self.initial_mass, self.final_mass, self.finish_time = rnd.choice(variations)
+
+        self.answer = self.finish_time
+
+        self.description = (
+            f"The graph shows the reaction between {self.reaction}.\n"
+            "From the graph, determine the time taken\n"
+            "for the reaction to finish."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Time to completion from mass-loss graph"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial mass}} &= {self.initial_mass}\\,\\text{{g}}\\\\"
+            f"\\text{{Final mass}} &= {self.final_mass}\\,\\text{{g}}\\\\"
+            f"\\text{{Reaction finishes when mass becomes constant}}\\\\"
+            f"\\text{{Time at plateau}} &= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(12, 7))
+
+        fig.text(0.5, 0.95,
+                f"Mass Change During Reaction\n{self.reaction}",
+                ha='center',
+                fontsize=16,
+                fontweight='bold')
+
+        ax = fig.add_axes([0.15, 0.35, 0.7, 0.45])
+
+        ax.set_xlim(0, self.finish_time * 1.2)
+        ax.set_ylim(self.final_mass - 2, self.initial_mass + 3)
+
+        ax.set_xlabel("Time (s)", fontsize=12)
+        ax.set_ylabel("Mass of flask (g)", fontsize=12)
+
+        ax.grid(True, linestyle='--', linewidth=0.6, alpha=0.6)
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)
+
+        import numpy as np
+        t = np.linspace(0, self.finish_time, 200)
+        k = 3 / self.finish_time
+        mass_curve = self.final_mass + (self.initial_mass - self.final_mass) * np.exp(-k * t)
+
+        ax.plot(t, mass_curve, linewidth=3)
+
+        ax.plot([self.finish_time, self.finish_time * 1.15],
+                [self.final_mass, self.final_mass],
+                linewidth=3)
+
+        ax.scatter([0, self.finish_time],
+                [self.initial_mass, self.final_mass],
+                s=60)
+
+        ax.text(0, self.initial_mass + 0.5,
+                f"{self.initial_mass} g",
+                fontsize=10)
+
+        ax.text(self.finish_time, self.final_mass + 0.5,
+                f"{self.final_mass} g",
+                fontsize=10,
+                ha='center')
+
+        ax_table = fig.add_axes([0.25, 0.12, 0.5, 0.12])
+        ax_table.axis('off')
+
+        table_data = [
+            ["Time (s)", "0", f"{self.finish_time}"],
+            ["Mass (g)", f"{self.initial_mass}", f"{self.final_mass}"]
+        ]
+
+        table = ax_table.table(cellText=table_data,
+                            loc='center',
+                            cellLoc='center')
+
+        table.auto_set_font_size(False)
+        table.set_fontsize(11)
+        table.scale(1.2, 1.5)
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.close()
+
+class Chem127:
+    def __init__(self):
+
+        variations = [
+            ("Haber Process (N₂ + 3H₂ ⇌ 2NH₃)", "NH₃", 60, 20, 60),
+            ("Contact Process (2SO₂ + O₂ ⇌ 2SO₃)", "SO₃", 50, 25, 75),
+            ("Hydrogen iodide formation (H₂ + I₂ ⇌ 2HI)", "HI", 80, 20, 20),
+            ("Ester formation", "Ester", 40, 30, 30),
+            ("Ammonium chloride formation", "NH₄Cl", 70, 15, 45),
+            ("Haber Process", "NH₃", 50, 25, 75),
+            ("Contact Process", "SO₃", 60, 20, 60),
+            ("Hydrogen iodide formation", "HI", 90, 10, 10),
+            ("Ester formation", "Ester", 30, 35, 35),
+            ("Ammonium chloride formation", "NH₄Cl", 80, 10, 40),
+        ]
+
+        self.process, self.product_name, self.product_mol, self.reactant1_mol, self.reactant2_mol = rnd.choice(variations)
+
+        self.total_moles = self.product_mol + self.reactant1_mol + self.reactant2_mol
+        self.percentage_yield = (self.product_mol / self.total_moles) * 100
+        self.answer = round(self.percentage_yield, 1)
+
+        self.description = (
+            f"The bar chart shows the equilibrium composition for {self.process}.\n"
+            f"Calculate the percentage yield of {self.product_name} at equilibrium."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Percentage yield from composition"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total moles}} &= {self.product_mol} + {self.reactant1_mol} + {self.reactant2_mol} = {self.total_moles}\\\\"
+            f"\\text{{Percentage yield}} &= \\frac{{{self.product_mol}}}{{{self.total_moles}}} \\times 100\\\\"
+            f"&= {self.answer}\\,\\% "
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(10, 6))
+        ax = fig.add_axes([0.1, 0.2, 0.8, 0.7])
+
+        labels = [self.product_name, "Reactant 1", "Reactant 2"]
+        values = [self.product_mol, self.reactant1_mol, self.reactant2_mol]
+
+        ax.bar(labels, values)
+
+        ax.set_ylabel("Amount (mol)")
+        ax.set_title(f"Equilibrium Composition\n{self.process}")
+
+        for i, v in enumerate(values):
+            ax.text(i, v + 2, str(v), ha='center')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150)
+        plt.close()
+
+class Chem128:
+    def __init__(self):
+
+        variations = [
+            ("Haber Process", "N₂ + 3H₂ ⇌ 2NH₃", 4, 2),
+            ("Hydrogen iodide formation", "H₂ + I₂ ⇌ 2HI", 2, 2),
+            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄", 2, 1),
+            ("Sulfur trioxide formation", "2SO₂ + O₂ ⇌ 2SO₃", 3, 2),
+            ("Ammonium chloride formation", "NH₃ + HCl ⇌ NH₄Cl", 2, 1),
+            ("Haber Process", "N₂ + 3H₂ ⇌ 2NH₃", 6, 4),
+            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄", 4, 2),
+            ("Sulfur trioxide formation", "2SO₂ + O₂ ⇌ 2SO₃", 6, 4),
+            ("Hydrogen iodide formation", "H₂ + I₂ ⇌ 2HI", 4, 4),
+            ("Ammonium chloride formation", "NH₃ + HCl ⇌ NH₄Cl", 4, 2),
+        ]
+
+        self.process, self.equation, self.initial_moles, self.equilibrium_moles = rnd.choice(variations)
+
+        self.decrease = self.initial_moles - self.equilibrium_moles
+        self.answer = self.decrease
+
+        self.description = (
+            f"The diagram shows the equilibrium reaction for {self.process}.\n"
+            "Using the graph information, calculate the decrease\n"
+            "in total number of moles."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Mole ratio and pressure change"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Initial moles}} &= {self.initial_moles}\\\\"
+            f"\\text{{Equilibrium moles}} &= {self.equilibrium_moles}\\\\"
+            f"\\text{{Decrease}} &= {self.initial_moles} - {self.equilibrium_moles}\\\\"
+            f"&= {self.answer}\\,\\text{{mol}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.set_xlim(0, 12)
+        ax.set_ylim(0, 6)
+        ax.axis('off')
+
+        x_start = 3
+        spacing = 4
+
+        stages = [
+            ("Initial", self.initial_moles, "lightblue"),
+            ("Equilibrium", self.equilibrium_moles, "orange")
+        ]
+
+        max_moles = max(self.initial_moles, self.equilibrium_moles)
+
+        for i, (label, moles, color) in enumerate(stages):
+            x = x_start + i * spacing
+
+            solution_height = 2.5 * (moles / max_moles)
+
+            draw_test_tube(
+                ax,
+                x,
+                1,
+                width=1.2,
+                height=3.5,
+                solution_height=solution_height,
+                solution_color=color
+            )
+
+            ax.text(x + 0.6, 0.4,
+                    f"{label}",
+                    ha='center',
+                    fontsize=12,
+                    fontweight='bold')
+
+            ax.text(x + 0.6, 4.7,
+                    f"{moles} mol",
+                    ha='center',
+                    fontsize=11)
+
+        add_title_box(ax, 6, 5.5,
+                    f"Equilibrium Reaction\n{self.equation}",
+                    fontsize=16)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+class Chem129:
+    def __init__(self):
+
+        variations = [
+            ("CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O", "CO₂", 72, 90, 0.50),
+            ("Mg + 2HCl → MgCl₂ + H₂", "H₂", 48, 60, 0.50),
+            ("Zn + 2HCl → ZnCl₂ + H₂", "H₂", 24, 40, 0.40),
+            ("CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + CO₂ + H₂O", "CO₂", 96, 100, 0.80),
+            ("Fe + 2HCl → FeCl₂ + H₂", "H₂", 36, 70, 0.30),
+            ("CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O", "CO₂", 48, 75, 0.50),
+            ("Mg + 2HCl → MgCl₂ + H₂", "H₂", 72, 80, 0.60),
+            ("Zn + 2HCl → ZnCl₂ + H₂", "H₂", 60, 85, 0.50),
+            ("CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + CO₂ + H₂O", "CO₂", 24, 50, 0.20),
+            ("Fe + 2HCl → FeCl₂ + H₂", "H₂", 48, 65, 0.40),
+        ]
+
+        (self.reaction,
+         self.gas_name,
+         self.final_volume_cm3,
+         self.finish_time,
+         self.acid_volume_dm3) = rnd.choice(variations)
+
+        self.molar_gas_volume = 24
+        self.volume_dm3 = self.final_volume_cm3 / 1000
+        self.moles_gas = self.volume_dm3 / self.molar_gas_volume
+        self.moles_hcl = self.moles_gas * 2
+        self.concentration = self.moles_hcl / self.acid_volume_dm3
+
+        self.answer = round(self.concentration, 2)
+
+        self.description = (
+            f"The graph shows the volume of {self.gas_name} produced in the reaction:\n"
+            f"{self.reaction}\n"
+            "Calculate the concentration of acid used."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Rate + Moles + Concentration"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Volume (dm³)}} &= {self.final_volume_cm3}/1000 = {round(self.volume_dm3,4)}\\\\"
+            f"\\text{{Moles of gas}} &= {round(self.volume_dm3,4)}/24 = {round(self.moles_gas,4)}\\\\"
+            f"\\text{{Moles of HCl}} &= 2 \\times {round(self.moles_gas,4)} = {round(self.moles_hcl,4)}\\\\"
+            f"\\text{{Concentration}} &= {round(self.moles_hcl,4)}/{self.acid_volume_dm3} = {self.answer}\\,\\text{{mol dm}}^{{-3}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(10, 6))
+        ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
+
+        ax.set_xlim(0, self.finish_time + 20)
+        ax.set_ylim(0, self.final_volume_cm3 + 20)
+
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel(f"Volume of {self.gas_name} (cm³)")
+
+        ax.plot([0, self.finish_time],
+                [0, self.final_volume_cm3],
+                linewidth=3)
+
+        ax.scatter([self.finish_time],
+                   [self.final_volume_cm3],
+                   s=80)
+
+        ax.text(self.finish_time,
+                self.final_volume_cm3 + 5,
+                f"{self.final_volume_cm3} cm³",
+                ha='center')
+
+        fig.text(0.5, 0.92,
+                 f"Gas Volume vs Time\n{self.reaction}",
+                 ha='center',
+                 fontsize=14,
+                 fontweight='bold')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150)
+        plt.close()
+
+class Chem130:
+    def __init__(self):
+
+        variations = [
+            ("Haber Process", "N₂ + 3H₂ ⇌ 2NH₃", "N₂", 40, 120, 15, 45, 30),
+            ("Haber Process", "N₂ + 3H₂ ⇌ 2NH₃", "N₂", 50, 150, 20, 60, 40),
+            ("Sulfur trioxide formation", "2SO₂ + O₂ ⇌ 2SO₃", "SO₂", 60, 40, 30, 20, 60),
+            ("Sulfur trioxide formation", "2SO₂ + O₂ ⇌ 2SO₃", "SO₂", 80, 50, 40, 25, 80),
+            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄", "NO₂", 100, None, 40, None, 60),
+            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄", "NO₂", 80, None, 30, None, 50),
+            ("Hydrogen iodide formation", "H₂ + I₂ ⇌ 2HI", "H₂", 60, 60, 20, 20, 80),
+            ("Hydrogen iodide formation", "H₂ + I₂ ⇌ 2HI", "H₂", 50, 50, 10, 10, 80),
+            ("Ammonium chloride formation", "NH₃ + HCl ⇌ NH₄Cl", "NH₃", 70, 70, 20, 20, 50),
+            ("Ammonium chloride formation", "NH₃ + HCl ⇌ NH₄Cl", "NH₃", 60, 60, 15, 15, 45),
+        ]
+
+        (self.process,
+         self.equation,
+         self.limiting_species,
+         self.initial_r1,
+         self.initial_r2,
+         self.eq_r1,
+         self.eq_r2,
+         self.eq_product) = rnd.choice(variations)
+
+        self.initial_limiting = self.initial_r1
+        self.eq_limiting = self.eq_r1
+        self.used = self.initial_limiting - self.eq_limiting
+        self.percentage_conversion = (self.used / self.initial_limiting) * 100
+        self.answer = round(self.percentage_conversion, 1)
+
+        self.description = (
+            f"The diagram shows the equilibrium composition for {self.process}.\n"
+            f"Calculate the percentage conversion of {self.limiting_species}."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Percentage conversion"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Amount reacted}} &= {self.initial_limiting} - {self.eq_limiting} = {self.used}\\\\"
+            f"\\text{{Percentage conversion}} &= \\frac{{{self.used}}}{{{self.initial_limiting}}} \\times 100\\\\"
+            f"&= {self.answer}\\,\\%"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(10, 6))
+        ax = fig.add_axes([0.1, 0.2, 0.8, 0.7])
+
+        labels = ["Reactant 1", "Reactant 2", "Product"]
+        values = [self.eq_r1, self.eq_r2 if self.eq_r2 else 0, self.eq_product]
+
+        ax.bar(labels, values)
+
+        ax.set_ylabel("Amount at equilibrium (mol)")
+        ax.set_title(f"Equilibrium Composition\n{self.equation}")
+
+        for i, v in enumerate(values):
+            ax.text(i, v + 2, str(v), ha='center')
+
+        fig.text(0.1, 0.05,
+                 f"Initial amounts:\nReactant 1 = {self.initial_r1} mol\nReactant 2 = {self.initial_r2 if self.initial_r2 else '-'} mol",
+                 fontsize=10)
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150)
+        plt.close()
+
+class Chem131:
+    def __init__(self):
+
+        variations = [
+            ("Decomposition of hydrogen peroxide", 1.6, 50, 100),
+            ("Decomposition of N₂O₅", 2.0, 40, 80),
+            ("Acid hydrolysis reaction", 1.2, 30, 60),
+            ("Thermal decomposition of CaCO₃", 1.8, 45, 90),
+            ("Catalytic decomposition reaction", 2.4, 60, 120),
+            ("Photochemical reaction", 1.0, 25, 50),
+            ("Ester hydrolysis", 2.2, 55, 110),
+            ("Oxidation reaction", 1.4, 35, 70),
+            ("Reduction reaction", 1.6, 40, 80),
+            ("First-order decay reaction", 2.0, 50, 100),
+        ]
+
+        self.reaction, self.initial_c, self.half_time, self.full_time = rnd.choice(variations)
+
+        self.c_half = self.initial_c / 2
+        self.c_final = self.initial_c / 4
+        self.volume = 0.25
+
+        self.delta_c = self.initial_c - self.c_final
+        self.delta_t = self.full_time
+        self.rate = self.delta_c / self.delta_t
+
+        self.answer = round(self.rate, 3)
+
+        self.description = (
+            f"The graph shows the concentration change for {self.reaction}.\n"
+            "Calculate the average rate of reaction between 0 s and final time."
+        )
+
+        self.topic = "Chemical reactions"
+        self.subtopic = "Average rate from concentration-time graph"
+        self.source = "Adapted from IGCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Change in concentration}} &= {self.initial_c} - {self.c_final} = {round(self.delta_c,3)}\\\\"
+            f"\\text{{Change in time}} &= {self.full_time} - 0 = {self.delta_t}\\\\"
+            f"\\text{{Average rate}} &= \\frac{{{round(self.delta_c,3)}}}{{{self.delta_t}}}\\\\"
+            f"&= {self.answer}\\,\\text{{mol dm}}^{{-3}}\\,\\text{{s}}^{{-1}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+
+        fig = plt.figure(figsize=(10, 6))
+        ax = fig.add_axes([0.1, 0.15, 0.8, 0.75])
+
+        ax.set_xlim(0, self.full_time + 20)
+        ax.set_ylim(0, self.initial_c + 0.5)
+
+        ax.set_xlabel("Time (s)")
+        ax.set_ylabel("Concentration (mol dm⁻³)")
+
+        ax.plot([0, self.half_time, self.full_time],
+                [self.initial_c, self.c_half, self.c_final],
+                linewidth=3)
+
+        ax.scatter([self.half_time, self.full_time],
+                   [self.c_half, self.c_final],
+                   s=80)
+
+        ax.text(self.half_time, self.c_half + 0.05,
+                f"{self.c_half}",
+                ha='center')
+
+        ax.text(self.full_time, self.c_final + 0.05,
+                f"{self.c_final}",
+                ha='center')
+
+        fig.text(0.5, 0.92,
+                 f"Concentration vs Time\n{self.reaction}",
+                 ha='center',
+                 fontsize=14,
+                 fontweight='bold')
+
+        os.makedirs("output", exist_ok=True)
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=150)
+        plt.close()
