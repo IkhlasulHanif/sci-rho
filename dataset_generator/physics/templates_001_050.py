@@ -1905,3 +1905,225 @@ class Phy042:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
+
+class Phy043:
+
+    def __init__(self):
+        self.max_voltage = rnd.choice([10, 12, 14, 16, 18, 20, 24, 28, 30, 36, 40])
+        self.max_current = rnd.choice([10, 12, 14, 16, 20, 22, 24, 26, 28, 30])
+        self.resistance = self.max_voltage / self.max_current
+        self.answer = round(self.resistance, 2)
+
+        self.description = (
+            "The graph below shows the current-voltage (I-V) characteristics for a "
+            "resistor of constant resistance. According to the graph, calculate the "
+            "resistance of this resistor in ohms (Ω)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        
+        # Use the maximum plotted point for the reasoning since it guarantees a clean grid intersection
+        v_point = self.max_voltage
+        i_point = self.max_current
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{For a resistor of constant resistance, the current is directly proportional to the voltage.}\\\\"
+            "\\text{This results in a straight line through the origin on an I-V graph.}\\\\"
+            "\\text{Resistance (R) can be calculated using Ohm's Law:}\\\\"
+            "R &= \\frac{V}{I}\\\\"
+            f"\\text{{Reading a point from the straight line, for example the highest point, }} V = {v_point}\\,\\text{{V}} \\text{{ and }} I = {i_point}\\,\\text{{A:}}\\\\"
+            f"R &= \\frac{{{v_point}}}{{{i_point}}}\\\\"
+            f"&= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Added +2 to the max bounds so the graph has a little padding 
+        # but the top grid lines still align perfectly with the plotted line
+        draw_cartesian(
+            ax, 
+            xmin=0, 
+            ymin=0, 
+            xmax=self.max_voltage + 2, 
+            ymax=self.max_current + 2, 
+            tickrange=2, 
+            xlabel="Voltage (V)", 
+            ylabel="Current (A)"
+        )
+        
+        # Plot the straight line from origin to the maximum point
+        ax.plot([0, self.max_voltage], [0, self.max_current], color="blue", linewidth=2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy044:
+
+    def __init__(self):
+        # Pick a specific target coordinate that lands perfectly on the grid intersections
+        self.v_point = rnd.choice([10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40])
+        self.i_point = rnd.choice([10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30])
+        
+        # Calculate resistance at this specific point
+        self.resistance = self.v_point / self.i_point
+        self.answer = round(self.resistance, 2)
+
+        self.description = (
+            "The graph below shows the current-voltage (I-V) characteristics for a filament lamp. "
+            f"According to the graph, calculate the resistance of the filament lamp when the "
+            f"potential difference is {self.v_point} V!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{A filament lamp is a non-ohmic component, meaning its resistance changes as voltage changes.}\\\\"
+            "\\text{However, the resistance at any specific point can still be calculated using Ohm's Law:}\\\\"
+            "R &= \\frac{V}{I}\\\\"
+            f"\\text{{From the graph, when }} V = {self.v_point}\\,\\text{{V, the current is }} I = {self.i_point}\\,\\text{{A.}}\\\\"
+            f"R &= \\frac{{{self.v_point}}}{{{self.i_point}}}\\\\"
+            f"&= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Generate points for a curve that passes through (0,0) and (v_point, i_point)
+        # A common mathematical approximation for a filament lamp curve is I = k * sqrt(V)
+        # To make it hit our target point: k = i_point / sqrt(v_point)
+        max_v_plot = self.v_point + 4
+        v_values = np.linspace(0, max_v_plot, 100)
+        k = self.i_point / np.sqrt(self.v_point)
+        i_values = k * np.sqrt(v_values)
+        
+        # Calculate appropriate max Y for the graph padding
+        max_i_plot = int(k * np.sqrt(max_v_plot)) + 2
+
+        draw_cartesian(
+            ax, 
+            xmin=0, 
+            ymin=0, 
+            xmax=max_v_plot, 
+            ymax=max_i_plot, 
+            tickrange=2, 
+            xlabel="Voltage (V)", 
+            ylabel="Current (A)"
+        )
+        
+        # Plot the curved line
+        ax.plot(v_values, i_values, color="red", linewidth=2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy045:
+
+    def __init__(self):
+        self.voltage_B = rnd.randint(20, 50) / 10
+        self.current_B = rnd.randint(10, 100) / 100
+        self.current_AC = rnd.randint(10, 100) / 100
+        self.voltage_AC = self.voltage_B
+        self.voltage_A = rnd.randint(10, 15) / 10
+        self.voltage_C = self.voltage_AC - self.voltage_A
+
+        # Added rounding to prevent floating-point arithmetic errors
+        self.voltage_C = round(self.voltage_AC - self.voltage_A, 2)
+        self.answer = round(self.voltage_A * self.current_AC, 4)
+
+        self.description = (
+            "The circuit diagram shows three lamps (A, B, and C) powered by a single battery. "
+            "Based on the values provided in the diagram, calculate the power dissipated by lamp A in watts (W)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Voltage across lamp A }} (V) &= {self.voltage_A}\\,\\text{{V}}\\\\"
+            f"\\text{{Current through lamp A }} (I) &= {self.current_AC}\\,\\text{{A}}\\\\"
+            "\\text{Electrical power (P) is calculated using the formula:}\\\\"
+            "P &= V \\times I\\\\"
+            f"&= {self.voltage_A} \\times {self.current_AC}\\\\"
+            f"&= {self.answer}\\,\\text{{W}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy045temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(320, 970, f"V = {self.voltage_A} V\nI = {self.current_AC} A", fontsize=9) # lamp A
+        ax.text(830, 970, f"V = {self.voltage_C} V\nI = {self.current_AC} A", fontsize=9) # lamp C
+        ax.text(830, 430, f"V = {self.voltage_B} V\nI = {self.current_B} A", fontsize=9) # lamp B
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+import random as rnd
+
+class Phy046:
+
+    def __init__(self):
+        self.voltage_B = rnd.randint(20, 50) / 10
+        self.current_B = rnd.randint(10, 100) / 100
+        self.current_AC = rnd.randint(10, 100) / 100
+        self.voltage_AC = self.voltage_B
+        self.voltage_A = rnd.randint(10, 15) / 10
+        
+        # Added rounding to prevent floating-point arithmetic errors
+        self.voltage_C = round(self.voltage_AC - self.voltage_A, 2)
+        
+        # Calculate power for Lamp B to provide in the description
+        self.power_B = round(self.voltage_B * self.current_B, 4)
+        
+        # The answer is now the current of Lamp B
+        self.answer = self.current_B
+
+        self.description = (
+            "The circuit diagram shows three lamps (A, B, and C) powered by a single battery. "
+            f"Given that lamp B dissipates {self.power_B} W of electrical power, calculate the "
+            "current flowing through lamp B based on the values provided in the diagram!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Power dissipated by lamp B }} (P) &= {self.power_B}\\,\\text{{W}}\\\\"
+            f"\\text{{Voltage across lamp B }} (V) &= {self.voltage_B}\\,\\text{{V}}\\\\"
+            "\\text{Electrical power (P) is related to voltage and current by the formula:}\\\\"
+            "P &= V \\times I\\\\"
+            "\\text{Rearranging to solve for current (I):}\\\\"
+            "I &= \\frac{P}{V}\\\\"
+            f"&= \\frac{{{self.power_B}}}{{{self.voltage_B}}}\\\\"
+            f"&= {self.answer}\\,\\text{{A}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy046temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(320, 970, f"V = {self.voltage_A} V\nI = {self.current_AC} A", fontsize=9) # lamp A
+        ax.text(830, 970, f"V = {self.voltage_C} V\nI = {self.current_AC} A", fontsize=9) # lamp C
+        ax.text(830, 430, f"V = {self.voltage_B} V", fontsize=9) # lamp B
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
