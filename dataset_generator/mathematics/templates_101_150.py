@@ -4209,7 +4209,7 @@ class Mat146:
         
         # Calculate the ratio for the ln(ratio) part of the area
         # Area = (k/a) * [ln(a*k + b) - ln(b)] = (k/a) * ln((ak + b)/b)
-        ratio = round((self.a * self.k_val + self.b) / self.b, 2)
+        ratio = round((self.a * self.k_val + self.b) / self.b, 4)
         
         self.description = (
             f"The figure shows the curve $y = f(x)$. The region $R$ is bounded by the curve, "
@@ -4232,9 +4232,9 @@ class Mat146:
             f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln({self.a}k + {self.b}) - \\frac{{{self.k}}}{{{self.a}}} \\ln({self.b}) \\\\"
             f"\\text{{Apply the property of logarithms }} \\ln(A) - \\ln(B) = \\ln\\left(\\frac{{A}}{{B}}\\right): &\\\\"
             f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) \\\\"
-            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({round((self.a * self.k_val + self.b) / self.b, 10)}\\right). \\text{{ Equating the two:}} &\\\\"
-            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({round((self.a * self.k_val + self.b) / self.b, 10)}\\right) \\\\"
-            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {round((self.a * self.k_val + self.b) / self.b, 10)} \\\\"
+            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({ratio}\\right). \\text{{ Equating the two:}} &\\\\"
+            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({ratio}\\right) \\\\"
+            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {ratio} \\\\"
             f"{self.a}k + {self.b} &= {round(self.a * self.k_val + self.b, 10)} \\\\"
             f"{self.a}k &= {round(self.a * self.k_val, 10)} \\\\"
             f"k &= {self.answer}"

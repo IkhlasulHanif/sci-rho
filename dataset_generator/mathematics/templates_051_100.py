@@ -158,7 +158,7 @@ class Mat052:
         self.description = (
             f"The diagram shows a circle with center $O$. $PA$ and $PB$ are tangents to the circle "
             f"from an external point $P$, touching the circle at $A$ and $B$. "
-            f"The radius of the circle is ${self.radius} cm and angle $\\angle APB = {self.angle_apb}^\\circ$. "
+            f"The radius of the circle is ${self.radius}$ cm and angle $\\angle APB = {self.angle_apb}^\\circ$. "
             f"Calculate the length of the tangent $PA$."
         )
         
@@ -2597,14 +2597,14 @@ class Mat074:
         mid_ab = (pA + pB) / 2
         offset_ab_local = np.array([-1.0, 0.0])
         pos_ab = mid_ab + (R @ offset_ab_local) * side_label_offset_dist
-        ax.text(pos_ab[0], pos_ab[1], f"{self.ab:.1f} cm", fontsize=16, 
+        ax.text(pos_ab[0], pos_ab[1], f"{self.ab:.2f} cm", fontsize=16, 
                 ha='center', va='center')
 
         mid_ac = (pA + pC) / 2
         dir_ac = mid_ac - pB 
         dir_ac_unit = dir_ac / np.linalg.norm(dir_ac)
         pos_ac = mid_ac + dir_ac_unit * side_label_offset_dist
-        ax.text(pos_ac[0], pos_ac[1], f"{self.ac:.1f} cm", fontsize=16, 
+        ax.text(pos_ac[0], pos_ac[1], f"{self.ac:.2f} cm", fontsize=16, 
                 ha='center', va='center')
 
         # --- "NOT TO SCALE" Label ---
@@ -3790,20 +3790,20 @@ class Mat085:
         # Side opposite given angle (BD) < Side adjacent (BC)
         # And BD > BC * sin(angle BCD)
         
-        self.angle_bcd = randrange_float(40.0, 50.0, 0.01)
-        self.side_bc = randrange_float(14.0, 16.5, 0.01)
+        self.angle_bcd = round(randrange_float(40.0, 50.0, 0.01), 2)
+        self.side_bc = round(randrange_float(14.0, 16.5, 0.01), 2)
         
         # Calculate altitude to ensure triangle exists
         altitude = self.side_bc * math.sin(math.radians(self.angle_bcd))
         # BD must be between altitude and BC for ambiguity
-        self.side_bd = randrange_float(altitude + 0.5, self.side_bc - 1.0, 0.01)
+        self.side_bd = round(randrange_float(altitude + 0.5, self.side_bc - 1.0, 0.01), 2)
         
         # Sine Rule: sin(BDC) / BC = sin(BCD) / BD
         sin_bdc = (self.side_bc * math.sin(math.radians(self.angle_bcd))) / self.side_bd
         acute_bdc = math.degrees(math.asin(sin_bdc))
         
         # The question specifically asks for the obtuse version
-        self.answer = 180.0 - acute_bdc
+        self.answer = round(180.0 - acute_bdc, 2)
 
         self.description = "Based on the figure, calculate the obtuse angle $BDC$."
         self.topic = "Trigonometry"
@@ -3884,13 +3884,13 @@ class Mat085:
             # Adjust to be outside
             if np.linalg.norm((mid + perp) - centroid) < np.linalg.norm(mid - centroid):
                 perp = -perp
-            ax.text(mid[0] + perp[0], mid[1] + perp[1], f"{round(val, 1)} cm", fontsize=11, ha='center', va='center')
+            ax.text(mid[0] + perp[0], mid[1] + perp[1], f"{val:.2f} cm", fontsize=11, ha='center', va='center')
 
         add_side_label(pts['A'], pts['B'], self.side_ab)
         add_side_label(pts['B'], pts['C'], self.side_bc)
         # Diagonal label (place slightly offset)
         mid_diag = (pts['B'] + pts['D']) / 2
-        ax.text(mid_diag[0] + 0.3, mid_diag[1] + 0.3, f"{round(self.side_bd, 1)} cm", fontsize=11)
+        ax.text(mid_diag[0] + 0.3, mid_diag[1] + 0.3, f"{self.side_bd:.2f} cm", fontsize=11)
 
         # Angle arcs
         # Angle ABD
@@ -3899,7 +3899,7 @@ class Mat085:
         if (ang_ba - ang_bd) % 360 > 180: ang_bd, ang_ba = ang_ba, ang_bd
         ax.add_patch(patches.Arc(pts['B'], 2.5, 2.5, theta1=ang_bd, theta2=ang_ba, color='black'))
         mid_abd = math.radians((ang_bd + ang_ba) / 2)
-        ax.text(pts['B'][0] + 1.8 * math.cos(mid_abd), pts['B'][1] + 1.8 * math.sin(mid_abd), f"{round(self.angle_abd, 1)}°", fontsize=10)
+        ax.text(pts['B'][0] + 1.8 * math.cos(mid_abd), pts['B'][1] + 1.8 * math.sin(mid_abd), f"{self.angle_abd:.2f}°", fontsize=10)
 
         # Angle BCD
         ang_cb = get_angle(pts['C'], pts['B'])
@@ -3907,7 +3907,7 @@ class Mat085:
         if (ang_cd - ang_cb) % 360 > 180: ang_cb, ang_cd = ang_cd, ang_cb
         ax.add_patch(patches.Arc(pts['C'], 3.0, 3.0, theta1=ang_cb, theta2=ang_cd, color='black'))
         mid_bcd = math.radians((ang_cb + ang_cd) / 2)
-        ax.text(pts['C'][0] + 2.2 * math.cos(mid_bcd), pts['C'][1] + 2.2 * math.sin(mid_bcd), f"{round(self.angle_bcd, 1)}°", fontsize=10)
+        ax.text(pts['C'][0] + 2.2 * math.cos(mid_bcd), pts['C'][1] + 2.2 * math.sin(mid_bcd), f"{self.angle_bcd:.2f}°", fontsize=10)
 
         ax.text(0.95, 0.85, "NOT TO\nSCALE", transform=ax.transAxes, fontsize=10, ha='center', fontweight='bold')
 

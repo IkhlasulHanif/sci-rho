@@ -909,12 +909,12 @@ class Mat011:
             self.arrive_office_hour += 1
             self.arrive_office_minute -= 60            
         
-        self.speed = round(self.distance_meeting / (self.travel_time_hour + self.travel_time_minute / 60.0), 10)  # km/h
+        self.speed = round(self.distance_meeting / (self.travel_time_hour + self.travel_time_minute / 60.0), 2)  # km/h
                 
         self.answer = f"{self.leave_office_hour}:{self.leave_office_minute:02d}"
 
         self.description = (
-            f"Ky cycles from his office to a meeting and back again. The travel graph shows his time at the meeting and his journey back. Ky cycles from his office to the meeting at a constant speed of {self.speed} km/h. What time does Ky leave his office?"
+            f"Ky cycles from his office to a meeting and back again. The travel graph shows his time at the meeting and his journey back. Ky cycles from his office to the meeting at a constant speed of {self.speed:.2f} km/h. What time does Ky leave his office?"
         )
 
         self.topic = "Algebra and Graphs"
@@ -929,7 +929,7 @@ class Mat011:
             f"\\text{{Distance from office to meeting}} &= {self.distance_meeting}\\,\\text{{km}}\\\\"
             "\\text{2. Calculate travel time to the meeting:} &\\\\"
             "\\text{Time} &= \\frac{\\text{Distance}}{\\text{Speed}}\\\\"
-            f"&= \\frac{{{self.distance_meeting}\\,\\text{{km}}}}{{{round(self.speed, 10)}\\,\\text{{km/h}}}}\\\\"
+            f"&= \\frac{{{self.distance_meeting}\\,\\text{{km}}}}{{{self.speed}\\,\\text{{km/h}}}}\\\\"
             f"&= {round(self.travel_time_hour + self.travel_time_minute / 60.0, 10)}\\,\\text{{hours}}\\\\"
             "\\text{Convert decimal hours to hours and minutes:} &\\\\"
             f"\\text{{Hours}} &= \\lfloor{round(self.travel_time_hour + self.travel_time_minute / 60.0, 10)}\\rfloor = {self.travel_time_hour}\\,\\text{{h}}\\\\"
@@ -2065,101 +2065,6 @@ class Mat021:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
         plt.close()
-
-class Mat022:
-    def __init__(self):
-        # f(x) = mx + c (Linear)
-        # g(x) = p / (qx + r) (Reciprocal)
-        # Sequence: x -> g(x) -> f(g(x))
-        
-        # Parameters for g(x)
-        self.p = rnd.randint(5, 20)
-        self.q = rnd.randint(1, 4)
-        self.r = rnd.randint(1, 10)
-        
-        # Parameters for f(x)
-        self.m = rnd.randint(2, 6)
-        self.c = rnd.randint(-15, 15)
-        
-        # Input value x (Raw material)
-        # Pick x such that qx + r != 0 and result is reasonably clean
-        self.input_x = rnd.randint(1, 10)
-        
-        # Calculations
-        intermediate_num = self.p
-        intermediate_den = self.q * self.input_x + self.r
-        self.intermediate_val = intermediate_num / intermediate_den
-        
-        # Final result = m * (p / (q*x + r)) + c
-        self.answer = self.m * self.intermediate_val + self.c
-        
-        # Rounding for the answer to keep it as a clean float if necessary, 
-        # but the prompt says no need to round self.answer.
-        
-        self.description = (
-            "The diagram shows a factory process with two machines. "
-            f"A 'Raw Material' value of $x = {self.input_x}$ is fed into the first machine. "
-            "Based on the functions shown on the machines, calculate the value of the 'Final Product'."
-        )
-        
-        self.topic = "Algebra and graphs"
-        self.subtopic = "Functions"
-        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
-        self.curriculum = "IGCSE"
-        self.reasoning = "" # To be filled later as per instructions
-
-    def generate(self, num):
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.set_xlim(0, 10)
-        ax.set_ylim(0, 6)
-        ax.set_aspect('equal')
-        ax.axis('off')
-
-        # Box dimensions
-        box_w, box_h = 2.5, 1.8
-        
-        # Machine G (Reciprocal)
-        g_x, g_y = 1.0, 2.0
-        g_box = patches.FancyBboxPatch((g_x, g_y), box_w, box_h, boxstyle="round,pad=0.2", 
-                                       ec="black", fc="#e1f5fe", lw=2)
-        ax.add_patch(g_box)
-        
-        # Machine F (Linear)
-        f_x, f_y = 6.0, 2.0
-        f_box = patches.FancyBboxPatch((f_x, f_y), box_w, box_h, boxstyle="round,pad=0.2", 
-                                       ec="black", fc="#fff9c4", lw=2)
-        ax.add_patch(f_box)
-
-        # Labels for G
-        ax.text(g_x + box_w/2, g_y + box_h/2 + 0.3, "Machine $g$", fontsize=14, ha='center', fontweight='bold')
-        g_text = f"$g(x) = \\frac{{{self.p}}}{{{fmt_poly(self.q, 'x', True)} {fmt_poly(self.r, '', False)}}}$"
-        ax.text(g_x + box_w/2, g_y + box_h/2 - 0.3, g_text, fontsize=12, ha='center')
-
-        # Labels for F
-        ax.text(f_x + box_w/2, f_y + box_h/2 + 0.3, "Machine $f$", fontsize=14, ha='center', fontweight='bold')
-        f_text = f"$f(x) = {fmt_poly(self.m, 'x', True)} {fmt_poly(self.c, '', False)}$"
-        ax.text(f_x + box_w/2, f_y + box_h/2 - 0.3, f_text, fontsize=12, ha='center')
-
-        # Arrows and Flow Labels
-        # Input to G
-        ax.annotate("Raw Material\n$x$", xy=(g_x, g_y + box_h/2), xytext=(g_x - 1.5, g_y + box_h/2),
-                    arrowprops=dict(arrowstyle="->", lw=2), ha='center', va='center', fontsize=10)
-        
-        # G to F (Intermediate)
-        ax.annotate("Intermediate\nProduct", xy=(f_x, f_y + box_h/2), xytext=(g_x + box_w + 1.25, f_y + box_h/2),
-                    arrowprops=dict(arrowstyle="->", lw=2), ha='center', va='center', fontsize=10)
-        # Line from G output to text
-        ax.plot([g_x + box_w, g_x + box_w + 0.5], [g_y + box_h/2, g_y + box_h/2], color='black', lw=2)
-
-        # F to Final
-        ax.annotate("Final\nProduct", xy=(f_x + box_w + 1.5, f_y + box_h/2), xytext=(f_x + box_w, f_y + box_h/2),
-                    arrowprops=dict(arrowstyle="<-", lw=2), ha='center', va='center', fontsize=10)
-
-        # Save
-        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
-        plt.close()
-
 class Mat022:
     def __init__(self):
         # f(u) = mu + c (Linear) - using 'u' as per request
@@ -2183,8 +2088,7 @@ class Mat022:
         self.intermediate_val = self.p / intermediate_den
         
         # Final result = m * intermediate_val + c
-        # The prompt says no need to round self.answer
-        self.answer = self.m * self.intermediate_val + self.c
+        self.answer = round(self.m * self.intermediate_val + self.c, 2)
         
         # Implicit description: value is in the figure
         self.description = (
@@ -4575,24 +4479,30 @@ class Mat045:
         self.n = rnd.randint(3, 9)
         total_sum = (self.n - 2) * 180
         
-        # Target can be non-integer (stepping by 0.5)
-        self.x_val = rnd.randint(20, 80) / 2.0 
-        
-        # Increase coeff range (1, 10)
-        self.coeffs = [rnd.randint(1, 10) for _ in range(self.n)]
-        sum_a = sum(self.coeffs)
-        
-        # Calculate sum_b to satisfy: sum_a * x + sum_b = total_sum
-        sum_b = total_sum - (sum_a * self.x_val)
-        
-        # Distribute sum_b into n parts
-        self.consts = [0] * self.n
-        current_sum_b = 0
-        for i in range(self.n - 1):
-            val = rnd.randint(-20, 40)
-            self.consts[i] = val
-            current_sum_b += val
-        self.consts[self.n - 1] = int(sum_b - current_sum_b)
+        # Regenerate all parameters together to avoid infinite loops
+        while True:
+            # Target can be non-integer (stepping by 0.5)
+            self.x_val = rnd.randint(20, 80) / 2.0 
+            
+            # Increase coeff range (1, 10)
+            self.coeffs = [rnd.randint(1, 10) for _ in range(self.n)]
+            sum_a = sum(self.coeffs)
+            
+            # Calculate sum_b to satisfy: sum_a * x + sum_b = total_sum
+            sum_b = total_sum - (sum_a * self.x_val)
+            
+            # Distribute sum_b into n parts
+            self.consts = [0] * self.n
+            current_sum_b = 0
+            for i in range(self.n - 1):
+                val = rnd.randint(-20, 40)
+                self.consts[i] = val
+                current_sum_b += val
+            self.consts[self.n - 1] = int(sum_b - current_sum_b)
+            
+            # Ensure all individual angles are positive
+            if all(self.coeffs[i] * self.x_val + self.consts[i] > 0 for i in range(self.n)):
+                break
         
         self.answer = self.x_val
         
@@ -5072,11 +4982,11 @@ class Mat048:
         
 class Mat049:
     def __init__(self):
-        self.angle_adb = randrange_float(15, 25, 0.01)
-        self.angle_bec = randrange_float(40, 50, 0.01)
-        self.angle_dab = randrange_float(100, 120, 0.01)
+        self.angle_adb = round(randrange_float(15, 25, 0.01), 2)
+        self.angle_bec = round(randrange_float(40, 50, 0.01), 2)
+        self.angle_dab = round(randrange_float(100, 120, 0.01), 2)
         
-        self.answer = self.angle_dab - self.angle_bec
+        self.answer = round(self.angle_dab - self.angle_bec, 2)
 
         self.description = (
             "The points $A, B, C, D$ and $E$ lie on a circle. "
@@ -5162,11 +5072,11 @@ class Mat049:
 
         # Angle Markings (Removed int() casting to show decimals)
         # ADB Angle Marking (angle at vertex D)
-        self._draw_angle(ax, pts['D'], pts['B'], pts['A'], f"{self.angle_adb}°", radius=0.25)
+        self._draw_angle(ax, pts['D'], pts['B'], pts['A'], f"{self.angle_adb:.2f}°", radius=0.25)
         # BEC Angle Marking (angle at vertex E)
-        self._draw_angle(ax, pts['E'], pts['C'], pts['B'], f"{self.angle_bec}°", radius=0.25)
+        self._draw_angle(ax, pts['E'], pts['C'], pts['B'], f"{self.angle_bec:.2f}°", radius=0.25)
         # DAB Angle Marking (angle at vertex A)
-        self._draw_angle(ax, pts['A'], pts['B'], pts['D'], f"{self.angle_dab}°", radius=0.3)
+        self._draw_angle(ax, pts['A'], pts['B'], pts['D'], f"{self.angle_dab:.2f}°", radius=0.3)
 
         # "Not to Scale" note positioned relative to the plot area
         plt.text(1.2, 1.3, "NOT TO\nSCALE", fontsize=12, ha='center', fontweight='bold')
@@ -5194,16 +5104,16 @@ class Mat049:
         
 class Mat050:
     def __init__(self):
-        self.r = randrange_float(10.0, 20.0, 0.01)
+        self.r = round(randrange_float(10.0, 20.0, 0.01), 2)
         # Ensure chord length is logically valid (less than diameter)
-        self.chord_len = randrange_float(12.0, self.r * 1.8, 0.01)
+        self.chord_len = round(randrange_float(12.0, self.r * 1.8, 0.01), 2)
         
         # d = sqrt(r^2 - (chord_len/2)^2)
         half_chord = self.chord_len / 2
         self.answer = round(math.sqrt(self.r**2 - half_chord**2), 2)
 
         self.description = (
-            f"The diagram shows a circle with center $O$, radius , and chord AB has length as shown in the image. "
+            f"The diagram shows a circle with center $O$. The radius and chord $AB$ have lengths as shown in the image. "
             f"Calculate the shortest distance from the center of the circle to the chord."
         )
         
@@ -5270,14 +5180,14 @@ class Mat050:
 
         # Radius label
         r_mid = pr * 0.5
-        ax.text(r_mid[0], r_mid[1] + 0.05, f"{self.r:.1f} cm", fontsize=14, fontweight='bold')
+        ax.text(r_mid[0], r_mid[1] + 0.05, f"{self.r:.2f} cm", fontsize=14, fontweight='bold')
         
         # Chord label (offset from midpoint of chord)
         mid_chord = (p1 + p2) / 2
         # Offset label outward from the center
         c_label_offset = mid_chord / np.linalg.norm(mid_chord) * 0.15 if np.linalg.norm(mid_chord) > 0 else [0, 0.15]
         c_label_pos = mid_chord + c_label_offset
-        ax.text(c_label_pos[0], c_label_pos[1], f"{self.chord_len:.1f} cm", 
+        ax.text(c_label_pos[0], c_label_pos[1], f"{self.chord_len:.2f} cm", 
                 fontsize=14, ha='center', fontweight='bold')
 
         plt.text(1.1, 1.1, "NOT TO\nSCALE", fontsize=12, ha='center')

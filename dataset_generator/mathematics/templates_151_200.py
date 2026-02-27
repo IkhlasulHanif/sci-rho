@@ -2015,12 +2015,12 @@ class Mat171:
         x_val = math.sqrt(self.force_horizontal**2 + self.force_vertical**2)
         theta_val = math.degrees(math.atan2(self.force_vertical, self.force_horizontal))
         
-        # Final answer is the product of magnitude and angle
-        self.answer = x_val * theta_val
+        # Answer is the magnitude X, rounded to 2 dp
+        self.answer = round(x_val, 2)
 
         self.description = (
             "Three coplanar forces act at a point in the directions shown in the diagram. "
-            "Given that the forces are in equilibrium, find the value of $X\\theta$ based on the figure."
+            "Given that the forces are in equilibrium, find the value of $X$."
         )
         
         self.topic = "Mechanics"
@@ -2039,17 +2039,14 @@ class Mat171:
             f"\\frac{{X \\sin \\theta}}{{X \\cos \\theta}} &= \\frac{{{self.force_vertical}}}{{{self.force_horizontal}}}\\\\"
             f"\\tan \\theta &= {round(self.force_vertical / self.force_horizontal, 10)}\\\\"
             f"\\theta &= \\arctan({round(self.force_vertical / self.force_horizontal, 10)})\\\\"
-            f"\\theta &= {round(math.degrees(math.atan2(self.force_vertical, self.force_horizontal)), 10)}^\\circ\\\\"
+            f"\\theta &= {round(theta_val, 2)}^\\circ\\\\"
             f"\\text{{Finding magnitude }} X \\text{{ using }} X = \\sqrt{{F_x^2 + F_y^2}}: &\\\\"
             f"X &= \\sqrt{{{self.force_horizontal}^2 + {self.force_vertical}^2}}\\\\"
             f"X &= \\sqrt{{{round(self.force_horizontal**2, 10)} + {round(self.force_vertical**2, 10)}}}\\\\"
-            f"X &= {round(math.sqrt(self.force_horizontal**2 + self.force_vertical**2), 10)}\\,\\text{{N}}\\\\"
-            f"\\text{{Calculating the product }} X\\theta: &\\\\"
-            f"X\\theta &= {round(math.sqrt(self.force_horizontal**2 + self.force_vertical**2), 10)} \\times {round(math.degrees(math.atan2(self.force_vertical, self.force_horizontal)), 10)}\\\\"
-            f"&= {self.answer}"
+            f"X &= {self.answer}\\,\\text{{N}}"
             "\\end{aligned}\\]"
         )
-
+        
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 8))
         ax.set_xlim(-1.6, 1.6)
@@ -3254,16 +3251,16 @@ class Mat183:
         # Range set to provide problem variations as per instructions
         self.num_members = rnd.randint(8, 15)
         
-        # Logic for circular permutation with 2 specific members together:
+        # Logic for linear permutation with 2 specific members together:
         # 1. Treat the 2 specific members as 1 block.
-        # 2. Arrange (n - 1) items in a circle: ( (n-1) - 1 )! = (n-2)!
+        # 2. Arrange (n - 1) items in a row: (n-1)!
         # 3. Multiply by 2! for internal arrangement of the block.
-        self.answer = math.factorial(self.num_members - 2) * 2
+        self.answer = math.factorial(self.num_members - 1) * 2
 
         self.description = (
-            "A group of board members, including a Chairperson and a Secretary, are meeting at the circular table "
+            "A group of board members, including a Chairperson and a Secretary, are meeting at the long table "
             "shown in the figure. For this specific meeting, the Chairperson and the Secretary must sit in adjacent seats. "
-            "Calculate the total number of different ways the members can be seated around the table."
+            "Calculate the total number of different ways the members can be seated."
         )
         
         self.topic = "Probability & Statistics 1"
@@ -3274,55 +3271,57 @@ class Mat183:
             "\\[\\begin{aligned}"
             f"\\text{{Total number of board members, }} n &= {self.num_members}\\\\"
             "\\text{{Treat Chairperson and Secretary as 1 single block.}} &\\\\"
-            f"\\text{{Number of items to arrange in a circle, }} n' &= n - 1 = {self.num_members - 1}\\\\"
-            "\\text{{Ways to arrange }} n' \\text{{ items in a circle:}} &\\\\"
-            "P_{\\text{circle}} &= (n' - 1)!\\\\"
-            f"&= ({self.num_members - 1} - 1)!\\\\"
-            f"&= {self.num_members - 2}!\\\\"
-            f"&= {math.factorial(self.num_members - 2)}\\\\"
+            f"\\text{{Number of items to arrange in a row, }} n' &= n - 1 = {self.num_members - 1}\\\\"
+            "\\text{{Ways to arrange }} n' \\text{{ items in a row:}} &\\\\"
+            "P_{\\text{row}} &= n'!\\\\"
+            f"&= {self.num_members - 1}!\\\\"
+            f"&= {math.factorial(self.num_members - 1)}\\\\"
             "\\text{{Ways to arrange Chairperson and Secretary within the block:}} &\\\\"
             "P_{\\text{internal}} &= 2! = 2\\\\"
             "\\text{{Total number of arrangements:}} &\\\\"
-            "\\text{{Total}} &= P_{\\text{circle}} \\times P_{\\text{internal}}\\\\"
-            f"&= {math.factorial(self.num_members - 2)} \\times 2\\\\"
+            "\\text{{Total}} &= P_{\\text{row}} \\times P_{\\text{internal}}\\\\"
+            f"&= {math.factorial(self.num_members - 1)} \\times 2\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
-
+        
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 8))
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-1.5, 1.5)
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.set_xlim(-0.5, self.num_members + 0.5)
+        ax.set_ylim(-1.5, 2.5)
         ax.set_aspect('equal')
         ax.axis('off')
 
-        # Draw the circular table
-        table = plt.Circle((0, 0), 0.8, color='peru', ec='black', lw=2, alpha=0.8)
-        ax.add_artist(table)
+        # Draw a long rectangular table
+        table_width = self.num_members * 0.8
+        table_x = (self.num_members - table_width) / 2
+        table = patches.FancyBboxPatch((table_x, -0.3), table_width, 0.6, 
+                                       boxstyle="round,pad=0.1",
+                                       color='peru', ec='black', lw=2, alpha=0.8)
+        ax.add_patch(table)
 
-        # Calculate chair positions
-        angles = np.linspace(0, 360, self.num_members, endpoint=False)
-        r_chairs = 1.1
-
-        for i, angle in enumerate(angles):
-            rad = np.radians(angle)
-            x = r_chairs * np.cos(rad)
-            y = r_chairs * np.sin(rad)
+        # Calculate chair positions (evenly spaced along the table)
+        spacing = table_width / self.num_members
+        for i in range(self.num_members):
+            x = table_x + spacing * (i + 0.5)
+            y = 0.8 if i % 2 == 0 else -1.0
             
-            # Draw chair icon as a rotated rectangle
-            chair = patches.Rectangle((x - 0.15, y - 0.15), 0.3, 0.3, 
-                                     angle=angle, rotation_point='center',
+            # Draw chair icon as a rectangle
+            chair = patches.Rectangle((x - 0.15, y - 0.15), 0.3, 0.3,
                                      color='darkslategrey', ec='black', lw=1)
             ax.add_patch(chair)
             
-            # Label Chairperson and Secretary on two adjacent chairs to provide implicit info
+            # Label Chairperson and Secretary on two adjacent chairs
             if i == 0:
-                ax.text(x * 1.25, y * 1.25, "Chairperson", fontsize=10, ha='center', fontweight='bold')
+                label_y = y + 0.4 if y > 0 else y - 0.4
+                ax.text(x, label_y, "Chairperson", fontsize=9, ha='center', va='bottom' if y > 0 else 'top', fontweight='bold')
             elif i == 1:
-                ax.text(x * 1.25, y * 1.25, "Secretary", fontsize=10, ha='center', fontweight='bold')
+                label_y = y + 0.4 if y > 0 else y - 0.4
+                ax.text(x, label_y, "Secretary", fontsize=9, ha='center', va='bottom' if y > 0 else 'top', fontweight='bold')
 
         # Central label
-        plt.text(0, 0, "Meeting\nRoom", ha='center', va='center', fontsize=12, fontweight='bold', color='white')
+        ax.text(self.num_members / 2, 0, "Meeting Table", ha='center', va='center', 
+                fontsize=11, fontweight='bold', color='white')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, bbox_inches='tight', dpi=100)
@@ -3830,18 +3829,19 @@ class Mat190:
         # Generated mu as the target answer
         self.mu_true = rnd.randint(100, 1000)
         
-        # Asymmetric boundaries: Generate two different z-scores
-        # z_lower will be negative (left of mean), z_upper positive (right of mean)
-        self.z_lower = randrange_float(-2.5, -0.5, 0.01)
-        self.z_upper = randrange_float(0.5, 2.5, 0.01)
+        # Symmetric boundaries: use the same z-score for both sides
+        # This makes the problem algebraically solvable: mu = (x1 + x2) / 2
+        self.z_val = round(randrange_float(0.5, 2.5, 0.01), 2)
+        self.z_lower = -self.z_val
+        self.z_upper = self.z_val
         
-        # Calculate boundaries: x = mu + z*sigma
-        self.lower_x = round(self.mu_true + (self.z_lower * self.sigma), 2)
-        self.upper_x = round(self.mu_true + (self.z_upper * self.sigma), 2)
+        # Calculate symmetric boundaries: x = mu +/- z*sigma
+        self.lower_x = round(self.mu_true - (self.z_val * self.sigma), 2)
+        self.upper_x = round(self.mu_true + (self.z_val * self.sigma), 2)
         
         # Calculate area between x_lower and x_upper
-        # P(x_lower < X < x_upper) = Phi(z_upper) - Phi(z_lower)
-        self.area = round(norm.cdf(self.z_upper) - norm.cdf(self.z_lower), 4)
+        # P(x_lower < X < x_upper) = 2*Phi(z) - 1
+        self.area = round(2 * norm.cdf(self.z_val) - 1, 4)
         
         self.answer = self.mu_true
 
@@ -3861,24 +3861,19 @@ class Mat190:
             rf"\sigma^2 &= {self.variance} \implies \sigma = \sqrt{{{self.variance}}} = {round(self.sigma, 10)}\\"
             rf"x_1 &= {self.lower_x}, \quad x_2 = {self.upper_x}\\"
             rf"P(x_1 < X < x_2) &= {self.area}\\"
-            rf"\text{{The standardization formula is:}} &\\"
-            rf"Z &= \frac{{X - \mu}}{{\sigma}}\\"
-            rf"\text{{Express the boundaries in terms of }} Z\text{{:}} &\\"
-            rf"P\left(\frac{{{self.lower_x} - \mu}}{{{round(self.sigma, 10)}}} < Z < \frac{{{self.upper_x} - \mu}}{{{round(self.sigma, 10)}}}\right) &= {self.area}\\"
-            rf"\text{{From the properties of the normal distribution:}} &\\"
-            rf"\Phi(z_{{\text{{upper}}}}) - \Phi(z_{{\text{{lower}}}}) &= {self.area}\\"
-            rf"\text{{Substituting the values for }} z_{{\text{{upper}}}} \text{{ and }} z_{{\text{{lower}}}}\text{{:}} &\\"
-            rf"z_{{\text{{upper}}}} &= {round(self.z_upper, 10)}\\"
-            rf"z_{{\text{{lower}}}} &= {round(self.z_lower, 10)}\\"
-            rf"\text{{Using the standardization equation for }} x_2\text{{:}} &\\"
-            rf"z_{{\text{{upper}}}} &= \frac{{x_2 - \mu}}{{\sigma}}\\"
-            rf"{round(self.z_upper, 10)} &= \frac{{{self.upper_x} - \mu}}{{{round(self.sigma, 10)}}}\\"
-            rf"{round(self.z_upper * self.sigma, 10)} &= {self.upper_x} - \mu\\"
-            rf"\mu &= {self.upper_x} - {round(self.z_upper * self.sigma, 10)}\\"
-            rf"\mu &= {self.answer}"
+            rf"\text{{Since the shaded region is symmetric about the mean:}} &\\"
+            rf"x_1 &= \mu - z\sigma, \quad x_2 = \mu + z\sigma\\"
+            rf"\text{{Adding these two equations:}} &\\"
+            rf"x_1 + x_2 &= 2\mu\\"
+            rf"\mu &= \frac{{x_1 + x_2}}{{2}}\\"
+            rf"&= \frac{{{self.lower_x} + {self.upper_x}}}{{2}}\\"
+            rf"&= \frac{{{round(self.lower_x + self.upper_x, 10)}}}{{2}}\\"
+            rf"&= {self.answer}\\"
+            rf"\text{{Verification: }} z &= \frac{{x_2 - \mu}}{{\sigma}} = \frac{{{self.upper_x} - {self.answer}}}{{{round(self.sigma, 10)}}} = {round(self.z_val, 10)}\\"
+            rf"P(x_1 < X < x_2) &= 2\Phi({round(self.z_val, 10)}) - 1 = {self.area} \checkmark"
             "\\end{aligned}\\]"
         )
-
+        
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 6))
         
@@ -3931,7 +3926,7 @@ class Mat191:
         
         # Formula: Standard Error = sigma / sqrt(n)
         # Therefore: sigma = Standard Error * sqrt(n)
-        self.answer = self.standard_error * math.sqrt(self.n)
+        self.answer = round(self.standard_error * math.sqrt(self.n), 2)
 
         self.description = (
             f"The figure illustrates the probability density function of the sample mean $\\overline{{X}}$ "
@@ -4020,7 +4015,7 @@ class Mat192:
         
         # Calculate unbiased estimate of population variance (s^2)
         # s^2 = (1 / (n-1)) * (sum_x2 - (sum_x^2 / n))
-        self.answer = (sum_x2 - (sum_x**2 / n)) / (n - 1)
+        self.answer = round((sum_x2 - (sum_x**2 / n)) / (n - 1), 2)
 
         self.description = (
             "The dot plot shows the wingspan measurements (in cm) of a random sample of birds. "
@@ -4343,7 +4338,7 @@ class Mat196:
         self.se = round(randrange_float(0.5, 5.0, 0.01), 2)
         
         # Width = 2 * z * SE
-        self.answer = 2 * self.z_critical * self.se
+        self.answer = round(2 * self.z_critical * self.se, 2)
 
         self.description = (
             "The figure shows the areas under the standard normal curve used for a specific confidence interval. "
@@ -4681,7 +4676,6 @@ class Mat200:
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
-        print(self.reasoning)
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 6))
