@@ -15,20 +15,13 @@ DESTINATION_FOLDER = os.path.join(
     os.path.dirname(os.getcwd()), "dataset", "physics", "image"
 )
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-        
 
 class Phy151:
-    """
-    Electric field between parallel plates.
-    Uses E = V / d for a uniform electric field.
-    """
-
     def __init__(self):
         while True:
-            self.distance_mm = rnd.uniform(20.0, 80.0)     # mm
-            self.voltage = rnd.uniform(100.0, 400.0)       # V
-
-            self.distance = self.distance_mm / 1000        # convert to m
+            self.distance_mm = rnd.uniform(20.0, 80.0)
+            self.voltage = rnd.uniform(100.0, 400.0)
+            self.distance = self.distance_mm / 1000
 
             if self.distance > 0:
                 break
@@ -80,7 +73,6 @@ class Phy151:
         plate_height = 3.0
         plate_width = 0.18
 
-        # Negative plate
         ax.add_patch(patches.Rectangle(
             (left_plate_x, plate_bottom),
             plate_width,
@@ -88,7 +80,6 @@ class Phy151:
             color="black"
         ))
 
-        # Positive plate
         ax.add_patch(patches.Rectangle(
             (right_plate_x, plate_bottom),
             plate_width,
@@ -96,7 +87,6 @@ class Phy151:
             color="black"
         ))
 
-        # Plate labels
         ax.text(left_plate_x + plate_width/2,
                 plate_bottom + plate_height + 0.5,
                 "Negative\nplate",
@@ -114,10 +104,9 @@ class Phy151:
 
         ax.text((left_plate_x + right_plate_x)/2,
                 plate_bottom - 0.8,
-                f"{self.distance_mm:.0f} mm",
+                 f"{self.distance_mm:.1f} mm",
                 ha="center")
 
-        # Small vertical guide lines under plates
         ax.plot([left_plate_x + plate_width/2,
                 left_plate_x + plate_width/2],
                 [plate_bottom, plate_bottom - 0.5],
@@ -128,48 +117,42 @@ class Phy151:
                 [plate_bottom, plate_bottom - 0.5],
                 color="black", linewidth=0.8)
 
-        wire_y_bottom = 2.0
+        wire_y_bottom = 1.5
         wire_left = 1.0
         wire_right = 11.0
 
-        # Left vertical wire
         ax.plot([wire_left, wire_left],
                 [plate_bottom + plate_height/2, wire_y_bottom],
                 color="black", linewidth=1.2)
 
-        # Top left horizontal wire
         ax.plot([wire_left, left_plate_x],
                 [plate_bottom + plate_height/2,
                 plate_bottom + plate_height/2],
                 color="black", linewidth=1.2)
 
-        # Top right horizontal wire
         ax.plot([right_plate_x + plate_width, wire_right],
                 [plate_bottom + plate_height/2,
                 plate_bottom + plate_height/2],
                 color="black", linewidth=1.2)
 
-        # Right vertical wire (upper part)
         ax.plot([wire_right, wire_right],
                 [plate_bottom + plate_height/2, 4.1],
                 color="black", linewidth=1.2)
 
-        # Switch
         ax.add_patch(patches.Circle((wire_right, 4.1), 0.12, fill=False))
         ax.add_patch(patches.Circle((wire_right, 3.3), 0.12, fill=False))
         ax.plot([wire_right, wire_right + 0.4],
                 [3.9, 3.5],
                 color="black", linewidth=1.2)
 
-        # Right vertical lower wire
         ax.plot([wire_right, wire_right],
                 [3.3, wire_y_bottom],
                 color="black", linewidth=1.2)
 
-        # Bottom horizontal wire
         ax.plot([wire_left, wire_right],
                 [wire_y_bottom, wire_y_bottom],
                 color="black", linewidth=1.2)
+        
         supply_width = 3.2
         supply_height = 0.9
         supply_x = (wire_left + wire_right)/2 - supply_width/2
@@ -189,6 +172,7 @@ class Phy151:
                 f"{self.voltage:.0f} V dc\nsupply",
                 ha="center",
                 va="center")
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
 
         plt.savefig(dest_image_path,
@@ -257,10 +241,9 @@ class Phy152:
         ax.set_ylim(0, 8)
         ax.axis("off")
 
-        # Geometry parameters
         plate_height = 4.2
         plate_width = 0.15
-        plate_bottom = 2.9
+        plate_bottom = 3.2
 
         center_x = 6
         gap = 1.4
@@ -268,8 +251,6 @@ class Phy152:
         left_x = center_x - gap/2 - plate_width
         right_x = center_x + gap/2
 
-    
-        # Plates
         ax.add_patch(patches.Rectangle((left_x, plate_bottom),
                                     plate_width, plate_height,
                                     color="black"))
@@ -287,8 +268,7 @@ class Phy152:
                 plate_bottom + plate_height + 0.6,
                 "Positive\nplate",
                 ha="center")
-
-        # Distance marking (exact center)
+        
         y_mark = plate_bottom - 0.4
 
         ax.plot([left_x + plate_width/2, left_x + plate_width/2],
@@ -308,8 +288,7 @@ class Phy152:
         ax.text(center_x, y_mark - 0.4,
                 f"{self.distance_mm:.0f} mm",
                 ha="center")
-
-        # Charged ball (perfect center)
+        
         ball_x = center_x
         ball_y = plate_bottom + plate_height/2
 
@@ -317,7 +296,6 @@ class Phy152:
                                     0.22,
                                     color="black"))
 
-        # small field ticks
         for dy in [-0.3, 0, 0.3]:
             ax.plot([ball_x - 0.55, ball_x - 0.35],
                     [ball_y + dy, ball_y + dy],
@@ -339,14 +317,11 @@ class Phy152:
                 f"{self.charge_uC:.2f} μC\ncharge",
                 ha="right")
 
-
-        # Circuit loop (rectangle)
         top_wire_y = plate_bottom + plate_height - 0.2
         bottom_wire_y = 1.6
         left_wire_x = 2
         right_wire_x = 10.2
 
-        # left side
         ax.plot([left_x, left_wire_x],
                 [top_wire_y, top_wire_y],
                 color="black", linewidth=1)
@@ -355,12 +330,10 @@ class Phy152:
                 [top_wire_y, bottom_wire_y],
                 color="black", linewidth=1)
 
-        # bottom
         ax.plot([left_wire_x, right_wire_x],
                 [bottom_wire_y, bottom_wire_y],
                 color="black", linewidth=1)
 
-        # right side to switch
         ax.plot([right_x + plate_width, right_wire_x],
                 [top_wire_y, top_wire_y],
                 color="black", linewidth=1)
@@ -369,8 +342,6 @@ class Phy152:
                 [top_wire_y, 4.2],
                 color="black", linewidth=1)
 
-
-        # Switch (open, accurate orientation)
         ax.add_patch(patches.Circle((right_wire_x, 3.9), 0.07, fill=False))
         ax.add_patch(patches.Circle((right_wire_x, 3.3), 0.07, fill=False))
 
@@ -383,7 +354,6 @@ class Phy152:
                 color="black", linewidth=1)
 
 
-        # Power supply (centered)
         supply_width = 2.4
         supply_height = 0.9
         supply_x = center_x - supply_width/2
@@ -504,24 +474,19 @@ class Phy153:
             )
         )
 
-        # Positions
         xA = 4
         xB = 6
         y = 2
 
-        # Charges
         ax.add_patch(patches.Circle((xA, y), 0.18, color="#555555"))
         ax.add_patch(patches.Circle((xB, y), 0.18, color="#555555"))
 
-        # Labels A and B
         ax.text(xA, y + 0.35, "A", ha="center", fontsize=11, weight="bold")
         ax.text(xB, y + 0.35, "B", ha="center", fontsize=11, weight="bold")
 
-        # Charge values
         ax.text(xA, y - 0.45, f"{self.q1_nC:.2f} nC", ha="center")
         ax.text(xB, y - 0.45, f"{self.q2_nC:.2f} nC", ha="center")
 
-        # Distance arrow
         ax.annotate("",
                     xy=(xA, y + 0.6),
                     xytext=(xB, y + 0.6),
@@ -623,7 +588,6 @@ class Phy154:
         ax.set_ylim(0, 4)
         ax.axis("off")
 
-        # Background panel
         panel = patches.FancyBboxPatch(
             (0.5, 0.8), 9, 2.4,
             boxstyle="round,pad=0.03",
@@ -632,16 +596,13 @@ class Phy154:
         )
         ax.add_patch(panel)
 
-        # Charge positions
         xA = 4
         xB = 6
         y = 2
 
-        # Draw charges
         ax.add_patch(patches.Circle((xA, y), 0.18, color="#4a4a4a"))
         ax.add_patch(patches.Circle((xB, y), 0.18, color="#4a4a4a"))
 
-        # Labels
         ax.text(xA, y + 0.35, "A", ha="center", fontsize=11, weight="bold")
         ax.text(xB, y + 0.35, "B", ha="center", fontsize=11, weight="bold")
 
@@ -653,7 +614,6 @@ class Phy154:
                 f"{self.q2_fC:.2f} ×10⁻¹⁵ C",
                 ha="center", fontsize=9)
 
-        # Distance arrow
         ax.annotate("",
                     xy=(xA, y + 0.6),
                     xytext=(xB, y + 0.6),
@@ -679,7 +639,6 @@ class Phy155:
     def __init__(self):
         self.epsilon0 = 8.85e-12
 
-        # Pre-filtered values so no heavy looping is needed
         self.EA_V_per_cm = rnd.choice([2.0, 2.4, 2.6, 3.0]) * 1e3
         self.EB_V_per_cm = self.EA_V_per_cm / 2
         self.QB_microC = rnd.choice([6.0, 7.0, 7.5, 8.0])
@@ -880,22 +839,18 @@ class Phy156:
         ax.set_aspect("equal")
         ax.axis("off")
 
-        # Geometry positions
         alpha_center = (-4.5, 0)
         nucleus_center = (4.5, 0)
 
-        # Alpha particle (smaller)
         alpha = plt.Circle(alpha_center, 0.6, facecolor="#e6e6e6", edgecolor="black", linewidth=2.2)
         ax.add_patch(alpha)
         ax.text(alpha_center[0], alpha_center[1], r"$\alpha$", ha="center", va="center", fontsize=18)
 
-        # Gold nucleus (significantly larger)
         nucleus = plt.Circle(nucleus_center, 1.6, facecolor="#f4d27a", edgecolor="black", linewidth=2.2)
         ax.add_patch(nucleus)
         ax.text(nucleus_center[0], 0.6, r"$\mathrm{Au}$", ha="center", va="center", fontsize=18)
         ax.text(nucleus_center[0], -0.5, r"$Z = 79$", ha="center", va="center", fontsize=15)
 
-        # Velocity arrow (stops before dashed line, not touching nucleus)
         ax.annotate(
             "",
             xy=(1.5, 0),
@@ -910,7 +865,6 @@ class Phy156:
             fontsize=14
         )
 
-        # Vertical dashed 
         ax.plot(
             [2.0, 2.0],
             [-1.2, 1.2],
@@ -919,7 +873,6 @@ class Phy156:
             color="#2b6cb0"
         )
 
-        # r_min double arrow (horizontal, proportional length)
         ax.annotate(
             "",
             xy=(3.0, -1.7),
@@ -934,7 +887,6 @@ class Phy156:
             fontsize=15
         )
 
-        # Repulsion arrow (shorter, thinner, horizontal)
         ax.annotate(
             "",
             xy=(2.5, -2.6),
@@ -954,11 +906,6 @@ class Phy156:
         plt.close()
 
 class Phy157:
-    """
-    Electrostatic potential energy between an alpha particle and a gold nucleus
-    at the distance of closest approach.
-    """
-
     def __init__(self):
         self.k = 8.99e9
         self.e = 1.602e-19
@@ -970,113 +917,95 @@ class Phy157:
 
         self.q_alpha = 2 * self.e
         self.q_gold = 79 * self.e
-
         self.U = self.k * self.q_alpha * self.q_gold / self.r
-
         self.answer = f"{self.U:.3e}"
 
         self.description = (
-            f"An α-particle ⁴₂He is moving directly towards a stationary gold nucleus ¹⁹⁷₇₉Au. "
+            f"An α-particle $^4_2$He is moving directly towards a stationary gold nucleus $^{{197}}_{{79}}$Au. "
             f"At a distance of {self.r:.2e} m the α-particle momentarily comes to rest. "
-            f"Calculate the electric potential energy of the particles at this instant. (_) J"
+            f"Calculate the electric potential energy of the particles at this instant."
         )
 
         self.topic = "Electric Fields"
         self.subtopic = "Electric Potentials"
         self.source = "Original"
         self.curriculum = "A-Level"
+
         def sci_latex(val):
-            if val == 0:
-                return "0"
+            if val == 0: return "0"
             exponent = int(math.floor(math.log10(abs(val))))
             mantissa = val / (10 ** exponent)
             return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
 
+        lk = sci_latex(self.k)
+        le = sci_latex(self.e)
+        lr = sci_latex(self.r)
+        lqa = sci_latex(self.q_alpha)
+        lqg = sci_latex(self.q_gold)
+        lu = sci_latex(self.U)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\textbf{Step 1: Identify known quantities}\\\\"
-            f"k &= {sci_latex(self.k)}\\,\\text{{N m}}^2\\text{{C}}^{{-2}}\\\\"
-            f"e &= {sci_latex(self.e)}\\,\\text{{C}}\\\\"
-            f"r &= {sci_latex(self.r)}\\,\\text{{m}}\\\\[6pt]"
-            "\\textbf{Step 2: Determine charges}\\\\"
-            f"q_1 &= 2e = 2({sci_latex(self.e)}) = {sci_latex(self.q_alpha)}\\,\\text{{C}}\\\\"
-            f"q_2 &= 79e = 79({sci_latex(self.e)}) = {sci_latex(self.q_gold)}\\,\\text{{C}}\\\\[6pt]"
-            "\\textbf{Step 3: Use electrostatic potential energy formula}\\\\"
-            "U &= \\dfrac{k q_1 q_2}{r}\\\\[6pt]"
-            "\\textbf{Step 4: Substitute numerical values}\\\\"
-            f"U &= \\dfrac{{({sci_latex(self.k)})({sci_latex(self.q_alpha)})({sci_latex(self.q_gold)})}}{{{sci_latex(self.r)}}}\\\\[6pt]"
-            "\\textbf{Step 5: Compute result}\\\\"
-            f"U &= {sci_latex(self.U)}\\,\\text{{J}}\\\\[6pt]"
-            "\\textbf{Final Answer:}\\\\"
-            f"U &= {sci_latex(self.U)}\\,\\text{{J}}"
+            "&\\mathbf{Step\ 1:\ Identify\ known\ quantities} \\\\"
+            "&k = " + lk + "\\,\\text{N m}^2\\text{C}^{-2} \\\\"
+            "&e = " + le + "\\,\\text{C} \\\\"
+            "&r = " + lr + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Determine\ charges} \\\\"
+            "&q_{\\alpha} = 2e = " + lqa + "\\,\\text{C} \\\\"
+            "&q_{Au} = 79e = " + lqg + "\\,\\text{C} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Apply\ Potential\ Energy\ Formula} \\\\"
+            "&U = \\frac{k q_1 q_2}{r} = \\frac{(" + lk + ")(" + lqa + ")(" + lqg + ")}{" + lr + "} \\\\[8pt]"
+            "&\\mathbf{Step\ 4:\ Result} \\\\"
+            "&U = \\mathbf{" + lu + "\\,\\text{J}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 3))
+        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
         ax.set_xlim(0, 12)
-        ax.set_ylim(0, 4)
+        ax.set_ylim(0, 5)
+        ax.set_aspect('equal')
         ax.axis('off')
 
-        y = 2
-        x_alpha = 2
-        x_gold = 10
+        y = 2.5
+        x_alpha = 3
+        x_gold = 9
 
-        alpha_radius = 0.5
-        gold_radius = 0.9
+        gold = plt.Circle((x_gold, y), 0.8, color='#f1c40f', alpha=0.3)
+        gold_border = plt.Circle((x_gold, y), 0.8, color='#f39c12', fill=False, lw=2)
+        ax.add_patch(gold)
+        ax.add_patch(gold_border)
+        ax.text(x_gold, y, "$^{197}_{79}$Au\n$+79e$", ha='center', va='center', fontweight='bold')
 
-        alpha_circle = plt.Circle((x_alpha, y), alpha_radius, fill=False, linewidth=1.5)
-        gold_circle = plt.Circle((x_gold, y), gold_radius, fill=False, linewidth=1.5)
+        alpha = plt.Circle((x_alpha, y), 0.4, color='#e74c3c', alpha=0.3)
+        alpha_border = plt.Circle((x_alpha, y), 0.4, color='#c0392b', fill=False, lw=2)
+        ax.add_patch(alpha)
+        ax.add_patch(alpha_border)
+        ax.text(x_alpha, y, "α\n$+2e$", ha='center', va='center', fontweight='bold', color='#c0392b')
 
-        ax.add_patch(alpha_circle)
-        ax.add_patch(gold_circle)
+        ax.annotate("", xy=(x_alpha + 1, y + 1.2), xytext=(x_alpha - 1.5, y + 1.2),
+                    arrowprops=dict(arrowstyle="->", color='#2c3e50', lw=1.5))
+        ax.text(x_alpha - 0.2, y + 1.5, "$v", ha='center', fontweight='bold')
 
-        ax.text(x_alpha, y + 0.15, "α", ha='center', va='center', fontsize=12)
-        ax.text(x_alpha, y - 0.25, "(⁴₂He)", ha='center', va='center', fontsize=11)
-
-        ax.text(x_gold, y + 0.15, "Au", ha='center', va='center', fontsize=12)
-        ax.text(x_gold, y - 0.25, "(¹⁹⁷₇₉Au)", ha='center', va='center', fontsize=11)
-
-        ax.plot([x_alpha, x_gold], [y, y], linewidth=1)
-
-        ax.annotate(
-            "",
-            xy=(x_gold - 1.2, y + 1.0),
-            xytext=(x_alpha + 1.0, y + 1.0),
-            arrowprops=dict(arrowstyle="->", linewidth=1.2)
-        )
-
-        ax.text((x_alpha + x_gold) / 2, y + 1.5,
-                "α momentarily at rest",
-                ha='center', va='center', fontsize=11)
-
-        ax.annotate(
-            "",
-            xy=(x_gold, y - 0.9),
-            xytext=(x_alpha, y - 0.9),
-            arrowprops=dict(arrowstyle="<->", linewidth=1)
-        )
-
+        ax.annotate("", xy=(x_gold, y - 1.2), xytext=(x_alpha, y - 1.2),
+                    arrowprops=dict(arrowstyle="<->", color='black', lw=1.2))
+        
         exponent = int(math.floor(math.log10(abs(self.r))))
         mantissa = self.r / (10 ** exponent)
+        ax.text((x_alpha + x_gold) / 2, y - 1.6,
+                rf"$r = {mantissa:.2f} \times 10^{{{exponent}}}$ m",
+                ha='center', va='center', fontweight='bold', bbox=dict(facecolor='white', edgecolor='none'))
 
-        ax.text((x_alpha + x_gold) / 2, y - 1.2,
-                rf"${mantissa:.3f} \times 10^{{{exponent}}}\,\mathrm{{m}}$",
-                ha='center', va='center', fontsize=11)
+        ax.set_title("ALPHA PARTICLE AT DISTANCE OF CLOSEST APPROACH", fontsize=12, fontweight='bold', pad=10)
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-
-        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy158:
-    """
-    Kinetic energy of an alpha particle moving at high speed.
-    """
-
     def __init__(self):
-        self.mass_alpha = 6.64e-27  # kg
+        self.mass_alpha = 6.64e-27
 
         while True:
             self.speed = rnd.uniform(2.0e7, 6.0e7)
@@ -1084,11 +1013,11 @@ class Phy158:
                 break
 
         self.KE = 0.5 * self.mass_alpha * self.speed**2
-        self.answer = self.KE
+        self.answer = f"{self.KE:.3e}"
 
         self.description = (
-            f"An α-particle (⁴₂He²⁺) is travelling at a speed of {self.speed:.2e} m s⁻¹. "
-            f"Calculate its kinetic energy. (_) J"
+            f"An α-particle ($^4_2$He$) is travelling at a speed of {self.speed:.2e} m s$^{-1}$. "
+            f"Calculate its kinetic energy in Joules (J)."
         )
 
         self.topic = "Electric Fields"
@@ -1096,67 +1025,66 @@ class Phy158:
         self.source = "Past Papers"
         self.curriculum = "A-Level"
 
-        def sci(val):
-            if abs(val) < 1e-5:
-                exponent = int(math.floor(math.log10(abs(val))))
-                mantissa = val / (10 ** exponent)
-                return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
-            else:
-                return f"{round(val,10)}"
+        def sci_latex(val):
+            if val == 0: return "0"
+            exponent = int(math.floor(math.log10(abs(val))))
+            mantissa = val / (10 ** exponent)
+            return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
+
+        lm = sci_latex(self.mass_alpha)
+        lv = sci_latex(self.speed)
+        lv2 = sci_latex(self.speed**2)
+        lke = sci_latex(self.KE)
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\textbf{Step 1: Identify known quantities}\\\\"
-            f"m &= {sci(self.mass_alpha)}\\,\\text{{kg}}\\\\"
-            f"v &= {sci(self.speed)}\\,\\text{{m s}}^{{-1}}\\\\[6pt]"
-            "\\textbf{Step 2: Write kinetic energy formula}\\\\"
-            "E_k &= \\frac{1}{2}mv^2\\\\[6pt]"
-            "\\textbf{Step 3: Substitute values}\\\\"
-            f"E_k &= \\frac{{1}}{{2}}({sci(self.mass_alpha)})({sci(self.speed)})^2\\\\[6pt]"
-            "\\textbf{Step 4: Compute } v^2\\\\"
-            f"v^2 &= ({sci(self.speed)})^2\\\\"
-            f"&= {sci(self.speed**2)}\\\\[6pt]"
-            "\\textbf{Step 5: Final Answer}\\\\"
-            f"E_k &= {sci(self.KE)}\\,\\text{{J}}\\\\[6pt]"
+            "&\\mathbf{Step\ 1:\ Identify\ known\ quantities} \\\\"
+            "&m = " + lm + "\\,\\text{kg} \\\\"
+            "&v = " + lv + "\\,\\text{m s}^{-1} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Kinetic\ Energy\ formula} \\\\"
+            "&E_k = \\frac{1}{2} m v^2 \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitution\ and\ Calculation} \\\\"
+            "&E_k = 0.5 \\times (" + lm + ") \\times (" + lv + ")^2 \\\\"
+            "&E_k = 0.5 \\times (" + lm + ") \\times (" + lv2 + ") \\\\"
+            "&\\mathbf{Step\ 4:\ Final\ Answer} \\\\"
+            "&E_k = \\mathbf{" + lke + "\\,\\text{J}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 3))
+        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
         ax.set_xlim(0, 12)
-        ax.set_ylim(0, 4)
+        ax.set_ylim(0, 5)
+        ax.set_aspect('equal')
         ax.axis('off')
 
-        y = 2
-        x_alpha = 3
+        y = 2.5
+        x_start = 2
+        
+        alpha_grad = plt.Circle((x_start, y), 0.6, color='#e74c3c', alpha=0.2)
+        alpha_core = plt.Circle((x_start, y), 0.6, color='#c0392b', fill=False, lw=2.5)
+        ax.add_patch(alpha_grad)
+        ax.add_patch(alpha_core)
 
-        alpha_radius = 0.8
-
-        alpha_circle = plt.Circle((x_alpha, y), alpha_radius, fill=False, linewidth=1.5)
-        ax.add_patch(alpha_circle)
-
-        ax.text(x_alpha, y + 0.2, "α", ha='center', va='center', fontsize=16)
-        ax.text(x_alpha, y - 1.2, r"$^{4}_{2}\mathrm{He}^{2+}$",
-                ha='center', va='center', fontsize=16)
-
-        ax.annotate(
-            "",
-            xy=(10, y),
-            xytext=(x_alpha + alpha_radius, y),
-            arrowprops=dict(arrowstyle="->", linewidth=1.5)
-        )
-
+        ax.text(x_start, y, r"$\alpha$", ha='center', va='center', fontsize=20, color='#c0392b', fontweight='bold')
+        ax.text(x_start, y - 1.2, "$^4_2$He$^{2+}$", ha='center', fontsize=14, fontweight='bold')
+        
+        ax.annotate("", xy=(10, y), xytext=(x_start + 0.7, y),
+                    arrowprops=dict(arrowstyle="fancy", color='#34495e', lw=1, mutation_scale=20))
+        
         exponent = int(math.floor(math.log10(abs(self.speed))))
         mantissa = self.speed / (10 ** exponent)
+        
+        ax.text(6.5, y + 0.8, rf"$v = {mantissa:.2f} \times 10^{{{exponent}}}\,\text{{m s}}^{{-1}}$", 
+                ha='center', fontsize=14, fontweight='bold', bbox=dict(facecolor='white', edgecolor='#34495e', boxstyle='round,pad=0.5'))
+        
+        ax.text(6.5, y - 0.8, f"$m = {self.mass_alpha:.2e}$ kg", ha='center', fontsize=12, style='italic')
 
-        ax.text(7, y + 0.6,
-                rf"$v = {mantissa:.3f} \times 10^{{{exponent}}}\,\mathrm{{m\,s^{{-1}}}}$",
-                ha='center', va='center', fontsize=16)
+        ax.set_title("KINETIC ENERGY OF A HIGH-SPEED ALPHA PARTICLE", fontsize=12, fontweight='bold', pad=20)
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-
-        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy159:
@@ -1223,20 +1151,16 @@ class Phy159:
         ax.set_ylim(0, 8)
         ax.axis('off')
 
-        # LEFT MAIN VERTICAL WIRE
         ax.plot([2, 2], [6, 2], linewidth=2, color = "black")
 
-        # TOP BRANCH (BATTERY)
         ax.plot([2, 5], [6, 6], linewidth=2, color = "black")
 
-        # Battery plates
         ax.plot([5, 5], [5.4, 6.6], linewidth=2, color = "black")
         ax.plot([5.5, 5.5], [5.2, 6.8], linewidth=2, color = "black")
         ax.plot([5.5, 8], [6, 6], linewidth=2, color = "black")
         ax.text(5.25, 7, f"{self.V} V", ha='center', fontsize=12)
         ax.text(8.2, 6.2, "P", fontsize=12)
 
-        # SWITCH
         ax.plot([8, 10], [6, 4.8], linewidth=2, color = "black")
         ax.plot([10, 12], [4.8, 4.8], linewidth=2, color = "black")
         ax.text(9.2, 5.2, "S", fontsize=12)
@@ -1345,20 +1269,17 @@ class Phy160:
 
         lw = 2
 
-        # Top wire
+      
         ax.plot([3, 9], [6, 6], linewidth=lw, color="black")
 
-        # Left battery branch
         ax.plot([3, 3], [6, 4.5], linewidth=lw, color="black")
         ax.plot([2.7, 3.3], [4.5, 4.5], linewidth=lw, color="black")
         ax.plot([2.5, 3.5], [4.1, 4.1], linewidth=lw, color="black")
         ax.plot([3, 3], [4.1, 2], linewidth=lw, color="black")
         ax.text(1.8, 4.2, f"{self.V:.1f} V", fontsize=10, color="black")
 
-        # Bottom wire
         ax.plot([3, 9], [2, 2], linewidth=lw, color="black")
 
-        # Capacitor X
         ax.plot([6, 6], [6, 4.5], linewidth=lw, color="black")
         ax.plot([5.6, 6.4], [4.5, 4.5], linewidth=lw, color="black")
         ax.plot([5.6, 6.4], [4.1, 4.1], linewidth=lw, color="black")
@@ -1367,7 +1288,6 @@ class Phy160:
         ax.text(5.5, 3.7, f"{self.Cx*1e6:.1f} µF",
                 ha="center", fontsize=10, color="black")
 
-        # Capacitor Y
         ax.plot([9, 9], [6, 4.5], linewidth=lw, color="black")
         ax.plot([8.6, 9.4], [4.5, 4.5], linewidth=lw, color="black")
         ax.plot([8.6, 9.4], [4.1, 4.1], linewidth=lw, color="black")
@@ -1452,20 +1372,16 @@ class Phy161:
 
         lw = 2
 
-        # Top wire
         ax.plot([3, 9], [6, 6], linewidth=lw, color="black")
 
-        # Left battery branch
         ax.plot([3, 3], [6, 4.5], linewidth=lw, color="black")
         ax.plot([2.7, 3.3], [4.5, 4.5], linewidth=lw, color="black")
         ax.plot([2.5, 3.5], [4.1, 4.1], linewidth=lw, color="black")
         ax.plot([3, 3], [4.1, 2], linewidth=lw, color="black")
         ax.text(1.8, 4.2, f"{self.V:.1f} V", fontsize=10, color="black")
 
-        # Bottom wire
         ax.plot([3, 9], [2, 2], linewidth=lw, color="black")
 
-        # Capacitor X
         ax.plot([6, 6], [6, 4.5], linewidth=lw, color="black")
         ax.plot([5.6, 6.4], [4.5, 4.5], linewidth=lw, color="black")
         ax.plot([5.6, 6.4], [4.1, 4.1], linewidth=lw, color="black")
@@ -1474,7 +1390,6 @@ class Phy161:
         ax.text(5.5, 3.7, f"{self.Cx*1e6:.1f} µF",
                 ha="center", fontsize=10, color="black")
 
-        # Capacitor Y
         ax.plot([9, 9], [6, 4.5], linewidth=lw, color="black")
         ax.plot([8.6, 9.4], [4.5, 4.5], linewidth=lw, color="black")
         ax.plot([8.6, 9.4], [4.1, 4.1], linewidth=lw, color="black")
@@ -1616,118 +1531,108 @@ class Phy162:
         plt.close()
 
 class Phy163:
-    """
-    Percentage energy lost during capacitor discharge in first 30 ms.
-    """
-
     def __init__(self):
         while True:
-            self.C = rnd.randint(100, 200) * 1e-6  # F
-            self.V0 = rnd.uniform(0.6, 0.9)       # initial voltage (V)
-            self.t = rnd.randint(20, 40) * 1e-3   # s
-            self.tau = rnd.uniform(0.02, 0.06)    # time constant (s)
-
+            self.C = rnd.randint(100, 200) * 1e-6
+            self.V0 = rnd.uniform(0.6, 0.9)
+            self.t = rnd.randint(20, 40) * 1e-3
+            self.tau = rnd.uniform(0.02, 0.06)
             self.Vt = self.V0 * math.exp(-self.t / self.tau)
-
             if self.Vt > 0:
                 break
 
         self.E0 = 0.5 * self.C * self.V0**2
         self.Et = 0.5 * self.C * self.Vt**2
         self.percent_lost = ((self.E0 - self.Et) / self.E0) * 100
-
-        self.answer = round(self.percent_lost, 2)
+        self.answer = f"{self.percent_lost:.2f}"
 
         self.description = (
             f"A capacitor of capacitance {self.C*1e6:.0f} µF is initially "
             f"charged to a potential difference of {self.V0:.2f} V. "
-            f"It discharges through a resistor. After {int(self.t*1000)} ms, "
-            f"the voltage is given by the exponential decay shown. "
-            f"Calculate the energy lost during the first {int(self.t*1000)} ms "
-            f"as a percentage of the initial energy. (_) %"
+            f"It discharges through a fixed resistor. The graph shows the variation with time $t$ "
+            f"of the potential difference $V$ across the capacitor. "
+            f"Calculate the energy lost by the capacitor during the first {int(self.t*1000)} ms "
+            f"as a percentage of the initial energy stored."
         )
 
-        self.topic = "Capcitance"
+        self.topic = "Capacitance"
         self.subtopic = "Discharging a capacitor"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
 
-        def sci(val):
+        def sci_latex(val):
             exponent = int(math.floor(math.log10(abs(val))))
             mantissa = val / (10 ** exponent)
-            mantissa_str = f"{mantissa:.3f}".rstrip('0').rstrip('.')
-            return f"{mantissa_str} \\times 10^{{{exponent}}}"
+            return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
+
+        lC = sci_latex(self.C)
+        lE0 = sci_latex(self.E0)
+        lEt = sci_latex(self.Et)
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\textbf{Step 1: Initial energy stored}\\\\"
-            "E_0 &= \\frac{1}{2} C V_0^2\\\\"
-            f"E_0 &= \\frac{{1}}{{2}}({sci(self.C)})({self.V0:.4f})^2\\\\"
-            f"E_0 &= {sci(self.E0)}\\,\\text{{J}}\\\\[6pt]"
-            "\\textbf{Step 2: Voltage after time } t\\\\"
-            "V(t) &= V_0 e^{-t/\\tau}\\\\"
-            f"V(t) &= {self.V0:.4f} e^{{-{self.t:.4f}/{self.tau:.4f}}}\\\\"
-            f"V(t) &= {self.Vt:.4f}\\,\\text{{V}}\\\\[6pt]"
-            "\\textbf{Step 3: Energy remaining}\\\\"
-            "E(t) &= \\frac{1}{2} C V(t)^2\\\\"
-            f"E(t) &= \\frac{{1}}{{2}}({sci(self.C)})({self.Vt:.4f})^2\\\\"
-            f"E(t) &= {sci(self.Et)}\\,\\text{{J}}\\\\[6pt]"
-            "\\textbf{Step 4: Percentage energy lost}\\\\"
-            "\\%\\,\\text{lost} &= "
-            "\\frac{E_0 - E(t)}{E_0} \\times 100\\\\"
-            f"\\%\\,\\text{{lost}} &= {self.answer}\\,\\%"
+            "&\\mathbf{Step\ 1:\ Initial\ energy\ stored\ (E_0)} \\\\"
+            "&E_0 = \\frac{1}{2} C V_0^2 = 0.5 \\times (" + lC + ") \\times (" + f"{self.V0:.3f}" + ")^2 \\\\"
+            "&E_0 = " + lE0 + "\\,\\text{J} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Potential\ difference\ at\ t = " + f"{int(self.t*1000)}" + "\\,ms} \\\\"
+            "&V = V_0 e^{-t/\\tau} = " + f"{self.V0:.3f}" + " \\times e^{" + f"{-self.t/self.tau:.3f}" + "} \\\\"
+            "&V = " + f"{self.Vt:.4f}" + "\\,\\text{V} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Energy\ remaining\ (E_t)} \\\\"
+            "&E_t = \\frac{1}{2} C V^2 = 0.5 \\times (" + lC + ") \\times (" + f"{self.Vt:.4f}" + ")^2 \\\\"
+            "&E_t = " + lEt + "\\,\\text{J} \\\\[8pt]"
+            "&\\mathbf{Step\ 4:\ Percentage\ energy\ lost} \\\\"
+            "&\\%\\,\\text{loss} = \\frac{E_0 - E_t}{E_0} \\times 100 \\\\"
+            "&\\%\\,\\text{loss} = \\mathbf{" + self.answer + "\\,\\%}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
         plt.style.use("default")
-        plt.rcParams.update({
-            "axes.prop_cycle": plt.cycler(color=["black"]),
-            "text.color": "black",
-            "axes.edgecolor": "black",
-            "figure.facecolor": "white"
-        })
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+        
+        t_plot = np.linspace(0, 0.05, 500)
+        V_plot = self.V0 * np.exp(-t_plot / self.tau)
+        
+        ax.plot(t_plot * 1000, V_plot, color='black', linewidth=2, label='Discharge curve')
+        
+        ax.scatter([0], [self.V0], color='red', zorder=5)
+        ax.text(1, self.V0, f'$V_0 = {self.V0:.2f}$ V', va='bottom', fontweight='bold')
+        
+        t_ms = self.t * 1000
+        ax.scatter([t_ms], [self.Vt], color='red', zorder=5)
+        ax.plot([t_ms, t_ms], [0, self.Vt], color='red', linestyle='--', alpha=0.6)
+        ax.plot([0, t_ms], [self.Vt, self.Vt], color='red', linestyle='--', alpha=0.6)
+        ax.text(t_ms + 1, self.Vt + 0.02, f'$V_t = {self.Vt:.3f}$ V', fontweight='bold')
 
-        fig, ax = plt.subplots(figsize=(7, 4))
-        ax.set_xlabel("Time / ms")
-        ax.set_ylabel("pd / V")
-
-        t_vals = np.linspace(0, 0.04, 400)
-        V_vals = self.V0 * np.exp(-t_vals / self.tau)
-
-        ax.plot(t_vals * 1000, V_vals, linewidth=2, color="black")
-        ax.set_xlim(0, 40)
+        ax.set_xlabel("Time $t$ / ms", fontsize=12, fontweight='bold')
+        ax.set_ylabel("Potential Difference $V$ / V", fontsize=12, fontweight='bold')
+        ax.set_xlim(0, 50)
         ax.set_ylim(0, self.V0 * 1.1)
+        
+        ax.grid(True, which='both', linestyle=':', alpha=0.7)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        
+        ax.text(25, self.V0 * 0.8, f'$C = {self.C*1e6:.0f}$ µF\n$\\tau = {self.tau*1000:.1f}$ ms', 
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.grid(True, linestyle='--', linewidth=0.5)
-
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-        dest_image_path = os.path.join(
-            DESTINATION_FOLDER, f"image{num}.png"
-        )
-
-        plt.savefig(dest_image_path, dpi=600,
-                    bbox_inches="tight", pad_inches=0.05)
+        plt.tight_layout()
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy164:
-    """
-    Time constant of an RC discharge circuit.
-    """
-
     def __init__(self):
-        # Randomise but keep values physically sensible
-        self.R = rnd.randint(50, 300)  # ohm
-        self.C = rnd.randint(10, 80) * 1e-6  # F
-
-        self.tau = self.R * self.C  # s
-        self.answer = round(self.tau, 5)
+        self.R = rnd.randint(50, 300)
+        self.C = rnd.randint(10, 80) * 1e-6
+        self.tau = self.R * self.C
+        self.answer = f"{self.tau:.5f}"
 
         self.description = (
-            f"The resistor, R, in the experiment is fixed at a resistance of "
-            f"{self.R} Ω and the capacitor, C, has a capacitance of "
-            f"{self.C*1e6:.0f} µF and is discharging. "
-            f"Calculate the time constant of the circuit. (_) s"
+            f"The diagram shows a circuit used to investigate the discharge of a capacitor. "
+            f"The resistor $R$ has a resistance of {self.R} Ω and the capacitor $C$ "
+            f"has a capacitance of {self.C*1e6:.0f} µF. "
+            f"Calculate the time constant of this circuit."
         )
 
         self.topic = "Capacitance"
@@ -1735,85 +1640,71 @@ class Phy164:
         self.source = "Original"
         self.curriculum = "A-Level"
 
-        def sci(val):
+        def sci_latex(val):
             exponent = int(math.floor(math.log10(abs(val))))
             mantissa = val / (10 ** exponent)
-            mantissa_str = f"{mantissa:.3f}".rstrip('0').rstrip('.')
-            return f"{mantissa_str} \\times 10^{{{exponent}}}"
+            return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
+
+        lC = sci_latex(self.C)
+        ltau = sci_latex(self.tau)
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\textbf{Step 1: Identify known quantities}\\\\"
-            f"R &= {self.R}\\,\\Omega\\\\"
-            f"C &= {sci(self.C)}\\,\\text{{F}}\\\\[6pt]"
-            "\\textbf{Step 2: Time constant formula}\\\\"
-            "\\tau &= RC\\\\[6pt]"
-            "\\textbf{Step 3: Substitute values}\\\\"
-            f"\\tau &= ({self.R})({sci(self.C)})\\\\[6pt]"
-            "\\textbf{Step 4: Compute time constant}\\\\"
-            f"\\tau &= {sci(self.tau)}\\,\\text{{s}}\\\\[6pt]"
-            "\\textbf{Final Answer:}\\\\"
-            f"\\tau &= {self.answer}\\,\\text{{s}}"
+            "&\\mathbf{Step\ 1:\ Data\ Extraction} \\\\"
+            "&R = " + str(self.R) + "\\,\\Omega \\\\"
+            "&C = " + lC + "\\,\\text{F} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Formula\ Selection} \\\\"
+            "&\\tau = RC \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&\\tau = (" + str(self.R) + ") \\times (" + lC + ") \\\\"
+            "&\\tau = \\mathbf{" + ltau + "\\,s}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
         plt.style.use("default")
-        plt.rcParams.update({
-            "axes.prop_cycle": plt.cycler(color=["black"]),
-            "text.color": "black",
-            "axes.edgecolor": "black",
-            "figure.facecolor": "white"
-        })
-
-        fig, ax = plt.subplots(figsize=(8, 4))
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 6)
+        ax.set_aspect('equal')
         ax.axis("off")
 
-        lw = 2
+        main_color = '#2d3436'
+        accent_color = '#0984e3'
+        
+        ax.plot([2, 4], [5, 5], color=main_color, lw=2)
+        ax.plot([5, 8], [5, 5], color=main_color, lw=2)
+        ax.plot([2, 8], [1, 1], color=main_color, lw=2)
+        ax.plot([2, 2], [1, 5], color=main_color, lw=2)
+        ax.plot([8, 8], [1, 5], color=main_color, lw=2)
 
-        # Left vertical wire
-        ax.plot([2, 2], [5, 1], linewidth=lw, color="black")
+        ax.plot([4, 4.8], [5, 5.4], color=main_color, lw=2.5)
+        ax.add_patch(plt.Circle((4, 5), 0.1, color=main_color))
+        ax.add_patch(plt.Circle((5, 5), 0.1, color=main_color))
+        ax.text(4.5, 5.6, "Switch", ha='center', fontsize=10, fontweight='bold')
 
-        # Battery plates 
-        ax.plot([1.8, 2.6], [4.2, 4.2], linewidth=lw, color="black")  # long plate
-        ax.plot([1.9, 2.5], [3.8, 3.8], linewidth=lw, color="black")  # short plate
-        ax.text(1.5, 4.3, "+", fontsize=12, color="black")
-        ax.text(1.5, 3.6, "V", fontsize=12, color="black")
+        res_w, res_h = 2.0, 0.7
+        res_x, res_y = 4.0, 0.65
+        resistor = patches.Rectangle((res_x, res_y), res_w, res_h, facecolor='white', edgecolor=main_color, lw=2, zorder=3)
+        ax.add_patch(resistor)
+        ax.text(res_x + res_w/2, res_y - 0.5, f"$R = {self.R}$ Ω", ha='center', fontweight='bold', fontsize=11)
 
-        # Top wire
-        ax.plot([2, 6], [5, 5], linewidth=lw, color="black")
+        cap_x = 8.0
+        cap_y = 3.0
+        gap = 0.25
+        ax.add_patch(patches.Rectangle((cap_x-0.5, cap_y-0.5), 1, 1, color='white', zorder=2))
+        ax.plot([cap_x-0.5, cap_x+0.5], [cap_y+gap, cap_y+gap], color=main_color, lw=3)
+        ax.plot([cap_x-0.5, cap_x+0.5], [cap_y-gap, cap_y-gap], color=main_color, lw=3)
+        ax.text(cap_x + 0.8, cap_y, f"$C = {self.C*1e6:.0f}$ µF", va='center', fontweight='bold', fontsize=11)
 
-        # Resistor (long rectangular, centered)
-        ax.add_patch(
-            plt.Rectangle((6, 4.6), 2.5, 0.8,
-                          fill=False,
-                          edgecolor="black",
-                          linewidth=lw)
-        )
-        ax.text(7.25, 5.6, "R", ha="center", fontsize=12, color="black")
-        ax.text(7.25, 4.2, f"{self.R} Ω", ha="center", fontsize=11, color="black")
+        ax.annotate('', xy=(2, 3.5), xytext=(2, 2.5), arrowprops=dict(arrowstyle='->', color=accent_color, lw=2))
+        ax.text(1.3, 3.0, "Discharge\nCurrent", color=accent_color, fontsize=9, rotation=90, va='center', fontweight='bold')
 
-        # Right vertical wire
-        ax.plot([8.5, 8.5], [5, 1], linewidth=lw, color="black")
+        ax.set_title("CIRCUIT DIAGRAM: CAPACITOR DISCHARGE", fontsize=13, fontweight='bold', pad=25, color=main_color)
 
-        # Capacitor plates (horizontal plates)
-        ax.plot([8.1, 8.9], [3.2, 3.2], linewidth=lw, color="black")
-        ax.plot([8.1, 8.9], [2.8, 2.8], linewidth=lw, color="black")
-        ax.text(9.2, 3.0, "C", fontsize=12, color="black")
-        ax.text(9.2, 2.4, f"{self.C*1e6:.0f} µF", fontsize=11, color="black")
-
-        # Bottom wire
-        ax.plot([8.5, 2], [1, 1], linewidth=lw, color="black")
-
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-        dest_image_path = os.path.join(
-            DESTINATION_FOLDER, f"image{num}.png"
-        )
-
-        plt.savefig(dest_image_path, dpi=600,
-                    bbox_inches="tight", pad_inches=0.05)
+        plt.tight_layout()
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy165:
@@ -1977,26 +1868,21 @@ class Phy165:
         plt.close()
 
 class Phy166:
-    """
-    Magnetic force on a current-carrying conductor
-    placed at an angle in a uniform magnetic field.
-    """
-
     def __init__(self):
-        self.L = rnd.uniform(0.5, 2.0)          # length (m)
-        self.I = rnd.uniform(0.3, 2.0)          # current (A)
-        self.B = rnd.uniform(0.02, 0.1)         # magnetic flux density (T)
-        self.theta_deg = rnd.choice([ 30, 40, 45, 60])
+        self.L = rnd.uniform(0.5, 2.0)
+        self.I = rnd.uniform(0.3, 2.0)
+        self.B = rnd.uniform(0.02, 0.1)
+        self.theta_deg = rnd.choice([30, 40, 45, 60])
         self.theta = math.radians(self.theta_deg)
 
         self.force = self.B * self.I * self.L * math.sin(self.theta)
-        self.answer = round(self.force, 3)
+        self.answer = f"{self.force:.3f}"
 
         self.description = (
             f"A straight conductor of length {self.L:.2f} m carries a current "
             f"of {self.I:.2f} A. It is placed at an angle of {self.theta_deg}° "
             f"to a uniform magnetic field of flux density {self.B:.3f} T. "
-            f"Calculate the force acting on the conductor. (_) N"
+            f"Calculate the magnetic force acting on the conductor."
         )
 
         self.topic = "Magnetic Fields"
@@ -2004,93 +1890,95 @@ class Phy166:
         self.source = "Past Papers"
         self.curriculum = "A-Level"
 
+        def sci_latex(val):
+            if abs(val) < 0.01 or abs(val) > 1000:
+                exponent = int(math.floor(math.log10(abs(val))))
+                mantissa = val / (10 ** exponent)
+                return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
+            return f"{val:.3f}"
+
+        lB = sci_latex(self.B)
+        lI = sci_latex(self.I)
+        lL = sci_latex(self.L)
+        lF = sci_latex(self.force)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\textbf{Step 1: Identify known quantities}\\\\"
-            f"L &= {round(self.L,10)}\\,\\text{{m}}\\\\"
-            f"I &= {round(self.I,10)}\\,\\text{{A}}\\\\"
-            f"B &= {round(self.B,10)}\\,\\text{{T}}\\\\"
-            f"\\theta &= {self.theta_deg}^\\circ\\\\[6pt]"
-            "\\textbf{Step 2: Magnetic force formula}\\\\"
-            "F &= B I L \\sin\\theta\\\\[6pt]"
-            "\\textbf{Step 3: Substitute numerical values}\\\\"
-            f"F &= ({round(self.B,10)})"
-            f"({round(self.I,10)})"
-            f"({round(self.L,10)})"
-            f"\\sin({self.theta_deg}^\\circ)\\\\[6pt]"
-            "\\textbf{Step 4: Compute force}\\\\"
-            f"F &= {round(self.force,10)}\\,\\text{{N}}\\\\[6pt]"
-            "\\textbf{Final Answer:}\\\\"
-            f"F &= {self.answer}\\,\\text{{N}}"
+            "&\\mathbf{Step\ 1:\ Identify\ known\ quantities} \\\\"
+            "&B = " + lB + "\\,\\text{T} \\\\"
+            "&I = " + lI + "\\,\\text{A} \\\\"
+            "&L = " + lL + "\\,\\text{m} \\\\"
+            "&\\theta = " + str(self.theta_deg) + "^{\\circ} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Apply\ the\ Magnetic\ Force\ Formula} \\\\"
+            "&F = B I L \\sin\\theta \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&F = (" + lB + ") \\times (" + lI + ") \\times (" + lL + ") \\times \\sin(" + str(self.theta_deg) + "^{\\circ}) \\\\"
+            "&F = \\mathbf{" + lF + "\\,N} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&F = " + self.answer + "\\,\\text{N}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(9, 4.5))
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(9, 5), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 6)
+        ax.set_aspect('equal')
         ax.axis("off")
 
-        lw = 2
-        c = "black"
+        field_color = '#0984e3'
+        cond_color = '#d35400'
+        c_text = '#2d3436'
 
-        # Magnetic field lines (horizontal arrows)
-        for y in np.linspace(0.8, 5.2, 6):
-            ax.plot([0.5, 9], [y, y], lw=1.2, color=c)
-            ax.arrow(9, y, 0.5, 0, head_width=0.15,
-                     head_length=0.3, fc=c, ec=c)
+        for y in np.linspace(1, 5, 5):
+            ax.annotate('', xy=(9.5, y), xytext=(0.5, y),
+                        arrowprops=dict(arrowstyle='->', color=field_color, lw=1.5, alpha=0.6))
+        ax.text(9.6, 5, "Uniform Magnetic\nField ($B$)", color=field_color, fontweight='bold', va='center')
+        ax.text(9.6, 4.2, f"$B = {self.B:.3f}$ T", color=field_color, fontsize=9)
 
-        # Conductor (tilted cylinder representation)
-        x0, y0 = 2, 1
-        x1 = 8
-        y1 = y0 + (x1 - x0) * np.tan(self.theta)
+        x0, y0 = 3, 2
+        length_scale = 5
+        x1 = x0 + length_scale * np.cos(self.theta)
+        y1 = y0 + length_scale * np.sin(self.theta)
 
-        ax.plot([x0, x1], [y0, y1], lw=10, color="lightgray",
-                solid_capstyle='round')
-        ax.plot([x0, x1], [y0, y1], lw=2, color=c)
+        ax.plot([x0, x1], [y0, y1], lw=12, color=cond_color, alpha=0.3, solid_capstyle='round', zorder=2)
+        ax.plot([x0, x1], [y0, y1], lw=2, color=cond_color, zorder=3)
+        
+        ax.annotate('', xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle='-|>', color=cond_color, lw=2, mutation_scale=20))
+        
+        ax.text((x0+x1)/2 - 0.5, (y0+y1)/2 + 0.5, f"$I = {self.I:.2f}$ A", color=cond_color, fontweight='bold', rotation=self.theta_deg)
+        ax.text((x0+x1)/2 + 0.2, (y0+y1)/2 - 0.6, f"$L = {self.L:.2f}$ m", color=c_text, style='italic')
 
-        # Angle arc
-        angle = self.theta
-        arc_x = np.linspace(0, angle, 100)
-        radius = 1.5
-        ax.plot(
-            x0 + radius * np.cos(arc_x),
-            y0 + radius * np.sin(arc_x),
-            lw=1.5,
-            color=c
-        )
-        ax.text(x0 + 1, y0 + 0.2, self.theta_deg, fontsize=12)
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        ax.plot([x0, x0 + 2.5], [y0, y0], color=c_text, lw=1, linestyle='--')
+        
+        arc_r = 1.2
+        arc_angles = np.linspace(0, self.theta, 50)
+        ax.plot(x0 + arc_r * np.cos(arc_angles), y0 + arc_r * np.sin(arc_angles), color=c_text, lw=1.5)
+        ax.text(x0 + 1.5, y0 + 0.4, f"${self.theta_deg}^\circ$", fontsize=12, fontweight='bold')
 
-        plt.savefig(
-            os.path.join(DESTINATION_FOLDER, f"image{num}.png"),
-            dpi=600,
-            bbox_inches="tight",
-            pad_inches=0.05
-        )
+        ax.set_title("FORCE ON A CONDUCTOR IN A MAGNETIC FIELD", fontsize=12, fontweight='bold', pad=20)
+
+        plt.tight_layout()
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy167:
-    """
-    Magnetic force on a current-carrying conductor
-    placed at right angles to a uniform magnetic field.
-    """
-
     def __init__(self):
-        # Generate physically reasonable values
-        self.B = rnd.randint(10, 30) * 1e-3      # T
-        self.L = rnd.uniform(0.5, 2.0)           # m
-        self.I = rnd.uniform(0.5, 3.0)           # A
+        self.B = rnd.randint(10, 30) * 1e-3
+        self.L = rnd.uniform(0.5, 2.0)
+        self.I = rnd.uniform(0.5, 3.0)
 
-        # Right angle so sin(90) = 1
         self.force = self.B * self.I * self.L
-        self.answer = round(self.force, 3)
+        self.answer = f"{self.force:.3f}"
 
         self.description = (
             f"A current-carrying conductor is placed at right angles to a uniform magnetic field "
             f"of flux density {self.B:.3f} T. "
             f"The conductor has a length of {self.L:.2f} m and carries a current of {self.I:.2f} A. "
-            f"Calculate the magnetic force acting on the conductor. (_) N"
+            f"Calculate the magnetic force acting on the conductor."
         )
 
         self.topic = "Magnetic fields"
@@ -2098,79 +1986,78 @@ class Phy167:
         self.source = "Save My Exam" 
         self.curriculum = "A-Level"
 
+        def sci_latex(val):
+            if abs(val) < 0.01:
+                exponent = int(math.floor(math.log10(abs(val))))
+                mantissa = val / (10 ** exponent)
+                return f"{mantissa:.3f} \\times 10^{{{exponent}}}"
+            return f"{val:.3f}"
+
+        lB = sci_latex(self.B)
+        lI = sci_latex(self.I)
+        lL = sci_latex(self.L)
+        lF = sci_latex(self.force)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\textbf{Step 1: Identify known quantities}\\\\"
-            f"B &= {round(self.B,10)}\\,\\text{{T}}\\\\"
-            f"L &= {round(self.L,10)}\\,\\text{{m}}\\\\"
-            f"I &= {round(self.I,10)}\\,\\text{{A}}\\\\[6pt]"
-            "\\textbf{Step 2: Magnetic force formula}\\\\"
-            "F &= BIL\\sin\\theta\\\\"
-            "\\text{Since the conductor is at right angles, } \\sin 90^\\circ = 1\\\\[6pt]"
-            "\\textbf{Step 3: Substitute numerical values}\\\\"
-            f"F &= ({round(self.B,10)})({round(self.I,10)})({round(self.L,10)})\\\\[6pt]"
-            "\\textbf{Step 4: Compute force}\\\\"
-            f"F &= {round(self.force,10)}\\,\\text{{N}}\\\\[6pt]"
-            "\\textbf{Final Answer:}\\\\"
-            f"F &= {self.answer}\\,\\text{{N}}"
+            "&\\mathbf{Step\ 1:\ Identify\ known\ quantities} \\\\"
+            "&B = " + lB + "\\,\\text{T}, \\quad L = " + lL + "\\,\\text{m}, \\quad I = " + lI + "\\,\\text{A} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Formula\ (\\theta = 90^\\circ)} \\\\"
+            "&F = BIL \\sin(90^\\circ) = BIL \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&F = (" + lB + ") \\times (" + lI + ") \\times (" + lL + ") \\\\"
+            "&F = \\mathbf{" + lF + "\\,N}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(9, 4.5))
+        fig, ax = plt.subplots(figsize=(9, 5), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 6)
+        ax.set_aspect('equal')
         ax.axis("off")
 
-        lw = 2
-        c = "black"
+        field_color = '#0984e3'
+        cond_color = '#d35400'
 
-        # Magnetic field lines (horizontal arrows)
         for y in np.linspace(1, 5, 5):
-            ax.plot([0.5, 9], [y, y], lw=1.2, color=c)
-            ax.arrow(9, y, 0.5, 0, head_width=0.15,
-                     head_length=0.3, fc=c, ec=c)
+            ax.annotate('', xy=(9.5, y), xytext=(0.5, y),
+                        arrowprops=dict(arrowstyle='->', color=field_color, lw=1.5, alpha=0.5))
+        
+        ax.text(9.6, 5, "Magnetic Field ($B$)", color=field_color, fontweight='bold')
+        ax.text(9.6, 4.5, f"$B = {self.B:.3f}$ T", color=field_color, fontsize=9)
 
-        # Vertical conductor (right angles to field)
-        ax.plot([5, 5], [1, 5], lw=10, color="lightgray",
-                solid_capstyle='round')
-        ax.plot([5, 5], [1, 5], lw=2, color=c)
+        ax.plot([5, 5], [1, 5], lw=12, color=cond_color, alpha=0.3, solid_capstyle='round', zorder=2)
+        ax.plot([5, 5], [1, 5], lw=2.5, color=cond_color, zorder=3)
+        
+        ax.annotate('', xy=(5, 4.5), xytext=(5, 1.5),
+                    arrowprops=dict(arrowstyle='-|>', color=cond_color, lw=2, mutation_scale=20))
+        
+        ax.text(5.3, 3, f"$I = {self.I:.2f}$ A\n$L = {self.L:.2f}$ m", color=cond_color, fontweight='bold', va='center')
+        
+        ax.plot([5, 5.5], [1.5, 1.5], color='black', lw=1)
+        ax.plot([5.5, 5.5], [1.5, 2], color='black', lw=1)
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-
-        plt.savefig(
-            os.path.join(DESTINATION_FOLDER, f"image{num}.png"),
-            dpi=600,
-            bbox_inches="tight",
-            pad_inches=0.05
-        )
+        ax.set_title("CONDUCTOR AT RIGHT ANGLES TO B-FIELD", fontsize=12, fontweight='bold', pad=20)
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy168:
-    """
-    Magnetic force on a current-carrying conductor placed at an angle 
-    to a uniform magnetic field.
-    """
-
     def __init__(self):
-        # Generate clean physical values
-        self.B_mT = rnd.randint(10, 25)          # mT
-        self.B = self.B_mT * 1e-3                # convert to tesla
-        self.L = rnd.uniform(0.8, 2.0)           # length in m
-        self.L = round(self.L, 2)
-        self.I = rnd.uniform(0.5, 3.0)           # current in A
-        self.I = round(self.I, 2)
+        self.B_mT = rnd.randint(10, 25)
+        self.B = self.B_mT * 1e-3
+        self.L = round(rnd.uniform(0.8, 2.0), 2)
+        self.I = round(rnd.uniform(0.5, 3.0), 2)
         self.theta = rnd.choice([15, 30, 45, 60])
 
-        # Magnetic force formula: F = B I L sin(theta)
         self.force = self.B * self.I * self.L * math.sin(math.radians(self.theta))
-        self.answer = round(self.force, 2)
+        self.answer = f"{self.force:.3f}"
 
         self.description = (
-            "A current-carrying conductor is placed in a uniform magnetic field. "
-            f"The magnetic flux density is {self.B_mT} × 10^{{-3}} T. "
-            f"The conductor has a length of {self.L} m and carries a current of {self.I} A. "
-            f"Calculate the magnetic force when the conductor makes an angle of {self.theta}° with the magnetic field. (_) N"
+            f"A conductor of length {self.L} m carrying a current of {self.I} A is placed in a "
+            f"uniform magnetic field of flux density {self.B_mT} mT. "
+            f"Calculate the force on the conductor when it makes an angle of {self.theta}° with the field."
         )
 
         self.topic = "Magnetic Fields"
@@ -2178,108 +2065,72 @@ class Phy168:
         self.source = "Past Papers"
         self.curriculum = "A-Level"
 
+        lF = f"{self.force:.3e}" if self.force < 0.001 else f"{self.force:.4f}"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\textbf{{Step 1: Write the known quantities}} &\\\\"
-            f"B &= {self.B_mT} \\times 10^{{-3}}\\,\\text{{T}}\\\\"
-            f"L &= {round(self.L,10)}\\,\\text{{m}}\\\\"
-            f"I &= {round(self.I,10)}\\,\\text{{A}}\\\\"
-            f"\\theta &= {self.theta}^\\circ\\\\"
-            f"\\textbf{{Step 2: Use the magnetic force formula}} &\\\\"
-            f"F &= B I L \\sin\\theta\\\\"
-            f"\\textbf{{Step 3: Substitute numerical values}} &\\\\"
-            f"F &= ({self.B_mT} \\times 10^{{-3}})({round(self.I,10)})({round(self.L,10)})\\sin({self.theta}^\\circ)\\\\"
-            f"\\textbf{{Step 4: Evaluate}} &\\\\"
-            f"F &= {round(self.force,10)}\\,\\text{{N}}\\\\"
-            f"\\textbf{{Final Answer:}} &\\\\"
-            f"F &= {self.answer}\\,\\text{{N}}"
+            "&\\mathbf{Step\ 1:\ Convert\ units} \\\\"
+            "&B = " + str(self.B_mT) + "\\,\\text{mT} = " + f"{self.B:.3f}" + "\\,\\text{T} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Formula} \\\\"
+            "&F = BIL \\sin\\theta \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitution} \\\\"
+            "&F = (" + f"{self.B:.3f}" + ")(" + str(self.I) + ")(" + str(self.L) + ")\\sin(" + str(self.theta) + "^{\\circ}) \\\\"
+            "&F = \\mathbf{" + lF + "\\,N}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(7, 7))
+        fig, ax = plt.subplots(figsize=(8, 8), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 10)
         ax.set_aspect('equal')
         ax.axis('off')
 
-        # Draw uniform magnetic field (into page with crosses in circles)
-        for x in np.linspace(2, 8, 7):
-            for y in np.linspace(2, 8, 7):
-                circle = plt.Circle((x, y), 0.25, fill=False, linewidth=1)
-                ax.add_patch(circle)
-                ax.text(x, y, "×", fontsize=10, ha='center', va='center')
-
-        # Draw conductor centered
-        center = np.array([5, 5])
-        length_scale = 5
-        angle_rad = np.radians(self.theta)
-        dx = length_scale * np.cos(angle_rad)
-        dy = length_scale * np.sin(angle_rad)
-
-        start = center - np.array([dx, dy]) / 2
-        end = center + np.array([dx, dy]) / 2
-
-        ax.plot([start[0], end[0]], [start[1], end[1]], linewidth=4)
-
-        # Current direction arrow
-        ax.annotate("", xy=end, xytext=start,
-                    arrowprops=dict(arrowstyle="->", linewidth=2))
-        ax.text((start[0]+end[0])/2 + 0.3,
-                (start[1]+end[1])/2 + 0.3,
-                "I", fontsize=12)
-
-        # Angle arc
-        arc_theta = np.linspace(0, angle_rad, 100)
-        arc_x = 5 + 1.5 * np.cos(arc_theta)
-        arc_y = 5 + 1.5 * np.sin(arc_theta)
-        ax.plot(arc_x, arc_y, linewidth=1.5)
-        ax.text(6.7, 5.8, f"{self.theta}°", fontsize=11)
-
-        # Magnetic field direction label
-        ax.text(8.5, 9.2, "B (into page)", fontsize=11)
-
-        # Parameter labels
-        ax.text(0.8, 9.5, f"B = {self.B_mT} × 10⁻³ T", fontsize=11)
-        ax.text(0.8, 8.9, f"I = {self.I} A", fontsize=11)
-        ax.text(0.8, 8.3, f"L = {self.L} m", fontsize=11)
+        field_color = '#2980b9'
+        for x in np.linspace(2, 8, 6):
+            for y in np.linspace(2, 8, 6):
+                ax.add_patch(plt.Circle((x, y), 0.2, fill=False, edgecolor=field_color, lw=1))
+                ax.text(x, y, "×", color=field_color, ha='center', va='center', fontsize=10, fontweight='bold')
         
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        ax.text(5, 8.5, f"Uniform $B = {self.B_mT}$ mT (into page)", color=field_color, ha='center', fontweight='bold')
 
-        plt.savefig(
-            os.path.join(DESTINATION_FOLDER, f"image{num}.png"),
-            dpi=600,
-            bbox_inches="tight",
-            pad_inches=0.05
-        )
+        angle_rad = math.radians(self.theta)
+        length_draw = 5
+        x0, y0 = 5 - (length_draw/2)*math.cos(angle_rad), 5 - (length_draw/2)*math.sin(angle_rad)
+        x1, y1 = 5 + (length_draw/2)*math.cos(angle_rad), 5 + (length_draw/2)*math.sin(angle_rad)
+
+        ax.plot([x0, x1], [y0, y1], color='#c0392b', lw=3, zorder=5)
+        ax.annotate("", xy=(x1, y1), xytext=(x0, y0), arrowprops=dict(arrowstyle="->", color='#c0392b', lw=2, mutation_scale=20))
+        
+        ax.text(x0, y0 - 0.5, f"$I = {self.I}$ A\n$L = {self.L}$ m", color='#c0392b', fontweight='bold', ha='right')
+
+        ax.plot([5, 7.5], [5, 5], color='black', lw=1, linestyle='--')
+        arc_angles = np.linspace(0, angle_rad, 50)
+        ax.plot(5 + 1.2*np.cos(arc_angles), 5 + 1.2*np.sin(arc_angles), color='black', lw=1.5)
+        ax.text(6.5, 5.3, f"{self.theta}°", fontsize=12, fontweight='bold')
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy169:
-    """
-    Rectangular current-carrying loop in a uniform magnetic field.
-    Ask for the magnitude of the magnetic force on one side.
-    """
-
     def __init__(self):
-        # Generate clean values
-        self.B = round(rnd.uniform(0.4, 1.2), 2)           # Tesla
-        self.width_cm = rnd.randint(4, 10)                 # cm
-        self.length_cm = rnd.randint(6, 14)                # cm
-        self.I = round(rnd.uniform(1.0, 5.0), 2)           # A
+        self.B = round(rnd.uniform(0.4, 1.2), 2)
+        self.width_cm = rnd.randint(4, 10)
+        self.length_cm = rnd.randint(6, 14)
+        self.I = round(rnd.uniform(1.0, 5.0), 2)
 
-        # Convert to meters
         self.width = self.width_cm / 100
         self.length = self.length_cm / 100
 
-        # Force on side perpendicular to field: F = B I L
         self.force = self.B * self.I * self.length
-        self.answer = round(self.force, 2)
+        self.answer = f"{self.force:.2f}"
 
         self.description = (
-            f"A rectangular wire loop ABCD has width {self.width_cm} cm and length {self.length_cm} cm "
-            f"placed in a uniform magnetic field of strength {self.B} T. "
-            f"The current in the loop is {self.I} A. "
-            "Calculate the magnitude of the magnetic force on side AB. (_) N"
+            f"A rectangular wire loop ABCD is placed in a uniform magnetic field of flux density $B = {self.B}$ T. "
+            f"The loop has a width $BC = {self.width_cm}$ cm and a length $AB = {self.length_cm}$ cm. "
+            f"A steady current of $I = {self.I}$ A flows through the loop. "
+            f"Calculate the magnitude of the magnetic force acting on side AB."
         )
 
         self.topic = "Magnetic Fields"
@@ -2289,118 +2140,91 @@ class Phy169:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\textbf{{Step 1: Convert dimensions to SI units}} &\\\\"
-            f"L &= {self.length_cm}\\,\\text{{cm}} = {round(self.length,10)}\\,\\text{{m}}\\\\"
-            f"\\textbf{{Step 2: Write known quantities}} &\\\\"
-            f"B &= {round(self.B,10)}\\,\\text{{T}}\\\\"
-            f"I &= {round(self.I,10)}\\,\\text{{A}}\\\\"
-            f"\\textbf{{Step 3: Use magnetic force formula}} &\\\\"
-            f"F &= B I L\\\\"
-            f"\\textbf{{Step 4: Substitute values}} &\\\\"
-            f"F &= ({round(self.B,10)})({round(self.I,10)})({round(self.length,10)})\\\\"
-            f"F &= {round(self.force,10)}\\,\\text{{N}}\\\\"
-            f"\\textbf{{Final Answer:}} &\\\\"
-            f"F &= {self.answer}\\,\\text{{N}}"
+            "&\\mathbf{Step\ 1:\ Convert\ units\ to\ SI} \\\\"
+            "&L_{AB} = " + str(self.length_cm) + "\\,\\text{cm} = " + f"{self.length:.3f}" + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Identify\ relevant\ values} \\\\"
+            "&B = " + f"{self.B:.2f}" + "\\,\\text{T}, \\quad I = " + f"{self.I:.2f}" + "\\,\\text{A} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Apply\ the\ magnetic\ force\ formula} \\\\"
+            "&\\text{Force on AB is perpendicular to the field:} \\\\"
+            "&F = B I L \\\\[8pt]"
+            "&\\mathbf{Step\ 4:\ Calculation} \\\\"
+            "&F = (" + f"{self.B:.2f}" + ") \\times (" + f"{self.I:.2f}" + ") \\times (" + f"{self.length:.3f}" + ") \\\\"
+            "&F = \\mathbf{" + f"{float(self.answer):.3f}" + "\\,N} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&F = " + self.answer + "\\,\\text{N}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(10, 5))
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
         ax.set_xlim(0, 14)
-        ax.set_ylim(0, 8)
+        ax.set_ylim(0, 7)
         ax.set_aspect('equal')
         ax.axis('off')
 
-        # Uniform Magnetic Field (horizontal lines with arrows) 
-        for y in np.linspace(0.8, 7.2, 14):
-            ax.plot([0.5, 13.5], [y, y], linewidth=0.8)
-            ax.arrow(7, y, 0.8, 0,
-                     head_width=0.15,
-                     head_length=0.3,
-                     length_includes_head=True)
+        field_color = '#3498db'
+        loop_color = '#2c3e50'
+        label_color = '#e67e22'
 
-        # Trapezoidal Loop Geometry
-        A = (2.0, 2.0)
-        B = (4.5, 4.0)
-        C = (8.0, 4.0)
-        D = (10.5, 2.0)
-
-        # Draw sides
-        ax.plot([A[0], B[0]], [A[1], B[1]], linewidth=2.5)
-        ax.plot([B[0], C[0]], [B[1], C[1]], linewidth=2.5)
-        ax.plot([C[0], D[0]], [C[1], D[1]], linewidth=2.5)
-        ax.plot([D[0], A[0]], [D[1], A[1]], linewidth=2.5)
-
-        # Current Direction Arrows 
-        ax.annotate("", xy=B, xytext=A, arrowprops=dict(arrowstyle="->", linewidth=2))
-        ax.annotate("", xy=C, xytext=B, arrowprops=dict(arrowstyle="->", linewidth=2))
-        ax.annotate("", xy=D, xytext=C, arrowprops=dict(arrowstyle="->", linewidth=2))
-        ax.annotate("", xy=A, xytext=D, arrowprops=dict(arrowstyle="->", linewidth=2))
-
-        #  Dimension: Top (width) 
-        ax.annotate("", xy=(B[0], B[1] + 0.6), xytext=(C[0], C[1] + 0.6),
-                    arrowprops=dict(arrowstyle="<->", linewidth=1.5))
-        ax.text((B[0] + C[0]) / 2 - 0.6, B[1] + 0.9,
-                f"{self.width_cm:.1f} cm", fontsize=12)
-
-        #  Dimension: Left slanted side (length) 
-        ax.annotate("", xy=A, xytext=B,
-                    arrowprops=dict(arrowstyle="<->", linewidth=1.5))
-        mid_x = (A[0] + B[0]) / 2 - 0.8
-        mid_y = (A[1] + B[1]) / 2
-        ax.text(mid_x, mid_y,
-                f"{self.length_cm:.1f} cm", fontsize=12, rotation=28)
-
-        # Current label 
-        ax.text(8.5, 1.6, f"{self.I} A", fontsize=12)
-
-        # Corner Labels
-        ax.text(A[0] - 0.3, A[1] - 0.3, "A", fontsize=12)
-        ax.text(B[0] - 0.2, B[1] + 0.2, "B", fontsize=12)
-        ax.text(C[0] + 0.1, C[1] + 0.2, "C", fontsize=12)
-        ax.text(D[0] + 0.1, D[1] - 0.3, "D", fontsize=12)
-
-        #  Magnetic Field Strength Label 
-        ax.text(1.0, 7.5, f"B = {self.B} T", fontsize=12)
+        for y in np.linspace(0.8, 7.2, 10):
+            ax.annotate('', xy=(13, y), xytext=(1, y),
+                        arrowprops=dict(arrowstyle='->', color=field_color, lw=1.2, alpha=0.6))
         
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        ax.text(12, 6.5, f"$B = {self.B}$ T", color=field_color, fontweight='bold', fontsize=12)
 
-        plt.savefig(
-            os.path.join(DESTINATION_FOLDER, f"image{num}.png"),
-            dpi=600,
-            bbox_inches="tight",
-            pad_inches=0.05
-        )
+        A = (4.0, 1.5)
+        B = (6.0, 5.5)
+        C = (10.0, 5.5)
+        D = (8.0, 1.5)
+
+        points = [A, B, C, D]
+        for i in range(4):
+            p1 = points[i]
+            p2 = points[(i+1)%4]
+            ax.plot([p1[0], p2[0]], [p1[1], p2[1]], color=loop_color, lw=3, zorder=5)
+            
+            mid_p = ((p1[0]+p2[0])/2, (p1[1]+p2[1])/2)
+            dx, dy = p2[0]-p1[0], p2[1]-p1[1]
+            ax.annotate("", xy=(mid_p[0]+dx*0.1, mid_p[1]+dy*0.1), 
+                        xytext=(mid_p[0]-dx*0.1, mid_p[1]-dy*0.1),
+                        arrowprops=dict(arrowstyle="->", color=loop_color, lw=2))
+
+        ax.text(A[0]-0.4, A[1]-0.4, "A", fontweight='bold', fontsize=12)
+        ax.text(B[0]-0.4, B[1]+0.4, "B", fontweight='bold', fontsize=12)
+        ax.text(C[0]+0.4, C[1]+0.4, "C", fontweight='bold', fontsize=12)
+        ax.text(D[0]+0.4, D[1]-0.4, "D", fontweight='bold', fontsize=12)
+
+        ax.text((A[0]+B[0])/2 - 1.2, (A[1]+B[1])/2, f"$L = {self.length_cm}$ cm", 
+                rotation=63, va='center', fontweight='bold', fontsize=14)
+        ax.text((B[0]+C[0])/2, B[1]+0.5, f"$w = {self.width_cm}$ cm", 
+                ha='center', fontweight='bold', fontsize=14)
+        ax.text((D[0]+A[0])/2, A[1]-0.5, f"Current $I = {self.I}$ A", 
+                ha='center', color=label_color, fontweight='bold', fontsize=14)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), 
+                    dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy170:
-    """
-    Radius of circular motion of an electron in a uniform magnetic field.
-    """
-
     def __init__(self):
-        # Physical constants
-        self.m = 9.11e-31          # electron mass (kg)
-        self.q = 1.60e-19          # electron charge magnitude (C)
+        self.m = 9.11e-31
+        self.q = 1.60e-19
 
-        # Generate clean scientific values
-        self.v_base = rnd.randint(2, 6)          # multiplier for 10^6
-        self.v = self.v_base * 1e6               # m/s
+        self.v_base = rnd.randint(2, 6)
+        self.v = self.v_base * 1e6
 
-        self.B_base = rnd.randint(2, 6)          # multiplier for 10^-3
-        self.B = self.B_base * 1e-3              # Tesla
+        self.B_base = rnd.randint(2, 6)
+        self.B = self.B_base * 1e-3
 
-        # Radius formula
         self.r = (self.m * self.v) / (self.B * self.q)
-        self.answer = round(self.r, 3)
+        self.answer = f"{self.r:.3f}"
 
         self.description = (
-            f"When the electron enters the magnetic field, its speed is "
-            f"{self.v_base} × 10^6 m s^(-1). "
-            f"The magnetic field has a magnetic flux density of "
-            f"{self.B_base} × 10^(-3) T. "
-            "Show that the radius of the circular orbit of the electron "
-            "inside the magnetic field is equal to (_) m."
+            f"An electron enters a uniform magnetic field of flux density $B = {self.B_base} \\times 10^{{-3}}$ T "
+            f"with a speed of $v = {self.v_base} \\times 10^6$ m s$^{-1}$ perpendicular to the field. "
+            f"Calculate the radius of the circular path of the electron."
         )
 
         self.topic = "Magnetic Fields"
@@ -2410,72 +2234,176 @@ class Phy170:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Step 1: Write known quantities} &\\\\"
-            "m &= 9.11 \\times 10^{-31}\\,\\text{kg}\\\\"
-            "q &= 1.60 \\times 10^{-19}\\,\\text{C}\\\\"
-            f"v &= {self.v_base} \\times 10^6\\,\\text{{m s^{{-1}}}}\\\\"
-            f"B &= {self.B_base} \\times 10^{{-3}}\\,\\text{{T}}\\\\"
-            "\\text{Step 2: Magnetic force provides centripetal force} &\\\\"
-            "Bqv &= \\frac{mv^2}{r}\\\\"
-            "\\text{Step 3: Rearrange for radius} &\\\\"
-            "r &= \\frac{mv}{Bq}\\\\"
-            "\\text{Step 4: Substitute values} &\\\\"
-            f"r &= \\frac{{(9.11 \\times 10^{{-31}})"
-            f"({self.v_base} \\times 10^6)}}"
-            f"{{({self.B_base} \\times 10^{{-3}})"
-            "(1.60 \\times 10^{-19})}}\\\\"
-            "\\text{Step 5: Evaluate numerically} &\\\\"
-            f"r &= {round(self.r,10)}\\,\\text{{m}}\\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"r &= {self.answer}\\,\\text{{m}}"
+            "&\\mathbf{Step\ 1:\ Identify\ constants} \\\\"
+            "&m_e = 9.11 \\times 10^{-31}\\,\\text{kg}, \\quad e = 1.60 \\times 10^{-19}\\,\\text{C} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Force\ Equilibrium} \\\\"
+            "&F_B = F_c \\implies Be v = \\frac{m v^2}{r} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Rearrange\ for\ r} \\\\"
+            "&r = \\frac{m v}{B e} \\\\[8pt]"
+            "&\\mathbf{Step\ 4:\ Substitution} \\\\"
+            "&r = \\frac{(9.11 \\times 10^{-31})(" + str(self.v_base) + " \\times 10^6)}{(" + str(self.B_base) + " \\times 10^{-3})(1.60 \\times 10^{-19})} \\\\"
+            "&r = \\mathbf{" + self.answer + "\\,m}"
             "\\end{aligned}\\]"
         )
+
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 6))
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(7, 7), dpi=300)
         ax.set_xlim(-5, 5)
         ax.set_ylim(-5, 5)
         ax.set_aspect('equal')
         ax.axis('off')
 
-        # Magnetic field into page (crosses)
-        for x in np.linspace(-4, 4, 9):
-            for y in np.linspace(-4, 4, 9):
-                ax.text(x, y, "×", fontsize=10, ha='center', va='center')
+        field_color = '#b2bec3'
+        for x in np.linspace(-4.5, 4.5, 10):
+            for y in np.linspace(-4.5, 4.5, 10):
+                ax.text(x, y, "×", color=field_color, ha='center', va='center', alpha=0.5)
 
-        # Circular path
-        circle = plt.Circle((0, 0), 2.5, fill=False, linewidth=2)
-        ax.add_patch(circle)
+        radius_draw = 3.0
+        orbit = plt.Circle((0, 0), radius_draw, fill=False, color='#2d3436', lw=1.5, ls='--')
+        ax.add_patch(orbit)
 
-        # Velocity arrow (tangent)
-        ax.arrow(2.5, 0, 0, 1.2,
-                 head_width=0.3,
-                 head_length=0.4,
-                 length_includes_head=True)
+        ax.add_patch(plt.Circle((radius_draw, 0), 0.15, color='#d63031', zorder=5))
+        ax.text(radius_draw + 0.3, -0.3, "electron ($-e$)", color='#d63031', fontweight='bold', fontsize=9)
 
-        ax.text(2.8, 1.2, "v", fontsize=12)
+        ax.annotate('', xy=(radius_draw, 1.5), xytext=(radius_draw, 0),
+                    arrowprops=dict(arrowstyle='->', color='#0984e3', lw=2))
+        ax.text(radius_draw + 0.2, 1.5, "$v$", color='#0984e3', fontweight='bold', fontsize=12)
 
-        # Radius line
-        ax.plot([0, 2.5], [0, 0], linewidth=1.5)
-        ax.text(1.2, -0.4, "r", fontsize=12)
+        ax.annotate('', xy=(0.2, 0), xytext=(radius_draw, 0),
+                    arrowprops=dict(arrowstyle='->', color='#e17055', lw=2))
+        ax.text(1.5, 0.2, f"$v = {self.v_base} \\times 10^6$ m s$^{-1}$", color='black', fontweight='bold', fontsize=12)
 
-        ax.text(-4.5, 4.5, f"B = {self.B_base} × 10⁻³ T", fontsize=11)
-        ax.text(-4.5, 4.0, f"v = {self.v_base} × 10⁶ m s⁻¹", fontsize=11)
+        ax.plot([0, 0], [0, -radius_draw], color='black', lw=1)
+        ax.text(0.2, -radius_draw/2, "$r$", fontweight='bold', fontsize=12)
+        ax.add_patch(plt.Circle((0, 0), 0.05, color='black'))
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        ax.text(-4.5, 4.5, f"$B = {self.B_base} \\times 10^{{-3}}$ T", fontweight='bold', color='#636e72')
 
-        plt.savefig(
-            os.path.join(DESTINATION_FOLDER, f"image{num}.png"),
-            dpi=600,
-            bbox_inches="tight",
-            pad_inches=0.05
+        ax.set_title("ELECTRON ORBIT IN UNIFORM B-FIELD", fontsize=14, fontweight='bold', pad=20)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy171:
+    def __init__(self):
+        self.k = 8.99e9
+        self.q_base = rnd.randint(2, 12)
+        self.q = self.q_base * 1e-9
+        self.r_cm = rnd.randint(5, 25)
+        self.r = self.r_cm / 100
+        self.E = (self.k * self.q) / (self.r**2)
+        self.answer = f"{self.E:.3e}"
+
+        self.description = (
+            f"A point charge of $Q = +{self.q_base}$ nC is placed in a vacuum. "
+            f"Calculate the electric field strength $E$ at a point $P$ located "
+            f"at a distance of ${self.r_cm}$ cm from the charge."
         )
+        self.topic, self.subtopic = "Electricity", "Electric fields"
+        self.curriculum, self.source = "A-Level", "Original"
+
+        e_val_tex = f"{self.E:.4e}".replace("e", "\\times 10^{") + "}"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Formula\ for\ Electric\ Field\ Strength} \\\\"
+            "&E = \\frac{Q}{4\\pi \\varepsilon_0 r^2} = k \\frac{Q}{r^2} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Substitute\ Values\ (SI\ Units)} \\\\"
+            "&k = 8.99 \\times 10^9\\,\\text{N m}^2\\,\\text{C}^{-2} \\\\"
+            "&Q = " + str(self.q_base) + " \\times 10^{-9}\\,\\text{C} \\\\"
+            "&r = " + str(self.r) + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&E = \\frac{(8.99 \\times 10^9)(" + str(self.q_base) + " \\times 10^{-9})}{(" + str(self.r) + ")^2} \\\\"
+            "&E = " + e_val_tex + "\\,\\text{V m}^{-1} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&E = " + self.answer + "\\,\\text{V m}^{-1}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(7, 4), dpi=300)
+        ax.set_xlim(-1, 6); ax.set_ylim(-1, 3); ax.axis('off')
+
+        ax.add_patch(plt.Circle((0.5, 1), 0.15, color='#e74c3c', ec='black', zorder=5))
+        ax.text(0.5, 0.6, f"$Q = +{self.q_base}$ nC", ha='center', fontweight='bold')
+
+        ax.scatter(4.5, 1, marker='x', color='black', s=100)
+        ax.text(4.5, 0.7, "Point $P$", ha='center', fontweight='bold')
+
+        ax.annotate('', xy=(4.5, 1), xytext=(0.65, 1),
+                    arrowprops=dict(arrowstyle='<->', color='#34495e', lw=1.5))
+        ax.text(2.5, 1.2, f"$r = {self.r_cm}$ cm", ha='center', fontsize=11)
+
+        for angle in np.linspace(0, 2*np.pi, 8, endpoint=False):
+            dx, dy = 0.6 * np.cos(angle), 0.6 * np.sin(angle)
+            ax.annotate('', xy=(0.5+dx*1.5, 1+dy*1.5), xytext=(0.5+dx, 1+dy),
+                        arrowprops=dict(arrowstyle='->', color='#e74c3c', lw=1, alpha=0.6))
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
+        ax.text(0.5, 2.5, "Electric Field of a Point Charge", fontsize=12, fontweight='bold', bbox=props)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy172:
+    def __init__(self):
+        self.k = 8.99e9
+        self.q = 5.0e-9
+        self.dist = 0.10 
+        self.E_single = (self.k * self.q) / ((self.dist/2)**2)
+        self.E_total = 2 * self.E_single
+        self.answer = f"{self.E_total:.3e}"
+
+        self.description = (
+            "Two identical point charges, each of $Q = +5.0$ nC, are separated by a distance of $10$ cm in air. "
+            "Calculate the magnitude of the net electric field strength at the midpoint between the charges if one charge is replaced by $Q = -5.0$ nC."
+        )
+        self.topic, self.subtopic = "Electricity", "Electric fields"
+        self.curriculum, self.source = "A-Level", "Original"
+
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Field\ Directions} \\\\"
+            "&\\text{Field from } +Q \\text{ points away from it (to the right).} \\\\"
+            "&\\text{Field from } -Q \\text{ points towards it (also to the right).} \\\\"
+            "&\\text{Net field } E_{net} = E_1 + E_2 \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Calculate\ Individual\ Field\ Magnitudes} \\\\"
+            "&r = 0.05\\,\\text{m (midpoint)} \\\\"
+            "&E = \\frac{8.99 \\times 10^9 \\times 5.0 \\times 10^{-9}}{(0.05)^2} = 17980\\,\\text{V m}^{-1} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Summation} \\\\"
+            "&E_{net} = 17980 + 17980 = 35960\\,\\text{V m}^{-1} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&E = 3.60 \\times 10^4\\,\\text{V m}^{-1}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
+        ax.set_xlim(0, 10); ax.set_ylim(0, 4); ax.axis('off')
+
+        ax.add_patch(plt.Circle((2, 2), 0.2, color='#e74c3c', ec='black'))
+        ax.text(2, 2.4, "$+Q$", ha='center', fontweight='bold')
+        
+        ax.add_patch(plt.Circle((8, 2), 0.2, color='#3498db', ec='black'))
+        ax.text(8, 2.4, "$-Q$", ha='center', fontweight='bold')
+
+        ax.scatter(5, 2, marker='|', color='black', s=200)
+        ax.text(5, 1.6, "Midpoint", ha='center', style='italic')
+
+        ax.annotate('', xy=(8, 1), xytext=(2, 1), arrowprops=dict(arrowstyle='<->', color='black'))
+        ax.text(5, 0.7, "Separation $d = 10$ cm", ha='center')
+
+        ax.annotate('', xy=(6, 2), xytext=(5, 2), arrowprops=dict(arrowstyle='->', color='#2ecc71', lw=2))
+        ax.annotate('', xy=(6.5, 2.2), xytext=(5.5, 2.2), arrowprops=dict(arrowstyle='->', color='#2ecc71', lw=2))
+        ax.text(5.7, 2.5, "$E_{net}$", color='#27ae60', fontweight='bold')
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy173:
-    """
-    Magnetic force on a moving charge in a uniform magnetic field.
-    """
-
     def __init__(self):
         self.q_base = rnd.randint(2, 9)
         self.q = self.q_base * 1e-19
@@ -2489,93 +2417,85 @@ class Phy173:
         self.theta = rnd.choice([30, 45, 60, 90])
 
         self.F = self.q * self.v * self.B * math.sin(math.radians(self.theta))
-        self.answer = round(self.F, 3)
+        self.answer = f"{self.F:.3e}"
 
         self.description = (
-            f"A charged particle of charge {self.q_base} × 10^(-19) C "
-            f"moves with speed {self.v_base} × 10^6 m s^(-1) "
-            f"in a magnetic field of {self.B_base} × 10^(-3) T "
-            f"at an angle of {self.theta}°. "
-            "Calculate the magnetic force acting on the particle. (_) N"
+            f"A particle with charge $q = {self.q_base} \\times 10^{{-19}}$ C "
+            f"enters a uniform magnetic field $B = {self.B_base} \\times 10^{{-3}}$ T "
+            f"moving at a speed $v = {self.v_base} \\times 10^6$ m s$^{-1}$. "
+            f"The velocity vector makes an angle of {self.theta}° with the field lines. "
+            f"Calculate the magnitude of the magnetic force acting on the particle."
         )
 
         self.topic = "Magnetic fields"
         self.subtopic = "Force on a moving charge"
         self.curriculum = "A-Level"
         self.source = "Original"
+        
+        lF = f"{self.F:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
+            "\\["
             "\\begin{aligned}"
-            f"\\text{{Step 1: Identify given values}} & \\\\"
-            f"q &= {self.q_base} \\times 10^{{-19}} \\, \\text{{C}} \\\\"
-            f"v &= {self.v_base} \\times 10^{{6}} \\, \\text{{m s}}^{{-1}} \\\\"
-            f"B &= {self.B_base} \\times 10^{{-3}} \\, \\text{{T}} \\\\"
-            f"\\theta &= {self.theta}^\\circ \\\\"
-            f"\\text{{Step 2: Apply the magnetic force formula}} & \\\\"
-            f"F &= q v B \\sin(\\theta) \\\\"
-            f"\\text{{Step 3: Substitute the values into the equation}} & \\\\"
-            f"F &= ({self.q_base} \\times 10^{{-19}}) ({self.v_base} \\times 10^{{6}}) ({self.B_base} \\times 10^{{-3}}) \\sin({self.theta}^\\circ) \\\\"
-            f"\\text{{Step 4: Calculate intermediate product}} & \\\\"
-            f"qvB &= {round(self.q * self.v * self.B, 10)} \\, \\text{{N}} \\\\"
-            f"\\text{{Step 5: Multiply by }} \\sin({self.theta}^\\circ) \\text{{ for final force}} & \\\\"
-            f"F &= {round(self.F, 10)} \\, \\text{{N}} \\\\"
-            f"\\text{{Final Answer:}} & \\\\"
-            f"F &= {self.answer} \\, \\text{{N}}"
+            "&\\mathbf{Step\ 1:\ Identify\ Given\ Values} \\\\"
+            "&q = " + str(self.q_base) + "\\times 10^{-19}\\,\\text{C}, \\quad v = " + str(self.v_base) + "\\times 10^6\\,\\text{m s}^{-1} \\\\"
+            "&B = " + str(self.B_base) + "\\times 10^{-3}\\,\\text{T}, \\quad \\theta = " + str(self.theta) + "^{\\circ} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Use\ the\ Lorentz\ Force\ Formula} \\\\"
+            "&F = q v B \\sin\\theta \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitution} \\\\"
+            "&F = (" + str(self.q_base) + "\\times 10^{-19})(" + str(self.v_base) + "\\times 10^6)(" + str(self.B_base) + "\\times 10^{-3}) \\sin(" + str(self.theta) + "^{\\circ}) \\\\"
+            "&F = \\mathbf{" + lF + "\\,N} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&F = " + self.answer + "\\,\\text{N}"
             "\\end{aligned}"
+            "\\]"
         )
+
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(7,7))
-        ax.set_xlim(-4,4)
-        ax.set_ylim(-4,4)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 8), dpi=300)
+        ax.set_xlim(-5, 5)
+        ax.set_ylim(-5, 5)
         ax.set_aspect('equal')
         ax.axis('off')
 
-        grid = np.linspace(-3,3,9)
-        for x in grid:
-            for y in grid:
-                ax.text(x, y, r"$\times$", ha='center', va='center', fontsize=14)
+        field_color = '#3498db'
+        particle_color = '#e67e22'
+        text_color = '#2c3e50'
 
-        particle = Circle((0,0), 0.25, edgecolor='black', facecolor='white', linewidth=1.5)
-        ax.add_patch(particle)
-        ax.text(0, 0, r"$q$", ha='center', va='center', fontsize=12)
+        for x in np.linspace(-4, 4, 9):
+            for y in np.linspace(-4, 4, 9):
+                ax.text(x, y, r"$\times$", color=field_color, ha='center', va='center', fontsize=12, alpha=0.6)
+        
+        ax.text(3.5, 4.2, f"Uniform $B = {self.B_base} \\times 10^{{-3}}$ T", color=field_color, fontweight='bold', ha='right')
+        ax.text(3.5, 3.8, "(into page)", color=field_color, fontsize=9, ha='right')
 
         angle_rad = np.radians(self.theta)
-        vx = 2.5 * np.cos(angle_rad)
-        vy = 2.5 * np.sin(angle_rad)
+        v_length = 3.5
+        vx = v_length * np.cos(angle_rad)
+        vy = v_length * np.sin(angle_rad)
 
-        ax.arrow(0,0,vx,vy,
-                head_width=0.25,
-                head_length=0.35,
-                linewidth=2,
-                length_includes_head=True)
-        ax.text(vx*1.1, vy*1.1, r"$v$", fontsize=14)
+        ax.plot([0, 4.5], [0, 0], color=text_color, lw=1, ls='--', alpha=0.8)
+        ax.text(4.6, 0, "Field Axis", color=text_color, fontsize=8, va='center')
 
-        arc = Arc((0,0), 1.5, 1.5, angle=0,
-                theta1=0,
-                theta2=self.theta,
-                linewidth=1.5)
-        ax.add_patch(arc)
-        ax.text(0.9*np.cos(angle_rad/2),
-                0.9*np.sin(angle_rad/2),
-                r"$\theta$",
-                fontsize=13)
-        ax.text(-3.7, 3.3,
-                rf"$B = {self.B_base}\times10^{{-3}}\ \mathrm{{T}}$",
-                fontsize=13)
+        ax.annotate('', xy=(vx, vy), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle='-|>', color=particle_color, lw=3, mutation_scale=20))
+        
+        ax.add_patch(plt.Circle((0, 0), 0.25, color=particle_color, zorder=5))
+        ax.text(-0.2, -0.6, f"$q = {self.q_base} \\times 10^{{-19}}$ C", ha='center', fontweight='bold', fontsize=10)
+        ax.text(vx/2, vy/2 + 0.4, f"$v = {self.v_base} \\times 10^6$ m/s", color=particle_color, rotation=self.theta, fontweight='bold')
 
-        # --- Title ---
-        ax.text(0,3.7,
-                "Charged Particle in Uniform Magnetic Field",
-                ha='center',
-                fontsize=14)
+        if self.theta > 0:
+            arc_r = 1.2
+            arc_angles = np.linspace(0, angle_rad, 50)
+            ax.plot(arc_r * np.cos(arc_angles), arc_r * np.sin(arc_angles), color=text_color, lw=1.5)
+            ax.text(1.5 * np.cos(angle_rad/2), 1.5 * np.sin(angle_rad/2), f"${self.theta}^\circ$", 
+                    fontsize=12, fontweight='bold', color=text_color)
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        ax.set_title("FORCE ON A MOVING CHARGE IN MAGNETIC FIELD", fontsize=14, fontweight='bold', pad=20)
 
-        plt.savefig(
-            os.path.join(DESTINATION_FOLDER, f"image{num}.png"),
-            dpi=800,
-            bbox_inches="tight",
-            pad_inches=0.1
-        )
+        plt.tight_layout()
+        dest_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_path, dpi=300, bbox_inches="tight")
         plt.close()
 
 
@@ -2666,24 +2586,19 @@ class Phy174:
         )
         plt.close()
 
-
 class Phy175:
-    """
-    Faraday's law of electromagnetic induction.
-    """
-
     def __init__(self):
-        self.N = rnd.randint(50,300)
-        self.dPhi = round(rnd.uniform(0.001,0.01),4)
-        self.dt = round(rnd.uniform(0.01,0.05),3)
+        self.N = rnd.randint(50, 300)
+        self.dPhi = round(rnd.uniform(0.001, 0.01), 4)
+        self.dt = round(rnd.uniform(0.01, 0.05), 3)
 
-        self.emf = self.N * (self.dPhi/self.dt)
-        self.answer = round(self.emf,2)
+        self.emf = self.N * (self.dPhi / self.dt)
+        self.answer = f"{self.emf:.2f}"
 
         self.description = (
-            f"A coil of {self.N} turns experiences a change in magnetic flux "
-            f"of {self.dPhi} Wb in {self.dt} s. "
-            "Calculate the induced emf. (_) V"
+            f"A coil consisting of {self.N} turns is placed in a region of changing magnetic flux. "
+            f"The magnetic flux through the coil changes by {self.dPhi} Wb over a time interval of {self.dt} s. "
+            f"Calculate the magnitude of the induced e.m.f. in the coil."
         )
 
         self.topic = "Magnetic Fields"
@@ -2693,50 +2608,65 @@ class Phy175:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Step 1: Write known quantities} &\\\\"
-            f"N &= {self.N}\\\\"
-            f"\\Delta \\Phi &= {round(self.dPhi,10)}\\,\\text{{Wb}}\\\\"
-            f"\\Delta t &= {round(self.dt,10)}\\,\\text{{s}}\\\\"
-            "\\text{Step 2: Use Faraday's law} &\\\\"
-            "\\mathcal{E} &= N\\frac{\\Delta \\Phi}{\\Delta t}\\\\"
-            "\\text{Step 3: Substitute values} &\\\\"
-            f"\\mathcal{{E}} &= {self.N}\\frac{{{round(self.dPhi,10)}}}{{{round(self.dt,10)}}}\\\\"
-            "\\text{Step 4: Evaluate} &\\\\"
-            f"\\mathcal{{E}} &= {round(self.emf,10)}\\,\\text{{V}}\\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"\\mathcal{{E}} &= {self.answer}\\,\\text{{V}}"
+            "&\\mathbf{Step\ 1:\ Identify\ known\ quantities} \\\\"
+            "&N = " + str(self.N) + " \\\\"
+            "&\\Delta \\Phi = " + f"{self.dPhi:.4f}" + "\\,\\text{Wb} \\\\"
+            "&\\Delta t = " + f"{self.dt:.3f}" + "\\,\\text{s} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Apply\ Faraday's\ Law} \\\\"
+            "&\\mathcal{E} = N \\left| \\frac{\\Delta \\Phi}{\\Delta t} \\right| \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&\\mathcal{E} = " + str(self.N) + " \\times \\frac{" + f"{self.dPhi:.4f}" + "}{" + f"{self.dt:.3f}" + "} \\\\"
+            "&\\mathcal{E} = \\mathbf{" + f"{float(self.answer):.2f}" + "\\,V} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&\\mathcal{E} = " + self.answer + "\\,\\text{V}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(-1, 1)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+        ax.set_xlim(-3, 3)
+        ax.set_ylim(-1.5, 1.5)
+        ax.set_aspect('equal')
         ax.axis('off')
 
-        # Draw Solenoid/Coil
-        t = np.linspace(0, 10 * np.pi, 500)
-        x = 0.5 * np.cos(t)
-        y = np.linspace(-0.5, 0.5, 500)
-        ax.plot(x, y, color='silver', linewidth=2, label='Coil')
+        coil_color = '#d35400'
+        magnet_color_n = '#e74c3c'
+        magnet_color_s = '#34495e'
+
+        turns = 8
+        t = np.linspace(0, turns * 2 * np.pi, 1000)
+        x_coil = 0.15 * np.sin(t)
+        y_coil = np.linspace(-1, 1, 1000)
         
-        # Magnetic Flux lines (arrows)
-        for i in np.linspace(-0.4, 0.4, 5):
-            ax.annotate('', xy=(0.8, i), xytext=(-0.8, i),
-                        arrowprops=dict(arrowstyle='->', color='black', alpha=0.6))
+        for i in range(len(t)-1):
+            color = coil_color if np.cos(t[i]) > 0 else '#8e44ad'
+            alpha = 1.0 if np.cos(t[i]) > 0 else 0.3
+            ax.plot(x_coil[i:i+2], y_coil[i:i+2], color=coil_color, lw=2.5, alpha=alpha, solid_capstyle='round')
 
-        ax.text(-1.8, 0.8, f"N = {self.N} turns")
-        ax.text(-1.8, 0.6, f"ΔΦ = {self.dPhi} Wb", color='black')
+        ax.add_patch(plt.Rectangle((-2.5, -0.3), 1.0, 0.6, color=magnet_color_s, zorder=1))
+        ax.add_patch(plt.Rectangle((-1.5, -0.3), 1.0, 0.6, color=magnet_color_n, zorder=1))
+        ax.text(-2.0, 0, 'S', color='white', ha='center', va='center', fontweight='bold', fontsize=12)
+        ax.text(-1.0, 0, 'N', color='white', ha='center', va='center', fontweight='bold', fontsize=12)
+        
+        ax.annotate('', xy=(0.2, 0), xytext=(-0.4, 0),
+                    arrowprops=dict(arrowstyle='->', color='black', lw=1.5))
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        field_lines = np.linspace(-0.5, 0.5, 5)
+        for fl in field_lines:
+            ax.annotate('', xy=(1.5, fl), xytext=(-0.5, fl),
+                        arrowprops=dict(arrowstyle='->', color='#3498db', lw=1, alpha=0.4))
+
+        ax.text(0.5, 1.1, f"$N = {self.N}$ turns", fontweight='bold', fontsize=10)
+        ax.text(0.5, -1.3, f"$\\Delta\\Phi = {self.dPhi}$ Wb\n$\\Delta t = {self.dt}$ s", 
+                ha='center', fontsize=10, bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
+
+        ax.set_title("ELECTROMAGNETIC INDUCTION", fontsize=14, fontweight='bold', pad=15)
+
+        plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
 class Phy176:
-    """
-    Peak emf induced in a rotating coil (AC generator).
-    """
-
     def __init__(self):
         self.N = rnd.randint(100, 500)
         self.B = round(rnd.uniform(0.2, 1.0), 2)
@@ -2745,12 +2675,12 @@ class Phy176:
 
         self.omega = 2 * math.pi * self.f
         self.emf_peak = self.N * self.B * self.A * self.omega
-        self.answer = round(self.emf_peak, 2)
+        self.answer = f"{self.emf_peak:.2f}"
 
         self.description = (
-            f"A coil of {self.N} turns and area {self.A} m^2 rotates "
-            f"in a magnetic field of {self.B} T at a frequency of {self.f} Hz. "
-            "Calculate the peak induced emf. (_) V"
+            f"A rectangular coil of {self.N} turns and cross-sectional area {self.A} m$^2$ "
+            f"rotates at a constant frequency of {self.f} Hz in a uniform magnetic field "
+            f"of flux density {self.B} T. Calculate the peak induced e.m.f."
         )
 
         self.topic = "Magnetic Fields"
@@ -2758,53 +2688,70 @@ class Phy176:
         self.curriculum = "A-Level"
         self.source = "Original"
 
+        lF = f"{float(self.answer):.2f}"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Step 1: Identify given values}} &\\\\"
-            f"N &= {self.N} \\text{{ turns}} \\\\"
-            f"B &= {round(self.B, 10)}\\,\\text{{T}} \\\\"
-            f"A &= {round(self.A, 10)}\\,\\text{{m}}^2 \\\\"
-            f"f &= {self.f}\\,\\text{{Hz}} \\\\"
-            f"\\text{{Step 2: Calculate angular frequency (}} \\omega \\text{{)}} &\\\\"
-            f"\\omega &= 2\\pi f \\\\"
-            f"&= 2 \\times \\pi \\times {self.f} \\\\"
-            f"&= {round(self.omega, 10)}\\,\\text{{rad s}}^{{-1}} \\\\"
-            f"\\text{{Step 3: Apply peak emf formula}} &\\\\"
-            f"\\mathcal{{E}}_{{\\text{{max}}}} &= NBA\\omega \\\\"
-            f"&= ({self.N})({round(self.B, 10)})({round(self.A, 10)})({round(self.omega, 10)}) \\\\"
-            f"\\text{{Step 4: Evaluate the result}} &\\\\"
-            f"\\mathcal{{E}}_{{\\text{{max}}}} &= {round(self.emf_peak, 10)}\\,\\text{{V}} \\\\"
-            f"\\text{{Final Answer:}} &\\\\"
-            f"\\mathcal{{E}}_{{\\text{{max}}}} &= {self.answer}\\,\\text{{V}}"
+            "&\\mathbf{Step\ 1:\ Identify\ Knowns} \\\\"
+            "&N = " + str(self.N) + ", \\ B = " + f"{self.B:.2f}" + "\\,\\text{T}, \\ A = " + f"{self.A:.4f}" + "\\,\\text{m}^2, \\ f = " + str(self.f) + "\\,\\text{Hz} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Angular\ Frequency\ (\\omega)} \\\\"
+            "&\\omega = 2\\pi f = 2\\pi(" + str(self.f) + ") \\approx " + f"{self.omega:.2f}" + "\\, \\text{rad s}^{-1} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Peak\ e.m.f.\ Formula} \\\\"
+            "&\\varepsilon_0 = BAN\\omega \\\\[8pt]"
+            "&\\mathbf{Step\ 4:\ Calculation} \\\\"
+            "&\\varepsilon_0 = (" + f"{self.B:.2f}" + ")(" + f"{self.A:.4f}" + ")(" + str(self.N) + ")(" + f"{self.omega:.2f}" + ") \\\\"
+            "&\\varepsilon_0 = \\mathbf{" + lF + "\\,V}"
             "\\end{aligned}\\]"
         )
+
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.set_xlim(-3, 3)
-        ax.set_ylim(-2, 2)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(10, 7), dpi=300)
+        ax.set_xlim(-5, 5)
+        ax.set_ylim(-3, 3)
+        ax.set_aspect('equal')
         ax.axis('off')
 
-        # Draw Magnet Poles
-        ax.add_patch(plt.Rectangle((-3, -1), 1, 2, color='red', alpha=0.3)) # North
-        ax.add_patch(plt.Rectangle((2, -1), 1, 2, color='blue', alpha=0.3)) # South
-        ax.text(-2.7, 0, 'N', fontsize=15, fontweight='bold')
-        ax.text(2.3, 0, 'S', fontsize=15, fontweight='bold')
+        mag_n, mag_s, coil_color, field_color = '#e74c3c', '#3498db', '#d35400', '#95a5a6'
 
-        # Draw Rotating Coil (Perspective)
-        ax.plot([-1, 1, 0.5, -1.5, -1], [0.5, 0.5, -0.5, -0.5, 0.5], color='black', linewidth=2)
+        ax.add_patch(plt.Rectangle((-4.5, -1.8), 1.5, 3.6, color=mag_n, alpha=0.9, zorder=1))
+        ax.add_patch(plt.Rectangle((3, -1.8), 1.5, 3.6, color=mag_s, alpha=0.9, zorder=1))
+        ax.text(-3.75, 0, 'N', color='white', fontsize=24, fontweight='bold', ha='center')
+        ax.text(3.75, 0, 'S', color='white', fontsize=24, fontweight='bold', ha='center')
+
+        for y in np.linspace(-1.4, 1.4, 9):
+            ax.annotate('', xy=(2.9, y), xytext=(-2.9, y),
+                        arrowprops=dict(arrowstyle='->', color=field_color, lw=1, alpha=0.5))
+        ax.text(0, 2.2, f"$B = {self.B}$ T", color='#2c3e50', ha='center', fontweight='bold', fontsize=12)
+
+        angle = np.radians(35)
+        w, h = 1.3, 1.8
+        c, s = np.cos(angle), np.sin(angle)
+        rect = np.array([[-w, -h], [w, -h], [w, h], [-w, h], [-w, -h]])
+        rot = np.array([[c, -s*0.5], [s, c*0.5]])
+        p = rect @ rot.T
+
+        ax.plot([0, 0], [-2.5, 2.5], color='black', lw=1.5, ls=(0, (5, 5)), alpha=0.7, zorder=2)
+        ax.text(0, -2.8, "Rotation Axis", ha='center', fontsize=9, style='italic')
+
+        ax.plot(p[:, 0], p[:, 1], color=coil_color, lw=3.5, zorder=5)
         
-        # Rotation Arrow
-        ax.annotate('', xy=(0, 0.8), xytext=(-0.5, 0.5),
-                    arrowprops=dict(arrowstyle='->', connectionstyle="arc3,rad=.5", color='green', lw=2))
-        ax.text(0.1, 0.9, "ω", color='green', fontsize=12)
+        normal_len = 1.5
+        nx, ny = normal_len * np.sin(angle), -normal_len * np.cos(angle) * 0.5
+        ax.annotate('', xy=(nx, ny), xytext=(0, 0),
+                    arrowprops=dict(arrowstyle='->', color='black', lw=1.5))
+        ax.text(nx, ny-0.3, r"$\vec{n}$ (Normal)", fontsize=10, fontweight='bold')
 
-        ax.text(-2.8, 1.5, f"B = {self.B} T", fontsize=9)
-        ax.text(-2.8, 1.3, f"f = {self.f} Hz", fontsize=9)
+        ax.annotate('', xy=(1.2, 1.8), xytext=(0.2, 1.4),
+                    arrowprops=dict(arrowstyle='->', connectionstyle="arc3,rad=.4", 
+                                    color='#27ae60', lw=2.5, mutation_scale=20))
+        ax.text(1.3, 2.0, f"$\omega = 2\pi f$\n($f = {self.f}$ Hz)", color='#27ae60', fontweight='bold')
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        info_text = f"Coil:\n$N = {self.N}$ turns\n$A = {self.A}$ m$^2$"
+        ax.text(-4.2, -2.5, info_text, bbox=dict(facecolor='white', alpha=0.9, edgecolor='#bdc3c7'), fontsize=10)
+
+        plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
 
 class Phy177:
     """
@@ -3032,24 +2979,18 @@ class Phy179:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=600, bbox_inches="tight")
         plt.close()
 
-
 class Phy180:
-    """
-    Energy of a photon.
-    """
-
     def __init__(self):
         self.h = 6.63e-34
         self.f_base = rnd.randint(4, 9)
         self.f = self.f_base * 1e14
 
         self.E = self.h * self.f
-        self.answer = round(self.E, 3)
+        self.answer = f"{self.E:.3e}"
 
         self.description = (
-            f"Calculate the energy of a photon with frequency "
-            f"{self.f_base} × 10^{{14}} Hz. "
-            f"Take Planck's constant h = 6.63 × 10^{{-34}} J s. (_) J"
+            f"Calculate the energy of a photon with frequency $f = {self.f_base} \\times 10^{{14}}$ Hz. "
+            f"Take Planck's constant $h = 6.63 \\times 10^{{-34}}$ J s."
         )
 
         self.topic = "Quantum physics"
@@ -3057,43 +2998,59 @@ class Phy180:
         self.curriculum = "A-Level"
         self.source = "Original"
 
+        lE = f"{self.E:.3e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Step 1: State the photon energy formula}} &\\\\"
-            f"E &= hf \\\\"
-            f"\\text{{Step 2: Identify constants and variables}} &\\\\"
-            f"h &= 6.63 \\times 10^{{-34}}\\,\\text{{J s}} \\\\"
-            f"f &= {self.f_base} \\times 10^{{14}}\\,\\text{{Hz}} \\\\"
-            f"\\text{{Step 3: Substitute and evaluate}} &\\\\"
-            f"E &= (6.63 \\times 10^{{-34}})( {self.f_base} \\times 10^{{14}} ) \\\\"
-            f"E &= {round(self.E, 10)}\\,\\text{{J}} \\\\"
-            f"\\text{{Final Answer:}} &\\\\"
-            f"E &= {self.answer}\\,\\text{{J}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Known\ Quantities} \\\\"
+            "&h = 6.63 \\times 10^{-34}\\,\\text{J s} \\\\"
+            "&f = " + str(self.f_base) + " \\times 10^{14}\\,\\text{Hz} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ State\ Photon\ Energy\ Formula} \\\\"
+            "&E = hf \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&E = (6.63 \\times 10^{-34})(" + str(self.f_base) + " \\times 10^{14}) \\\\"
+            "&E = \\mathbf{" + lE + "\\,J} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&E = " + self.answer + "\\,\\text{J}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        # Creating a localized wave packet to represent a photon
-        x = np.linspace(0, 12, 1000)
-        envelope = np.exp(-(x-6)**2 / 4)
-        wave = envelope * np.sin(2 * np.pi * x * 1.5)
-        
-        fig, ax = plt.subplots(figsize=(7, 3))
-        ax.plot(x, wave, color='orange', linewidth=2, label='Photon Energy Packet')
-        
-        # Adding descriptive text to the image
-        ax.text(1, 0.8, f"f = {self.f_base} $\\times$ 10$^{{14}}$ Hz", fontsize=10, fontweight='bold')
-        ax.text(1, 0.5, f"h = 6.63 $\\times$ 10$^{{-34}}$ J s", fontsize=10)
-        
-        ax.set_ylim(-1.2, 1.2)
-        ax.set_xlim(0, 12)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(-1.5, 1.5)
         ax.axis('off')
-        ax.set_title("Photon Energy Model", fontsize=12, pad=10)
 
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=600, bbox_inches="tight")
+        x = np.linspace(0, 10, 1000)
+        sigma = 1.5
+        center = 5
+        envelope = np.exp(-(x - center)**2 / (2 * sigma**2))
+        wave = envelope * np.sin(2 * np.pi * x * (self.f_base/3))
+
+        colors = {4: '#e74c3c', 5: '#e67e22', 6: '#f1c40f', 7: '#2ecc71', 8: '#3498db', 9: '#9b59b6'}
+        photon_color = colors.get(self.f_base, '#f39c12')
+
+        ax.plot(x, wave, color=photon_color, lw=3, zorder=3)
+        ax.fill_between(x, wave, color=photon_color, alpha=0.1)
+        
+        ax.annotate('', xy=(center + 1.2, 0.8), xytext=(center - 1.2, 0.8),
+                    arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1))
+        ax.text(center, 1.0, "Localized Energy Packet", ha='center', fontsize=9, style='italic')
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='#bdc3c7')
+        param_text = (
+            f"$\\mathbf{{Frequency\ (f):}}$\n"
+            f"${self.f_base} \\times 10^{{14}}$ Hz\n\n"
+            f"$\\mathbf{{Planck's\ Constant\ (h):}}$\n"
+            f"$6.63 \\times 10^{{-34}}$ J s"
+        )
+        ax.text(0.2, 0, param_text, transform=ax.transAxes, fontsize=10, bbox=props, va='center')
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
 
 
 class Phy181:
@@ -3152,7 +3109,6 @@ class Phy181:
 
         ax.set_ylim(-1.5, 2.2)
         ax.axis('off')
-        ax.set_title("De Broglie Wavelength and Photon Momentum", fontsize=11)
 
         os.makedirs(DESTINATION_FOLDER, exist_ok=True)
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=600, bbox_inches="tight")
@@ -3203,170 +3159,310 @@ class Phy182:
         ax.set_xlim(0, 5); ax.set_ylim(0, 4); ax.axis('off')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
 class Phy183:
-    """Photoelectric effect: stopping potential."""
     def __init__(self):
         self.e = 1.60e-19
         self.Ek_base = rnd.randint(2, 9)
         self.Ek = self.Ek_base * 1e-19
         self.Vs = self.Ek / self.e
-        self.answer = round(self.Vs, 2)
+        self.answer = f"{self.Vs:.2f}"
 
         self.description = (
-            f"The maximum kinetic energy of emitted electrons is {self.Ek_base} × 10^{{-19}} J. "
-            "Calculate the stopping potential. (_) V"
+            f"In a photoelectric effect experiment, the maximum kinetic energy of the emitted "
+            f"photoelectrons is measured to be $E_{{k, \\text{{max}}}} = {self.Ek_base} \\times 10^{{-19}}$ J. "
+            f"Determine the stopping potential $V_s$ required to reduce the photocurrent to zero."
         )
-        self.topic, self.subtopic = "Quantum physics", "Photoelectric effect"
-        self.curriculum, self.source = "A-Level", "Original"
+
+        self.topic = "Quantum physics"
+        self.subtopic = "Photoelectric effect"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{Step 1: Energy relation} &\\\\"
-            "E_{k, \\text{max}} &= eV_s \\\\"
-            "\\text{Step 2: Rearrange for } V_s &\\\\"
-            "V_s &= \\frac{E_k}{e} \\\\"
-            "\\text{Step 3: Substitute values} &\\\\"
-            f"V_s &= \\frac{{{self.Ek_base} \\times 10^{{-19}}}}{{1.60 \\times 10^{{-19}}}} \\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"V_s &= {self.answer}\\,\\text{{V}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ the\ Relationship} \\\\"
+            "&\\text{The work done by the stopping potential equals the maximum kinetic energy:} \\\\"
+            "&E_{k, \\text{max}} = e V_s \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Rearrange\ for\ Stopping\ Potential\ (V_s)} \\\\"
+            "&V_s = \\frac{E_{k, \\text{max}}}{e} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitution} \\\\"
+            "&e = 1.60 \\times 10^{-19}\\,\\text{C} \\\\"
+            "&V_s = \\frac{" + str(self.Ek_base) + " \\times 10^{-19}}{1.60 \\times 10^{-19}} \\\\[8pt]"
+            "&\\mathbf{Step\ 4:\ Final\ Calculation} \\\\"
+            "&V_s = \\mathbf{" + self.answer + "\\,V} \\\\"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.plot([1, 4], [0, 3], color='red', lw=2, label='$E_k = hf - \Phi$')
-        ax.axhline(0, color='black', lw=1); ax.axvline(1, color='black', lw=1)
-        ax.set_xlabel("Frequency ($f$)"); ax.set_ylabel("Max Kinetic Energy ($E_k$)")
-        ax.text(2, 2.5, f"Given $E_k = {self.Ek_base} \\times 10^{{-19}}$ J", color='red', fontsize=10)
-        ax.set_xticks([]); ax.set_yticks([])
+        plt.style.use("default")
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), dpi=300)
+        
+        # Grafik Ek vs f
+        f_threshold = 2
+        f = np.linspace(f_threshold, 6, 100)
+        Ek_plot = 1.5 * (f - f_threshold)
+        ax1.plot(f, Ek_plot, color='#e67e22', lw=2.5, label='$E_{k,max} = hf - \Phi$')
+        ax1.axhline(0, color='black', lw=1)
+        ax1.axvline(f_threshold, color='black', lw=1, ls='--')
+        
+        target_Ek_y = 3
+        target_f_x = 4
+        ax1.scatter(target_f_x, target_Ek_y, color='#d35400', s=100, zorder=5)
+        ax1.annotate(f'$E_k = {self.Ek_base} \\times 10^{{-19}}$ J', 
+                     xy=(target_f_x, target_Ek_y), xytext=(target_f_x-1.5, target_Ek_y+0.5),
+                     arrowprops=dict(arrowstyle='->', color='black'))
+
+        ax1.set_xlabel('Frequency ($f$)', fontweight='bold')
+        ax1.set_ylabel('Max Kinetic Energy ($E_{k,max}$)', fontweight='bold')
+        ax1.set_title('Energy-Frequency Relationship', fontsize=12, fontweight='bold')
+        ax1.set_xticks([]); ax1.set_yticks([])
+        ax1.grid(True, alpha=0.3)
+
+        # Diagram Sirkuit Sederhana (Abstraksi)
+        ax2.set_xlim(0, 10); ax2.set_ylim(0, 10)
+        ax2.axis('off')
+        
+        # Vacuum tube
+        tube = plt.Circle((5, 6), 3.5, color='#ecf0f1', ec='#2c3e50', lw=2)
+        ax2.add_patch(tube)
+        
+        # Electrodes
+        ax2.plot([3, 3], [4.5, 7.5], color='#2c3e50', lw=4) # Cathode
+        ax2.plot([7, 7], [4.5, 7.5], color='#2c3e50', lw=4) # Anode
+        ax2.text(2.5, 8, 'Cathode (-)', ha='center', fontweight='bold')
+        ax2.text(7.5, 8, 'Anode (+)', ha='center', fontweight='bold')
+        
+        # Photons and Electrons
+        for i in range(3):
+            ax2.annotate('', xy=(2.8, 7-i), xytext=(0.5, 8-i),
+                         arrowprops=dict(arrowstyle='->', color='#f1c40f', lw=2, connectionstyle="arc3,rad=.2"))
+        ax2.scatter([4, 5, 5.5], [6, 5.2, 6.8], color='#3498db', s=50) # Electrons
+        ax2.text(1, 8.5, 'Photons ($hf$)', color='#f39c12', fontweight='bold')
+
+        # Voltmeter / stopping potential label
+        ax2.add_patch(plt.Rectangle((3.5, 1), 3, 1.5, fill=False, ec='#c0392b', lw=2))
+        ax2.text(5, 1.7, f'$V_s = ?$ V', color='#c0392b', ha='center', fontweight='bold', fontsize=12)
+        ax2.plot([3, 3, 3.5], [4.5, 1.75, 1.75], color='#c0392b', lw=1.5)
+        ax2.plot([7, 7, 6.5], [4.5, 1.75, 1.75], color='#c0392b', lw=1.5)
+
+        plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
-
-
 class Phy184:
-    """De Broglie wavelength of a particle."""
     def __init__(self):
         self.h, self.m = 6.63e-34, 9.11e-31
         self.v_base = rnd.randint(1, 5)
         self.v = self.v_base * 1e6
         self.lambda_val = self.h / (self.m * self.v)
-        self.answer = round(self.lambda_val, 12)
+        self.answer = f"{self.lambda_val:.3e}"
 
         self.description = (
-            f"An electron moves with a speed of {self.v_base} × 10^6 m s^{{-1}}. "
-            "Calculate its de Broglie wavelength. (_) m"
+            f"An electron is traveling at a speed of $v = {self.v_base} \\times 10^6$ m s$^{{-1}}$. "
+            f"Calculate the de Broglie wavelength associated with this electron. "
+            f"($m_e = 9.11 \\times 10^{{-31}}$ kg, $h = 6.63 \\times 10^{{-34}}$ J s)"
         )
-        self.topic, self.subtopic = "Quantum physics", "Wave-particle duality"
-        self.curriculum, self.source = "A-Level", "Original"
+        
+        self.topic = "Quantum physics"
+        self.subtopic = "Wave-particle duality"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
+        l_val_tex = f"{self.lambda_val:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{Step 1: De Broglie equation} &\\\\"
-            "\\lambda &= \\frac{h}{mv} \\\\"
-            "\\text{Step 2: Substitute values} &\\\\"
-            f"\\lambda &= \\frac{{6.63 \\times 10^{{-34}}}}{{(9.11 \\times 10^{{-31}})({self.v_base} \\times 10^6)}} \\\\"
-            "\\text{Step 3: Evaluate result} &\\\\"
-            f"\\lambda &= {self.lambda_val:.4e}\\,\\text{{m}} \\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"\\lambda &= {self.answer}\\,\\text{{m}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Constants} \\\\"
+            "&m_e = 9.11 \\times 10^{-31}\\,\\text{kg}, \\ v = " + str(self.v_base) + " \\times 10^6\\,\\text{m s}^{-1} \\\\"
+            "&h = 6.63 \\times 10^{-34}\\,\\text{J s} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ De\ Broglie\ Equation} \\\\"
+            "&\\lambda = \\frac{h}{p} = \\frac{h}{m v} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&\\lambda = \\frac{6.63 \\times 10^{-34}}{(9.11 \\times 10^{-31})(" + str(self.v_base) + " \\times 10^6)} \\\\"
+            "&\\lambda = " + l_val_tex + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&\\lambda = " + self.answer + "\\,\\text{m}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(-1.5, 1.5)
+        ax.axis('off')
+
         x = np.linspace(0, 10, 1000)
-        y = np.exp(-(x-5)**2/5) * np.sin(2*np.pi*x*1.2)
-        fig, ax = plt.subplots(figsize=(7, 3))
-        ax.plot(x, y, color='purple', lw=2)
-        ax.text(5, 1.2, f"Electron speed $v = {self.v_base} \\times 10^6$ m/s", ha='center', fontweight='bold')
-        ax.set_ylim(-1.5, 1.5); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
+        k = 2 + (self.v_base * 0.4) 
+        envelope = np.exp(-(x-5)**2 / 2.5)
+        wave = envelope * np.cos(2 * np.pi * x * k)
+
+        ax.plot(x, wave, color='#8e44ad', lw=2.5, zorder=3)
+        ax.fill_between(x, wave, color='#9b59b6', alpha=0.1)
+        
+        center_x = 5
+        lambda_vis = 1/(k)
+        ax.annotate('', xy=(8.5, 0), xytext=(7, 0),
+                    arrowprops=dict(arrowstyle='-|>', color='#2980b9', lw=3, mutation_scale=20))
+        ax.text(7.75, -0.4, f"$v = {self.v_base} \\times 10^6$ m/s", color='#2980b9', fontweight='bold', ha='center')
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
+        info_text = (
+            f"$\\mathbf{{Electron\ Data:}}$\n"
+            f"$m_e = 9.11 \\times 10^{{-31}}$ kg\n"
+            f"$h = 6.63 \\times 10^{{-34}}$ J s"
+        )
+        ax.text(0.05, 0.1, info_text, transform=ax.transAxes, fontsize=10, bbox=props)
+
+        ax.set_title("DE BROGLIE WAVE-PARTICLE DUALITY", fontsize=12, fontweight='bold', pad=15)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
-
-
 class Phy185:
-    """Energy difference between atomic levels."""
     def __init__(self):
         self.h = 6.63e-34
         self.f_base = rnd.randint(4, 8)
         self.f = self.f_base * 1e14
         self.E = self.h * self.f
-        self.answer = round(self.E, 22)
+        self.answer = f"{self.E:.3e}"
 
         self.description = (
-            f"An electron transition emits radiation of frequency {self.f_base} × 10^{{14}} Hz. "
-            "Calculate the energy difference between the levels. (_) J"
+            f"An electron transition between two energy levels in an atom results in the emission "
+            f"of radiation with a frequency of $f = {self.f_base} \\times 10^{{14}}$ Hz. "
+            f"Calculate the energy difference $\\Delta E$ between these two levels."
         )
-        self.topic, self.subtopic = "Quantum physics", "Energy levels"
-        self.curriculum, self.source = "A-Level", "Original"
+        self.topic = "Quantum physics"
+        self.subtopic = "Energy levels"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
+        lE = f"{self.E:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{Step 1: Photon energy formula} &\\\\"
-            "\\Delta E &= hf \\\\"
-            "\\text{Step 2: Substitute values} &\\\\"
-            f"\\Delta E &= (6.63 \\times 10^{{-34}})({self.f_base} \\times 10^{{14}}) \\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"\\Delta E &= {self.answer}\\,\\text{{J}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Given\ Parameters} \\\\"
+            "&h = 6.63 \\times 10^{-34}\\,\\text{J s} \\\\"
+            "&f = " + str(self.f_base) + " \\times 10^{14}\\,\\text{Hz} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ State\ Photon\ Energy\ Relation} \\\\"
+            "&\\Delta E = hf \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitute\ and\ Calculate} \\\\"
+            "&\\Delta E = (6.63 \\times 10^{-34})(" + str(self.f_base) + " \\times 10^{14}) \\\\"
+            "&\\Delta E = \\mathbf{" + lE + "\\,J} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&\\Delta E = " + self.answer + "\\,\\text{J}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.hlines([1, 3], 1, 4, colors='black', lw=2.5)
-        ax.annotate('', xy=(2.5, 1.1), xytext=(2.5, 2.9), arrowprops=dict(arrowstyle='->', color='red', lw=2))
-        ax.text(4.2, 3, "$E_{high}$"); ax.text(4.2, 1, "$E_{low}$")
-        ax.text(1, 2, f"Transition frequency:\n$f = {self.f_base}\\times 10^{{14}}$ Hz", color='red')
-        ax.set_xlim(0, 6); ax.set_ylim(0, 4); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 6)
+        ax.axis('off')
+
+        ax.hlines([1.5, 4.5], 2, 8, colors='#2c3e50', lw=3)
+        ax.text(8.2, 4.5, "$E_2$ (Higher Level)", va='center', fontweight='bold')
+        ax.text(8.2, 1.5, "$E_1$ (Lower Level)", va='center', fontweight='bold')
+
+        ax.annotate('', xy=(4, 1.6), xytext=(4, 4.4), 
+                    arrowprops=dict(arrowstyle='-|>', color='#c0392b', lw=2.5, mutation_scale=20))
+        
+        x_wave = np.linspace(4, 7, 100)
+        y_wave = 3 + 0.3 * np.sin(2 * np.pi * 3 * x_wave)
+        ax.plot(x_wave, y_wave, color='#f39c12', lw=2)
+        ax.annotate('', xy=(7.2, 3), xytext=(6.8, 3), 
+                    arrowprops=dict(arrowstyle='->', color='#f39c12', lw=2))
+        ax.text(7.3, 3.2, "Photon\nemitted", color='#e67e22', fontsize=9, fontweight='bold')
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
+        info_text = (
+            f"$\\mathbf{{Transition\ Data:}}$\n"
+            f"$f = {self.f_base} \\times 10^{{14}}$ Hz\n"
+            f"$h = 6.63 \\times 10^{{-34}}$ J s"
+        )
+        ax.text(0.5, 5, info_text, transform=ax.transData, fontsize=10, bbox=props)
+
+        ax.text(5, 0.5, "$\\Delta E = E_2 - E_1 = hf$", fontsize=12, fontweight='bold', ha='center')
+        ax.set_title("ATOMIC ENERGY LEVEL TRANSITION", fontsize=14, fontweight='bold', pad=20)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 
-
 class Phy186:
-    """Wavelength of emitted spectral line."""
     def __init__(self):
         self.h, self.c = 6.63e-34, 3.00e8
         self.E_base = rnd.randint(2, 9)
         self.E = self.E_base * 1e-19
         self.lambda_val = (self.h * self.c) / self.E
-        self.answer = round(self.lambda_val, 12)
+        self.answer = f"{self.lambda_val:.3e}"
 
         self.description = (
-            f"An electron transition releases energy of {self.E_base} × 10^{{-19}} J. "
-            "Calculate the wavelength of the emitted photon. (_) m"
+            f"An electron transition in a hydrogen atom releases energy of $\\Delta E = {self.E_base} \\times 10^{{-19}}$ J. "
+            f"Calculate the wavelength $\\lambda$ of the emitted spectral line."
         )
-        self.topic, self.subtopic = "Quantum physics", "Line spectra"
-        self.curriculum, self.source = "A-Level", "Original"
+        self.topic = "Quantum physics"
+        self.subtopic = "Line spectra"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
+        lW = f"{self.lambda_val:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{Step 1: Photon energy equation} &\\\\"
-            "E &= \\frac{hc}{\\lambda} \\\\"
-            "\\text{Step 2: Rearrange for wavelength} &\\\\"
-            "\\lambda &= \\frac{hc}{E} \\\\"
-            "\\text{Step 3: Substitute values} &\\\\"
-            f"\\lambda &= \\frac{{(6.63 \\times 10^{{-34}})(3.00 \\times 10^8)}}{{{self.E_base} \\times 10^{{-19}}}} \\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"\\lambda &= {self.answer}\\,\\text{{m}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ List\ Physical\ Constants} \\\\"
+            "&h = 6.63 \\times 10^{-34}\\,\\text{J s}, \\ c = 3.00 \\times 10^8\\,\\text{m s}^{-1} \\\\"
+            "&\\Delta E = " + str(self.E_base) + " \\times 10^{-19}\\,\\text{J} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ State\ Energy-Wavelength\ Formula} \\\\"
+            "&\\Delta E = \\frac{hc}{\\lambda} \\implies \\lambda = \\frac{hc}{\\Delta E} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&\\lambda = \\frac{(6.63 \\times 10^{-34})(3.00 \\times 10^8)}{" + str(self.E_base) + " \\times 10^{-19}} \\\\"
+            "&\\lambda = " + lW + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&\\lambda = " + self.answer + "\\,\\text{m}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.hlines([1, 3], 1, 4, colors='black', lw=2.5)
-        ax.annotate('', xy=(2.5, 1.1), xytext=(2.5, 2.9), arrowprops=dict(arrowstyle='->', color='green', lw=2))
-        ax.text(1, 2, f"Energy released:\n$\Delta E = {self.E_base} \\times 10^{{-19}}$ J", color='green')
-        ax.set_xlim(0, 6); ax.set_ylim(0, 4); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 6)
+        ax.axis('off')
+
+        ax.hlines([1.5, 4.5], 2, 8, colors='#2c3e50', lw=3)
+        ax.text(8.2, 4.5, "$E_2$ (Higher Level)", va='center', fontweight='bold')
+        ax.text(8.2, 1.5, "$E_1$ (Lower Level)", va='center', fontweight='bold')
+        ax.annotate('', xy=(3, 1.6), xytext=(3, 4.4), 
+                    arrowprops=dict(arrowstyle='-|>', color='#27ae60', lw=2.5, mutation_scale=20))
+        
+        ax.text(5, 3.2, f"$\\Delta E = {self.E_base} \\times 10^{{-19}}$ J", color='#1e8449', fontweight='bold', ha='center')
+
+        x_wave = np.linspace(4, 8, 150)
+        y_wave = 1.5 + 0.4 * np.abs(np.sin(2 * np.pi * 2 * x_wave)) 
+        ax.plot(x_wave, y_wave, color='#9b59b6', lw=2, ls='--')
+        ax.text(6, 0.8, "$\\lambda = ?$", color='#8e44ad', fontsize=14, fontweight='bold', ha='center')
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
+        const_text = (
+            "$\\mathbf{Constants:}$\n"
+            "$h = 6.63 \\times 10^{-34}$ J s\n"
+            "$c = 3.00 \\times 10^8$ m s$^{-1}$"
+        )
+        ax.text(0.5, 5, const_text, transform=ax.transData, fontsize=10, bbox=props)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy187:
-    """
-    Mass defect calculation.
-    """
     def __init__(self):
         self.mp = 1.6726e-27
         self.mn = 1.6749e-27
@@ -3375,46 +3471,80 @@ class Phy187:
         self.N = self.A - self.Z
 
         self.mass_nucleons = (self.Z * self.mp) + (self.N * self.mn)
-        # Simulating a realistic nucleus mass (slightly less than nucleons)
-        self.mass_nucleus = self.mass_nucleons - rnd.uniform(1e-29, 5e-29)
+        self.mass_nucleus = self.mass_nucleons - rnd.uniform(2e-29, 6e-29)
 
         self.mass_defect = self.mass_nucleons - self.mass_nucleus
-        self.answer = round(self.mass_defect, 30)
+        self.answer = f"{self.mass_defect:.4e}"
 
         self.description = (
-            f"A nucleus has a mass number A = {self.A} and atomic number Z = {self.Z}. "
-            f"The measured mass of the nucleus is {self.mass_nucleus:.4e} kg. "
-            "Calculate the mass defect. (Take $m_p = 1.67 \times 10^{{-27}}$ kg and $m_n = 1.67 \times 10^{{-27}}$ kg). (_) kg"
+            f"A nucleus has a mass number $A = {self.A}$ and atomic number $Z = {self.Z}$. "
+            f"The measured mass of the nucleus is ${self.mass_nucleus:.4e}$ kg. "
+            f"Calculate the mass defect of this nucleus in kg. "
+            f"(Take $m_p = 1.6726 \\times 10^{{-27}}$ kg and $m_n = 1.6749 \\times 10^{{-27}}$ kg)."
         )
 
-        self.topic, self.subtopic = "Nuclear physics", "Mass defect and binding energy"
-        self.curriculum, self.source = "A-Level", "Original"
+        self.topic = "Nuclear physics"
+        self.subtopic = "Mass defect and binding energy"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{{Step 1: Calculate mass of individual nucleons}} &\\\\"
-            f"m_{{\\text{{total}}}} &= Zm_p + (A-Z)m_n \\\\"
-            f"m_{{\\text{{total}}}} &= {self.Z}(1.67 \\times 10^{{-27}}) + {self.N}(1.67 \\times 10^{{-27}}) \\\\"
-            f"m_{{\\text{{total}}}} &= {self.mass_nucleons:.4e}\\,\\text{{kg}} \\\\"
-            "\\text{{Step 2: Calculate mass defect (}}\\Delta m\\text{{)}} &\\\\"
-            "\\Delta m &= m_{\\text{nucleons}} - m_{\\text{nucleus}} \\\\"
-            f"\\Delta m &= {self.mass_nucleons:.4e} - {self.mass_nucleus:.4e} \\\\"
-            "\\text{{Final Answer:}} &\\\\"
-            f"\\Delta m &= {self.answer:.4e}\\,\\text{{kg}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Constituents} \\\\"
+            "&\\text{Protons (Z)} = " + str(self.Z) + ", \\ \\text{Neutrons (N)} = " + str(self.N) + " \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Calculate\ Total\ Mass\ of\ Individual\ Nucleons} \\\\"
+            "&m_{\\text{total}} = (Z \\times m_p) + (N \\times m_n) \\\\"
+            "&m_{\\text{total}} = (" + str(self.Z) + " \\times 1.6726 \\times 10^{-27}) + (" + str(self.N) + " \\times 1.6749 \\times 10^{-27}) \\\\"
+            "&m_{\\text{total}} = " + f"{self.mass_nucleons:.4e}" + "\\,\\text{kg} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculate\ Mass\ Defect\ (\\Delta m)} \\\\"
+            "&\\Delta m = m_{\\text{total}} - m_{\\text{measured}} \\\\"
+            "&\\Delta m = " + f"{self.mass_nucleons:.4e}" + " - " + f"{self.mass_nucleus:.4e} \\\\"
+            "&\\Delta m = \\mathbf{" + self.answer + "\\,kg}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        for _ in range(self.Z): # Protons
-            ax.scatter(rnd.uniform(1.8, 3.2), rnd.uniform(1.8, 3.2), color='red', s=100, edgecolors='black', alpha=0.7)
-        for _ in range(self.N): # Neutrons
-            ax.scatter(rnd.uniform(1.8, 3.2), rnd.uniform(1.8, 3.2), color='blue', s=100, edgecolors='black', alpha=0.7)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 5)
+        ax.axis('off')
+
+        def draw_nucleus(center_x, center_y, spread, z_count, n_count, label):
+            for _ in range(z_count):
+                ax.scatter(center_x + rnd.uniform(-spread, spread), 
+                           center_y + rnd.uniform(-spread, spread), 
+                           color='#e74c3c', s=150, edgecolors='black', zorder=3)
+            for _ in range(n_count):
+                ax.scatter(center_x + rnd.uniform(-spread, spread), 
+                           center_y + rnd.uniform(-spread, spread), 
+                           color='#3498db', s=150, edgecolors='black', zorder=2)
+            ax.text(center_x, center_y - 1.2, label, ha='center', fontweight='bold', fontsize=11)
+
+        draw_nucleus(2.5, 2.5, 0.8, self.Z, self.N, "Individual Nucleons\n(Separated)")
         
-        ax.text(2.5, 3.6, f"Nucleus (A={self.A}, Z={self.Z})", ha='center', fontweight='bold', fontsize=12)
-        ax.text(0.5, 0.5, f"Measured Mass: {self.mass_nucleus:.4e} kg", fontsize=9, bbox=dict(facecolor='white', alpha=0.8))
-        ax.set_xlim(0, 5); ax.set_ylim(0, 4); ax.axis('off')
+        ax.text(5, 2.5, "$\longrightarrow$", fontsize=30, ha='center', va='center')
+        ax.text(5, 3.0, "Binding", fontsize=10, ha='center', color='gray')
+
+        draw_nucleus(7.5, 2.5, 0.4, self.Z, self.N, f"Bound Nucleus\n($A={self.A}, Z={self.Z}$)")
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
+        info_text = (
+            f"$Z = {self.Z}$ protons, $N = {self.N}$ neutrons\n"
+            f"$m_{{\\text{{measured}}}} = {self.mass_nucleus:.4e}$ kg\n"
+            f"$m_p = 1.6726 \\times 10^{{-27}}$ kg\n"
+            f"$m_n = 1.6749 \\times 10^{{-27}}$ kg"
+        )
+        ax.text(0.5, 4.8, info_text, transform=ax.transData, fontsize=9, bbox=props, va='top')
+
+        ax.text(5, 0.5, r"Mass Defect $\Delta m = \sum m_{\text{nucleons}} - m_{\text{nucleus}}$", 
+                ha='center', fontsize=12, fontweight='bold', color='#2c3e50')
         
+        ax.set_title("MASS DEFECT IN NUCLEAR BINDING", fontsize=14, fontweight='bold', pad=10)
+
+        plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
@@ -3658,88 +3788,166 @@ class Phy191:
         plt.close()
 
 class Phy192:
-    """Wavelength of ultrasound."""
     def __init__(self):
         self.v = 1540
         self.f_mhz = rnd.randint(2, 12)
         self.f = self.f_mhz * 1e6
         self.lambda_val = self.v / self.f
-        self.answer = round(self.lambda_val, 6)
+        self.answer = f"{self.lambda_val:.3e}"
 
         self.description = (
-            f"An ultrasound transducer operates at a frequency of {self.f_mhz} MHz. "
-            f"Given the speed of sound in tissue is 1540 m s$^{{-1}}$, "
-            f"calculate its wavelength. (_) m"
+            f"An ultrasound transducer operates at a frequency of $f = {self.f_mhz}$ MHz. "
+            f"Given that the speed of ultrasound in human soft tissue is $v = 1540$ m s$^{{-1}}$, "
+            f"calculate the wavelength $\\lambda$ of the ultrasound waves in the tissue."
         )
-        self.topic, self.subtopic = "Medical physics", "Production and use of ultrasound"
-        self.curriculum, self.source = "A-Level", "Original"
+        self.topic = "Medical physics"
+        self.subtopic = "Production and use of ultrasound"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
+        l_val_tex = f"{self.lambda_val:.3e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{{Step 1: Apply the wave equation}} &\\\\"
-            "v &= f\\lambda \\implies \\lambda = \\frac{{v}}{{f}} \\\\"
-            "\\text{{Step 2: Convert frequency to Hz}} &\\\\"
-            f"f &= {self.f_mhz} \\times 10^6\\,\\text{{Hz}} \\\\"
-            "\\text{{Step 3: Substitute values}} &\\\\"
-            f"\\lambda &= \\frac{{1540}}{{{self.f_mhz} \\times 10^6}} \\\\"
-            "\\text{{Final Answer:}} &\\\\"
-            f"\\lambda &= {self.answer:.2e}\\,\\text{{m}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Known\ Values} \\\\"
+            "&v = 1540\\,\\text{m s}^{-1} \\\\"
+            "&f = " + str(self.f_mhz) + " \\times 10^6\\,\\text{Hz} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Apply\ the\ Wave\ Equation} \\\\"
+            "&v = f\\lambda \\implies \\lambda = \\frac{v}{f} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitution\ and\ Calculation} \\\\"
+            "&\\lambda = \\frac{1540}{" + str(self.f_mhz) + " \\times 10^6} \\\\"
+            "&\\lambda = " + l_val_tex + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&\\lambda = " + self.answer + "\\,\\text{m}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        x = np.linspace(0, 10, 500)
-        y = np.sin(2 * np.pi * 0.5 * x)
-        fig, ax = plt.subplots(figsize=(7, 3))
-        ax.plot(x, y, color='purple', lw=2)
-        # Indicate wavelength
-        ax.annotate('', xy=(2, 1.2), xytext=(4, 1.2), arrowprops=dict(arrowstyle='<->'))
-        ax.text(3, 1.4, "Wavelength ($\lambda$)", ha='center')
-        ax.text(0, -1.8, f"Frequency: {self.f_mhz} MHz\nSpeed: 1540 m/s", fontsize=9, fontweight='bold')
-        ax.set_ylim(-2, 2); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(-2, 3)
+        ax.axis('off')
+
+        ax.add_patch(plt.Rectangle((0.5, -1.5), 1.5, 3, color='#95a5a6', alpha=0.8, ec='black', lw=1.5))
+        ax.add_patch(plt.Circle((2, 0), 1.5, color='#95a5a6', alpha=0.8, ec='black', lw=1.5))
+        ax.text(1.2, 0, "Transducer", rotation=90, va='center', fontweight='bold', color='white')
+
+        ax.add_patch(plt.Rectangle((2.5, -1.8), 7, 3.6, color='#fad7a0', alpha=0.3, ec='#e67e22', lw=2, ls='--'))
+        ax.text(6, 2, "Soft Tissue Layer", ha='center', fontweight='bold', color='#d35400')
+
+        x = np.linspace(2.5, 9, 500)
+        wave_freq = 1.5
+        y = 0.8 * np.sin(2 * np.pi * wave_freq * x)
+        ax.plot(x, y, color='#2980b9', lw=2.5)
+
+        peak_x1 = 2.5 + (0.25 / wave_freq)
+        peak_x2 = peak_x1 + (1 / wave_freq)
+        ax.annotate('', xy=(peak_x1, 1.2), xytext=(peak_x2, 1.2),
+                    arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1.5))
+        ax.text((peak_x1 + peak_x2)/2, 1.4, r"$\lambda = ?$", ha='center', fontsize=12, fontweight='bold')
+
+        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
+        info_text = (
+            f"$f = {self.f_mhz}$ MHz\n"
+            f"$v = 1540$ m s$^{{-1}}$"
+        )
+        ax.text(0.5, 2.5, info_text, transform=ax.transData, fontsize=10, bbox=props, va='top')
+
+        ax.text(6, -1.2, r"$\lambda = \frac{v}{f}$", fontsize=14, fontweight='bold', color='#2c3e50')
+        ax.set_title("ULTRASOUND WAVE IN BIOLOGICAL TISSUE", fontsize=12, fontweight='bold', pad=15)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
-
-
 class Phy193:
-    """X-ray photon energy."""
     def __init__(self):
         self.h = 6.63e-34
         self.f_base = rnd.randint(5, 20)
         self.f = self.f_base * 1e18
         self.E = self.h * self.f
-        self.answer = round(self.E, 22)
+        self.answer = f"{self.E:.3e}"
 
         self.description = (
             f"Calculate the energy of an X-ray photon with a frequency of "
-            f"{self.f_base} × 10$^{{18}}$ Hz. (_) J"
+            f"$f = {self.f_base} \\times 10^{{18}}$ Hz. "
+            f"Take Planck's constant $h = 6.63 \\times 10^{{-34}}$ J s."
         )
-        self.topic, self.subtopic = "Medical physics", "Production and use of ultrasound"
-        self.curriculum, self.source = "A-Level", "Original"
+        self.topic = "Medical physics"
+        self.subtopic = "X-ray production and energy"
+        self.curriculum = "A-Level"
+        self.source = "Original"
 
+        l_val_tex = f"{self.E:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{{Step 1: Use the photon energy formula}} &\\\\"
-            "E &= hf \\\\"
-            "\\text{{Step 2: Substitute Planck's constant and frequency}} &\\\\"
-            f"E &= (6.63 \\times 10^{{-34}})({self.f_base} \\times 10^{{18}}) \\\\"
-            "\\text{{Final Answer:}} &\\\\"
-            f"E &= {self.E:.4e}\\,\\text{{J}}"
-            "\\end{aligned}\\]"
+            "\\["
+            "\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Identify\ Known\ Parameters} \\\\"
+            "&h = 6.63 \\times 10^{-34}\\,\\text{J s} \\\\"
+            "&f = " + str(self.f_base) + " \\times 10^{18}\\,\\text{Hz} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ State\ the\ Photon\ Energy\ Formula} \\\\"
+            "&E = hf \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Substitution\ and\ Calculation} \\\\"
+            "&E = (6.63 \\times 10^{-34})(" + str(self.f_base) + " \\times 10^{18}) \\\\"
+            "&E = \\mathbf{" + l_val_tex + "\\,J} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&E = " + self.answer + "\\,\\text{J}"
+            "\\end{aligned}"
+            "\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        # Photon wave representation
-        x = np.linspace(0, 4, 100)
-        y = 2 + 0.3 * np.sin(10 * x)
-        ax.plot(x, y, color='orange', lw=2)
-        ax.annotate('', xy=(4.5, 2), xytext=(4, 2), arrowprops=dict(arrowstyle='->', color='orange', lw=2))
-        ax.text(0.5, 2.5, f"$f = {self.f_base} \\times 10^{{18}}$ Hz", fontweight='bold')
-        ax.text(0.5, 1.5, "X-ray Photon Energy ($E$)", color='darkred')
-        ax.set_xlim(0, 6); ax.set_ylim(0, 4); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(9, 5), dpi=300)
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 6)
+        ax.axis('off')
+
+        tube_outer = plt.Circle((5, 3), 3.5, color='#ecf0f1', ec='#bdc3c7', lw=1, zorder=0)
+        ax.add_patch(tube_outer)
+
+        ax.add_patch(plt.Rectangle((1.5, 2.2), 0.8, 1.6, color='#34495e', ec='black', zorder=5))
+        ax.text(1.9, 4.0, "Cathode (-)", ha='center', fontweight='bold', fontsize=9)
+        
+        anode_coords = [[7.5, 2], [8.5, 2], [8.5, 4], [7.5, 4]]
+        ax.add_patch(plt.Polygon(anode_coords, color='#7f8c8d', ec='black', zorder=5))
+
+        target_face = [[6.8, 2.5], [7.5, 2], [7.5, 4], [6.8, 3.5]]
+        ax.add_patch(plt.Polygon(target_face, color='#bdc3c7', ec='black', zorder=6))
+        ax.text(8, 4.2, "Tungsten Target", ha='center', fontweight='bold', fontsize=9)
+
+        # Electron Beam
+        for i in range(4):
+            y_offset = 2.4 + i * 0.4
+            ax.annotate('', xy=(6.7, y_offset), xytext=(2.4, y_offset),
+                        arrowprops=dict(arrowstyle='->', color='#3498db', lw=1.2, ls='--'))
+        ax.text(4.5, 3.8, "High-speed\nelectrons", ha='center', color='#2980b9', fontsize=8, style='italic')
+
+        x_wave = np.linspace(7.2, 9.8, 300)
+        for shift in [-0.3, 0, 0.3]:
+            y_wave = (3 + shift) + 0.3 * np.sin(2 * np.pi * 5 * x_wave)
+            ax.plot(x_wave, y_wave, color='#f1c40f', lw=1.5, alpha=0.8)
+        
+        ax.annotate('', xy=(10.2, 3), xytext=(9.7, 3), 
+                    arrowprops=dict(arrowstyle='->', color='#f1c40f', lw=2))
+        ax.text(9.0, 2.0, "X-ray Photons\n(Energy $E$)", color='#f39c12', fontweight='bold', fontsize=10, ha='center')
+
+        props = dict(boxstyle='round,pad=0.5', facecolor='white', alpha=0.9, edgecolor='white')
+        info_text = (
+            f"$f = {self.f_base} \\times 10^{{18}}$ Hz\n"
+            f"$h = 6.63 \\times 10^{{-34}}$ J s"
+        )
+        ax.text(0.5, 5.7, info_text, transform=ax.transData, fontsize=10, bbox=props, va='top')
+
+        ax.text(5, 0.5, "$E = hf$", fontsize=16, fontweight='bold', color='#c0392b', ha='center', 
+                bbox=dict(facecolor='#f9ebeb', edgecolor='none', pad=3))
+        
+        ax.set_title("X-RAY TUBE: PHOTON EMISSION MODEL", fontsize=14, fontweight='bold', pad=20)
+
+        plt.tight_layout()
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy194:
@@ -3788,367 +3996,272 @@ class Phy194:
         plt.close()
 
 class Phy195:
-    """Distance to a star using inverse square law."""
     def __init__(self):
         self.L_base = rnd.randint(2, 9)
         self.L = self.L_base * 1e26
         self.I_base = rnd.randint(1, 9)
         self.I = self.I_base * 1e-10
         self.d = math.sqrt(self.L / (4 * math.pi * self.I))
-        self.answer = round(self.d, 3)
-        self.description = (f"A star has luminosity {self.L_base} × 10$^{{26}}$ W. "
-                            f"The observed intensity on Earth is {self.I_base} × 10^{{-10}} W m$^{{-2}}$. "
-                            "Calculate the distance to the star. (_) m")
+        self.answer = f"{self.d:.3e}"
+
+        self.description = (f"A star has luminosity $L = {self.L_base} \\times 10^{{26}}$ W. "
+                            f"The observed intensity on Earth is $I = {self.I_base} \\times 10^{{-10}}$ W m$^{{-2}}$. "
+                            "Calculate the distance $d$ to the star.")
         self.topic, self.subtopic = "Astronomy and Cosmology", "Standard candles"
         self.curriculum, self.source = "A-Level", "Original"
 
+        l_val = f"{self.d:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{{Step 1: Inverse square law}} &\\quad I = \\frac{{L}}{{4\\pi d^2}} \\\\"
-            "\\text{{Step 2: Rearrange for }} d &\\quad d = \\sqrt{{\\frac{{L}}{{4\\pi I}}}} \\\\"
-            "\\text{{Step 3: Substitute}} &\\quad d = \\sqrt{{\\frac{{{self.L_base} \\times 10^{{26}}}}{{4\\pi({self.I_base} \\times 10^{{-10}})}}}} \\\\"
-            "\\text{{Final Answer:}} &\\quad d = {self.answer:,.2f}\\,\\text{{m}}"
+            "&\\mathbf{Step\ 1:\ Inverse\ Square\ Law} \\\\"
+            "&I = \\frac{L}{4\\pi d^2} \\implies d = \\sqrt{\\frac{L}{4\\pi I}} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Substitution} \\\\"
+            "&d = \\sqrt{\\frac{" + str(self.L_base) + " \\times 10^{26}}{4\\pi(" + str(self.I_base) + " \\times 10^{-10})}} \\\\"
+            "&d = " + l_val + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&d = " + self.answer + "\\,\\text{m}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 4), facecolor='black')
-        ax.set_facecolor('black')
+        fig, ax = plt.subplots(figsize=(8, 4), facecolor='#0b0d17')
+        ax.set_facecolor('#0b0d17')
         
-        # Star glow effect
-        for i in range(15, 0, -1):
-            ax.add_patch(plt.Circle((0.5, 2), 0.1 + i*0.04, color='white', alpha=0.03))
-        ax.add_patch(plt.Circle((0.5, 2), 0.1, color='white', zorder=5))
+        for i in range(20, 0, -1):
+            ax.add_patch(plt.Circle((0.5, 2), 0.05 + i*0.04, color='#f1c40f', alpha=0.03))
+        ax.add_patch(plt.Circle((0.5, 2), 0.08, color='#fffceb', zorder=5))
         
-        # Observer/Earth
-        ax.add_patch(plt.Circle((4.5, 2), 0.05, color='white', alpha=0.8, zorder=5))
-        
-        # Light spreading lines (technical style)
-        angles = np.linspace(-0.5, 0.5, 5)
-        for ang in angles:
-            ax.plot([0.5, 4.5], [2, 2 + ang], color='white', lw=0.5, alpha=0.4, ls='--')
+        ax.add_patch(plt.Circle((4.5, 2), 0.1, color='#3498db', zorder=5))
+        ax.text(4.5, 1.7, "Earth", color='white', ha='center', fontsize=8)
 
-        # Distance measurement line
-        ax.annotate('', xy=(4.5, 1.3), xytext=(0.5, 1.3),
-                    arrowprops=dict(arrowstyle='<->', color='white', lw=1))
-        ax.text(2.5, 1.0, f"Distance $d = ?$ m", color='white', ha='center', fontsize=11)
+        angles = np.linspace(-0.6, 0.6, 5)
+        for ang in angles:
+            ax.plot([0.5, 4.5], [2, 2 + ang], color='#f1c40f', lw=0.8, alpha=0.5, ls='--')
+
+        ax.annotate('', xy=(4.5, 1.0), xytext=(0.5, 1.0),
+                    arrowprops=dict(arrowstyle='<->', color='white', lw=1.5))
+        ax.text(2.5, 0.7, r"Distance $d = \sqrt{\frac{L}{4\pi I}}$", color='white', ha='center', fontsize=12)
         
-        # Parameter Labels
-        ax.text(0.5, 2.6, f"Luminosity ($L$)\n{self.L_base}e26 W", color='white', ha='center', fontsize=9)
-        ax.text(4.5, 2.6, f"Intensity ($I$)\n{self.I_base}e-10 W/m²", color='white', ha='center', fontsize=9)
+        props = dict(boxstyle='round', facecolor='black', alpha=0.7, edgecolor='#f1c40f')
+        ax.text(0.5, 3.2, f"Star Luminosity ($L$):\n{self.L_base} $\\times 10^{{26}}$ W", color='white', ha='center', bbox=props)
+        ax.text(4.5, 3.2, f"Observed Intensity ($I$):\n{self.I_base} $\\times 10^{{-10}}$ W/m²", color='white', ha='center', bbox=props)
 
         ax.set_xlim(0, 5); ax.set_ylim(0, 4); ax.axis('off')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
-# class Phy196:
-#     """
-#     Stellar radius using Stefan-Boltzmann law.
-#     """
-#     def __init__(self):
-#         self.sigma = 5.67e-8
-#         self.L_base = rnd.randint(2, 9)
-#         self.L = self.L_base * 1e26
-#         self.T = rnd.randint(3000, 8000)
+class Phy196:
+    def __init__(self):
+        self.sigma = 5.67e-8
+        self.L_base = rnd.randint(2, 9)
+        self.L = self.L_base * 1e26
+        self.T = rnd.randint(3000, 8000)
+        self.R = math.sqrt(self.L / (4 * math.pi * self.sigma * self.T**4))
+        self.answer = f"{self.R:.3e}"
 
-#         self.R = math.sqrt(self.L / (4 * math.pi * self.sigma * self.T**4))
-#         self.answer = round(self.R, 3)
+        self.description = (
+            f"A star has a luminosity of $L = {self.L_base} \\times 10^{{26}}$ W "
+            f"and a surface temperature of $T = {self.T}$ K. "
+            f"Determine the radius $R$ of the star."
+        )
+        self.topic, self.subtopic = "Astronomy and cosmology", "Stellar radii"
+        self.curriculum, self.source = "A-Level", "Original"
 
-#         self.description = (
-#             f"A star has a luminosity of {self.L_base} × 10$^{{26}}$ W "
-#             f"and a surface temperature of {self.T} K. "
-#             "Calculate the radius of the star. (_) m"
-#         )
+        l_val = f"{self.R:.4e}".replace("e", "\\times 10^{") + "}"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "&\\mathbf{Step\ 1:\ Stefan-Boltzmann\ Law} \\\\"
+            "&L = A \\sigma T^4 = (4\\pi R^2) \\sigma T^4 \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Rearrange\ for\ Radius} \\\\"
+            "&R = \\sqrt{\\frac{L}{4\\pi \\sigma T^4}} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
+            "&R = \\sqrt{\\frac{" + str(self.L_base) + " \\times 10^{26}}{4\\pi(5.67 \\times 10^{-8})(" + str(self.T) + ")^4}} \\\\"
+            "&R = " + l_val + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&R = " + self.answer + "\\,\\text{m}"
+            "\\end{aligned}\\]"
+        )
 
-#         self.topic, self.subtopic = "Astronomy and cosmology", "Stellar radii"
-#         self.curriculum, self.source = "A-Level", "Original"
-
-#         self.reasoning = (
-#             "\\[\\begin{aligned}"
-#             "\\text{{Step 1: State Stefan-Boltzmann law}} &\\\\"
-#             "L &= 4\\pi R^2 \\sigma T^4 \\\\"
-#             "\\text{{Step 2: Rearrange for radius }} R &\\\\"
-#             "R &= \\sqrt{{\\frac{{L}}{{4\\pi \\sigma T^4}}}} \\\\"
-#             "\\text{{Step 3: Substitute values}} &\\\\"
-#             f"R &= \\sqrt{{\\frac{{{self.L_base} \\times 10^{{26}}}}{{4\\pi(5.67 \\times 10^{{-8}})({self.T}^4)}}}} \\\\"
-#             "\\text{{Step 4: Calculate result}} &\\\\"
-#             f"R &= {self.R:.4e}\\,\\text{{m}} \\\\"
-#             "\\text{{Final Answer:}} &\\\\"
-#             f"R &= {self.answer:,.2f}\\,\\text{{m}}"
-#             "\\end{aligned}\\]"
-#         )
-
-#     def generate(self, num):
-#         fig, ax = plt.subplots(figsize=(6, 6), facecolor='black')
-#         ax.set_facecolor('black')
-#         for i in range(50, 0, -1):
-#             alpha = 0.01 + (i/200)
-#             ax.add_patch(plt.Circle((3, 3), (i/50)*1.5, color='white', alpha=alpha, lw=0))
-#         ax.annotate('', xy=(3 + 1.5, 3), xytext=(3, 3),
-#                     arrowprops=dict(arrowstyle='->', color='white', lw=2))
-#         ax.text(3.75, 3.2, "Radius ($R$)", color='white', ha='center', fontweight='bold')
-#         ax.text(3, 0.8, f"L = {self.L_base}e26 W\nT = {self.T} K", 
-#                 color='white', ha='center', fontsize=12, 
-#                 bbox=dict(facecolor='black', edgecolor='white', pad=10))
-#         ax.set_xlim(0, 6); ax.set_ylim(0, 6); ax.axis('off')
-#         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
-#         plt.close()
-
-# class Phy197:
-#     """
-#     Surface temperature from luminosity and radius.
-#     """
-#     def __init__(self):
-#         self.sigma = 5.67e-8
-#         self.L_base = rnd.randint(2, 9)
-#         self.L = self.L_base * 1e26
-#         self.R_val = rnd.randint(5, 20)
-#         self.R = self.R_val * 1e8
-
-#         self.T = ((self.L) / (4 * math.pi * self.sigma * self.R**2))**0.25
-#         self.answer = round(self.T, 2)
-
-#         self.description = (
-#             f"A star has a luminosity of {self.L_base} × 10$^{{26}}$ W "
-#             f"and a radius of {self.R_val} × 10$^{{8}}$ m. "
-#             "Calculate its surface temperature. (_) K"
-#         )
-
-#         self.topic, self.subtopic = "Astronomy and cosmology", "Stellar radii"
-#         self.curriculum, self.source = "A-Level", "Original"
-
-#         self.reasoning = (
-#             "\\[\\begin{aligned}"
-#             "\\text{{Step 1: Stefan-Boltzmann law}} &\\\\"
-#             "L &= 4\\pi R^2 \\sigma T^4 \\\\"
-#             "\\text{{Step 2: Rearrange for temperature }} T &\\\\"
-#             "T &= \\sqrt[4]{{\\frac{{L}}{{4\\pi R^2 \\sigma}}}} \\\\"
-#             "\\text{{Step 3: Substitute values}} &\\\\"
-#             f"T &= \\left( \\frac{{{self.L_base} \\times 10^{{26}}}}{{4\\pi({self.R_val} \\times 10^{{8}})^2(5.67 \\times 10^{{-8}})}} \\right)^{{1/4}} \\\\"
-#             "\\text{{Step 4: Calculate result}} &\\\\"
-#             f"T &= {self.T:.2f}\\,\\text{{K}} \\\\"
-#             "\\text{{Final Answer:}} &\\\\"
-#             f"T &= {self.answer}\\,\\text{{K}}"
-#             "\\end{aligned}\\]"
-#         )
-
-#     def generate(self, num):
-#         fig, ax = plt.subplots(figsize=(7, 5), facecolor='black')
-#         ax.set_facecolor('black')
-#         x_core, y_core = 3, 2.5
-#         r_star = 0.8
-#         ax.add_patch(plt.Circle((x_core, y_core), r_star, facecolor='white', zorder=10))
-#         for angle in np.linspace(0, 2*np.pi, 12, endpoint=False):
-#             t = np.linspace(r_star, r_star + 1.2, 50)
-#             x = x_core + t * np.cos(angle) + 0.1 * np.sin(20*t) * np.sin(angle)
-#             y = y_core + t * np.sin(angle) + 0.1 * np.sin(20*t) * np.cos(angle)
-#             ax.plot(x, y, color='white', lw=1, alpha=0.6)
-#         ax.text(x_core, y_core - 1.8, f"Find Temperature ($T$)", color='white', ha='center', fontsize=14, fontweight='bold')
-#         ax.text(0.5, 4.2, f"L = {self.L_base}e26 W\nR = {self.R_val}e8 m", 
-#                 color='white', fontsize=10)
-#         ax.set_xlim(0, 6); ax.set_ylim(0, 5); ax.axis('off')
-#         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
-#         plt.close()
-
-#         # Technical drawing of a sphere
-#         # Gradient effect using concentric circles
-#         for i in range(50, 0, -1):
-#             alpha = 0.01 + (i/200)
-#             ax.add_patch(plt.Circle((3, 3), (i/50)*1.5, color='white', alpha=alpha, lw=0))
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(6, 6), facecolor='#0b0d17')
+        ax.set_facecolor('#0b0d17')
         
-#         # Radius vector
-#         ax.annotate('', xy=(3 + 1.5, 3), xytext=(3, 3),
-#                     arrowprops=dict(arrowstyle='->', color='white', lw=2))
-#         ax.text(3.75, 3.2, "Radius ($R$)", color='white', ha='center', fontweight='bold')
+        color = '#ff9f43' if self.T < 5000 else '#54a0ff'
+        for i in range(60, 0, -1):
+            ax.add_patch(plt.Circle((3, 3), (i/60)*1.8, color=color, alpha=0.015))
+        ax.add_patch(plt.Circle((3, 3), 1.2, facecolor='white', edgecolor=color, lw=2, zorder=5))
         
-#         # Surface Temperature and Luminosity text
-#         ax.text(3, 0.8, f"Luminosity ($L$): {self.L_base}e26 W\nTemperature ($T$): {self.T} K", 
-#                 color='white', ha='center', fontsize=12, 
-#                 bbox=dict(facecolor='black', edgecolor='white', pad=10))
+        ax.annotate('', xy=(3 + 1.2, 3), xytext=(3, 3),
+                    arrowprops=dict(arrowstyle='->', color='black', lw=2, zorder=10))
+        ax.text(3.6, 3.1, "$R$", color='black', ha='center', fontweight='bold', zorder=11)
+        
+        info = f"$L = {self.L_base} \\times 10^{{26}}$ W\n$T = {self.T}$ K"
+        ax.text(3, 0.6, info, color='white', ha='center', fontsize=12, 
+                bbox=dict(facecolor='#1e272e', edgecolor='white', boxstyle='round,pad=1'))
+        
+        ax.text(3, 5.2, "Stefan-Boltzmann Equation:\n$L = 4\\pi R^2 \\sigma T^4$", color='white', ha='center', fontsize=11, style='italic')
 
-#         ax.set_xlim(0, 6); ax.set_ylim(0, 6); ax.axis('off')
-#         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
-#         plt.close()
+        ax.set_xlim(0, 6); ax.set_ylim(0, 6); ax.axis('off')
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
+        plt.close()
 
 class Phy198:
-    """
-    Hubble's law – recessional velocity from redshift.
-    """
     def __init__(self):
         self.c = 3.00e8
         self.z = round(rnd.uniform(0.001, 0.02), 4)
         self.v = self.z * self.c
-        self.answer = round(self.v, 2)
+        self.answer = f"{self.v:.3e}"
 
         self.description = (
             f"A distant galaxy is observed to have a redshift $z = {self.z}$. "
-            f"Calculate the recessional velocity of this galaxy. (_) m s$^{{-1}}$"
+            f"Calculate the recessional velocity $v$ of this galaxy."
         )
-
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Past Papers"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{{Step 1: Redshift-velocity relation}} &\\\\"
-            "v &= zc \\\\"
-            "\\text{{Step 2: Substitute values}} &\\\\"
-            f"v &= ({self.z})(3.00 \\times 10^8) \\\\"
-            "\\text{{Step 3: Calculate velocity}} &\\\\"
-            f"v &= {self.v:,.2f}\\,\\text{{m s}}^{{-1}} \\\\"
-            "\\text{{Final Answer:}} &\\\\"
-            f"v &= {self.answer:,.2f}\\,\\text{{m s}}^{{-1}}"
+            "&\\mathbf{Step\ 1:\ Redshift\ Relation} \\\\"
+            "&z = \\frac{\\Delta \\lambda}{\\lambda} \\approx \\frac{v}{c} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Calculate\ Velocity} \\\\"
+            "&v = zc = (" + str(self.z) + ")(3.00 \\times 10^8) \\\\"
+            "&v = " + f"{self.v:.4e}".replace("e", "\\times 10^{") + "}" + "\\,\\text{m s}^{-1} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&v = " + self.answer + "\\,\\text{m s}^{-1}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 4), facecolor='black')
-        ax.set_facecolor('black')
+        fig, ax = plt.subplots(figsize=(8, 4), facecolor='#0b0d17')
+        ax.set_facecolor('#0b0d17')
         
-        # Earth/Observer
-        ax.scatter(0.5, 2, color='white', s=100, marker='o')
-        ax.text(0.5, 2.4, "Observer\n(Earth)", color='white', ha='center', fontsize=9)
+        ax.scatter(0.5, 2, color='#3498db', s=200, marker='o', edgecolors='white')
+        ax.text(0.5, 1.5, "Observer\n(Earth)", color='white', ha='center', fontsize=9)
         
-        # Receding Galaxy
-        ax.scatter(4.5, 2, color='white', s=200, marker='H')
-        ax.text(4.5, 2.5, f"Galaxy\n$z = {self.z}$", color='white', ha='center', fontsize=10)
+        ax.scatter(4.5, 2, color='#ee5253', s=300, marker='H', alpha=0.8)
+        ax.text(4.5, 1.5, f"Galaxy\n$z = {self.z}$", color='white', ha='center', fontsize=10)
         
-        # Velocity Vector
-        ax.annotate('', xy=(5.5, 2), xytext=(4.7, 2),
-                    arrowprops=dict(arrowstyle='->', color='white', lw=2))
-        ax.text(5.1, 2.3, "$v$", color='white', fontsize=12, fontweight='bold')
+        ax.annotate('', xy=(5.5, 2), xytext=(4.8, 2),
+                    arrowprops=dict(arrowstyle='->', color='#ee5253', lw=3))
+        ax.text(5.2, 2.3, "$v$", color='#ee5253', fontsize=14, fontweight='bold')
         
-        # Redshift wave representation
-        x = np.linspace(1, 4, 100)
-        y = 2 + 0.2 * np.sin(2 * np.pi * x / (1 + self.z*5)) # Stretched wave
-        ax.plot(x, y, color='white', lw=1.5, ls='--')
+        x = np.linspace(1, 4, 200)
+        wave = 2 + 0.2 * np.sin(2 * np.pi * x / (0.4 + self.z * 5))
+        ax.plot(x, wave, color='#ee5253', lw=2, alpha=0.7)
+        ax.text(2.5, 2.5, "Redshifted Light\n($\\lambda_{obs} > \\lambda_{emit}$)", color='#ee5253', ha='center', fontsize=9)
 
         ax.set_xlim(0, 6); ax.set_ylim(0, 4); ax.axis('off')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
-
-
 class Phy199:
-    """
-    Distance from Hubble's law.
-    """
     def __init__(self):
-        # Hubble constant in SI units (s^-1)
         self.H_km_s_mpc = 70
         self.H = (self.H_km_s_mpc * 1000) / (3.086e22)
         self.v_base = rnd.randint(1, 15)
         self.v = self.v_base * 1e6
-
         self.d = self.v / self.H
-        self.answer = round(self.d, 2)
+        self.answer = f"{self.d:.3e}"
 
         self.description = (
-            f"A galaxy has a recessional velocity of {self.v_base} × 10$^6$ m s$^{{-1}}$. "
-            f"Using a Hubble constant of {self.H_km_s_mpc} km s$^{{-1}}$ Mpc$^{{-1}}$, "
-            "calculate its distance from Earth. (_) m"
+            f"A galaxy has a recessional velocity $v = {self.v_base} \\times 10^6$ m s$^{{-1}}$. "
+            f"Using a Hubble constant $H_0 = {self.H_km_s_mpc}$ km s$^{{-1}}$ Mpc$^{{-1}}$, "
+            f"calculate its distance $d$ from Earth."
         )
-
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Original"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{{Step 1: Convert }} H_0 \\text{{ to SI units}} &\\\\"
-            f"H_0 &= \\frac{{70 \\times 10^3}}{{3.086 \\times 10^{{22}}}} \\approx {self.H:.4e}\\,\\text{{s}}^{{-1}} \\\\"
-            "\\text{{Step 2: Use Hubble's Law}} &\\\\"
-            "v &= H_0 d \\implies d = \\frac{{v}}{{H_0}} \\\\"
-            "\\text{{Step 3: Substitute values}} &\\\\"
-            f"d &= \\frac{{{self.v:.2e}}}{{{self.H:.4e}}} \\\\"
-            "\\text{{Final Answer:}} &\\\\"
-            f"d &= {self.answer:.3e}\\,\\text{{m}}"
+            "&\\mathbf{Step\ 1:\ Unit\ Conversion} \\\\"
+            "&H_0 = \\frac{70 \\times 10^3}{3.086 \\times 10^{22}} \\approx " + f"{self.H:.4e}".replace("e", "\\times 10^{") + "}" + "\\,\\text{s}^{-1} \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Hubble's\ Law} \\\\"
+            "&v = H_0 d \\implies d = \\frac{v}{H_0} \\\\[8pt]"
+            "&\\mathbf{Step\ 3:\ Calculate\ Distance} \\\\"
+            "&d = \\frac{" + f"{self.v:.2e}".replace("e", "\\times 10^{") + "}}{" + f"{self.H:.4e}".replace("e", "\\times 10^{") + "}} \\\\"
+            "&d = " + f"{self.d:.4e}".replace("e", "\\times 10^{") + "}" + "\\,\\text{m} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&d = " + self.answer + "\\,\\text{m}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 4), facecolor='black')
-        ax.set_facecolor('black')
+        fig, ax = plt.subplots(figsize=(8, 4), facecolor='#0b0d17')
+        ax.set_facecolor('#0b0d17')
         
-        # Central point (Observer)
-        ax.plot(0, 0, 'w+')
+        ax.plot(0, 0, 'w+', markersize=10)
+        ax.text(0, -0.5, "Milky Way", color='white', ha='center', fontsize=8)
         
-        # Expanding distance markers
-        for r in [1, 2, 3]:
-            circle = plt.Circle((0, 0), r, color='white', fill=False, ls=':', alpha=0.3)
+        for r in [1, 2, 3, 4]:
+            circle = plt.Circle((0, 0), r, color='white', fill=False, ls='--', alpha=0.2)
             ax.add_patch(circle)
         
-        # Galaxy at distance d
-        ax.scatter(3, 0, color='white', s=150)
-        ax.annotate('', xy=(3.8, 0), xytext=(3.1, 0), arrowprops=dict(arrowstyle='->', color='white'))
+        ax.scatter(3.5, 0.5, color='#ff7f50', s=150, marker='*')
+        ax.annotate('', xy=(4.5, 0.7), xytext=(3.7, 0.55), arrowprops=dict(arrowstyle='->', color='white'))
         
-        ax.text(1.5, 0.2, "Distance ($d$)", color='white', ha='center')
-        ax.text(3.5, 0.4, f"$v = {self.v_base} \\times 10^6$ m/s", color='white', ha='center')
-        ax.text(-2.5, 2.5, f"$H_0 = {self.H_km_s_mpc}$ km/s/Mpc", color='white', fontsize=10, bbox=dict(facecolor='black', edgecolor='white'))
+        ax.text(2, 0.2, "Distance ($d$)", color='white', ha='center', rotation=10)
+        ax.text(4.5, 1.2, f"Recession $v = {self.v_base} \\times 10^6$ m/s", color='white', ha='center', bbox=dict(facecolor='black', alpha=0.5))
+        
+        ax.text(-3, 2.5, f"Hubble Constant:\n$H_0 = {self.H_km_s_mpc}$ km/s/Mpc", color='white', 
+                bbox=dict(facecolor='#2c3e50', edgecolor='#3498db', pad=8))
 
-        ax.set_xlim(-4, 6); ax.set_ylim(-3, 3); ax.axis('off')
+        ax.set_xlim(-5, 6); ax.set_ylim(-3, 3); ax.axis('off')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
 class Phy200:
-    """
-    Stellar luminosity from radius and temperature.
-    """
     def __init__(self):
         self.sigma = 5.67e-8
         self.R_val = rnd.randint(5, 25)
         self.R = self.R_val * 1e8
         self.T = rnd.randint(3000, 12000)
-
         self.L = 4 * math.pi * self.R**2 * self.sigma * self.T**4
-        self.answer = round(self.L, 2)
+        self.answer = f"{self.L:.3e}"
 
         self.description = (
-            f"A star has a radius of {self.R_val} × 10$^8$ m and a "
-            f"surface temperature of {self.T} K. "
-            "Calculate its total luminosity. (_) W"
+            f"A star has a radius of $R = {self.R_val} \\times 10^8$ m and a "
+            f"surface temperature of $T = {self.T}$ K. "
+            f"Calculate its total luminosity $L$."
         )
-
         self.topic, self.subtopic = "Astronomy & cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"
 
+        l_val = f"{self.L:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{{Step 1: Stefan-Boltzmann Law}} &\\\\"
-            "L &= 4\\pi R^2 \\sigma T^4 \\\\"
-            "\\text{{Step 2: Substitute constants and values}} &\\\\"
-            f"L &= 4\\pi({self.R_val} \\times 10^8)^2 (5.67 \\times 10^{{-8}}) ({self.T})^4 \\\\"
-            "\\text{{Step 3: Calculate power output}} &\\\\"
-            f"L &= {self.L:.4e}\\,\\text{{W}} \\\\"
-            "\\text{{Final Answer:}} &\\\\"
-            f"L &= {self.answer:.3e}\\,\\text{{W}}"
+            "&\\mathbf{Step\ 1:\ Formula} \\\\"
+            "&L = 4\\pi R^2 \\sigma T^4 \\\\[8pt]"
+            "&\\mathbf{Step\ 2:\ Substitution} \\\\"
+            "&L = 4\\pi(" + str(self.R_val) + " \\times 10^8)^2 (5.67 \\times 10^{-8}) (" + str(self.T) + ")^4 \\\\"
+            "&L = " + l_val + "\\,\\text{W} \\\\[8pt]"
+            "&\\mathbf{Final\ Answer:} \\\\"
+            "&L = " + self.answer + "\\,\\text{W}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 6), facecolor='black')
-        ax.set_facecolor('black')
+        fig, ax = plt.subplots(figsize=(6, 6), facecolor='#0b0d17')
+        ax.set_facecolor('#0b0d17')
         
-        # Star sphere with radial 
-        for r_offset in np.linspace(0, 0.5, 10):
-            circle = plt.Circle((3, 3), 1.2 + r_offset, color='white', alpha=0.05)
-            ax.add_patch(circle)
+        color = '#fff200' if self.T < 6000 else '#00d2ff'
+        for r_offset in np.linspace(0, 0.8, 12):
+            ax.add_patch(plt.Circle((3, 3), 1.2 + r_offset, color=color, alpha=0.04))
         
-        main_star = plt.Circle((3, 3), 1.2, facecolor='white', edgecolor='gray', lw=1)
-        ax.add_patch(main_star)
+        ax.add_patch(plt.Circle((3, 3), 1.2, facecolor='white', edgecolor='gray', lw=1.5))
         
-        # Dimension lines
-        ax.plot([3, 4.2], [3, 3], color='black', lw=2)
-        ax.text(3.6, 3.2, "$R$", color='black', ha='center', fontweight='bold')
+        ax.plot([3, 4.2], [3, 3], color='black', lw=2.5, zorder=10)
+        ax.text(3.6, 3.3, "$R$", color='black', ha='center', fontweight='bold', zorder=11)
         
         for angle in range(0, 360, 45):
             rad = np.deg2rad(angle)
-            ax.annotate('', xy=(3 + 2*np.cos(rad), 3 + 2*np.sin(rad)), 
-                        xytext=(3 + 1.3*np.cos(rad), 3 + 1.3*np.sin(rad)),
-                        arrowprops=dict(arrowstyle='->', color='white', lw=1))
+            ax.annotate('', xy=(3 + 2.4*np.cos(rad), 3 + 2.4*np.sin(rad)), 
+                        xytext=(3 + 1.4*np.cos(rad), 3 + 1.4*np.sin(rad)),
+                        arrowprops=dict(arrowstyle='->', color=color, lw=2))
 
         ax.text(3, 0.5, f"Radius: {self.R_val}e8 m\nTemp: {self.T} K", 
-                color='white', ha='center', fontsize=11, bbox=dict(facecolor='black', edgecolor='white', pad=8))
+                color='white', ha='center', fontsize=12, 
+                bbox=dict(facecolor='#2c3e50', edgecolor='white', pad=10))
 
         ax.set_xlim(0, 6); ax.set_ylim(0, 6); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300)
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
