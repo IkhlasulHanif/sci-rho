@@ -6,6 +6,7 @@ import os
 import sys
 import math
 from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle
+from matplotlib.ticker import MultipleLocator
 
 sys.path.append(os.path.dirname(__file__))
 from helper import *
@@ -29,9 +30,9 @@ class Chem101:
     """
 
     def __init__(self):
-        self.start_temp = rnd.randint(95, 110)
-        self.plateau_temp = rnd.randint(70, 85)
-        self.end_temp = rnd.randint(55, 70)
+        self.start_temp = rnd.choice(range(95, 115, 5))
+        self.plateau_temp = rnd.choice(range(70, 90, 5))
+        self.end_temp = rnd.choice(range(55, 75, 5))
 
         self.t_A = 0
         self.t_B = rnd.randint(2, 3)
@@ -55,13 +56,12 @@ class Chem101:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Condensation occurs during the constant temperature (plateau) region of the graph.}} &\\\\"
+            f"\\text{{Condensation occurs during constant temperature}}\\\\"
             f"\\text{{Start time of condensation}} &= t_B = {self.t_B}\\,\\text{{minutes}}\\\\"
             f"\\text{{End time of condensation}} &= t_C = {self.t_C}\\,\\text{{minutes}}\\\\"
-            f"\\text{{Duration of condensation is given by:}} &\\\\"
+            f"\\text{{Duration of condensation is given by:}}\\\\"
             f"t_{{\\text{{duration}}}} &= t_C - t_B\\\\"
             f"&= {self.t_C} - {self.t_B}\\\\"
-            f"&= {round(self.t_C - self.t_B, 10)}\\\\"
             f"&= {self.answer}\\,\\text{{minutes}}"
             "\\end{aligned}\\]"
         )
@@ -73,8 +73,8 @@ class Chem101:
         times = [self.t_A, self.t_B, self.t_C, self.t_D]
         temps = [self.start_temp, self.plateau_temp, self.plateau_temp, self.end_temp]
 
-        ax.plot(times, temps, 'k-', linewidth=2)
-        ax.scatter(times, temps, color='black', zorder=3)
+        ax.plot(times, temps, color='royalblue', linewidth=2)
+        ax.scatter(times, temps, color='royalblue', zorder=3)
 
         labels = ["A", "B", "C", "D"]
         for t, temp, label in zip(times, temps, labels):
@@ -89,6 +89,12 @@ class Chem101:
 
         ax.set_xlim(self.t_A, self.t_D + 1)
         ax.set_ylim(self.end_temp - 10, self.start_temp + 10)
+
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax.yaxis.set_major_locator(MultipleLocator(5))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -136,36 +142,55 @@ class Chem102:
 
         fig, ax = plt.subplots(figsize=(10, 7))
 
-        chamber = Rectangle((0, 0), 10, 4, fill=False, linewidth=2)
+        divider_x = 3
+
+        high_bg = Rectangle((0, 0), divider_x, 4,
+                            facecolor='lightcoral', alpha=0.3, zorder=0)
+        low_bg = Rectangle((divider_x, 0), 10 - divider_x, 4,
+                        facecolor='lightblue', alpha=0.3, zorder=0)
+
+        ax.add_patch(high_bg)
+        ax.add_patch(low_bg)
+
+        chamber = Rectangle((0, 0), 10, 4, fill=False, linewidth=2, zorder=3)
         ax.add_patch(chamber)
 
-        divider_x = 3
-        ax.plot([divider_x, divider_x], [0, 4], linestyle='--', color='black')
+        ax.plot([divider_x, divider_x], [0, 4],
+                linestyle='--', color='black', zorder=3)
 
         for _ in range(20):
             x = rnd.uniform(0.3, divider_x - 0.3)
             y = rnd.uniform(0.3, 3.7)
-            ax.add_patch(Circle((x, y), 0.1, color='black'))
+            ax.add_patch(Circle((x, y), 0.1, color='black', zorder=4))
 
         for _ in range(15):
             x = rnd.uniform(divider_x + 0.3, 9.7)
             y = rnd.uniform(0.3, 3.7)
-            ax.add_patch(Circle((x, y), 0.1, color='black'))
+            ax.add_patch(Circle((x, y), 0.1, color='black', zorder=4))
 
-        ax.arrow(divider_x, 2, 3, 0, head_width=0.3, head_length=0.4, fc='black', ec='black')
+        ax.arrow(divider_x, 2, 3, 0,
+                head_width=0.3, head_length=0.4,
+                fc='black', ec='black', zorder=5)
 
-        ax.text(1.5, 4.3, "High concentration", ha='center', fontsize=11)
-        ax.text(7.5, 4.3, "Low concentration", ha='center', fontsize=11)
+        ax.text(1.5, 4.3, "High concentration",
+                ha='center', fontsize=11, fontweight='bold')
+        ax.text(7.5, 4.3, "Low concentration",
+                ha='center', fontsize=11, fontweight='bold')
 
-        ax.text(5, -0.7, f"Distance travelled = {self.distance} cm", ha='center', fontsize=11)
-        ax.text(5, -1.3, f"Time taken = {self.time} s", ha='center', fontsize=11)
+        ax.text(5, -0.7,
+                f"Distance travelled = {self.distance} cm",
+                ha='center', fontsize=11)
+        ax.text(5, -1.3,
+                f"Time taken = {self.time} s",
+                ha='center', fontsize=11)
 
         ax.set_xlim(-1, 11)
         ax.set_ylim(-2, 5.5)
         ax.set_aspect('equal')
         ax.axis('off')
 
-        ax.set_title("Diffusion of a Gas in a Chamber", fontsize=16, fontweight='bold')
+        ax.set_title("Diffusion of a Gas in a Chamber",
+                    fontsize=16, fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -187,6 +212,11 @@ class Chem103:
             ("Ca", "O", 2),
             ("Li", "F", 1),
             ("Al", "O", 3),
+            ("Na", "O", 1),
+            ("K", "Br", 1),
+            ("Mg", "Cl", 2),
+            ("Ca", "F", 2),
+            ("Al", "Cl", 3),
         ]
 
         self.metal, self.nonmetal, self.electrons_transferred = rnd.choice(ionic_pairs)
@@ -222,8 +252,8 @@ class Chem103:
         metal_center = (3, 5)
         nonmetal_center = (9, 5)
 
-        metal_radius = 1.2
-        nonmetal_radius = 1.2
+        metal_radius = 0.9
+        nonmetal_radius = 0.9
 
         ax.add_patch(Circle(metal_center, metal_radius, fill=False, linewidth=2))
         ax.add_patch(Circle(nonmetal_center, nonmetal_radius, fill=False, linewidth=2))
@@ -231,25 +261,27 @@ class Chem103:
         ax.text(*metal_center, self.metal, ha='center', va='center', fontsize=16, fontweight='bold')
         ax.text(*nonmetal_center, self.nonmetal, ha='center', va='center', fontsize=16, fontweight='bold')
 
-        for i in range(self.electrons_transferred):
-            angle = 2 * np.pi * i / max(self.electrons_transferred, 1)
-            x = metal_center[0] + 0.9 * np.cos(angle)
-            y = metal_center[1] + 0.9 * np.sin(angle)
-            ax.add_patch(Circle((x, y), 0.15, color='black'))
+        electron_distance = metal_radius + 0.35
 
         for i in range(self.electrons_transferred):
             angle = 2 * np.pi * i / max(self.electrons_transferred, 1)
-            x = nonmetal_center[0] + 0.9 * np.cos(angle)
-            y = nonmetal_center[1] + 0.9 * np.sin(angle)
-            ax.add_patch(Circle((x, y), 0.15, fill=False, linewidth=2))
+            x = metal_center[0] + electron_distance * np.cos(angle)
+            y = metal_center[1] + electron_distance * np.sin(angle)
+            ax.add_patch(Circle((x, y), 0.12, color='black'))
+
+        for i in range(self.electrons_transferred):
+            angle = 2 * np.pi * i / max(self.electrons_transferred, 1)
+            x = nonmetal_center[0] + electron_distance * np.cos(angle)
+            y = nonmetal_center[1] + electron_distance * np.sin(angle)
+            ax.add_patch(Circle((x, y), 0.12, fill=False, linewidth=2))
 
         ax.arrow(
             metal_center[0] + metal_radius,
             metal_center[1],
             nonmetal_center[0] - metal_center[0] - 2 * metal_radius,
             0,
-            head_width=0.3,
-            head_length=0.4,
+            head_width=0.25,
+            head_length=0.35,
             fc='black',
             ec='black'
         )
@@ -309,13 +341,14 @@ class Chem104:
         self.curriculum = "GCSE"
 
         self.reasoning = (
-            "\\begin{aligned}"
-            f"\\text{{Molecule}} &= \\text{{{self.name}}}\\\\"
-            f"\\text{{Chemical Formula}} &= \\text{{{self.formula}}}\\\\"
-            f"\\text{{The number of covalent bonds }} (n) \\text{{ is the total number of shared electron pairs between atoms.}}\\\\"
-            f"n &= {self.answer}\\\\"
-            f"\\text{{Total covalent bonds}} &= {self.answer}"
-            "\\end{aligned}"
+            "\\[\\begin{gathered}"
+            f"\\text{{Molecule}} = \\text{{{self.name}}}\\\\"
+            f"\\text{{Chemical Formula}} = \\text{{{self.formula}}}\\\\"
+            f"\\text{{The number of covalent bonds }} (n) "
+            f"\\text{{ is the total number of shared electron pairs between atoms.}}\\\\"
+            f"n = {self.answer}\\\\"
+            f"\\text{{Total covalent bonds}} = {self.answer}"
+            "\\end{gathered}\\]"
         )
 
     def _draw_electron(self, ax, x, y, style="dot"):
@@ -334,7 +367,6 @@ class Chem104:
             self._draw_electron(ax, x, y + 0.12, "cross")
 
     def generate(self, num):
-
         fig, ax = plt.subplots(figsize=(10, 7))
 
         ax.set_aspect("equal")
@@ -374,9 +406,6 @@ class Chem104:
             x1, y1 = positions[i]
             x2, y2 = positions[j]
 
-            # bond line
-            ax.plot([x1, x2], [y1, y2], color="black", linewidth=2)
-
             mx, my = (x1 + x2) / 2, (y1 + y2) / 2
 
             if abs(y2 - y1) > abs(x2 - x1):
@@ -411,7 +440,12 @@ class Chem104:
         plt.close()
 
 class Chem105:
-
+    """
+    Topic: Atoms, elements and compounds
+    Subtopic: Simple molecules and covalent bonds
+    Visual: Image of a molecule bond with dot and cross
+    Task: Determine the number of shared electrons
+    """
     def __init__(self):
 
         molecules = [
@@ -469,8 +503,9 @@ class Chem105:
         r = 0.9
 
         if self.formula in ["H2", "Cl2", "O2", "N2"]:
-            positions = [(4, 5), (8, 5)]
+            positions = [(4.8, 5), (7.2, 5)]
             bonds = self.shared_electrons // 2
+
             for (x, y), atom in zip(positions, list(self.formula.replace("2", ""))*2):
                 ax.add_patch(Circle((x, y), r, fill=False, linewidth=2))
                 ax.text(x, y, atom, ha="center", va="center", fontsize=16, fontweight="bold")
@@ -483,30 +518,30 @@ class Chem105:
             if bonds == 1:
                 offsets = [(0, 0)]
             elif bonds == 2:
-                offsets = [(-0.18, 0.18), (0.18, -0.18)]
+                offsets = [(-0.12, 0.12), (0.12, -0.12)]
             elif bonds == 3:
-                offsets = [(-0.3, 0.3), (0, 0), (0.3, -0.3)]
+                offsets = [(-0.2, 0.2), (0, 0), (0.2, -0.2)]
 
             for dx, dy in offsets:
-                self._draw_dot(ax, mx + dx - 0.1, my + dy)
-                self._draw_cross(ax, mx + dx + 0.1, my + dy)
+                self._draw_dot(ax, mx + dx - 0.08, my + dy)
+                self._draw_cross(ax, mx + dx + 0.08, my + dy)
 
         else:
             if self.formula == "H2O":
                 atoms = ["H", "O", "H"]
-                positions = [(3.8, 5), (6, 5), (8.2, 5)]
+                positions = [(4.5, 5), (6, 5), (7.5, 5)]
                 bond_pairs = [(0, 1), (1, 2)]
             elif self.formula == "NH3":
                 atoms = ["H", "N", "H", "H"]
-                positions = [(6, 5), (6, 7.1), (8.1, 4.2), (3.9, 4.2)]
+                positions = [(6, 5), (6, 6.7), (7.6, 4.4), (4.4, 4.4)]
                 bond_pairs = [(0, 1), (1, 2), (1, 3)]
             elif self.formula == "CH4":
                 atoms = ["C", "H", "H", "H", "H"]
-                positions = [(6, 5), (6, 7.3), (8.3, 5), (6, 2.7), (3.7, 5)]
+                positions = [(6, 5), (6, 6.8), (7.8, 5), (6, 3.2), (4.2, 5)]
                 bond_pairs = [(0, 1), (0, 2), (0, 3), (0, 4)]
             else:
                 atoms = ["O", "C", "O"]
-                positions = [(3.8, 5), (6, 5), (8.2, 5)]
+                positions = [(4.5, 5), (6, 5), (7.5, 5)]
                 bond_pairs = [(0, 1), (1, 2)]
 
             for (x, y), atom in zip(positions, atoms):
@@ -517,8 +552,8 @@ class Chem105:
                 x1, y1 = positions[i]
                 x2, y2 = positions[j]
                 mx, my = (x1 + x2) / 2, (y1 + y2) / 2
-                self._draw_dot(ax, mx - 0.1, my)
-                self._draw_cross(ax, mx + 0.1, my)
+                self._draw_dot(ax, mx - 0.08, my)
+                self._draw_cross(ax, mx + 0.08, my)
 
         ax.set_title(
             f"Bonding Electrons in {self.name.capitalize()} ({self.formula})",
@@ -526,8 +561,8 @@ class Chem105:
             fontweight="bold"
         )
 
-        ax.set_xlim(1.5, 10.5)
-        ax.set_ylim(1.5, 8.5)
+        ax.set_xlim(3, 9)
+        ax.set_ylim(2.5, 7.5)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -538,37 +573,107 @@ class Chem106:
     def __init__(self):
 
         reactions = [
-            {
-                "name": "Magnesium and Hydrochloric Acid",
-                "reactant_A": "Mg",
-                "reactant_B": "HCl",
-                "product": "H2",
-                "coeff_A": 1,
-                "coeff_B": 2,
-                "Ar_A": 24,
-                "Ar_B": 36.5
-            },
-            {
-                "name": "Iron and Sulfur",
-                "reactant_A": "Fe",
-                "reactant_B": "S",
-                "product": "FeS",
-                "coeff_A": 1,
-                "coeff_B": 1,
-                "Ar_A": 56,
-                "Ar_B": 32
-            },
-            {
-                "name": "Aluminium and Oxygen",
-                "reactant_A": "Al",
-                "reactant_B": "O2",
-                "product": "Al2O3",
-                "coeff_A": 4,
-                "coeff_B": 3,
-                "Ar_A": 27,
-                "Ar_B": 32
-            }
-        ]
+        {
+            "name": "Magnesium and Hydrochloric Acid",
+            "reactant_A": "Mg",
+            "reactant_B": "HCl",
+            "product": "H2",
+            "coeff_A": 1,
+            "coeff_B": 2,
+            "Ar_A": 24.3,
+            "Ar_B": 36.5
+        },
+        {
+            "name": "Magnesium and Hydrochloric Acid",
+            "reactant_A": "Mg",
+            "reactant_B": "HCl",
+            "product": "H2",
+            "coeff_A": 2,
+            "coeff_B": 4,
+            "Ar_A": 24,
+            "Ar_B": 36.5
+        },
+        {
+            "name": "Magnesium and Hydrochloric Acid",
+            "reactant_A": "Mg",
+            "reactant_B": "HCl",
+            "product": "H2",
+            "coeff_A": 1,
+            "coeff_B": 3,
+            "Ar_A": 25,
+            "Ar_B": 37
+        },
+        {
+            "name": "Iron and Sulfur",
+            "reactant_A": "Fe",
+            "reactant_B": "S",
+            "product": "FeS",
+            "coeff_A": 1,
+            "coeff_B": 1,
+            "Ar_A": 56,
+            "Ar_B": 32
+        },
+        {
+            "name": "Iron and Sulfur",
+            "reactant_A": "Fe",
+            "reactant_B": "S",
+            "product": "FeS",
+            "coeff_A": 2,
+            "coeff_B": 2,
+            "Ar_A": 55.8,
+            "Ar_B": 32.1
+        },
+        {
+            "name": "Iron and Sulfur",
+            "reactant_A": "Fe",
+            "reactant_B": "S",
+            "product": "FeS",
+            "coeff_A": 3,
+            "coeff_B": 3,
+            "Ar_A": 57,
+            "Ar_B": 31
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "reactant_A": "Al",
+            "reactant_B": "O2",
+            "product": "Al2O3",
+            "coeff_A": 4,
+            "coeff_B": 3,
+            "Ar_A": 27,
+            "Ar_B": 32
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "reactant_A": "Al",
+            "reactant_B": "O2",
+            "product": "Al2O3",
+            "coeff_A": 2,
+            "coeff_B": 3,
+            "Ar_A": 26.98,
+            "Ar_B": 32
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "reactant_A": "Al",
+            "reactant_B": "O2",
+            "product": "Al2O3",
+            "coeff_A": 6,
+            "coeff_B": 5,
+            "Ar_A": 27,
+            "Ar_B": 31.5
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "reactant_A": "Al",
+            "reactant_B": "O2",
+            "product": "Al2O3",
+            "coeff_A": 4,
+            "coeff_B": 4,
+            "Ar_A": 28,
+            "Ar_B": 33
+        }
+    ]
 
         self.reaction = rnd.choice(reactions)
 
@@ -660,28 +765,77 @@ class Chem107:
     def __init__(self):
 
         chains = [
-            {
-                "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-                "stage1": "CaCO3 → CaO + CO2",
-                "stage2": "CaO + 2HCl → CaCl2 + H2O",
-                "Ar_start": 100,
-                "Ar_final": 111
-            },
-            {
-                "name": "Copper Carbonate Decomposition + Reduction",
-                "stage1": "CuCO3 → CuO + CO2",
-                "stage2": "CuO + H2 → Cu + H2O",
-                "Ar_start": 124,
-                "Ar_final": 63.5
-            },
-            {
-                "name": "Zinc Carbonate Decomposition + Acid Reaction",
-                "stage1": "ZnCO3 → ZnO + CO2",
-                "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-                "Ar_start": 125,
-                "Ar_final": 136
-            }
-        ]
+        {
+            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+            "stage1": "CaCO3 → CaO + CO2",
+            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "Ar_start": 100,
+            "Ar_final": 111
+        },
+        {
+            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+            "stage1": "CaCO3 → CaO + CO2",
+            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "Ar_start": 102,
+            "Ar_final": 110
+        },
+        {
+            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+            "stage1": "CaCO3 → CaO + CO2",
+            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "Ar_start": 98,
+            "Ar_final": 112
+        },
+        {
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 → CuO + CO2",
+            "stage2": "CuO + H2 → Cu + H2O",
+            "Ar_start": 124,
+            "Ar_final": 63.5
+        },
+        {
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 → CuO + CO2",
+            "stage2": "CuO + H2 → Cu + H2O",
+            "Ar_start": 123,
+            "Ar_final": 64
+        },
+        {
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 → CuO + CO2",
+            "stage2": "CuO + H2 → Cu + H2O",
+            "Ar_start": 125,
+            "Ar_final": 62
+        },
+        {
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 125,
+            "Ar_final": 136
+        },
+        {
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 124,
+            "Ar_final": 137
+        },
+        {
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 126,
+            "Ar_final": 135
+        },
+        {
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 127,
+            "Ar_final": 138
+        }
+    ]
 
         self.chain = rnd.choice(chains)
 
@@ -751,46 +905,137 @@ class Chem108:
     def __init__(self):
 
         reactions = [
-            {
-                "name": "Iron and Sulfur",
-                "eq": "Fe + S → FeS",
-                "A": "Fe",
-                "B": "S",
-                "P": "FeS",
-                "coeff_A": 1,
-                "coeff_B": 1,
-                "coeff_P": 1,
-                "Ar_A": 56,
-                "Ar_B": 32,
-                "Ar_P": 88
-            },
-            {
-                "name": "Magnesium and Oxygen",
-                "eq": "2Mg + O2 → 2MgO",
-                "A": "Mg",
-                "B": "O2",
-                "P": "MgO",
-                "coeff_A": 2,
-                "coeff_B": 1,
-                "coeff_P": 2,
-                "Ar_A": 24,
-                "Ar_B": 32,
-                "Ar_P": 40
-            },
-            {
-                "name": "Aluminium and Oxygen",
-                "eq": "4Al + 3O2 → 2Al2O3",
-                "A": "Al",
-                "B": "O2",
-                "P": "Al2O3",
-                "coeff_A": 4,
-                "coeff_B": 3,
-                "coeff_P": 2,
-                "Ar_A": 27,
-                "Ar_B": 32,
-                "Ar_P": 102
-            }
-        ]
+        {
+            "name": "Iron and Sulfur",
+            "eq": "Fe + S → FeS",
+            "A": "Fe",
+            "B": "S",
+            "P": "FeS",
+            "coeff_A": 1,
+            "coeff_B": 1,
+            "coeff_P": 1,
+            "Ar_A": 56,
+            "Ar_B": 32,
+            "Ar_P": 88
+        },
+        {
+            "name": "Iron and Sulfur",
+            "eq": "Fe + S → FeS",
+            "A": "Fe",
+            "B": "S",
+            "P": "FeS",
+            "coeff_A": 1,
+            "coeff_B": 1,
+            "coeff_P": 1,
+            "Ar_A": 55.8,
+            "Ar_B": 32.1,
+            "Ar_P": 87.9
+        },
+        {
+            "name": "Iron and Sulfur",
+            "eq": "Fe + S → FeS",
+            "A": "Fe",
+            "B": "S",
+            "P": "FeS",
+            "coeff_A": 1,
+            "coeff_B": 1,
+            "coeff_P": 1,
+            "Ar_A": 57,
+            "Ar_B": 31,
+            "Ar_P": 88
+        },
+        {
+            "name": "Magnesium and Oxygen",
+            "eq": "2Mg + O2 → 2MgO",
+            "A": "Mg",
+            "B": "O2",
+            "P": "MgO",
+            "coeff_A": 2,
+            "coeff_B": 1,
+            "coeff_P": 2,
+            "Ar_A": 24,
+            "Ar_B": 32,
+            "Ar_P": 40
+        },
+        {
+            "name": "Magnesium and Oxygen",
+            "eq": "2Mg + O2 → 2MgO",
+            "A": "Mg",
+            "B": "O2",
+            "P": "MgO",
+            "coeff_A": 2,
+            "coeff_B": 1,
+            "coeff_P": 2,
+            "Ar_A": 24.3,
+            "Ar_B": 32,
+            "Ar_P": 40.3
+        },
+        {
+            "name": "Magnesium and Oxygen",
+            "eq": "2Mg + O2 → 2MgO",
+            "A": "Mg",
+            "B": "O2",
+            "P": "MgO",
+            "coeff_A": 2,
+            "coeff_B": 1,
+            "coeff_P": 2,
+            "Ar_A": 25,
+            "Ar_B": 31,
+            "Ar_P": 39
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "eq": "4Al + 3O2 → 2Al2O3",
+            "A": "Al",
+            "B": "O2",
+            "P": "Al2O3",
+            "coeff_A": 4,
+            "coeff_B": 3,
+            "coeff_P": 2,
+            "Ar_A": 27,
+            "Ar_B": 32,
+            "Ar_P": 102
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "eq": "4Al + 3O2 → 2Al2O3",
+            "A": "Al",
+            "B": "O2",
+            "P": "Al2O3",
+            "coeff_A": 4,
+            "coeff_B": 3,
+            "coeff_P": 2,
+            "Ar_A": 26.98,
+            "Ar_B": 32,
+            "Ar_P": 101.96
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "eq": "4Al + 3O2 → 2Al2O3",
+            "A": "Al",
+            "B": "O2",
+            "P": "Al2O3",
+            "coeff_A": 4,
+            "coeff_B": 3,
+            "coeff_P": 2,
+            "Ar_A": 28,
+            "Ar_B": 33,
+            "Ar_P": 104
+        },
+        {
+            "name": "Aluminium and Oxygen",
+            "eq": "4Al + 3O2 → 2Al2O3",
+            "A": "Al",
+            "B": "O2",
+            "P": "Al2O3",
+            "coeff_A": 4,
+            "coeff_B": 3,
+            "coeff_P": 2,
+            "Ar_A": 26,
+            "Ar_B": 32,
+            "Ar_P": 100
+        }
+    ]
 
         self.r = rnd.choice(reactions)
 
@@ -878,32 +1123,80 @@ class Chem108:
         plt.close()
 
 class Chem109:
-
     def __init__(self):
 
         reactions = [
-            {
-                "eq": "N2 + 3H2 → 2NH3",
-                "gas_A": "H2",
-                "gas_B": "NH3",
-                "coeff_A": 3,
-                "coeff_B": 2
-            },
-            {
-                "eq": "H2 + Cl2 → 2HCl",
-                "gas_A": "H2",
-                "gas_B": "HCl",
-                "coeff_A": 1,
-                "coeff_B": 2
-            },
-            {
-                "eq": "2SO2 + O2 → 2SO3",
-                "gas_A": "SO2",
-                "gas_B": "SO3",
-                "coeff_A": 2,
-                "coeff_B": 2
-            }
-        ]
+        {
+            "eq": "N2 + 3H2 → 2NH3",
+            "gas_A": "H2",
+            "gas_B": "NH3",
+            "coeff_A": 3,
+            "coeff_B": 2
+        },
+        {
+            "eq": "H2 + Cl2 → 2HCl",
+            "gas_A": "H2",
+            "gas_B": "HCl",
+            "coeff_A": 1,
+            "coeff_B": 2
+        },
+        {
+            "eq": "2SO2 + O2 → 2SO3",
+            "gas_A": "SO2",
+            "gas_B": "SO3",
+            "coeff_A": 2,
+            "coeff_B": 2
+        },
+        {
+            "eq": "2CO + O2 → 2CO2",
+            "gas_A": "CO",
+            "gas_B": "CO2",
+            "coeff_A": 2,
+            "coeff_B": 2
+        },
+        {
+            "eq": "CH4 + 2O2 → CO2 + 2H2O",
+            "gas_A": "CH4",
+            "gas_B": "CO2",
+            "coeff_A": 1,
+            "coeff_B": 1
+        },
+        {
+            "eq": "C2H4 + 3O2 → 2CO2 + 2H2O",
+            "gas_A": "C2H4",
+            "gas_B": "CO2",
+            "coeff_A": 1,
+            "coeff_B": 2
+        },
+        {
+            "eq": "2NO + O2 → 2NO2",
+            "gas_A": "NO",
+            "gas_B": "NO2",
+            "coeff_A": 2,
+            "coeff_B": 2
+        },
+        {
+            "eq": "CaCO3 → CaO + CO2",
+            "gas_A": "CaCO3",
+            "gas_B": "CO2",
+            "coeff_A": 1,
+            "coeff_B": 1
+        },
+        {
+            "eq": "2H2O2 → 2H2O + O2",
+            "gas_A": "H2O2",
+            "gas_B": "O2",
+            "coeff_A": 2,
+            "coeff_B": 1
+        },
+        {
+            "eq": "NH4Cl + NaOH → NH3 + NaCl + H2O",
+            "gas_A": "NH4Cl",
+            "gas_B": "NH3",
+            "coeff_A": 1,
+            "coeff_B": 1
+        }
+    ]
 
         self.r = rnd.choice(reactions)
 
@@ -975,33 +1268,137 @@ class Chem110:
     def __init__(self):
 
         systems = [
-            {
-                "name": "Sulfur Oxide System",
-                "percent_A": 40,
-                "percent_B": 60,
-                "A": "S",
-                "B": "O",
-                "Ar_A": 32,
-                "Ar_B": 16,
-                "empirical": "SO2",
-                "reaction": "2SO2 + O2 → 2SO3",
-                "Ar_reactant": 64,
-                "Ar_product": 80
-            },
-            {
-                "name": "Nitrogen Oxide System",
-                "percent_A": 30,
-                "percent_B": 70,
-                "A": "N",
-                "B": "O",
-                "Ar_A": 14,
-                "Ar_B": 16,
-                "empirical": "NO2",
-                "reaction": "2NO2 + O2 → 2N2O5",
-                "Ar_reactant": 46,
-                "Ar_product": 108
-            }
-        ]
+        {
+            "name": "Sulfur Oxide System",
+            "percent_A": 50,
+            "percent_B": 50,
+            "A": "S",
+            "B": "O",
+            "Ar_A": 32,
+            "Ar_B": 16,
+            "empirical": "SO",
+            "reaction": "2SO + O2 → 2SO2",
+            "Ar_reactant": 48,
+            "Ar_product": 64
+        },
+        {
+            "name": "Sulfur Oxide System",
+            "percent_A": 40,
+            "percent_B": 60,
+            "A": "S",
+            "B": "O",
+            "Ar_A": 32,
+            "Ar_B": 16,
+            "empirical": "SO2",
+            "reaction": "2SO2 + O2 → 2SO3",
+            "Ar_reactant": 64,
+            "Ar_product": 80
+        },
+        {
+            "name": "Sulfur Oxide System",
+            "percent_A": 33.3,
+            "percent_B": 66.7,
+            "A": "S",
+            "B": "O",
+            "Ar_A": 32,
+            "Ar_B": 16,
+            "empirical": "SO3",
+            "reaction": "2SO3 → 2SO2 + O2",
+            "Ar_reactant": 80,
+            "Ar_product": 64
+        },
+        {
+            "name": "Nitrogen Oxide System",
+            "percent_A": 30.4,
+            "percent_B": 69.6,
+            "A": "N",
+            "B": "O",
+            "Ar_A": 14,
+            "Ar_B": 16,
+            "empirical": "NO2",
+            "reaction": "2NO2 + O2 → 2N2O5",
+            "Ar_reactant": 46,
+            "Ar_product": 108
+        },
+        {
+            "name": "Nitrogen Oxide System",
+            "percent_A": 46.7,
+            "percent_B": 53.3,
+            "A": "N",
+            "B": "O",
+            "Ar_A": 14,
+            "Ar_B": 16,
+            "empirical": "NO",
+            "reaction": "2NO + O2 → 2NO2",
+            "Ar_reactant": 30,
+            "Ar_product": 46
+        },
+        {
+            "name": "Nitrogen Oxide System",
+            "percent_A": 63.6,
+            "percent_B": 36.4,
+            "A": "N",
+            "B": "O",
+            "Ar_A": 14,
+            "Ar_B": 16,
+            "empirical": "N2O",
+            "reaction": "2N2O + O2 → 2N2O2",
+            "Ar_reactant": 44,
+            "Ar_product": 60
+        },
+        {
+            "name": "Carbon Oxide System",
+            "percent_A": 27.3,
+            "percent_B": 72.7,
+            "A": "C",
+            "B": "O",
+            "Ar_A": 12,
+            "Ar_B": 16,
+            "empirical": "CO2",
+            "reaction": "CO2 + C → 2CO",
+            "Ar_reactant": 44,
+            "Ar_product": 28
+        },
+        {
+            "name": "Carbon Oxide System",
+            "percent_A": 42.9,
+            "percent_B": 57.1,
+            "A": "C",
+            "B": "O",
+            "Ar_A": 12,
+            "Ar_B": 16,
+            "empirical": "CO",
+            "reaction": "2CO + O2 → 2CO2",
+            "Ar_reactant": 28,
+            "Ar_product": 44
+        },
+        {
+            "name": "Phosphorus Oxide System",
+            "percent_A": 43.7,
+            "percent_B": 56.3,
+            "A": "P",
+            "B": "O",
+            "Ar_A": 31,
+            "Ar_B": 16,
+            "empirical": "P2O3",
+            "reaction": "2P2O3 + O2 → 2P2O5",
+            "Ar_reactant": 110,
+            "Ar_product": 142
+        },
+        {
+            "name": "Phosphorus Oxide System",
+            "percent_A": 56.3,
+            "percent_B": 43.7,
+            "A": "P",
+            "B": "O",
+            "Ar_A": 31,
+            "Ar_B": 16,
+            "empirical": "P2O5",
+            "reaction": "2P2O5 → 2P2O3 + O2",
+            "Ar_reactant": 142,
+            "Ar_product": 110
+        }
+    ]
 
         self.sys = rnd.choice(systems)
 
@@ -1061,28 +1458,28 @@ class Chem110:
         fig, ax = plt.subplots(figsize=(8, 10))
 
         beaker = Polygon([
-            (2, 8),
-            (6, 8),
-            (5.5, 2),
-            (2.5, 2)
+            (2.8, 7.5),
+            (5.2, 7.5),
+            (4.9, 2.8),
+            (3.1, 2.8)
         ], closed=True, fill=False, linewidth=2)
 
         ax.add_patch(beaker)
 
         liquid = Polygon([
-            (2.4, 3),
-            (5.6, 3),
-            (5.3, 2.2),
-            (2.7, 2.2)
+            (3.15, 3.6),
+            (4.85, 3.6),
+            (4.7, 3.0),
+            (3.3, 3.0)
         ], closed=True, color="#AED6F1")
 
         ax.add_patch(liquid)
 
-        ax.text(4, 7.2, self.sys["empirical"], ha='center', fontsize=16, fontweight='bold')
+        ax.text(4, 6.6, self.sys["empirical"], ha='center', fontsize=18, fontweight='bold')
 
-        ax.text(4, 1.5, f"{self.reactant_mass_given} g sample", ha='center', fontsize=12)
+        ax.text(4, 2.1, f"{self.reactant_mass_given} g sample", ha='center', fontsize=12)
 
-        ax.text(4, 9, "Beaker Reaction Setup", ha='center', fontsize=14, fontweight='bold')
+        ax.text(4, 8.6, "Beaker Reaction Setup", ha='center', fontsize=14, fontweight='bold')
 
         ax.set_xlim(0, 8)
         ax.set_ylim(0, 10)
