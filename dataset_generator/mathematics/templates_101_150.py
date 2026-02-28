@@ -2571,10 +2571,16 @@ class Mat130:
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+
+        # Format subtraction to avoid double negatives like 7 - -8
+        sub1 = f"{self.by} + {abs(self.cy)}" if self.cy < 0 else f"{self.by} - {self.cy}"
+        sub2 = f"{self.cy} + {abs(self.ay)}" if self.ay < 0 else f"{self.cy} - {self.ay}"
+        sub3 = f"{self.ay} + {abs(self.by)}" if self.by < 0 else f"{self.ay} - {self.by}"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\frac{{1}}{{2}} |x_A(y_B - y_C) + x_B(y_C - y_A) + x_C(y_A - y_B)|\\\\"
-            f"&= \\frac{{1}}{{2}} |{self.ax}({self.by} - {self.cy}) + {self.bx}({self.cy} - {self.ay}) + {self.cx}({self.ay} - {self.by})|\\\\"
+            f"&= \\frac{{1}}{{2}} |{self.ax}({sub1}) + {self.bx}({sub2}) + {self.cx}({sub3})|\\\\"
             f"&= \\frac{{1}}{{2}} |{self.ax}({self.by - self.cy}) + {self.bx}({self.cy - self.ay}) + {self.cx}({self.ay - self.by})|\\\\"
             f"&= \\frac{{1}}{{2}} |{round(self.ax * (self.by - self.cy), 10)} + {round(self.bx * (self.cy - self.ay), 10)} + {round(self.cx * (self.ay - self.by), 10)}|\\\\"
             f"&= \\frac{{1}}{{2}} |{round(self.ax * (self.by - self.cy) + self.bx * (self.cy - self.ay) + self.cx * (self.ay - self.by), 10)}|\\\\"
