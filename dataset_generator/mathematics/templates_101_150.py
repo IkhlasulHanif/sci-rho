@@ -2053,10 +2053,10 @@ class Mat125:
         self.answer = answer_intercept
 
         self.description = (
-            f"The blue solid line in the figure displays the graph of y = h(x), "
-            f"which intersects the positive x-axis at x = {self.original_intercept}. "
-            f"The red dashed line represents the transformation y = h({self.k}x). "
-            f"Find the x-intercept of the transformed graph y = h({self.k}x)."
+            f"The blue solid line in the figure displays the graph of $y = h(x)$, "
+            f"which intersects the positive x-axis at $x = {self.original_intercept}$. "
+            f"The red dashed line represents the transformation $y = h({self.k}x)$. "
+            f"Find the x-intercept of the transformed graph $y = h({self.k}x)$."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -2648,11 +2648,11 @@ class Mat131:
         self.answer = round(square_area, 3)
 
         self.description = (
-            f"A sector of a circle is defined by a radius r = {self.r_val} cm "
-            f"and a central angle θ = {self.theta_val} radians. "
+            f"A sector of a circle is defined by a radius $r = {self.r_val}$ cm "
+            f"and a central angle $\\theta = {self.theta_val}$ radians. "
             f"A separate square is constructed such that its total perimeter "
             f"is exactly equal to the total perimeter of the sector. "
-            f"Determine the area of the square in cm². "
+            f"Determine the area of the square in cm$^2$. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -2774,11 +2774,11 @@ class Mat132:
         self.description = (
             f"A rear window wiper for a car clears a region shaped like part of an annulus (a ring). "
             f"This region is formed by two concentric arcs with the same central angle: "
-            f"θ = {self.theta_rad} radians. "
-            f"The inner radius of the cleaned region is 'r' cm. "
-            f"The outer radius is (r + {self.width}) cm. "
-            f"If the total area of the cleaned region (the shaded area) is exactly {self.area_display} cm², "
-            f"calculate the value of the inner radius 'r'."
+            f"$\\theta = {self.theta_rad}$ radians. "
+            f"The inner radius of the cleaned region is $r$ cm. "
+            f"The outer radius is $(r + {self.width})$ cm. "
+            f"If the total area of the cleaned region (the shaded area) is exactly {self.area_display} cm$^2$, "
+            f"calculate the value of the inner radius $r$."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -2897,10 +2897,10 @@ class Mat133:
         self.answer = round(self.r, 3)
 
         self.description = (
-            f"A paper sector with a radius of R = {self.R} cm and a central angle of theta = {self.theta_factor}π radians "
+            f"A paper sector with a radius of $R = {self.R}$ cm and a central angle of $\\theta = {self.theta_factor}\\pi$ radians "
             f"is cut out. The straight edges (radii) of the sector are joined together with no overlap "
             f"to form the curved surface of a right circular cone. "
-            f"Calculate the base radius (r) of the resulting cone in cm. "
+            f"Calculate the base radius ($r$) of the resulting cone in cm. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -3158,10 +3158,10 @@ class Mat135:
             f"The spill is expanding such that its radius r is increasing "
             f"at a constant rate. "
             f"Given:\n"
-            f"• Instantaneous Radius (r): {self.radius_val} m\n"
-            f"• Rate of radius increase (dr/dt): {self.dr_dt_val} m/s\n\n"
-            f"Find the rate of increase of the area (dA/dt) in m²/s "
-            f"at this instant. (Divide your final answer by π). "
+            f"• Instantaneous Radius ($r$): {self.radius_val} m\n"
+            f"• Rate of radius increase ($dr/dt$): {self.dr_dt_val} m/s\n\n"
+            f"Find the rate of increase of the area ($dA/dt$) in m$^2$/s "
+            f"at this instant. (Divide your final answer by $\\pi$). "
             f"Give your answer correct to 2 decimal places."
         )
 
@@ -3375,10 +3375,10 @@ class Mat137:
 
         self.description = (
             f"The figure displays two linear functions. "
-            f"Line f(x) passes through ({self.fx1}, {self.fy1}) and ({self.fx2}, {self.fy2}). "
-            f"Line g(x) passes through ({self.gx1}, {self.gy1}) and ({self.gx2}, {self.gy2}). "
-            f"Let h(x) = f(g(x)). "
-            f"Calculate the value of h'({self.x_target}). "
+            f"Line $f(x)$ passes through $({self.fx1}, {self.fy1})$ and $({self.fx2}, {self.fy2})$. "
+            f"Line $g(x)$ passes through $({self.gx1}, {self.gy1})$ and $({self.gx2}, {self.gy2})$. "
+            f"Let $h(x) = f(g(x))$. "
+            f"Calculate the value of $h'({self.x_target})$. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -3472,8 +3472,8 @@ class Mat138:
 
         self.description = (
             f"The figure displays a shaded region in the first quadrant bounded above by the "
-            f"parabolic function f(x) = {self.eq_str} and below by the x-axis. "
-            f"The region extends from x = 0 to x = {self.root_b}. "
+            f"parabolic function $f(x) = {self.eq_str}$ and below by the x-axis. "
+            f"The region extends from $x = 0$ to $x = {self.root_b}$. "
             f"Calculate the total area of the shaded region shown in the figure. "
             f"Give your answer correct to 3 decimal places."
         )

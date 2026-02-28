@@ -42,7 +42,7 @@ class Mat151:
             f"where $k$ and $a$ are constants. "
             f"A straight line graph is plotted on axes labeled $x$ (horizontal) "
             f"and $\\ln y$ (vertical). The line passes through the y-intercept "
-            f"at (0, {self.intercept_c}) and a second point at ({self.x2}, {self.y2_log}). "
+            f"at $(0, {self.intercept_c})$ and a second point at $({self.x2}, {self.y2_log})$. "
             f"Using the linear graph described above, determine the value of the constant $a$."
         )
 
@@ -1743,10 +1743,10 @@ class Mat168:
 
         self.description = (
             f"The figure displays an Argand diagram with a circle and a vertical line.\n"
-            f"The circle represents the locus defined by |z - ({self.center_str})| = {self.r}.\n"
-            f"The line represents the locus of points where the real part of z is k.\n"
+            f"The circle represents the locus defined by $|z - ({self.center_str})| = {self.r}$.\n"
+            f"The line represents the locus of points where the real part of $z$ is $k$.\n"
             f"The line is tangent to the circle on the right-hand side.\n\n"
-            f"Determine the value of the real number k represented by the vertical line."
+            f"Determine the value of the real number $k$ represented by the vertical line."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1936,7 +1936,7 @@ class Mat170:
             f"the point $A$ at coordinates $(0, {self.y_start})$ on the imaginary axis. "
             f"The ray extends downwards and to the right, representing the locus "
             f"$\\arg(z - {self.y_start}i) = {self.latex_angle}$.\n\n"
-            f"Find the value of the x-intercept where this locus, "
+            f"Find the value of the $x$-intercept where this locus, "
             f"if extended as a full line, would cross the real axis. "
             f"Round to 3 decimal places."
         )

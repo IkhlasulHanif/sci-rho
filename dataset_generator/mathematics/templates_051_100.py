@@ -943,7 +943,7 @@ class Mat059:
         self.answer = round((self.major_angle / 360) * (self.radius**2), 2) # In terms of π cm²
 
         self.description = (
-            f"Calculate the area of the shaded major sector. Give your answer in terms of π. Round the result to two decimal places."
+            f"Calculate the area of the shaded major sector. Give your answer in terms of $\\pi$. Round the result to two decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1198,7 +1198,7 @@ class Mat062:
         self.answer = area_outer - area_inner # In terms of π
 
         self.description = (
-            f"Calculate the area of the shaded region. Leave your answer in terms of π."
+            f"Calculate the area of the shaded region. Leave your answer in terms of $\\pi$."
         )
 
         self.topic = "Mensuration"
@@ -1290,7 +1290,7 @@ class Mat063:
         self.answer = round(area_outer - area_inner, 2) # In terms of π cm^2
 
         self.description = (
-            f"Calculate the area of the windshield cleaned by the blade. Give your answer in terms of π. Give your answer correct to 2 decimal places."
+            f"Calculate the area of the windshield cleaned by the blade. Give your answer in terms of $\\pi$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1421,7 +1421,7 @@ class Mat064:
         self.answer = round(vol_cyl + vol_hemi, 2) # In terms of π m³
 
         self.description = (
-            f"Calculate the total volume of the silo. Give your answer in terms of π. Give your answer correct to 2 decimal places."
+            f"Calculate the total volume of the silo. Give your answer in terms of $\\pi$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1630,7 +1630,7 @@ class Mat066:
         self.answer = round(total_area, 2)
 
         self.description = (
-            f"Calculate the total surface area of the cone. Use π = 3.142. Give your answer correct to 2 decimal places."
+            f"Calculate the total surface area of the cone. Use $\\pi = 3.142$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1749,7 +1749,7 @@ class Mat067:
         self.answer = round(tsa, 2)
 
         self.description = (
-            f"Calculate the total surface area of the solid hemisphere. Use π = 3.14. Give your answer correct to 2 decimal places."
+            f"Calculate the total surface area of the solid hemisphere. Use $\\pi = 3.14$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1979,7 +1979,7 @@ class Mat069:
         self.answer = round(perimeter, 2)
 
         self.description = (
-            f"Calculate the total perimeter of the shape. Use π = 3.1416. Give your answer correct to 2 decimal places."
+            f"Calculate the total perimeter of the shape. Use $\\pi = 3.1416$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -2085,7 +2085,7 @@ class Mat070:
         self.answer = round(area, 2)
 
         self.description = (
-            f"Calculate the total area of the shape. Use π = 3.1416. Give your answer correct to 2 decimal places."
+            f"Calculate the total area of the shape. Use $\\pi = 3.1416$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -4373,7 +4373,7 @@ class Mat090:
         self.answer = round(self.area_q, 2)
 
         self.description = (
-            f"What is the area of shape Q in cm²?, Give your answer correct to 2 decimal places."
+            f"What is the area of shape Q in $cm^2$?, Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Transformations and vectors"
@@ -4469,7 +4469,7 @@ class Mat091:
         self.answer = self.y_prime
 
         self.description = (
-            f"What is the new y-coordinate of point A′?"
+            f"What is the new $y$-coordinate of point $A'$?"
         )
 
         self.topic = "Transformations and vectors"
@@ -4579,7 +4579,7 @@ class Mat092:
         self.answer = int(self.target_vertex_new[0] + self.target_vertex_new[1])
 
         self.description = (
-            f"One of the vertices of the original triangle is highlighted. After it got translate it, what is the sum of the x and y coordinates of the new vertex?"
+            f"One of the vertices of the original triangle is highlighted. After it got translate it, what is the sum of the $x$ and $y$ coordinates of the new vertex?"
         )
 
         self.topic = "Transformations and vectors"
@@ -5153,10 +5153,10 @@ class Mat098:
         self.answer = round(k_solution, 3)
 
         self.description = (
-            f"Trapezium OABC where OA is parallel to CB. "
-            f"OA = {self.c1}a and OB = {self.c2}b. "
-            f"Point P is on AB such that AP:PB = {self.m}:{self.n}. "
-            f"If vector OP = k({term_a}a + {term_b}b), find k. "
+            f"Trapezium $OABC$ where $OA$ is parallel to $CB$. "
+            f"$OA = {self.c1}\\mathbf{{a}}$ and $OB = {self.c2}\\mathbf{{b}}$. "
+            f"Point $P$ is on $AB$ such that $AP:PB = {self.m}:{self.n}$. "
+            f"If vector $OP = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})$, find $k$. "
             "Give your answer correct to 3 decimal places."
         )
 
@@ -5371,10 +5371,10 @@ class Mat100:
         self.answer = round(k, 3)
 
         self.description = (
-            f"In triangle OAB, vector OA = a and vector OB = b. "
-            f"Point P is on AB such that AP:PB = {self.m}:{self.n}. "
-            f"The vector OP can be expressed as k({self.n}a + {self.m}b). "
-            "Find the value of k. "
+            f"In triangle $OAB$, vector $OA = \\mathbf{{a}}$ and vector $OB = \\mathbf{{b}}$. "
+            f"Point $P$ is on $AB$ such that $AP:PB = {self.m}:{self.n}$. "
+            f"The vector $OP$ can be expressed as $k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$. "
+            "Find the value of $k$. "
             "Give your answer correct to 3 decimal places."
         )
 
