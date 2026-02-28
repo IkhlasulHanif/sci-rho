@@ -1513,7 +1513,7 @@ class Chem111:
             "Cu^{2+} + 2e^- → Cu\n\n"
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of copper deposited."
+            "Calculate the mass of copper deposited. (round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1659,7 +1659,7 @@ class Chem112:
             f"Concentration = {self.conc} mol dm⁻³\n"
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of metal deposited."
+            "Calculate the mass of metal deposited. (round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1767,7 +1767,7 @@ class Chem113:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Balanced equation gives volume ratio H2:O2 = 2:1}}\\\\"
+            f"\\text{{Equation gives volume ratio H2:O2 = 2:1}}\\\\"
             f"\\text{{Volume ratio used}} &= {round(calc_ratio,10)}\\\\"
             f"V_{{unknown}} &= V_{{given}} \\times \\text{{ratio}}\\\\"
             f"&= {round(self.given_volume,10)} \\times {round(calc_ratio,10)}\\\\"
@@ -1856,7 +1856,7 @@ class Chem114:
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n"
             f"Surface area plated = {self.area_cm2} cm²\n\n"
-            "Calculate the coating thickness in micrometres (µm)."
+            "Calculate the coating thickness in micrometres (µm). (Round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1959,7 +1959,7 @@ class Chem115:
             f"Purity = {self.purity_percent}%\n"
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of pure metal deposited."
+            "Calculate the mass of pure metal deposited. (Round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -2015,19 +2015,6 @@ class Chem115:
         arrow = FancyArrowPatch((10, 7), (12.5, 7), arrowstyle="->", mutation_scale=15, linewidth=2, color=self.metal["color"])
         ax.add_patch(arrow)
         ax.text(11.3, 7.6, f"{self.metal['metal']} ions", ha="center", fontsize=10)
-
-        ore_box = Rectangle((2, 7), 3, 2, fill=False, linewidth=2)
-        ax.add_patch(ore_box)
-        ax.text(3.5, 8, "Ore", ha="center", fontsize=11)
-
-        furnace = Rectangle((5.5, 7), 3, 2, fill=False, linewidth=2)
-        ax.add_patch(furnace)
-        ax.text(7, 8, "Extraction", ha="center", fontsize=11)
-
-        arrow_flow1 = FancyArrowPatch((5, 8), (5.5, 8), arrowstyle="->", mutation_scale=15)
-        arrow_flow2 = FancyArrowPatch((8.5, 8), (8, 8), arrowstyle="->", mutation_scale=15)
-        ax.add_patch(arrow_flow1)
-        ax.add_patch(arrow_flow2)
 
         ax.set_title("Impure Ore → Extraction → Electrolysis Purification", fontsize=16, fontweight="bold")
 
