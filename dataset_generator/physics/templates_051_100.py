@@ -853,7 +853,7 @@ class Phy059:
         self.source = "Original"
         self.curriculum = "A-Level"
         self.description = (
-            f"An ammeter shows a current of {self.I_mA:.1f} mA flowing for {self.t_ms} ms (see image). "
+            f"An ammeter shows a current (A) flowing for some time (t) (values are shown in the image). "
             "Calculate the charge transferred. Give your answer in coulombs (C).\n"
             "Charge transferred = (_) C"
         )
@@ -940,11 +940,9 @@ class Phy060:
         self.source = "Original"
         self.curriculum = "A-Level"
         self.description = (
-            "A trolley travels a measured distance and the time taken is recorded (see image).\n"
-            f"Distance: L = {self.L:.2f} ± {self.dL:.3f} m\n"
-            f"Time: t = {self.t:.1f} ± {self.dt:.2f} s\n"
+            "A trolley travels a measured distance and the time taken is recorded (the values are shown in the image).\n"
             "Calculate the speed v and the absolute uncertainty in v.\n"
-            "v = (_) ± (_) m s⁻¹"
+            "The answer format: v = (_) ± (_) m s⁻¹"
         )
         self.reasoning = (
             f"\\begin{{aligned}}"
@@ -962,7 +960,7 @@ class Phy060:
             f"\\Delta v &= v \\times \\left( \\frac{{\\Delta v}}{{v}} \\right)\\\\"
             f"&= {self.v:.4f} \\times {self.frac_unc:.6f}\\\\"
             f"&= {self.dv:.4f}\\,\\text{{m s}}^{{-1}}\\\\"
-            f"\\text{{Final Answer}} &= ({sig_figs(self.v, 3)} \\pm {sig_figs(self.dv, 2)})\\,\\text{{m s}}^{{-1}}"
+            f"\\text{{Final Answer}} &= {self.answer}"
             f"\\end{{aligned}}"
         )
 
@@ -1038,9 +1036,7 @@ class Phy061:
         self.source = "Original"
         self.curriculum = "A-Level"
         self.description = (
-            "Two forces act at a point as shown (see image).\n"
-            f"F₁ = {self.F1} N at {self.theta1}° above the +x-axis.\n"
-            f"F₂ = {self.F2} N at {abs(self.theta2)}° below the +x-axis.\n"
+            "Two forces (F₁ and F₂) act at a point as shown in the image.\n"
             "Calculate the magnitude of the resultant force.\n"
             "Resultant magnitude = (_) N"
         )
@@ -1298,7 +1294,7 @@ class Phy064:
         self.answer = sig_figs(self.v, 3)
 
         self.description = (
-            f"A ball is dropped from rest from a height of {self.h} m as shown. "
+            f"A ball is dropped from rest from a height of h as shown in the image. "
             "Neglect air resistance. Take g = 9.81 m s⁻². "
             "Calculate the speed just before it hits the ground. (_) m s⁻¹"
         )
@@ -1468,9 +1464,10 @@ class Phy066:
         self.answer = round(self.T, 2)
 
         self.description = (
-            f"Two blocks of masses {self.m1} kg and {self.m2} kg are connected by a light inextensible string "
-            "on a smooth horizontal surface. A horizontal force is applied to the right-hand block as shown.\n"
-            f"The applied force is F = {self.F} N. Determine the tension in the string. (_) N"
+            f"Two blocks are connected by a light inextensible string on a smooth horizontal surface."
+            "A horizontal force is applied to the right-hand block as shown.\n"
+            f"The applied force and both block masses are shown in the image.\n"
+            "Determine the tension in the string. (_) N"
         )
 
         self.topic = "Dynamics"
@@ -1586,8 +1583,8 @@ class Phy067:
         self.answer = sig_figs(self.N, 3)
 
         self.description = (
-            f"A person of mass {self.m} kg stands on a scale in a lift. "
-            f"The lift accelerates {dir_text} at {self.a:.1f} m s⁻². "
+            f"A person stands on a scale in a lift. "
+            f"The lift accelerates {dir_text} (both m and a are shown in the image). "
             "Take g = 9.81 m s⁻².\n"
             "Determine the reading of the scale (the normal reaction). (_) N"
         )
@@ -1820,17 +1817,17 @@ class Phy069:
             self.description = (
                 f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
                 "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
-                f"Fragment A has mass {self.mA} kg and moves to the right with speed {self.vA} m s⁻¹.\n"
-                f"Fragment B has mass {self.mB} kg. Determine the speed and direction of fragment B.\n"
-                "Speed of B = (_) m s⁻¹, direction = (_)"
+                f"Fragment A moves to the right (its speed and masses for both fragments are shown in the image).\n"
+                "Determine the speed and direction of fragment B.\n"
+                "Speed of B = (_) m s⁻¹, direction = (_). Answer format: (_) m s⁻¹ to the (left/right)"
             )
         else:
             self.description = (
                 f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
                 "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
-                f"Fragment B has mass {self.mB} kg and moves to the left with speed {abs(self.vB)} m s⁻¹.\n"
-                f"Fragment A has mass {self.mA} kg. Determine the speed and direction of fragment A.\n"
-                "Speed of A = (_) m s⁻¹, direction = (_)"
+                f"Fragment B moves to the left (its speed and masses for both fragments are shown in the image).\n"
+                f"Determine the speed and direction of fragment A.\n"
+                "Speed of A = (_) m s⁻¹, direction = (_). Answer format: (_) m s⁻¹ to the (left/right)"
             )
 
         self.topic = "Dynamics"
@@ -1939,15 +1936,13 @@ class Phy070:
         self.v = math.hypot(self.vx, self.vy)
         self.theta = math.degrees(math.atan2(self.vy, self.vx))  # degrees above +x
 
-        self.answer = f"{sig_figs(self.v, 3)} m s⁻¹ at {round(self.theta, 1)}° above +x"
+        self.answer = f"{sig_figs(self.v, 3)} m s⁻¹ at {round(self.theta, 1)}°"
 
         self.description = (
             "Two trolleys move on a smooth horizontal surface and collide at a point, then stick together.\n"
             "Both Trolley A and B's masses, directions, and speeds are shown in the diagram."
-            # f"Trolley A has mass {self.mA} kg and moves east with speed {self.uA:.0f} m s⁻¹.\n"
-            # f"Trolley B has mass {self.mB} kg and moves north with speed {self.uB:.0f} m s⁻¹.\n"
             "Determine the speed of the combined trolley and its direction (angle above the +x axis).\n"
-            "Speed = (_) m s⁻¹, angle = (_)°"
+            "Speed = (_) m s⁻¹, angle = (_)°. Answer format: (_) m s⁻¹ at (_)°"
         )
 
         self.topic = "Dynamics"
@@ -5759,7 +5754,7 @@ class Phy100:
         self.description = (
             "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
             "Determine the highest order maximum that can be observed and the corresponding angle.\n"
-            "n_max = (_),  θ_max = (_)°"
+            "n_max = (_),  θ_max = (_)°. Answer format (2 values seperated by a comma): (_), (_)"
         )
 
         self.topic = "Superposition"
