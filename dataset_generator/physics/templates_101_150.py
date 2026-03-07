@@ -15,27 +15,19 @@ DESTINATION_FOLDER = os.path.join(
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
 
 class Phy126:
-    """
-    Circular Motion on a Banked Curve.
-    Calculates Centripetal Force: Fc = (m * v^2) / r.
-    Reference: Cambridge International AS & A Level Physics (Sang, Jones, et al.)
-    """
-
     def __init__(self):
-        
-        self.mass = rnd.randint(10, 18) * 100       # 1000 - 1800 kg
-        self.velocity = rnd.randint(20, 35)         # 20 - 35 m/s
-        self.radius = rnd.randint(25, 50) * 10      # 250 - 500 m
-        
+        self.mass = rnd.randint(10, 18) * 100
+        self.velocity = rnd.randint(20, 35)
+        self.radius = rnd.randint(25, 50) * 10
         
         self.fc = (self.mass * (self.velocity**2)) / self.radius
-        self.answer = round(self.fc, 2)
+        self.answer = f"{self.fc}"
 
         self.description = (
-            f"A car of mass {self.mass} kg travels at a constant speed of {self.velocity} m/s "
-            f"around a curved section of road with a radius of curvature of {self.radius} m. "
+            "A car travels around a curved section of a banked road. "
             "The road is banked so that no friction is required for the turn. "
-            "Calculate the centripetal force acting on the car. (_) N"
+            "Based on the parameters provided in the diagram, calculate the centripetal force acting on the car. "
+            "(_) N (Example format: 12500.0 or 1.25E+04)"
         )
 
         self.topic = "Motion in a circle"
@@ -59,7 +51,8 @@ class Phy126:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 8)
         ax.axis('off')
@@ -72,57 +65,55 @@ class Phy126:
         ax.plot([1, 9], [2, 2], color='black', lw=1.5, linestyle='--')
         ax.plot(road_x, road_y, color='black', lw=3)
         
-        arc = patches.Arc((1, 2), 3, 3, theta1=0, theta2=theta_deg, color='red', lw=1.5)
+        arc = patches.Arc((1, 2), 3, 3, theta1=0, theta2=theta_deg, color='black', lw=1.5)
         ax.add_patch(arc)
-        ax.text(2.8, 2.3, f"{theta_deg}°", fontsize=14, color='red')
+        ax.text(2.8, 2.1, f"{theta_deg}°", fontsize=14, color='black')
 
         car_center_x = 5
         car_center_y = 2 + (car_center_x - 1) * math.tan(theta_rad)
     
         car = patches.Rectangle((car_center_x-0.7, car_center_y), 1.4, 0.8, 
-                                angle=theta_deg, color='darkgray', ec='black', zorder=3)
+                                angle=theta_deg, color='white', ec='black', lw=2, zorder=3)
         ax.add_patch(car)
 
         ax.annotate('', xy=(car_center_x, car_center_y-1.5), xytext=(car_center_x, car_center_y+0.4),
-                    arrowprops=dict(arrowstyle='->', lw=2, color='blue'))
-        ax.text(car_center_x + 0.2, car_center_y - 1.4, r"$W$", fontsize=12, color='blue')
+                    arrowprops=dict(arrowstyle='->', lw=2, color='black'))
+        ax.text(car_center_x + 0.2, car_center_y - 1.4, r"$W$", fontsize=12, color='black')
 
         n_len = 1.8
         n_dx = -n_len * math.sin(theta_rad)
         n_dy = n_len * math.cos(theta_rad)
         ax.annotate('', xy=(car_center_x + n_dx, car_center_y + n_dy + 0.4), xytext=(car_center_x, car_center_y+0.4),
-                    arrowprops=dict(arrowstyle='->', lw=2, color='green'))
-        ax.text(car_center_x + n_dx - 0.3, car_center_y + n_dy + 0.5, f"$N$", fontsize=12, color='green')
+                    arrowprops=dict(arrowstyle='->', lw=2, color='black'))
+        ax.text(car_center_x + n_dx - 0.3, car_center_y + n_dy + 0.5, f"$N$", fontsize=12, color='black')
 
-        ax.text(5, 7.5, f"Radius ($r$) = {self.radius} m", fontsize=11, ha='center', fontweight='bold')
+        props = dict(boxstyle='round,pad=0.5', facecolor='white', edgecolor='black')
+        info_text = f"Mass $m$ = {self.mass} kg\nSpeed $v$ = {self.velocity} m/s\nRadius $r$ = {self.radius} m"
+        ax.text(0.5, 7.5, info_text, fontsize=11, bbox=props, va='top')
+
         ax.text(5, 0.5, "Banked Curve Cross-Section", fontsize=10, ha='center', style='italic')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
 
 class Phy127:
-    """
-    Calculates the orbital radius given the gravitational force and masses of two bodies.
-    Standard A-Level problem using Newton's Law of Gravitation.
-    """
     def __init__(self):
         self.G = 6.67430e-11
         self.mass_sun = rnd.uniform(1.98, 2.02) * 1e30 
         self.mass_earth = rnd.uniform(5.97, 5.99) * 1e24 
         self.force = rnd.uniform(3.4, 3.6) * 1e22
         self.r_val = math.sqrt((self.G * self.mass_sun * self.mass_earth) / self.force)
-        self.answer = f"{self.r_val:.2e}"
+        self.answer = f"{self.r_val}"
         self.topic = "Gravitational Fields"
         self.subtopic = "Gravitational force between point masses"
         self.source = "Save My Exams"
         self.curriculum = "A-Level"
 
         self.description = (
-            f"The gravitational force of attraction between a planet and its sun is {self.force:.2e} N. "
-            f"Calculate the distance between the centres of the planet and the sun.\n\n"
-            f"Mass of planet = {self.mass_earth:.2e} kg\n"
-            f"Mass of star = {self.mass_sun:.2e} kg"
+            "Based on the masses and gravitational force of attraction provided in the diagram, "
+            "calculate the distance between the centres of the planet and the sun. "
+            "(_) m (Example format: 1.50E+11 or 150000000000.0)"
         )
 
         self.reasoning = (
@@ -142,15 +133,15 @@ class Phy127:
         )
 
     def generate(self, num):
+        plt.style.use("default")
         fig, ax = plt.subplots(figsize=(8, 6), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
 
         r_orbit_vis = 1.8
         sun_radius = 0.3
-        earth_radius = 0.12
-
-        sun = plt.Circle((0, 0), sun_radius, color='none', ec='black', lw=2)
+        
+        sun = plt.Circle((0, 0), sun_radius, color='white', ec='black', lw=2)
         ax.add_patch(sun)
         ax.text(0, 0, "Sun\n$M_1$", ha='center', va='center', fontweight='bold', fontsize=10)
         
@@ -169,13 +160,13 @@ class Phy127:
 
         ax.annotate('', xy=(r_orbit_vis - 0.7, 0), xytext=(r_orbit_vis, 0),
                     arrowprops=dict(arrowstyle='->', color='black', lw=2, mutation_scale=15))
-        ax.text(r_orbit_vis - 0.35, 0.15, f"$F = {self.force:.2e}$ N", 
+        ax.text(r_orbit_vis - 0.35, 0.13, f"$F = {self.force:.2e}$ N", 
                 ha='center', fontsize=10, fontweight='bold')
 
         data_text = (
-            f"Sun mass: ${self.mass_sun:.2e}$ kg\n"
-            f"Planet mass: ${self.mass_earth:.2e}$ kg\n"
-            f"$G: 6.67 \times 10^{{-11}}$ N m$^2$ kg$^{-2}$"
+            f"Sun mass $M_1$: ${self.mass_sun:.2e}$ kg\n"
+            f"Planet mass $M_2$: ${self.mass_earth:.2e}$ kg\n"
+            f"$G: 6.67 \\times 10^{{-11}}$ N m$^2$ kg$^{{-2}}$"
         )
         ax.text(-0.5, 1.3, data_text, fontsize=9, verticalalignment='top',
                 bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.8'))
@@ -187,17 +178,12 @@ class Phy127:
         plt.close()
 
 class Phy128:
-    """
-    Calculates the mass of a planet given the gravitational force acting on a satellite,
-    its mass, and its altitude above the surface.
-    Formula: M = (F * r^2) / (G * m)
-    """
     def __init__(self):
         self.G = 6.67430e-11 
-        self.mass_sat = rnd.randint(50, 80) * 100        # 5000 - 8000 kg
-        self.altitude_km = rnd.randint(15, 25) * 100     # 1500 - 2500 km
-        self.radius_planet_km = 6400                     # Earth radius
-        self.force_kn = rnd.uniform(30.0, 45.0)          # 30 - 45 kN
+        self.mass_sat = rnd.randint(50, 80) * 100
+        self.altitude_km = rnd.randint(15, 25) * 100
+        self.radius_planet_km = 6400
+        self.force_kn = rnd.uniform(30.0, 45.0)
 
         self.r_surface = self.radius_planet_km * 1e3
         self.h = self.altitude_km * 1e3
@@ -206,17 +192,15 @@ class Phy128:
         self.m = self.mass_sat
         mass_earth_val = (self.F * (self.r_total**2)) / (self.G * self.m)
 
-        self.answer = f"{mass_earth_val:.2e}"
+        self.answer = f"{mass_earth_val}"
         self.topic = "Gravitational Fields"
         self.subtopic = "Newton's Law of Gravitation"
         self.source = "Original"
         self.curriculum = "A-Level"
         self.description = (
-            f"A satellite of mass {self.m:,} kg is in a circular orbit at an altitude of "
-            f"{self.altitude_km:,} km above the surface of a planet. The gravitational force "
-            f"exerted by the planet on the satellite is {self.force_kn:.1f} kN. "
-            f"Given that the radius of the planet is {self.radius_planet_km:,} km, "
-            f"calculate the mass of the planet."
+            "A satellite is in a circular orbit at an altitude above the surface of a planet as shown. "
+            "Using the parameters provided in the diagram, calculate the mass of the planet. "
+            "(_) kg (Example format: 5.97E+24)"
         )
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -234,15 +218,17 @@ class Phy128:
         )
 
     def generate(self, num):
+        plt.style.use("default")
         fig, ax = plt.subplots(figsize=(7, 7), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
+        
         r_earth_vis = 1.0
         h_vis = 0.6
         r_orbit_vis = r_earth_vis + h_vis
         limit = r_orbit_vis * 1.4
 
-        planet = plt.Circle((0, 0), r_earth_vis, color='#f0f0f0', ec='black', lw=2, zorder=2)
+        planet = plt.Circle((0, 0), r_earth_vis, color='white', ec='black', lw=2, zorder=2)
         ax.add_patch(planet)
         ax.text(0, 0, "PLANET\n(Mass $M$)", ha='center', va='center', fontsize=10, fontweight='bold')
 
@@ -250,7 +236,7 @@ class Phy128:
         ax.add_patch(orbit)
 
         ax.plot(r_orbit_vis, 0, 'ko', markersize=6, zorder=5)
-        ax.text(r_orbit_vis, 0.15, f"Satellite\n$m = {self.m}$ kg", ha='center', fontsize=9, fontweight='bold')
+        ax.text(r_orbit_vis, 0.18, f"Satellite\n$m = {self.m}$ kg", ha='center', fontsize=9, fontweight='bold')
 
         ax.annotate('', xy=(r_orbit_vis - 0.5, 0), xytext=(r_orbit_vis, 0),
                     arrowprops=dict(arrowstyle='->', color='black', lw=1.5, mutation_scale=15))
@@ -261,13 +247,13 @@ class Phy128:
         ax.text(r_earth_vis/2, -0.35, f"$R = {self.radius_planet_km}$ km", ha='center', fontsize=9)
 
         ax.annotate('', xy=(r_orbit_vis, -0.2), xytext=(r_earth_vis, -0.2),
-                    arrowprops=dict(arrowstyle='<->', color='#e67e22', lw=1.2))
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
         ax.text((r_earth_vis + r_orbit_vis)/2, -0.35, f"$h = {self.altitude_km}$ km", 
-                ha='center', color='#e67e22', fontsize=9, fontweight='bold')
+                ha='center', fontsize=9, fontweight='bold')
 
         ax.annotate('', xy=(r_orbit_vis, -0.8), xytext=(0, -0.8),
-                    arrowprops=dict(arrowstyle='<->', color='#2563eb', lw=1.2))
-        ax.text(r_orbit_vis/2, -1.0, "$r = R + h$", ha='center', color='#2563eb', fontsize=10, fontweight='bold')
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
+        ax.text(r_orbit_vis/2, -1.0, "$r = R + h$", ha='center', fontsize=10, fontweight='bold')
 
         ax.plot([0, 0], [0, -0.85], 'k:', lw=0.8)
         ax.plot([r_earth_vis, r_earth_vis], [0, -0.25], 'k:', lw=0.8)
@@ -297,10 +283,9 @@ class Phy129:
         self.answer = f"{self.radius_ratio.numerator} : {self.radius_ratio.denominator}"
 
         self.description = (
-            f"The mean density of the Moon is {self.rho_m_rho_e} times the mean density of the Earth. "
-            f"The gravitational field strength at the surface of the Moon is {self.g_m_g_e} of "
-            f"the gravitational field strength at the surface of the Earth. "
-            f"Determine the ratio of the Moon’s radius $r_M$ to the Earth’s radius $r_E$."
+            "Using the relative density and gravitational field strength data provided in the diagram, "
+            "determine the ratio of the Moon’s radius $r_M$ to the Earth’s radius $r_E$. "
+            "(_) (Example format: 1 : 4)"
         )
 
         self.topic = "Gravitational Field"
@@ -325,6 +310,7 @@ class Phy129:
         )
 
     def generate(self, num):
+        plt.style.use("default")
         fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
@@ -333,29 +319,29 @@ class Phy129:
         r_M = r_E * (float(self.radius_ratio.numerator) / float(self.radius_ratio.denominator))
         r_M_vis = max(r_M, 0.3) 
 
-        earth = plt.Circle((0, 0), r_E, color='#2a78d0', alpha=0.7, ec='#1a4d80', lw=2)
+        earth = plt.Circle((0, 0), r_E, color='white', ec='black', lw=2)
         ax.add_artist(earth)
         ax.plot([0, r_E], [0, 0], color='black', lw=1.5)
         ax.text(r_E/2, 0.1, "$r_E$", ha='center', fontsize=12)
         ax.text(0, -r_E-0.3, "EARTH\n" + r"$\rho_E, g_E$", ha='center', weight='bold')
 
         moon_x = 3.0
-        moon = plt.Circle((moon_x, 0), r_M_vis, color='#95a5a6', alpha=0.7, ec='#7f8c8d', lw=2)
+        moon = plt.Circle((moon_x, 0), r_M_vis, color='white', ec='black', lw=2)
         ax.add_artist(moon)
         ax.plot([moon_x, moon_x + r_M_vis], [0, 0], color='black', lw=1.5)
         ax.text(moon_x + r_M_vis/2, 0.1, "$r_M$", ha='center', fontsize=12)
         ax.text(moon_x, -r_E-0.3, "MOON\n" + rf"$\rho_M = \frac{{{self.rho_m_rho_e.numerator}}}{{{self.rho_m_rho_e.denominator}}}\rho_E$", ha='center', weight='bold')
 
         ax.text((moon_x)/2, 1.5, f"Given: $g_M = \\frac{{{self.g_m_g_e.numerator}}}{{{self.g_m_g_e.denominator}}}g_E$", 
-                ha='center', fontsize=13, bbox=dict(facecolor='none', edgecolor='gray', boxstyle='round,pad=0.5'))
+                ha='center', fontsize=13, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.text((moon_x)/2, -1.8, "*Diagram not to scale", fontsize=10, style='italic', color='gray')
+        ax.text((moon_x)/2, -1.8, "*Diagram not to scale", fontsize=10, style='italic', color='black')
 
         ax.set_xlim(-1.5, moon_x + 1.5)
         ax.set_ylim(-2.2, 2.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
 
 class Phy130:
@@ -370,16 +356,16 @@ class Phy130:
         self.r_total_m = (self.planet_radius_km + self.height_km) * 1e3
 
         self.potential = - (self.G * self.planet_mass) / self.r_total_m
-        self.answer = f"{self.potential:.2e}"
+        self.answer = f"{self.potential}"
 
         self.topic = "Gravitational fields"
         self.subtopic = "Gravitational field of a point mass"
         self.source = "Original"
         self.curriculum = "A-Level"
         self.description = (
-            f"A planet has a diameter of {self.planet_diameter_km} km and a mass of {self.planet_mass:.2e} kg. "
-            f"A rock of mass {self.rock_mass} kg is located at a distance of {self.height_km} km "
-            f"above the planet’s surface. Calculate the gravitational potential at this point."
+            "A rock is located at a distance above a planet's surface as shown. "
+            "Using the planet's mass, diameter, and altitude data provided in the diagram, "
+            "calculate the gravitational potential at this point. (_) J kg^-1 (Example format: -4.56E+07)"
         )
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -399,54 +385,58 @@ class Phy130:
             f"&\\phi = \\mathbf{{{self.answer}\\,\\text{{J kg}}^{{-1}}}}"
             "\\end{aligned}\\]"
         )
+        
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 6), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 9), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
-        r_planet = 1.0
-        h_vis = (self.height_km / self.planet_radius_km) * r_planet
+        
+        r_planet = 1.5
+        h_vis = 1.0
         r_total_vis = r_planet + h_vis
 
-        planet = plt.Circle((0, 0), r_planet, color='none', ec='black', lw=2)
+        planet = plt.Circle((0, 0), r_planet, color='white', ec='black', lw=2)
         ax.add_patch(planet)
+        ax.text(0, 0, "PLANET\nMass $M$", ha='center', va='center', fontweight='bold', fontsize=12)
 
         ax.plot(0, 0, 'k+', markersize=10)
-        ax.plot(r_total_vis, 0, 'ko', markersize=4) 
-        ax.text(r_total_vis, 0.1, "rock", ha='center', fontsize=10)
+        ax.plot(r_total_vis, 0, 'ko', markersize=6) 
+        ax.text(r_total_vis, 0.2, f"Rock\n{self.rock_mass} kg", ha='center', fontweight='bold', fontsize=10)
 
         theta_r = np.radians(135) 
-        ax.plot([0, r_planet * np.cos(theta_r)], [0, r_planet * np.sin(theta_r)], 'k--', lw=1)
-        ax.text(r_planet * 0.5 * np.cos(theta_r) - 0.1, r_planet * 0.5 * np.sin(theta_r) + 0.1, 
-                f"$R$ = {self.planet_radius_km:.2e}", fontsize=11, ha='right')
+        ax.plot([0, r_planet * np.cos(theta_r)], [0, r_planet * np.sin(theta_r)], 'k--', lw=1.5)
+        ax.text(r_planet * 0.5 * np.cos(theta_r) + 0.1, r_planet * 0.5 * np.sin(theta_r) - 0.4, 
+                f"$R = {self.planet_radius_km}$ km", fontsize=11, ha='right', fontweight='bold')
 
-        ax.annotate('', xy=(r_total_vis, -0.1), xytext=(r_planet, -0.1),
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=1))
-        ax.text((r_planet + r_total_vis)/2, -0.25, f"$h$", ha='center', fontsize=11)
+        ax.annotate('', xy=(r_total_vis, -0.2), xytext=(r_planet, -0.2),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text((r_planet + r_total_vis)/2, -0.4, f"$h = {self.height_km}$ km", ha='center', fontsize=11, fontweight='bold')
 
-        ax.annotate('', xy=(r_total_vis, -0.5), xytext=(0, -0.5),
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=1))
-        ax.text(r_total_vis/2, -0.65, f"$r$", ha='center', fontsize=11)
+        ax.annotate('', xy=(r_total_vis, -0.8), xytext=(0, -0.8),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text(r_total_vis/2, -1.0, "$r$", ha='center', fontsize=12, fontweight='bold')
 
-        ax.plot([0, 0], [0, -0.55], 'k:', lw=0.8)
-        ax.plot([r_planet, r_planet], [0, -0.15], 'k:', lw=0.8)
-        ax.plot([r_total_vis, r_total_vis], [0, -0.55], 'k:', lw=0.8)
+        ax.plot([0, 0], [0, -0.9], 'k:', lw=1)
+        ax.plot([r_planet, r_planet], [0, -0.3], 'k:', lw=1)
+        ax.plot([r_total_vis, r_total_vis], [0, -0.9], 'k:', lw=1)
 
-        ax.text(-1.4, 1.2, f"Mass of planet $= M$\nRadius of planet $= R$", 
-                fontsize=10, bbox=dict(facecolor='none', edgecolor='black', pad=5))
+        info_box = f"Planet Mass $M = {self.planet_mass:.2e}$ kg\nPlanet Diameter = {self.planet_diameter_km} km"
+        ax.text(0.08, 0.98, info_box, transform=ax.transAxes, ha='left', va='top',
+                fontsize=11, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.6'))
 
-        limit = r_total_vis * 1.3
-        ax.set_xlim(-limit, limit)
-        ax.set_ylim(-limit, limit)
+        ax.text(0.98, 0.02, "*Diagram not to scale", transform=ax.transAxes, 
+                ha='right', va='bottom', fontsize=9, style='italic')
 
+        ax.set_xlim(-2.0, 3.5)
+        ax.set_ylim(-1.8, 2.2)
+
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
 
 class Phy131:
-    """
-    Calculates the Gravitational Potential (V) at a specific height above a planet's surface.
-    Formula: V = -GM / r, where r = R + h.
-    """
     def __init__(self):
         self.G = 6.67430e-11
         self.planet_diameter_km = rnd.randint(60, 85) * 100 
@@ -458,7 +448,7 @@ class Phy131:
         self.total_distance_m = (self.planet_radius_km + self.height_km) * 1e3
 
         potential_val = -(self.G * self.planet_mass) / self.total_distance_m
-        self.answer = f"{potential_val:.2e}"
+        self.answer = f"{potential_val}"
 
         self.topic = "Gravitational Fields"
         self.subtopic = "Gravitational Potential"
@@ -466,9 +456,9 @@ class Phy131:
         self.curriculum = "A-Level"
 
         self.description = (
-            f"A planet has a diameter of {self.planet_diameter_km} km and a mass of {self.planet_mass:.2e} kg. "
-            f"A rock of mass {self.rock_mass} kg is located at a height of {self.height_km} km "
-            f"above the planet's surface. Calculate the gravitational potential at the rock's position."
+            "A rock is located at a specific height above a planet's surface as shown. "
+            "Based on the data provided in the diagram, calculate the gravitational potential at the rock's position. "
+            "(_) J kg^-1 (Example format: -1.2345e+07)"
         )
 
         self.reasoning = (
@@ -490,100 +480,79 @@ class Phy131:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(7, 7), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 6), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
 
         r_planet_vis = 1.0
-        h_vis = 0.6
+        h_vis = 0.8
         r_orbit_vis = r_planet_vis + h_vis
-        limit = r_orbit_vis * 1.3 
 
-        # Draw Planet
-        planet = plt.Circle((0, 0), r_planet_vis, color='#f0f0f0', ec='black', lw=2, zorder=2)
+        planet = plt.Circle((0, 0), r_planet_vis, color='white', ec='black', lw=2, zorder=2)
         ax.add_patch(planet)
-        ax.text(0, 0, "PLANET\n$M = " + f"{self.planet_mass:.1e}" + "$ kg", ha='center', va='center', fontsize=9, fontweight='bold')
+        ax.text(0, 0, "PLANET\n$M = " + f"{self.planet_mass:.1e}" + "$ kg", ha='center', va='center', fontsize=10, fontweight='bold')
 
-        # Draw Orbit Path
-        orbit = plt.Circle((0, 0), r_orbit_vis, color='black', ls='--', lw=0.8, fill=False, alpha=0.5)
+        orbit = plt.Circle((0, 0), r_orbit_vis, color='black', ls='--', lw=1, fill=False, alpha=0.3)
         ax.add_patch(orbit)
 
-        # Rock Position
-        ax.plot(r_orbit_vis, 0, 'ko', markersize=6, zorder=5)
-        ax.text(r_orbit_vis, 0.15, f"Rock\n$m = {self.rock_mass}$ kg", ha='center', fontsize=9, fontweight='bold')
+        ax.plot(r_orbit_vis, 0, 'ko', markersize=7, zorder=5)
+        ax.text(r_orbit_vis, 0.15, f"Rock\n$m = {self.rock_mass}$ kg", ha='center', fontsize=10, fontweight='bold')
 
-        # Dimension Lines
         ax.annotate('', xy=(r_planet_vis, -0.2), xytext=(0, -0.2),
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=1))
-        ax.text(r_planet_vis/2, -0.35, f"$R = {self.planet_radius_km:g}$ km", ha='center', fontsize=9)
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text(r_planet_vis/2, -0.4, f"$R = {self.planet_radius_km:g}$ km", ha='center', fontsize=10)
 
-        # Height (h)
         ax.annotate('', xy=(r_orbit_vis, -0.2), xytext=(r_planet_vis, -0.2),
-                    arrowprops=dict(arrowstyle='<->', color='#e67e22', lw=1.2))
-        ax.text((r_planet_vis + r_orbit_vis)/2, -0.35, f"$h = {self.height_km:g}$ km", 
-                ha='center', color='#e67e22', fontsize=9, fontweight='bold')
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text((r_planet_vis + r_orbit_vis)/2, -0.4, f"$h = {self.height_km:g}$ km", 
+                ha='center', fontsize=10, fontweight='bold')
 
-        # Total Distance (r)
         ax.annotate('', xy=(r_orbit_vis, -0.8), xytext=(0, -0.8),
-                    arrowprops=dict(arrowstyle='<->', color='#2563eb', lw=1.2))
-        ax.text(r_orbit_vis/2, -1.0, "$r = R + h$", ha='center', color='#2563eb', fontsize=10, fontweight='bold')
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text(r_orbit_vis/2, -1.0, "$r = R + h$", ha='center', fontsize=11, fontweight='bold')
 
-        # Extension Lines
-        ax.plot([0, 0], [0, -0.85], 'k:', lw=0.8)
-        ax.plot([r_planet_vis, r_planet_vis], [0, -0.25], 'k:', lw=0.8)
-        ax.plot([r_orbit_vis, r_orbit_vis], [0, -0.85], 'k:', lw=0.8)
+        ax.plot([0, 0], [0, -0.9], 'k:', lw=1)
+        ax.plot([r_planet_vis, r_planet_vis], [0, -0.3], 'k:', lw=1)
+        ax.plot([r_orbit_vis, r_orbit_vis], [0, -0.9], 'k:', lw=1)
 
-        # Metadata Box
-        info_text = f"$G = 6.67 \\times 10^{{-11}}$ N m$^2$ kg$^{-2}$"
-        ax.text(-limit*0.4, limit*0.9, info_text, fontsize=10, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
+        info_text = f"Planet Diameter = {self.planet_diameter_km} km\n$G = 6.67 \\times 10^{{-11}}$ N m$^2$ kg$^{{-2}}$"
+        ax.text(0.02, 0.98, info_text, transform=ax.transAxes, fontsize=10, va='top', ha='left',
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.set_xlim(-limit*0.5, limit)
-        ax.set_ylim(-1.2, limit)
+        ax.set_xlim(-1.5, r_orbit_vis + 0.5)
+        ax.set_ylim(-1.5, 1.8)
 
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
 
 class Phy132:
-    """
-    Calculates the change in gravitational potential (delta V) when an object 
-    moves from the surface of a planet to a specific altitude.
-    Formula: delta V = V2 - V1 = -GM(1/r2 - 1/r1)
-    """
     def __init__(self):
-    
         self.G = 6.67430e-11 
-        # Radius: 6000km to 7000km
         self.radius_km = rnd.randint(60, 70) * 100 
-        # Mass: 5.0e24 to 6.5e24 kg
         self.mass_earth = rnd.uniform(5.0, 6.5) * 1e24
-        # Altitude: 10,000km to 25,000km
         self.altitude_km = rnd.randint(10, 25) * 1000
 
-        # Derived Values (SI Units)
         self.r1 = self.radius_km * 1e3
         self.r2 = (self.radius_km + self.altitude_km) * 1e3
 
-        # Calculation
         self.delta_V = -self.G * self.mass_earth * (1/self.r2 - 1/self.r1)
-        self.answer = f"{self.delta_V:.2e}"
+        self.answer = f"{self.delta_V}"
 
-        # 5. Metadata
         self.topic = "Gravitational Fields"
         self.subtopic = "Gravitational Potential Change"
         self.source = "Original / A-Level Physics"
         self.curriculum = "Cambridge A-Level"
 
-        # 6. Structured Description
         self.description = (
-            f"A planet is modeled as an isolated sphere of radius {self.radius_km:,} km "
-            f"with a mass of {self.mass_earth:.2e} kg concentrated at its centre. "
-            f"An object is projected vertically from the surface of the planet "
-            f"until it reaches an altitude of {self.altitude_km:,} km.\n\n"
-            "Calculate the change in gravitational potential for this movement."
+            "A planet is modeled as an isolated sphere. An object is projected vertically from "
+            "the surface of the planet until it reaches a certain altitude. Using the planet's data "
+            "provided in the diagram, calculate the change in gravitational potential for this movement. "
+            "(_) J kg^-1 (Example format: 3.456e+07)"
         )
 
-        # 7. Enhanced Step-by-Step Reasoning
         self.reasoning = (
             "\\[\\begin{aligned}"
             "&\\textbf{Step 1: Convert all units to SI (meters)} \\\\"
@@ -602,63 +571,57 @@ class Phy132:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(7, 7), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(8, 6), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
-        R_val = self.radius_km
-        h_val = self.altitude_km
-        total_r_val = R_val + h_val
         
-        R_vis = 1.0
-        h_vis = 1.2 
+        R_vis = 1.2
+        h_vis = 1.0 
         total_r_vis = R_vis + h_vis
 
-        # Planet
-        planet = plt.Circle((0, 0), R_vis, color='none', ec='black', lw=2, zorder=2)
+        planet = plt.Circle((0, 0), R_vis, color='white', ec='black', lw=2, zorder=2)
         ax.add_patch(planet)
         
-        # Centre of Planet
         ax.plot(0, 0, 'k+', markersize=10)
-        ax.text(0.1, -0.1, "centre of\nplanet", fontsize=9, va='top')
+        ax.text(0.1, -0.1, "Centre", fontsize=10, va='top')
 
-        # Orbit
-        orbit = plt.Circle((0, 0), total_r_vis, color='black', ls='--', lw=0.8, fill=False, alpha=0.5)
+        orbit = plt.Circle((0, 0), total_r_vis, color='black', ls='--', lw=1, fill=False, alpha=0.3)
         ax.add_patch(orbit)
 
-        ax.plot(R_vis, 0, 'ro', markersize=6, label='Surface', zorder=5)
-        ax.text(R_vis, 0.15, "Surface", ha='center', color='red', fontsize=9)
+        ax.plot(R_vis, 0, 'ko', markersize=6, zorder=5)
+        ax.text(R_vis, 0.15, "Initial\nPosition", ha='center', fontsize=10, fontweight='bold')
         
-        ax.plot(total_r_vis, 0, 'bo', markersize=6, label='Altitude', zorder=5)
-        ax.text(total_r_vis, 0.15, "Final\nPosition", ha='center', color='blue', fontsize=9)
+        ax.plot(total_r_vis, 0, 'ko', markersize=6, zorder=5)
+        ax.text(total_r_vis, 0.15, "Final\nPosition", ha='center', fontsize=10, fontweight='bold')
 
         ax.annotate('', xy=(R_vis * np.cos(np.radians(135)), R_vis * np.sin(np.radians(135))), xytext=(0, 0),
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=1))
-        ax.text(-0.4, 0.4, f"$R = {R_val:,}$ km", ha='right', fontsize=10)
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text(-0.3, 0.2, f"$R = {self.radius_km:,}$ km", ha='right', fontsize=11, fontweight='bold')
 
         ax.annotate('', xy=(total_r_vis, -0.2), xytext=(R_vis, -0.2),
-                    arrowprops=dict(arrowstyle='<->', color='#e67e22', lw=1.5))
-        ax.text((R_vis + total_r_vis)/2, -0.4, f"$h = {h_val:,}$ km", 
-                ha='center', color='#e67e22', fontweight='bold', fontsize=10)
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text((R_vis + total_r_vis)/2, -0.4, f"$h = {self.altitude_km:,}$ km", 
+                ha='center', fontweight='bold', fontsize=11)
+                
         ax.annotate('', xy=(total_r_vis, -0.8), xytext=(0, -0.8),
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=1))
-        ax.text(total_r_vis/2, -1.0, f"$r_2 = {total_r_val:,}$ km", ha='center', fontsize=10)
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text(total_r_vis/2, -1.0, f"$r_2 = R + h$", ha='center', fontsize=11, fontweight='bold')
 
-        ax.plot([0, 0], [0, -0.9], 'k:', lw=0.8)
-        ax.plot([R_vis, R_vis], [0, -0.3], 'k:', lw=0.8)
-        ax.plot([total_r_vis, total_r_vis], [0, -0.9], 'k:', lw=0.8)
-        limit = total_r_vis * 1.3
+        ax.plot([0, 0], [0, -0.9], 'k:', lw=1)
+        ax.plot([R_vis, R_vis], [0, -0.3], 'k:', lw=1)
+        ax.plot([total_r_vis, total_r_vis], [0, -0.9], 'k:', lw=1)
         
-        ax.text(-limit*0.8, limit*0.8, f"Mass of planet, $M = {self.mass_earth:.2e}$ kg", 
-                fontsize=10, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
+        ax.text(0.02, 0.98, f"Planet Mass $M = {self.mass_earth:.2e}$ kg", transform=ax.transAxes,
+                fontsize=11, va='top', ha='left', bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        limit = total_r_vis * 1.3
-        ax.set_xlim(-limit*0.5, limit)
-        ax.set_ylim(-1.5, 1.5)
+        ax.set_xlim(-1.8, total_r_vis + 0.6)
+        ax.set_ylim(-1.5, 1.8)
 
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
-
 
 class Phy133:
     def __init__(self):
@@ -666,7 +629,7 @@ class Phy133:
         self.temperature_c = rnd.choice([20, 50, 100, 200]) 
         self.volume_l = rnd.randint(2, 10)
         
-        self.molar_mass_he = 4.003e-3  # kg/mol
+        self.molar_mass_he = 4.003e-3
         self.R = 8.314
         self.N_A = 6.022e23
         self.k_B = 1.381e-23
@@ -674,9 +637,8 @@ class Phy133:
 
         self.temperature_k = self.temperature_c + 273.15
         
-        # Mean square speed: <c^2> = 3kT / m
         self.c_rms = math.sqrt((3 * self.k_B * self.temperature_k) / self.m_atom_he)
-        self.answer = f"{self.c_rms:.1f}"
+        self.answer = f"{self.c_rms}"
 
         self.topic = "Ideal Gases"
         self.subtopic = "Kinetic Theory of Gases"
@@ -684,9 +646,9 @@ class Phy133:
         self.curriculum = "A-Level"
 
         self.description = (
-            f"A rigid vessel contains {self.mass_g} g of Helium-4 gas at a constant temperature of "
-            f"{self.temperature_c}\u00b0C. Assuming Helium behaves as an ideal gas, calculate the "
-            f"root-mean-square (r.m.s.) speed of the helium atoms."
+            "A rigid vessel contains Helium-4 gas. Assuming Helium behaves as an ideal gas, "
+            "use the parameters shown in the diagram to calculate the root-mean-square (r.m.s.) "
+            "speed of the helium atoms. (_) m s^-1 (Example format: 1365.234)"
         )
 
         self.reasoning = (
@@ -704,43 +666,39 @@ class Phy133:
         )
 
     def generate(self, num):
+        plt.style.use("default")
         fig, ax = plt.subplots(figsize=(7, 7), dpi=300)
         ax.set_aspect("equal")
         ax.axis("off")
 
-        # Cylinder Tank
-        tank = patches.FancyBboxPatch((0.3, 0.2), 0.4, 0.6, boxstyle="round,pad=0.02", 
-                                      fc='none', ec='black', lw=2)
+        tank = patches.FancyBboxPatch((0.2, 0.2), 0.6, 0.6, boxstyle="round,pad=0.05", 
+                                      fc='none', ec='black', lw=3)
         ax.add_patch(tank)
         
-        # Gas particles with velocity vectors
-        for _ in range(15):
-            px = rnd.uniform(0.35, 0.65)
+        for _ in range(20):
+            px = rnd.uniform(0.25, 0.75)
             py = rnd.uniform(0.25, 0.75)
-            ax.plot(px, py, 'o', color='black', markersize=4)
-            # Velocity arrows
-            dx, dy = rnd.uniform(-0.05, 0.05), rnd.uniform(-0.05, 0.05)
-            ax.arrow(px, py, dx, dy, head_width=0.01, fc='black', ec='black', alpha=0.6)
+            ax.plot(px, py, 'o', color='black', markersize=5)
+            dx, dy = rnd.uniform(-0.08, 0.08), rnd.uniform(-0.08, 0.08)
+            ax.arrow(px, py, dx, dy, head_width=0.015, fc='black', ec='black', alpha=0.7)
             
-        ax.text(0.5, 0.85, "Helium-4 Gas", ha='center', fontsize=12, fontweight='bold')
-        
-        # Spatial labels
-        ax.text(0.75, 0.5, f"$T = {self.temperature_c}^\circ$C", va='center', fontsize=11)
-        ax.text(0.25, 0.5, f"$m = {self.mass_g}$ g", ha='right', va='center', fontsize=11)
-        ax.text(0.5, 0.15, r"$c_{rms} = \ ?$ ", ha='center', fontsize=13, fontweight='bold', color='blue')
+        ax.text(0.5, 0.9, "Helium-4 Gas", ha='center', fontsize=14, fontweight='bold')
+        ax.text(0.88, 0.5, f"$T = {self.temperature_c}^\circ$C", va='center', fontsize=12, fontweight='bold')
+        ax.text(0.13, 0.5, f"Mass = {self.mass_g} g", ha='right', va='center', fontsize=12, fontweight='bold')
+        ax.text(0.5, 0.1, r"$c_{rms} = \ ?$", ha='center', fontsize=14, fontweight='bold')
 
-        # Constants Box
         info_box = (
             f"Molar mass = 4.003 g mol$^{{-1}}$\n"
-            f"$N_A = 6.02 x 10^{{23}}$ mol$^{{-1}}$\n"
-            f"$k_B = 1.38 x 10^{{-23}}$ J K$^{{-1}}$"
+            f"$N_A = 6.022 \\times 10^{{23}}$ mol$^{{-1}}$\n"
+            f"$k_B = 1.381 \\times 10^{{-23}}$ J K$^{{-1}}$"
         )
-        ax.text(0.03, 0.95, info_box, fontsize=9, verticalalignment='top', 
-                bbox=dict(facecolor='none', edgecolor='black', linestyle='-', boxstyle='round,pad=0.5'))
+        ax.text(0.05, 0.95, info_box, transform=ax.transAxes, fontsize=10, va='top', 
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
+        ax.set_xlim(-0.1, 1.1)
+        ax.set_ylim(-0.1, 1.1)
 
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
@@ -761,7 +719,7 @@ class Phy134:
                 break
 
         self.P2 = self.P1 * self.T2_k / self.T1_k
-        self.answer = f"{self.P2:.2e}"
+        self.answer = f"{self.P2}"
 
         self.topic = "Ideal gases"
         self.subtopic = "Equation of state"
@@ -769,10 +727,9 @@ class Phy134:
         self.curriculum = "A-Level"
 
         self.description = (
-            f"A rigid container of fixed volume {self.V:.2e} m\u00b3 contains an ideal gas at a "
-            f"temperature of {self.T1_c}\u00b0C and a pressure of {self.P1:.2e} Pa. "
-            f"The gas is heated until its temperature reaches {self.T2_c}\u00b0C. "
-            f"Calculate the final pressure of the gas, assuming the volume remains constant."
+            "A rigid container of fixed volume contains an ideal gas. The gas is heated to a new temperature. "
+            "Based on the initial and final states shown in the diagram, calculate the final pressure of the gas. "
+            "(_) Pa (Example format: 254321.98 or 2.54E+05)"
         )
 
         self.reasoning = (
@@ -789,33 +746,34 @@ class Phy134:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(9, 5), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 6)
         ax.axis("off")
 
-        tank_1 = patches.Rectangle((1, 1.5), 2.5, 3, fc='#f8f9fa', ec='black', lw=2)
-        ax.add_patch(tank_1)
-        for _ in range(20):
-            ax.plot(rnd.uniform(1.2, 3.3), rnd.uniform(1.7, 4.3), 'o', color='black', markersize=3, alpha=0.6)
+        ax.add_patch(patches.Rectangle((1, 1.5), 2.5, 3, fc='white', ec='black', lw=3))
+        for _ in range(25):
+            ax.plot(rnd.uniform(1.2, 3.3), rnd.uniform(1.7, 4.3), 'ko', markersize=4)
         
-        ax.text(2.25, 5, "Initial State", ha='center', fontweight='bold')
-        ax.text(2.25, 1.1, f"$P_1 = {self.P1:.2e}$ Pa\n$T_1 = {self.T1_c}^\circ$C", ha='center', va='top')
+        ax.text(2.25, 5, "Initial State", ha='center', fontweight='bold', fontsize=12)
+        ax.text(2.25, 1.1, f"$P_1 = {self.P1:.2e}$ Pa\n$T_1 = {self.T1_c}^\circ$C", ha='center', va='top', fontsize=11, fontweight='bold')
 
         ax.annotate("", xy=(6, 3), xytext=(4, 3),
-                    arrowprops=dict(arrowstyle="->", lw=2, color='#e67e22'))
-        ax.text(5, 3.3, "HEATING\n($V = const$)", ha='center', color='#e67e22', fontweight='bold', fontsize=9)
+                    arrowprops=dict(arrowstyle="->", lw=3, color='black'))
+        ax.text(5, 3.4, "HEATING", ha='center', fontweight='bold', fontsize=11)
+        ax.text(5, 2.6, f"$V = {self.V:.2e}$ m$^3$\n(Constant)", ha='center', fontsize=10)
 
-        tank_2 = patches.Rectangle((6.5, 1.5), 2.5, 3, fc='#fff5f0', ec='black', lw=2)
-        ax.add_patch(tank_2)
-        for _ in range(20):
+        ax.add_patch(patches.Rectangle((6.5, 1.5), 2.5, 3, fc='white', ec='black', lw=3))
+        for _ in range(25):
             px, py = rnd.uniform(6.7, 8.8), rnd.uniform(1.7, 4.3)
-            ax.plot(px, py, 'o', color='black', markersize=3, alpha=0.6)
-            ax.arrow(px, py, rnd.uniform(-0.1, 0.1), rnd.uniform(-0.1, 0.1), head_width=0.03, alpha=0.4)
+            ax.plot(px, py, 'ko', markersize=4)
+            ax.arrow(px, py, rnd.uniform(-0.15, 0.15), rnd.uniform(-0.15, 0.15), head_width=0.04, color='black')
 
-        ax.text(7.75, 5, "Final State", ha='center', fontweight='bold')
-        ax.text(7.75, 1.1, f"$P_2 = ?$\n$T_2 = {self.T2_c}^\circ$C", ha='center', va='top')
+        ax.text(7.75, 5, "Final State", ha='center', fontweight='bold', fontsize=12)
+        ax.text(7.75, 1.1, f"$P_2 = ?$\n$T_2 = {self.T2_c}^\circ$C", ha='center', va='top', fontsize=11, fontweight='bold')
 
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
@@ -830,7 +788,7 @@ class Phy135:
             
             self.v_total = self.v1 + self.v2
             self.p_final = (self.p1 * self.v1 + self.p2 * self.v2) / self.v_total
-            self.answer = f"{self.p_final:.2e}"
+            self.answer = f"{self.p_final}"
 
             if self.p_final > 0:
                 break
@@ -842,11 +800,9 @@ class Phy135:
 
         self.description = (
             "The diagram shows two rigid cylinders, A and B, connected by a tube of "
-            "negligible volume with a closed valve. Cylinder A contains gas at "
-            f"pressure P_A = {self.p1:.2e} Pa and volume V_A = {self.v1:.2e} m\u00b3. "
-            f"Cylinder B contains gas at pressure P_B = {self.p2:.2e} Pa and volume V_B = {self.v2:.2e} m\u00b3. "
-            "Calculate the final pressure of the system after the valve is opened and "
-            "equilibrium is reached at a constant temperature."
+            "negligible volume with a closed valve. Using the initial parameters provided in the diagram, "
+            "calculate the final pressure of the system after the valve is opened and "
+            "equilibrium is reached at a constant temperature. (_) Pa (Example format: 2.345E+05)"
         )
 
         self.reasoning = (
@@ -856,7 +812,7 @@ class Phy135:
             f"&\\text{{Cylinder B: }} P_B = {self.p2:.2e}\\,\\text{{Pa}}, \\ V_B = {self.v2:.2e}\\,\\text{{m}}^3 \\\\[8pt]"
             "&\\mathbf{Step\ 2:\ State\ the\ Governing\ Principle} \\\\"
             "&\\text{{At constant temperature, the total }} PV \\text{{ product is conserved:}} \\\\"
-            "&P_{1}V_{1} + P_{2}V_{2} = P_{f}V_{f} \\\\[8pt]"
+            "&P_{A}V_{A} + P_{B}V_{B} = P_{final}V_{final} \\\\[8pt]"
             "&\\mathbf{Step\ 3:\ Calculate\ Total\ Volume} \\\\"
             f"&V_{{total}} = V_A + V_B = {self.v1:.2e} + {self.v2:.2e} = {self.v_total:.2e}\\,\\text{{m}}^3 \\\\[8pt]"
             "&\\mathbf{Step\ 4:\ Substitute\ and\ Solve\ for\ } P_{{final}} \\\\"
@@ -866,45 +822,39 @@ class Phy135:
             "\\end{aligned}\\]"
         )
 
-    def draw_cylinder(self, ax, x_center, width, height, color_base):
+    def draw_cylinder(self, ax, x_center, width, height):
         x_left = x_center - width/2
-        rect = patches.Rectangle((x_left, 1.5), width, height, fc=color_base, ec='black', lw=1.5, zorder=2)
+        rect = patches.Rectangle((x_left, 1.5), width, height, fc='white', ec='black', lw=2, zorder=2)
         ax.add_patch(rect)
-        top = patches.Ellipse((x_center, 1.5 + height), width, width*0.2, fc=color_base, ec='black', lw=1.5, zorder=3)
-        bottom = patches.Ellipse((x_center, 1.5), width, width*0.2, fc=color_base, ec='black', lw=1.5, zorder=1)
+        top = patches.Ellipse((x_center, 1.5 + height), width, width*0.2, fc='white', ec='black', lw=2, zorder=3)
+        bottom = patches.Ellipse((x_center, 1.5), width, width*0.2, fc='white', ec='black', lw=2, zorder=1)
         ax.add_patch(top)
         ax.add_patch(bottom)
-        light_effect = patches.Rectangle((x_center - width/4, 1.5), width/6, height, fc='white', alpha=0.3, zorder=2)
-        ax.add_patch(light_effect)
-        gauge_stem = patches.Rectangle((x_center - 0.05, 1.5 + height + 0.05), 0.1, 0.2, fc='gray', ec='black', zorder=1)
-        ax.add_patch(gauge_stem)
-        gauge_circle = plt.Circle((x_center, 1.5 + height + 0.4), 0.25, fc='white', ec='black', lw=1.5, zorder=4)
-        ax.add_patch(gauge_circle)
-        ax.text(x_center, 1.5 + height + 0.4, "P", ha='center', va='center', fontweight='bold', fontsize=10, zorder=5)
 
     def generate(self, num):
+        plt.style.use("default")
         fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 7)
         ax.axis("off")
 
-        self.draw_cylinder(ax, 2.5, 1.8, 3.0, '#add8e6')
-        ax.text(2.5, 3, f"A\n$V_A = {self.v1:.2e}$ m$^3$\n$P_A = {self.p1:.2e}$ Pa", ha='center', fontsize=9)
+        self.draw_cylinder(ax, 2.5, 1.8, 3.0)
+        ax.text(2.5, 2.8, f"Cylinder A\n$V_A = {self.v1:.2e}$ m$^3$\n$P_A = {self.p1:.2e}$ Pa", ha='center', fontsize=11, fontweight='bold')
 
-        self.draw_cylinder(ax, 7.5, 2.2, 3.5, '#98fb98')
-        ax.text(7.5, 3, f"B\n$V_B = {self.v2:.2e}$ m$^3$\n$P_B = {self.p2:.2e}$ Pa", ha='center', fontsize=9)
+        self.draw_cylinder(ax, 7.5, 2.2, 3.5)
+        ax.text(7.5, 3.0, f"Cylinder B\n$V_B = {self.v2:.2e}$ m$^3$\n$P_B = {self.p2:.2e}$ Pa", ha='center', fontsize=11, fontweight='bold')
 
-        ax.add_patch(patches.Rectangle((3.4, 2.9), 1.3, 0.3, fc='gray', ec='black', zorder=1))
-        ax.add_patch(patches.Rectangle((5.3, 2.9), 1.1, 0.3, fc='gray', ec='black', zorder=1))
-        valve_body = plt.Circle((5, 3.05), 0.35, fc='red', ec='black', lw=1.5, zorder=5)
-        ax.add_patch(valve_body)
-        ax.plot([4.7, 5.3], [3.5, 3.5], color='black', lw=4, zorder=6) 
-        ax.text(5, 2.4, "Valve (Closed)", ha='center', fontweight='bold', color='red', fontsize=8)
+        ax.add_patch(patches.Rectangle((3.4, 2.9), 1.3, 0.4, fc='white', ec='black', lw=2, zorder=1))
+        ax.add_patch(patches.Rectangle((5.3, 2.9), 1.1, 0.4, fc='white', ec='black', lw=2, zorder=1))
+        
+        ax.plot([5, 5], [2.7, 3.5], color='black', lw=4, zorder=5)
+        ax.text(5, 2.2, "Valve\n(Closed)", ha='center', fontweight='bold', fontsize=10)
 
-        ax.text(5, 6.2, "Gas Mixing Equilibrium", ha='center', fontsize=14, fontweight='bold')
-        ax.text(5, 5.6, r" $P_{final}$ = ?", ha='center', 
-                style='italic', bbox=dict(facecolor='yellow', alpha=0.2, boxstyle='round'))
+        ax.text(5, 6.2, "ISOTHERMAL GAS MIXING", ha='center', fontsize=14, fontweight='bold')
+        ax.text(5, 5.6, r"Find $P_{final}$", ha='center', fontsize=12, fontweight='bold',
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
@@ -920,7 +870,7 @@ class Phy136:
                 break
 
         self.v_rms = math.sqrt((3 * self.pressure) / self.density)
-        self.answer = f"{self.v_rms:.2f}"
+        self.answer = f"{self.v_rms}"
 
         self.topic = "Ideal Gases"
         self.subtopic = "Kinetic theory of gases"
@@ -928,10 +878,9 @@ class Phy136:
         self.curriculum = "A-Level"
 
         self.description = (
-            f"A sample of an ideal gas is maintained at a pressure of {self.pressure:.2e} Pa "
-            f"and a temperature of {self.temperature} K. The density of the gas under these "
-            f"conditions is {self.density:.2f} kg m\u207b\u00b3. Calculate the root-mean-square "
-            f"(r.m.s.) speed of the gas atoms."
+            "A sample of an ideal gas is maintained in a rigid container. "
+            "Based on the state parameters provided in the diagram, calculate the root-mean-square "
+            "(r.m.s.) speed of the gas atoms. (_) m s^-1 (Example format: 456.78)"
         )
 
         self.reasoning = (
@@ -962,42 +911,43 @@ class Phy136:
         x_start = 3
         y_start = 1.5
 
-        rect = patches.Rectangle((x_start, y_start), tank_width, tank_height, fc='#f8f9fa', ec='black', lw=2, zorder=1)
+        rect = patches.Rectangle((x_start, y_start), tank_width, tank_height, fc='white', ec='black', lw=2, zorder=1)
         ax.add_patch(rect)
         
-        top_ellipse = patches.Ellipse((x_start + tank_width/2, y_start + tank_height), tank_width, 0.8, fc='#f8f9fa', ec='black', lw=2, zorder=2)
+        top_ellipse = patches.Ellipse((x_start + tank_width/2, y_start + tank_height), tank_width, 0.8, fc='white', ec='black', lw=2, zorder=2)
         ax.add_patch(top_ellipse)
         
-        bottom_ellipse = patches.Ellipse((x_start + tank_width/2, y_start), tank_width, 0.8, fc='#f8f9fa', ec='black', lw=2, zorder=0)
+        bottom_ellipse = patches.Ellipse((x_start + tank_width/2, y_start), tank_width, 0.8, fc='white', ec='black', lw=2, zorder=0)
         ax.add_patch(bottom_ellipse)
 
         for _ in range(25):
             px = rnd.uniform(x_start + 0.3, x_start + tank_width - 0.3)
             py = rnd.uniform(y_start + 0.3, y_start + tank_height - 0.3)
-            ax.plot(px, py, 'o', color='black', markersize=3, alpha=0.7)
+            ax.plot(px, py, 'o', color='black', markersize=4, zorder=3)
             
             angle = rnd.uniform(0, 2 * math.pi)
-            length = rnd.uniform(0.2, 0.5)
+            length = rnd.uniform(0.3, 0.6)
             ax.arrow(px, py, length * math.cos(angle), length * math.sin(angle), 
-                     head_width=0.08, fc='black', ec='black', alpha=0.4)
+                     head_width=0.08, fc='black', ec='black', alpha=0.6, zorder=3)
 
-        ax.text(x_start + tank_width/2, y_start + tank_height + 1.0, "Ideal Gas in Rigid Container", 
-                ha='center', fontsize=12, fontweight='bold')
+        ax.text(x_start + tank_width/2, y_start + tank_height + 1.0, "Ideal Gas Container", 
+                ha='center', fontsize=14, fontweight='bold')
 
         info_box = (
             f"Pressure ($P$) = {self.pressure:.2e} Pa\n"
             f"Density ($\\rho$) = {self.density:.2f} kg m$^{{-3}}$\n"
             f"Temperature ($T$) = {self.temperature} K"
         )
-        ax.text(x_start + tank_width + 0.5, y_start + tank_height/2, info_box, 
-                va='center', fontsize=10, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
+        ax.text(0.02, 0.98, info_box, transform=ax.transAxes,
+                va='top', ha='left', fontsize=11, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.text(x_start - 0.5, y_start + tank_height/2, r"$c_{rms} = ?$", 
-                ha='right', va='center', fontsize=14, fontweight='bold', color='#c0392b')
+        ax.text(x_start - 0.5, y_start + tank_height/2, r"Find $c_{rms}$", 
+                ha='right', va='center', fontsize=14, fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
+
 
 class Phy137:
     def __init__(self):
@@ -1014,7 +964,7 @@ class Phy137:
                 break
 
         self.v2 = self.v1 * math.sqrt(self.T2_k / self.T1_k)
-        self.answer = f"{self.v2:.2f}"
+        self.answer = f"{self.v2}"
         
         t1_val = f"{self.T1_k:.2f}"
         t2_val = f"{self.T2_k:.2f}"
@@ -1025,9 +975,8 @@ class Phy137:
         self.curriculum = "A-Level"
 
         self.description = (
-            f"Helium, behaving as an ideal gas, has molecules with a root-mean-square (r.m.s.) speed "
-            f"of {self.v1} m s\u207b\u00b9 at a temperature of {self.T1_c}\u00b0C. "
-            f"Calculate the r.m.s. speed of the molecules when the gas is heated to {self.T2_c}\u00b0C."
+            "Helium behaves as an ideal gas. Based on the initial parameters and the final temperature shown in the diagram, "
+            "calculate the final root-mean-square (r.m.s.) speed of the molecules after heating. (_) m s^-1 (Example format: 1234.56)"
         )
 
         self.reasoning = (
@@ -1051,47 +1000,48 @@ class Phy137:
         ax.set_ylim(0, 6)
         ax.axis("off")
 
-        def draw_state(x_offset, temp_c, v_rms, label, color):
-            rect = patches.FancyBboxPatch((x_offset, 2), 2.5, 2.5, boxstyle="round,pad=0.1", fc='#fdfdfd', ec='black', lw=1.5)
+        def draw_state(x_offset, temp_c, v_rms, label):
+            rect = patches.FancyBboxPatch((x_offset, 2), 2.5, 2.5, boxstyle="round,pad=0.1", fc='white', ec='black', lw=2)
             ax.add_patch(rect)
             ax.text(x_offset + 1.25, 5.0, label, ha='center', fontweight='bold', fontsize=12)
             
-            for _ in range(12):
+            for _ in range(15):
                 px = rnd.uniform(x_offset + 0.3, x_offset + 2.2)
                 py = rnd.uniform(2.3, 4.2)
-                ax.plot(px, py, 'o', color='black', markersize=3, alpha=0.6)
+                ax.plot(px, py, 'ko', markersize=4)
                 scale = 0.3 if label == "Initial State" else 0.5
                 ax.arrow(px, py, rnd.uniform(-scale, scale), rnd.uniform(-scale, scale), 
-                         head_width=0.03, color=color, alpha=0.7)
+                         head_width=0.04, color='black', alpha=0.8)
 
-            v_display = f"{v_rms}" if isinstance(v_rms, int) else "v_2"
+            v_display = f"{v_rms}" if isinstance(v_rms, int) else "?"
             info = f"$T = {temp_c}^\circ$C\n$v_{{rms}} = {v_display}$ m/s"
-            ax.text(x_offset + 1.25, 1.8, info, ha='center', va='top', fontsize=10, bbox=dict(facecolor='white', alpha=0.5))
+            ax.text(x_offset + 1.25, 1.6, info, ha='center', va='top', fontsize=11, fontweight='bold')
 
-        draw_state(1, self.T1_c, self.v1, "Initial State", "blue")
-        draw_state(6.5, self.T2_c, "v2", "Final State", "red")
+        draw_state(1, self.T1_c, self.v1, "Initial State")
+        draw_state(6.5, self.T2_c, "v2", "Final State")
 
         ax.annotate("", xy=(6, 3.25), xytext=(4, 3.25),
-                    arrowprops=dict(arrowstyle="->", lw=2, color='orange'))
-        ax.text(5, 3.5, "HEATING", ha='center', fontweight='bold', color='orange')
+                    arrowprops=dict(arrowstyle="->", lw=3, color='black'))
+        ax.text(5, 3.5, "HEATING", ha='center', fontweight='bold', fontsize=11)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
         plt.close()
+
 
 class Phy138:
     def __init__(self):
         while True:
             self.t_low = rnd.randint(300, 500)
             self.t_high = self.t_low + rnd.randint(400, 700)
-            self.m_mass_g = 32.0  # Oxygen in g/mol
-            self.m_mass_kg = self.m_mass_g / 1000  # kg/mol
+            self.m_mass_g = 32.0 
+            self.m_mass_kg = self.m_mass_g / 1000  
             self.R = 8.31
             
             self.vp_low = np.sqrt(2 * self.R * self.t_low / self.m_mass_kg)
             self.vp_high = np.sqrt(2 * self.R * self.t_high / self.m_mass_kg)
             
-            self.answer = f"{self.vp_high:.0f}"
+            self.answer = f"{self.vp_high}"
             
             if self.vp_high > 500:
                 break
@@ -1103,11 +1053,10 @@ class Phy138:
 
         self.description = (
             "The provided graph illustrates the distribution of molecular speeds for oxygen gas at two different temperatures. "
-            f"Curve A corresponds to T1 = {self.t_low} K. Curve B corresponds to a higher temperature T2 = {self.t_high} K. "
-            "Identify the characteristics of the distribution and calculate the most probable speed (v_p) for the gas at T2."
+            "Identify the characteristics of the distribution and calculate the most probable speed (v_p) for the gas at the higher temperature T_2. "
+            "(_) m s^-1 (Example format: 534.21)"
         )
 
-        # Pre-formatting strings to avoid backslash issues in f-strings
         t2_val = f"{self.t_high}"
         m_val = f"{self.m_mass_kg:.3f}"
         
@@ -1140,38 +1089,36 @@ class Phy138:
         f_low = maxwell_boltzmann(v, self.t_low, self.m_mass_kg)
         f_high = maxwell_boltzmann(v, self.t_high, self.m_mass_kg)
 
-        ax.plot(v, f_low, color='#1f77b4', lw=2.5, label=f'Curve A ($T_1 = {self.t_low}$ K)')
-        ax.plot(v, f_high, color='#d62728', lw=2.5, label=f'Curve B ($T_2 = {self.t_high}$ K)')
+        ax.plot(v, f_low, color='black', lw=2.5, ls='-', label=f'Curve A ($T_1 = {self.t_low}$ K)')
+        ax.plot(v, f_high, color='black', lw=2.5, ls='--', label=f'Curve B ($T_2 = {self.t_high}$ K)')
 
-        ax.set_xlabel('Molecular Speed $v$ / m s$^{-1}$', fontsize=11)
-        ax.set_ylabel('Relative Probability $f(v)$', fontsize=11)
-        ax.set_title('Maxwell-Boltzmann Speed Distribution', fontweight='bold', fontsize=13)
+        ax.set_xlabel('Molecular Speed $v$ / m s$^{-1}$', fontsize=12, fontweight='bold')
+        ax.set_ylabel('Relative Probability $f(v)$', fontsize=12, fontweight='bold')
+        ax.set_title('Maxwell-Boltzmann Distribution for Oxygen', fontweight='bold', fontsize=14, pad=15)
         
-        ax.legend(frameon=True, loc='upper right')
-        ax.grid(True, linestyle=':', alpha=0.7)
+        ax.legend(frameon=True, loc='upper right', edgecolor='black')
+        ax.grid(True, linestyle=':', alpha=0.5, color='black')
         
         ax.set_xlim(0, 1800)
         ax.set_ylim(0, max(f_low) * 1.15)
         
-        # Mark peak for T2
-        ax.vlines(self.vp_high, 0, max(f_high), colors='gray', linestyles='dashed', alpha=0.5)
-        ax.text(self.vp_high, max(f_high)*1.02, '$v_p$', ha='center', fontweight='bold', color='#d62728')
+        ax.vlines(self.vp_high, 0, max(f_high), colors='black', linestyles='dotted', lw=2)
+        ax.text(self.vp_high + 0.2, max(f_high)*1.05, '$v_p = ?$', ha='center', fontweight='bold')
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300)
         plt.close()
 
+
 class Phy139:
     def __init__(self):
         while True:
-            # Menggunakan nilai yang menghasilkan perbedaan signifikan untuk arah kerja
-            self.delta_U_kJ = rnd.randint(30, 80)  # Kenaikan energi internal
-            self.Q_kJ = rnd.randint(10, 60)        # Panas yang masuk
+            self.delta_U_kJ = rnd.randint(30, 80)
+            self.Q_kJ = rnd.randint(10, 60)
             
-            # W = Q - deltaU
             self.W_kJ = self.Q_kJ - self.delta_U_kJ
-            self.answer = f"{abs(self.W_kJ):.1f}"
+            self.answer = f"{abs(self.W_kJ)}"
             self.work_direction = "on the gas" if self.W_kJ < 0 else "by the gas"
 
             if self.Q_kJ != self.delta_U_kJ:
@@ -1183,13 +1130,11 @@ class Phy139:
         self.curriculum = "A-Level"
 
         self.description = (
-            f"A monatomic gas is contained within a flexible balloon. The gas undergoes a process where "
-            f"its internal energy increases by {self.delta_U_kJ} kJ while {self.Q_kJ} kJ of thermal energy "
-            f"is transferred into the gas. Calculate the magnitude of the work done and determine "
-            f"whether the work is done by the gas or on the gas."
+            "A monatomic gas is contained within a flexible balloon. "
+            "Based on the thermodynamic values provided in the diagram, calculate the magnitude of the work done. "
+            "(_) kJ (Example format: 25.0)"
         )
 
-        # Pre-formatting for LaTeX
         du_val = f"{self.delta_U_kJ}"
         q_val = f"{self.Q_kJ}"
         w_val = f"{self.W_kJ}"
@@ -1216,31 +1161,26 @@ class Phy139:
         ax.set_ylim(0, 8)
         ax.axis("off")
 
-        # Representasi Balon yang lebih realistis
-        balloon_body = patches.Ellipse((5, 4.5), 4, 4.5, fc='#ff6666', ec='#990000', lw=2, alpha=0.7, zorder=2)
+        balloon_body = patches.Ellipse((5, 4.5), 4, 4.5, fc='white', ec='black', lw=3, zorder=2)
         ax.add_patch(balloon_body)
         
-        # Simpul balon
         nodes = [[4.8, 2.3], [5.2, 2.3], [5, 2.6]]
-        polygon = patches.Polygon(nodes, fc='#ff6666', ec='#990000', lw=1.5, zorder=1)
+        polygon = patches.Polygon(nodes, fc='white', ec='black', lw=2, zorder=1)
         ax.add_patch(polygon)
 
-        # Panas Masuk (Q)
         ax.annotate("", xy=(3.5, 4.5), xytext=(1, 4.5),
                     arrowprops=dict(arrowstyle="->", lw=3, color='black', mutation_scale=20))
-        ax.text(1.2, 4.8, f"$Q = +{self.Q_kJ}$ kJ\n(Heat In)", color='black', fontweight='bold', ha='center')
+        ax.text(1.2, 4.8, f"$Q = +{self.Q_kJ}$ kJ\n(Heat In)", color='black', fontweight='bold', ha='center', fontsize=11)
 
-        # Kerja (W) - Ditandai dengan tanda tanya untuk memicu penalaran
         ax.annotate("", xy=(8.5, 4.5), xytext=(6.5, 4.5),
                     arrowprops=dict(arrowstyle="<-", lw=3, color='black', mutation_scale=20))
         ax.text(8.5, 4.5, "$W = ?$", color='black', fontsize=14, fontweight='bold', va='center')
 
-        # Label Energi Internal di Tengah
         ax.text(5, 4.5, f"$\\Delta U = +{self.delta_U_kJ}$ kJ", 
-                ha='center', va='center', fontweight='bold', color='white',
-                bbox=dict(facecolor='black', alpha=0.3, boxstyle='round,pad=0.3'))
+                ha='center', va='center', fontweight='bold', fontsize=12,
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.set_title("Thermodynamic System: Balloon", fontsize=14, fontweight='bold', pad=20)
+        ax.set_title("THERMODYNAMICS: BALLOON EXPANSION", fontsize=14, fontweight='bold', pad=20)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1263,7 +1203,7 @@ class Phy140:
 
         self.W = self.Q - self.delta_U
         self.delta_V = self.W / self.pressure
-        self.answer = f"{abs(self.delta_V):.2f}"
+        self.answer = f"{abs(self.delta_V)}"
 
         self.topic = "Thermodynamics"
         self.subtopic = "First law of thermodynamics"
@@ -1276,10 +1216,9 @@ class Phy140:
         w_val = f"{self.W}"
 
         self.description = (
-            f"An ideal gas is held in a cylinder and expands at a constant pressure of {self.pressure_kPa} kPa. "
-            f"The internal energy of the gas increases by {self.delta_U_kJ} kJ "
-            f"while {self.Q_kJ} kJ of heat is transferred to the gas. "
-            "Calculate the magnitude of the change in volume of the gas."
+            "An ideal gas is held in a cylinder and expands at a constant pressure. "
+            "Using the thermodynamic values shown in the diagram, calculate the magnitude of the change in volume of the gas. "
+            "(_) m^3 (Example format: 0.150)"
         )
 
         self.reasoning = (
@@ -1305,36 +1244,36 @@ class Phy140:
         ax.set_ylim(0, 10)
         ax.axis("off")
 
-        cylinder_back = patches.Rectangle((3, 1.5), 4, 6, fc='#f0f0f0', ec='black', lw=2, zorder=0)
+        cylinder_back = patches.Rectangle((3, 1.5), 4, 6, fc='none', ec='black', lw=3, zorder=0)
         ax.add_patch(cylinder_back)
         
-        gas_region = patches.Rectangle((3, 1.5), 4, 3.5, fc='#ffcccc', alpha=0.5, zorder=1)
+        gas_region = patches.Rectangle((3, 1.5), 4, 3.5, fc='white', hatch='//', alpha=0.5, zorder=1)
         ax.add_patch(gas_region)
         
-        for _ in range(20):
-            ax.plot(rnd.uniform(3.2, 6.8), rnd.uniform(1.7, 4.8), 'o', color='#cc0000', markersize=3, alpha=0.6, zorder=2)
+        for _ in range(25):
+            ax.plot(rnd.uniform(3.2, 6.8), rnd.uniform(1.7, 4.8), 'ko', markersize=4, zorder=2)
 
-        piston = patches.Rectangle((3, 4.8), 4, 0.4, fc='gray', ec='black', lw=1.5, zorder=3)
+        piston = patches.Rectangle((3, 4.8), 4, 0.4, fc='white', ec='black', lw=2, zorder=3)
         ax.add_patch(piston)
-        piston_rod = patches.Rectangle((4.8, 5.2), 0.4, 2.5, fc='gray', ec='black', lw=1.5, zorder=3)
+        piston_rod = patches.Rectangle((4.8, 5.2), 0.4, 2.5, fc='white', ec='black', lw=2, zorder=3)
         ax.add_patch(piston_rod)
 
-        ax.plot([3, 7], [3.5, 3.5], '--', color='black', alpha=0.4)
+        ax.plot([3, 7], [3.5, 3.5], '--', color='black', lw=1.5)
         ax.annotate("", xy=(8, 5), xytext=(8, 3.5),
-                    arrowprops=dict(arrowstyle="<->", lw=2, color='blue'))
-        ax.text(8.2, 4.25, "$\\Delta V$", color='blue', fontweight='bold', fontsize=12)
+                    arrowprops=dict(arrowstyle="<->", lw=2, color='black'))
+        ax.text(8.3, 4.25, "$\\Delta V = ?$", color='black', fontweight='bold', fontsize=12)
 
         ax.annotate("", xy=(3.5, 3), xytext=(1.5, 2),
-                    arrowprops=dict(arrowstyle="fancy", fc="orange", ec="none", mutation_scale=20))
-        ax.text(1.0, 1.5, f"$Q = +{self.Q_kJ}$ kJ", color='#e67e22', fontweight='bold', ha='center')
+                    arrowprops=dict(arrowstyle="->", lw=3, color='black', mutation_scale=20))
+        ax.text(1.0, 1.5, f"$Q = +{self.Q_kJ}$ kJ", color='black', fontweight='bold', ha='center', fontsize=11)
 
-        ax.text(5, 3.2, f"$\\Delta U = +{self.delta_U_kJ}$ kJ", ha='center', fontweight='bold', color='white',
-                bbox=dict(facecolor='black', alpha=0.4, boxstyle='round,pad=0.3'))
+        ax.text(5, 3.2, f"$\\Delta U = +{self.delta_U_kJ}$ kJ", ha='center', fontweight='bold', fontsize=11,
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
         ax.text(5, 9, f"Constant Pressure\n$P = {self.pressure_kPa}$ kPa", 
-                ha='center', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', ec='black', boxstyle='round'))
+                ha='center', fontsize=12, fontweight='bold', bbox=dict(facecolor='white', ec='black', boxstyle='round,pad=0.5'))
 
-        ax.set_title("GAS IN CYLINDER", fontsize=14, fontweight='bold', pad=20)
+        ax.set_title("GAS EXPANSION IN CYLINDER", fontsize=14, fontweight='bold', pad=20)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1355,7 +1294,7 @@ class Phy141:
         self.Q = self.mass * self.latent_heat
         self.W = self.pressure * self.delta_volume
         self.delta_U = self.Q - self.W
-        self.answer = f"{self.delta_U:.2e}"
+        self.answer = f"{self.delta_U}"
 
         self.topic = "Thermal physics"
         self.subtopic = "First law of thermodynamics"
@@ -1370,11 +1309,9 @@ class Phy141:
         w_val = f"{self.W:.2e}"
 
         self.description = (
-            f"A mass of {m_str} kg of liquid water at 100°C is completely converted to steam at the same temperature. "
-            f"The specific latent heat of vaporisation is {l_str} J kg\u207b\u00b9. "
-            f"The process occurs against a constant atmospheric pressure of {p_str} Pa, "
-            f"resulting in a volume increase of {dv_str} m\u00b3. "
-            f"Calculate the increase in the internal energy of the system."
+            "Liquid water at 100°C is completely converted to steam at the same temperature. "
+            "Based on the specific data provided in the diagram, calculate the increase in the "
+            "internal energy of the system. (_) J (Example format: 1.23E+06)"
         )
 
         self.reasoning = (
@@ -1401,40 +1338,38 @@ class Phy141:
         ax.set_ylim(0, 10)
         ax.axis("off")
 
-        beaker = patches.Rectangle((3, 1), 4, 7, fc='none', ec='black', lw=2, zorder=3)
+        beaker = patches.Rectangle((3, 1), 4, 7, fc='none', ec='black', lw=3, zorder=3)
         ax.add_patch(beaker)
 
         water_level = 2.5
-        water = patches.Rectangle((3, 1), 4, water_level - 1, fc='#3498db', alpha=0.5, zorder=2)
+        water = patches.Rectangle((3, 1), 4, water_level - 1, fc='white', hatch='--', ec='black', zorder=2)
         ax.add_patch(water)
+        ax.text(5, 1.5, "Liquid Water", ha='center', fontweight='bold')
 
-        for _ in range(15):
+        for _ in range(25):
             bx = rnd.uniform(3.2, 6.8)
-            by = rnd.uniform(1.2, water_level - 0.2)
-            ax.add_patch(patches.Circle((bx, by), 0.1, color='white', alpha=0.8, zorder=3))
+            by = rnd.uniform(water_level + 0.5, 7.5)
+            ax.plot(bx, by, 'ko', markersize=3, zorder=3)
 
         for i in range(5):
             sx = 3.5 + i * 0.75
-            ax.annotate("", xy=(sx, 7), xytext=(sx, 3),
-                        arrowprops=dict(arrowstyle="->", color='#95a5a6', lw=1.5, alpha=0.6))
+            ax.annotate("", xy=(sx, 7.5), xytext=(sx, water_level + 0.2),
+                        arrowprops=dict(arrowstyle="->", color='black', lw=1.5, ls=':'))
 
         ax.annotate("", xy=(5, 1), xytext=(5, -0.5),
-                    arrowprops=dict(arrowstyle="<-", color='red', lw=3))
-        ax.text(5, -0.8, f"$L = {self.latent_heat:.2e}$ J/kg", 
-                color='red', fontweight='bold', ha='center')
+                    arrowprops=dict(arrowstyle="->", color='black', lw=3))
+        ax.text(5, -1.0, f"Heat Source\n$L_v = {self.latent_heat:.2e}$ J/kg", 
+                color='black', fontweight='bold', ha='center')
 
         data_box = (
             f"Mass ($m$) = {self.mass:.2f} kg\n"
             f"Pressure ($P$) = {self.pressure:.2e} Pa\n"
-            f"$\\Delta V = {self.delta_volume:.2f}$ m$^3$"
+            f"Volume increase $\\Delta V = {self.delta_volume:.2f}$ m$^3$"
         )
-        ax.text(0.5, 8.5, data_box, fontsize=10, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
+        ax.text(0.02, 0.98, data_box, transform=ax.transAxes, va='top', ha='left',
+                fontsize=11, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.annotate("", xy=(5, 8.5), xytext=(5, 7.5),
-                    arrowprops=dict(arrowstyle="->", lw=2, color='blue'))
-        ax.text(5, 8.8, "Work against $P_{atm}$", color='blue', ha='center', fontweight='bold')
-
-        ax.text(5, 9.5, "VAPORISATION", ha='center', fontsize=14, fontweight='bold')
+        ax.set_title("VAPORISATION OF WATER", fontsize=14, fontweight='bold', pad=15)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1457,7 +1392,7 @@ class Phy142:
             if self.max_speed > 0.1:
                 break
 
-        self.answer = f"{self.max_speed:.3f}"
+        self.answer = f"{self.max_speed}"
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
@@ -1470,10 +1405,10 @@ class Phy142:
         arc_str = f"{self.length * self.theta_rad:.4f}"
 
         self.description = (
-            f"A simple pendulum consists of a small bob attached to a string of length {l_str} m. "
-            f"The pendulum is released from rest at an angle of {ang_str}\u00b0 to the vertical. "
-            f"Assuming the motion is simple harmonic, calculate the maximum speed of the bob "
-            f"during its oscillation. (g = {g_str} m s\u207b\u00b2)"
+            "A simple pendulum consists of a small bob attached to a string. "
+            "The pendulum is released from rest from the position shown in the diagram. "
+            "Assuming the motion is simple harmonic, calculate the maximum speed of the bob "
+            f"during its oscillation. (Use g = {g_str} m s\u207b\u00b2). (_) m s^-1 (Example format: 0.123)"
         )
 
         self.reasoning = (
@@ -1493,50 +1428,45 @@ class Phy142:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 8), dpi=300)
-        ax.set_xlim(-4, 4)
-        ax.set_ylim(-1, 9)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(5, 6.5), dpi=300)
+        ax.set_xlim(-3.5, 3.5)
+        ax.set_ylim(0, 8.5)
         ax.set_aspect('equal')
         ax.axis("off")
 
-        ax.add_patch(patches.Rectangle((-3, 8), 6, 0.4, facecolor='#dfe6e9', edgecolor='#2d3436', hatch='///', zorder=1))
-        ax.plot([-3, 3], [8, 8], color='#2d3436', lw=2.5, zorder=2)
+        ax.add_patch(patches.Rectangle((-2.5, 8), 5, 0.3, facecolor='white', edgecolor='black', hatch='///', lw=2, zorder=1))
+        ax.plot([-3, 3], [8, 8], color='black', lw=3, zorder=2)
 
         pivot_x, pivot_y = 0, 8
-        v_scale = 6.5  
+        v_scale = 5.0
         angle_rad = math.radians(self.theta_degrees)
         bob_x = v_scale * math.sin(angle_rad)
         bob_y = pivot_y - v_scale * math.cos(angle_rad)
 
-        ax.plot([0, 0], [pivot_y, pivot_y - v_scale - 0.7], color='#b2bec3', linestyle='--', lw=1.2, alpha=0.8)
+        ax.plot([0, 0], [pivot_y, pivot_y - v_scale - 0.6], color='black', linestyle='--', lw=1.5, alpha=0.5)
+        ax.plot([pivot_x, bob_x], [pivot_y, bob_y], color='black', lw=2.5, zorder=3)
 
-        ax.plot([pivot_x, bob_x], [pivot_y, bob_y], color='#2d3436', lw=2, zorder=3)
+        ax.text(bob_x/2 + 0.3, (pivot_y + bob_y)/2, f"$L = {self.length:.2f}$ m", 
+                color='black', fontweight='bold', fontsize=11, 
+                bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, pad=0.5))
 
-        ax.text(bob_x/2 + 0.4, (pivot_y + bob_y)/2, f"$L = {self.length:.2f}$ m", 
-                color='#2d3436', rotation=-self.theta_degrees, fontweight='bold', fontsize=11, 
-                bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, pad=1))
-
- 
-        bob = patches.Circle((bob_x, bob_y), 0.4, facecolor='#d63031', edgecolor='#831010', lw=1.5, zorder=5)
+        bob = patches.Circle((bob_x, bob_y), 0.4, facecolor='white', edgecolor='black', lw=2.5, zorder=5)
         ax.add_patch(bob)
 
-        highlight = patches.Circle((bob_x - 0.12, bob_y + 0.12), 0.1, facecolor='white', alpha=0.4, zorder=6)
-        ax.add_patch(highlight)
-
-        arc_radius = 1.8
+        arc_radius = 2.0
         angle_arc = patches.Arc((pivot_x, pivot_y), arc_radius*2, arc_radius*2, 
                                 theta1=270, theta2=270+self.theta_degrees, 
-                                color='#0984e3', lw=2.5)
+                                color='black', lw=2)
         ax.add_patch(angle_arc)
-        ax.text(0.4, pivot_y - arc_radius - 0.4, f"$\\theta = {self.theta_degrees}^\\circ$", 
-                color='#0984e3', fontsize=12, fontweight='bold')
+        ax.text(0.5, pivot_y - arc_radius - 0.2, f"$\\theta = {self.theta_degrees}^\\circ$", 
+                color='black', fontsize=11, fontweight='bold')
 
-        ax.text(0, pivot_y - v_scale - 1.2, f"$v_{{max}}$\n$g = {self.g}$ m/s$^2$", 
-                color='white', fontsize=11, fontweight='bold', ha='center', 
-                style='italic', bbox=dict(facecolor='black', edgecolor='black', boxstyle='round,pad=0.5'))
+        ax.text(0, pivot_y - v_scale - 1.2, r"Find $v_{max}$ at equilibrium", 
+                color='black', fontsize=11, fontweight='bold', ha='center', 
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
         
-        ax.set_title("SIMPLE PENDULUM OSCILLATION", 
-                     fontsize=15, fontweight='bold', color='#2d3436', pad=25)
+        ax.set_title("PENDULUM OSCILLATION", fontsize=14, fontweight='bold', pad=15)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1553,7 +1483,7 @@ class Phy143:
             if self.period > 0.4:
                 break
 
-        self.answer = f"{self.frequency:.3f}"
+        self.answer = f"{self.frequency}"
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
@@ -1564,9 +1494,10 @@ class Phy143:
         T_val = f"{self.period:.4f}"
 
         self.description = (
-            f"A simple pendulum is observed undergoing small-angle oscillations. "
-            f"A student uses a stopwatch to measure the time taken for {n_str} complete oscillations, "
-            f"recording a value of {t_str} s. Determine the frequency of the oscillation."
+            "A simple pendulum is observed undergoing small-angle oscillations. "
+            "A student uses a stopwatch to measure the time taken for a specific number of complete oscillations. "
+            "Using the measurement data from the diagram, determine the frequency of the oscillation. "
+            "(_) Hz (Example format: 0.543)"
         )
 
         self.reasoning = (
@@ -1584,50 +1515,48 @@ class Phy143:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(8, 7), dpi=300)
-        ax.set_xlim(-5, 5)
-        ax.set_ylim(-1, 9)
+        plt.style.use("default")
+        fig, ax = plt.subplots(figsize=(6, 6.5), dpi=300)
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(0, 8.5)
         ax.set_aspect('equal')
         ax.axis("off")
 
-        ax.add_patch(patches.Rectangle((-2.5, 8), 5, 0.3, facecolor='#dfe6e9', edgecolor='#2d3436', hatch='///'))
-        ax.plot([-2.5, 2.5], [8, 8], color='#2d3436', lw=2)
+        ax.add_patch(patches.Rectangle((-2.5, 8), 5, 0.3, facecolor='white', edgecolor='black', hatch='///', lw=2))
+        ax.plot([-3, 3], [8, 8], color='black', lw=3)
 
         pivot_x, pivot_y = 0, 8
-        v_length = 6.0
+        v_length = 5.0
         angle_deg = 12
         angle_rad = math.radians(angle_deg)
         
         bob_x = v_length * math.sin(angle_rad)
         bob_y = pivot_y - v_length * math.cos(angle_rad)
 
-        ax.plot([0, 0], [pivot_y, pivot_y - v_length - 0.5], color='#b2bec3', linestyle='--', lw=1)
-
-        ax.plot([pivot_x, bob_x], [pivot_y, bob_y], color='#2d3436', lw=1.5, zorder=2)
+        ax.plot([0, 0], [pivot_y, pivot_y - v_length - 0.6], color='black', linestyle='--', lw=1.5, alpha=0.5)
+        ax.plot([pivot_x, bob_x], [pivot_y, bob_y], color='black', lw=2.5, zorder=2)
         
         path_arc = patches.Arc((pivot_x, pivot_y), v_length*2, v_length*2, 
                                theta1=270-angle_deg, theta2=270+angle_deg, 
-                               color='#b2bec3', linestyle=':', lw=1)
+                               color='black', linestyle=':', lw=1.5)
         ax.add_patch(path_arc)
 
-        bob = patches.Circle((bob_x, bob_y), 0.35, facecolor='#d63031', edgecolor='#831010', lw=1.5, zorder=5)
+        bob = patches.Circle((bob_x, bob_y), 0.35, facecolor='white', edgecolor='black', lw=2.5, zorder=5)
         ax.add_patch(bob)
-        highlight = patches.Circle((bob_x - 0.1, bob_y + 0.1), 0.08, facecolor='white', alpha=0.4, zorder=6)
-        ax.add_patch(highlight)
 
         ax.annotate("", xy=(-bob_x, bob_y), xytext=(bob_x, bob_y),
                     arrowprops=dict(arrowstyle="<->", connectionstyle="arc3,rad=-0.15", 
-                    color='#0984e3', lw=1.5, alpha=0.6))
+                                    color='black', lw=2))
 
         info_box = (
-            f"$\\mathbf{{Measurement\ Data:}}$\n"
+            f"$\\mathbf{{Stopwatch\\ Data:}}$\n"
             f"Total time ($t$) = {self.total_time:.2f} s\n"
-            f"Oscillations ($N$) = {self.num_oscillations}"
+            f"Complete Oscillations ($N$) = {self.num_oscillations}"
         )
-        ax.text(-4.5, 0.5, info_box, fontsize=11, 
-                bbox=dict(facecolor='white', edgecolor='#bdc3c7', boxstyle='round,pad=0.8', alpha=0.9))
+        ax.text(-3.8, 1.0, info_box, fontsize=11, 
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.6', lw=1.5))
 
-        ax.set_title("PENDULUM FREQUENCY MEASUREMENT", fontsize=14, fontweight='bold', pad=20)
+        ax.set_title("PENDULUM FREQUENCY EXPERIMENT", fontsize=14, fontweight='bold', pad=15)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1645,7 +1574,7 @@ class Phy144:
             if self.a_max <= 5:
                 break
 
-        self.answer = f"{self.omega:.2f}"
+        self.answer = f"{self.omega}"
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
@@ -1656,10 +1585,10 @@ class Phy144:
         grad_abs = f"{abs(self.gradient):.4f}"
 
         self.description = (
-            f"A block of mass $m$ is attached to a horizontal spring and undergoes simple harmonic motion. "
-            f"The illustration shows the block at its maximum displacement of $x = {x_str}$ m. "
-            f"At this instantaneous position, the block experiences an acceleration of magnitude $a = {a_str}$ m s$^{{-2}}$. "
-            f"Calculate the angular frequency $\omega$ of the oscillation."
+            "A block of mass $m$ is attached to a horizontal spring and undergoes simple harmonic motion. "
+            "The illustration shows the block at its maximum displacement. "
+            "Using the instantaneous parameters provided, calculate the angular frequency $\\omega$ of the oscillation. "
+            "(_) rad s^-1 (Example format: 2.345)"
         )
 
         self.reasoning = (
@@ -1684,37 +1613,37 @@ class Phy144:
         ax.set_aspect('equal')
         ax.axis('off')
 
-        ax.add_patch(patches.Rectangle((-0.05, -0.1), 0.05, 0.6, facecolor='#636e72', alpha=0.3, hatch='///'))
-        ax.plot([0, 0], [-0.1, 0.5], color='#2d3436', lw=4) 
-        ax.plot([0, 1.1], [-0.1, -0.1], color='#2d3436', lw=2) 
+        ax.add_patch(patches.Rectangle((-0.05, -0.1), 0.05, 0.6, facecolor='white', edgecolor='black', hatch='///', lw=2))
+        ax.plot([0, 0], [-0.1, 0.5], color='black', lw=4) 
+        ax.plot([0, 1.1], [-0.1, -0.1], color='black', lw=3) 
 
         eq_x = 0.4
-        ax.plot([eq_x, eq_x], [-0.2, 0.6], color='#b2bec3', linestyle='--', lw=1.5)
-        ax.text(eq_x, 0.65, "Equilibrium\n($x = 0$)", ha='center', fontsize=9, color='#636e72', fontweight='bold')
+        ax.plot([eq_x, eq_x], [-0.2, 0.6], color='black', linestyle='--', lw=1.5, alpha=0.6)
+        ax.text(eq_x, 0.65, "Equilibrium\n($x = 0$)", ha='center', fontsize=11, fontweight='bold')
 
         target_x = 0.85 
         num_coils = 15
         spring_x = np.linspace(0, target_x, 300)
         spring_y = 0.08 * np.sin(2 * np.pi * num_coils * (spring_x / target_x))
-        ax.plot(spring_x, spring_y, color='#7f8c8d', lw=2)
+        ax.plot(spring_x, spring_y, color='black', lw=2)
 
         block_w, block_h = 0.2, 0.2
-        rect = patches.Rectangle((target_x, -0.1), block_w, block_h, facecolor='#fab1a0', edgecolor='#d63031', lw=2, zorder=5)
+        rect = patches.Rectangle((target_x, -0.1), block_w, block_h, facecolor='white', edgecolor='black', lw=2.5, zorder=5)
         ax.add_patch(rect)
-        ax.text(target_x + block_w/2, 0, "$m$", ha='center', va='center', fontsize=12, fontweight='bold', color='#d63031')
+        ax.text(target_x + block_w/2, 0, "$m$", ha='center', va='center', fontsize=14, fontweight='bold')
 
         ax.annotate("", xy=(target_x + block_w/2, -0.3), xytext=(eq_x, -0.3),
-                    arrowprops=dict(arrowstyle='<->', color='#0984e3', lw=2))
-        ax.text((target_x + eq_x)/2 + 0.1, -0.45, f"$x = {self.x_max:.3f}$ m", 
-                ha='center', color='#0984e3', fontsize=11, fontweight='bold', 
-                bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=2))
+        ax.text((target_x + eq_x)/2 + 0.1, -0.45, f"$x_{{max}} = {self.x_max:.3f}$ m", 
+                ha='center', fontsize=12, fontweight='bold', 
+                bbox=dict(facecolor='white', edgecolor='none'))
 
         ax.annotate("", xy=(target_x - 0.1, 0.3), xytext=(target_x + 0.2, 0.3),
-                    arrowprops=dict(arrowstyle='->', color='#d63031', lw=3, mutation_scale=20))
+                    arrowprops=dict(arrowstyle='->', color='black', lw=3, mutation_scale=20))
         ax.text(target_x + 0.05, 0.45, f"$a = {self.a_max:.3f}$ m s$^{{-2}}$", 
-                ha='center', color='#d63031', fontsize=11, fontweight='bold')
+                ha='center', fontsize=12, fontweight='bold')
 
-        ax.set_title("HORIZONTAL MASS-SPRING SYSTEM (SHM)", fontsize=14, fontweight='bold', pad=20)
+        ax.set_title("HORIZONTAL SHM", fontsize=15, fontweight='bold', pad=20)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1732,7 +1661,7 @@ class Phy145:
             if self.period > 1.0:
                 break
 
-        self.answer = f"{self.period:.2f}"
+        self.answer = f"{self.period}"
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
@@ -1743,9 +1672,9 @@ class Phy145:
         dt_str = f"{self.delta_t:.2f}"
 
         self.description = (
-            f"A pendulum bob oscillates with simple harmonic motion. The variation with time $t$ "
-            f"of its kinetic energy $E_k$ is shown in the graph. Successive maxima in kinetic energy "
-            f"occur at $t_1 = {t1_str}$ s and $t_2 = {t2_str}$ s. Determine the time period $T$ of the pendulum."
+            "A pendulum bob oscillates with simple harmonic motion. The variation with time $t$ "
+            "of its kinetic energy $E_k$ is shown in the graph. Using the time coordinates of the successive maxima, "
+            "determine the time period $T$ of the pendulum's oscillation. (_) s (Example format: 2.34)"
         )
 
         self.reasoning = (
@@ -1769,37 +1698,27 @@ class Phy145:
         T_osc = self.period
         t_plot = np.linspace(0, 1.8 * T_osc, 1000)
         
-        # Penyesuaian fase agar puncak pertama berada tepat di self.time_first_peak
-        # Ek = Ek_max * cos^2(omega_energy * t + phi)
         omega_osc = 2 * np.pi / T_osc
         phi = (np.pi / 2) - (omega_osc * self.time_first_peak)
         KE = 15 * (np.sin(omega_osc * t_plot + phi))**2
 
-        ax.plot(t_plot, KE, color='#2c3e50', linewidth=2.5, zorder=3)
+        ax.plot(t_plot, KE, color='black', linewidth=3, zorder=3)
         
-        # Grid dan gaya sumbu
-        ax.grid(True, which='both', linestyle='--', alpha=0.5)
+        ax.grid(True, which='both', linestyle='--', alpha=0.5, color='gray')
         ax.set_xlabel("Time $t$ / s", fontsize=12, fontweight='bold')
         ax.set_ylabel("Kinetic Energy $E_k$ / J", fontsize=12, fontweight='bold')
-        ax.set_title("Kinetic Energy vs Time Graph", fontsize=14, fontweight='bold', pad=15)
+        ax.set_title("KINETIC ENERGY IN SHM", fontsize=14, fontweight='bold', pad=15)
 
-        # Menandai Puncak (Parameter Diketahui)
         peak_y = 15
         points = [self.time_first_peak, self.time_second_peak]
         labels = [f"$t_1 = {self.time_first_peak:.2f}$ s", f"$t_2 = {self.time_second_peak:.2f}$ s"]
 
         for p, l in zip(points, labels):
-            ax.scatter(p, peak_y, color='#e74c3c', s=60, zorder=5, edgecolor='black')
+            ax.scatter(p, peak_y, color='black', s=60, zorder=5)
             ax.annotate(l, xy=(p, peak_y), xytext=(p + 0.05 * T_osc, peak_y + 0.5),
-                        fontsize=10, fontweight='bold', color='#e74c3c',
-                        bbox=dict(facecolor='white', alpha=0.7, edgecolor='none'))
-            ax.vlines(p, 0, peak_y, colors='#e74c3c', linestyles=':', alpha=0.6)
-
-        # Indikator Delta t (T/2)
-        ax.annotate('', xy=(self.time_first_peak, peak_y-2), xytext=(self.time_second_peak, peak_y-2),
-                    arrowprops=dict(arrowstyle='<->', color='#3498db', lw=2))
-        ax.text((self.time_first_peak + self.time_second_peak)/2, peak_y-1.5, r"$\frac{T}{2}$", 
-                ha='center', fontsize=14, color='#3498db', fontweight='bold')
+                        fontsize=11, fontweight='bold', color='black',
+                        bbox=dict(facecolor='white', alpha=0.9, edgecolor='black'))
+            ax.vlines(p, 0, peak_y, colors='black', linestyles=':', lw=2, alpha=0.8)
 
         ax.set_xlim(0, max(t_plot))
         ax.set_ylim(0, 18)
@@ -1819,7 +1738,7 @@ class Phy146:
 
         self.KE = self.KE_mJ * 1e-3
         self.v_max = math.sqrt((2 * self.KE) / self.mass)
-        self.answer = f"{self.v_max:.2f}"
+        self.answer = f"{self.v_max}"
         
         self.topic = "Oscillations"
         self.subtopic = "Energy in simple harmonic motion"
@@ -1830,9 +1749,10 @@ class Phy146:
         ke_str = f"{self.KE_mJ:.1f}"
 
         self.description = (
-            f"A pendulum bob of mass {m_str} kg oscillates with simple harmonic motion. "
-            f"The maximum kinetic energy of the bob during its motion is {ke_str} mJ. "
-            f"Calculate the maximum speed of the pendulum bob."
+            "A pendulum bob oscillates with simple harmonic motion. "
+            "Based on the physical constraints shown in the diagram, "
+            "calculate the maximum speed of the pendulum bob during its motion. "
+            "(_) m s^-1 (Example format: 0.1234)"
         )
 
         self.reasoning = (
@@ -1857,42 +1777,39 @@ class Phy146:
         ax.set_aspect('equal')
         ax.axis("off")
 
-        ax.add_patch(patches.Rectangle((-2.5, 8), 5, 0.3, facecolor='#dfe6e9', edgecolor='#2d3436', hatch='///'))
-        ax.plot([-2.5, 2.5], [8, 8], color='#2d3436', lw=2)
+        ax.add_patch(patches.Rectangle((-2.5, 8), 5, 0.3, facecolor='white', edgecolor='black', hatch='///', lw=2))
+        ax.plot([-2.5, 2.5], [8, 8], color='black', lw=3)
         
         pivot_x, pivot_y = 0, 8
         length = 6.0
         
-        ax.plot([pivot_x, 0], [pivot_y, pivot_y - length], color='#2d3436', lw=1.2, zorder=2)
-        ax.plot([pivot_x, -2], [pivot_y, pivot_y - 5.5], color='#b2bec3', linestyle='--', alpha=0.5)
-        ax.plot([pivot_x, 2], [pivot_y, pivot_y - 5.5], color='#b2bec3', linestyle='--', alpha=0.5)
+        ax.plot([pivot_x, 0], [pivot_y, pivot_y - length], color='black', lw=2, zorder=2)
+        ax.plot([pivot_x, -2], [pivot_y, pivot_y - 5.5], color='black', linestyle='--', alpha=0.4, lw=1.5)
+        ax.plot([pivot_x, 2], [pivot_y, pivot_y - 5.5], color='black', linestyle='--', alpha=0.4, lw=1.5)
         
-        bob = patches.Circle((0, pivot_y - length), 0.4, facecolor='#0984e3', edgecolor='#2d3436', lw=1.5, zorder=5)
+        bob = patches.Circle((0, pivot_y - length), 0.4, facecolor='white', edgecolor='black', lw=2.5, zorder=5)
         ax.add_patch(bob)
-        highlight = patches.Circle((-0.1, pivot_y - length + 0.1), 0.1, facecolor='white', alpha=0.3, zorder=6)
-        ax.add_patch(highlight)
 
         ax.annotate("", xy=(1.8, pivot_y - length), xytext=(-1.8, pivot_y - length),
-                    arrowprops=dict(arrowstyle="<->", color='#d63031', lw=2, connectionstyle="arc3,rad=0.15"))
+                    arrowprops=dict(arrowstyle="<->", color='black', lw=2, connectionstyle="arc3,rad=0.15"))
         
         ax.annotate("", xy=(1.2, pivot_y - length), xytext=(0, pivot_y - length),
-                    arrowprops=dict(arrowstyle="->", color='#00b894', lw=3, mutation_scale=20))
-        ax.text(0.6, pivot_y - length + 0.5, "$v_{max}$", color='#00b894', fontsize=12, fontweight='bold')
+                    arrowprops=dict(arrowstyle="->", color='black', lw=3, mutation_scale=20))
+        ax.text(0.6, pivot_y - length + 0.5, "$v_{max} = ?$", color='black', fontsize=12, fontweight='bold')
 
         info_box = (
             f"Mass ($m$) = {self.mass:.3f} kg\n"
             f"Max $E_k$ = {self.KE_mJ:.1f} mJ"
         )
-        ax.text(-4.5, 0.5, info_box, fontsize=11, 
-                bbox=dict(facecolor='white', edgecolor='#bdc3c7', boxstyle='round,pad=0.8'))
+        ax.text(-4.5, 0.5, info_box, fontsize=12, fontweight='bold', 
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.8', lw=1.5))
 
-        ax.set_title("CONSERVATION OF ENERGY IN PENDULUM", fontsize=14, fontweight='bold', pad=20)
+        ax.set_title("ENERGY IN PENDULUM SHM", fontsize=15, fontweight='bold', pad=20)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
-
 class Phy147:
     def __init__(self):
         while True:
@@ -1912,16 +1829,16 @@ class Phy147:
                 break
 
         self.energy_initial = 0.5 * self.k * self.amplitude**2
-        self.answer = f"{self.frequency:.2f}"
+        self.answer = f"{self.frequency}"
         self.topic = "Oscillations"
         self.subtopic = "Damped oscillations"
         self.source = "Original"
         self.curriculum = "A Level"
 
         self.description = (
-            f"The figure shows the displacement-time graph for a damped oscillating system. "
-            f"The mass of the oscillator is {self.mass:.2f} kg and the spring constant is {self.k:.1f} N m$^{{-1}}$. "
-            f"Determine the frequency of the oscillation from the graph and the initial total energy."
+            "The figure shows the displacement-time graph for a damped oscillating system. "
+            "Using the parameters embedded in the diagram and the peak coordinates, "
+            "determine the frequency of the oscillation. (_) Hz (Example format: 1.234)"
         )
 
         self.reasoning = (
@@ -1946,34 +1863,39 @@ class Phy147:
         env_upper = self.amplitude_cm * np.exp(-self.gamma * t)
         x_t = env_upper * np.cos(self.omega_d * t)
         
-        ax.plot(t, env_upper, color='#e67e22', linestyle='--', lw=1.2, alpha=0.5)
-        ax.plot(t, -env_upper, color='#e67e22', linestyle='--', lw=1.2, alpha=0.5)
-        ax.plot(t, x_t, color='#2c3e50', lw=2.2, zorder=3)
-        ax.axhline(0, color='black', lw=1.5)
+        ax.plot(t, env_upper, color='black', linestyle='--', lw=1.5, alpha=0.6)
+        ax.plot(t, -env_upper, color='black', linestyle='--', lw=1.5, alpha=0.6)
+        ax.plot(t, x_t, color='black', lw=2.5, zorder=3)
+        ax.axhline(0, color='black', lw=2)
         
         t0, t1 = 0, self.period
-        ax.vlines([t0, t1], -1.5, [self.amplitude_cm, env_upper[np.abs(t-t1).argmin()]], 
-                  colors='#27ae60', linestyles='--', lw=1.5, alpha=0.8)
         
-        ax.annotate('', xy=(t1, -1.2), xytext=(t0, -1.2),
-                    arrowprops=dict(arrowstyle='<->', color='#27ae60', lw=2))
-        ax.text((t0+t1)/2, -1.0, f'$T = {self.period:.2f}$ s', 
-                ha='center', fontsize=11, fontweight='bold', color='#27ae60',
-                bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
+        ax.vlines([t0, t1], 
+                  ymin=[-self.amplitude_cm - 0.2, -env_upper[np.abs(t-t1).argmin()] - 0.2], 
+                  ymax=-self.amplitude_cm - 1.5, 
+                  colors='black', linestyles=':', lw=2)
+        
+        ax.annotate('', xy=(t1, -self.amplitude_cm - 1.2), xytext=(t0, -self.amplitude_cm - 1.2),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=2))
+        
+        ax.text(t1 + 0.15, -self.amplitude_cm - 1.2, f'$T = {self.period:.2f}$ s', 
+                ha='left', va='center', fontsize=12, fontweight='bold',
+                bbox=dict(facecolor='white', edgecolor='none', pad=1.0, alpha=0.9))
 
-        for i in range(2):
-            tp = i * self.period
-            ap = self.amplitude_cm * np.exp(-self.gamma * tp)
-            ax.scatter(tp, ap, color='#c0392b', s=50, zorder=5)
-            ax.text(tp, ap + 0.4, f'$A_{i}$', ha='center', fontsize=11, fontweight='bold', color='#c0392b')
+        ax.text(self.time_interval * 0.8, self.amplitude_cm * 0.8, 
+                f"Mass = {self.mass:.2f} kg\n$k = {self.k:.1f}$ N/m", 
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.8'), 
+                fontsize=12, fontweight='bold', ha='center')
 
-        ax.set_xlabel("Time $t$ / s", fontsize=12, fontweight='bold')
-        ax.set_ylabel("Displacement $x$ / cm", fontsize=12, fontweight='bold')
-        ax.grid(True, which='both', linestyle=':', alpha=0.5)
+        ax.set_xlabel("Time $t$ / s", fontsize=13, fontweight='bold')
+        ax.set_ylabel("Displacement $x$ / cm", fontsize=13, fontweight='bold')
+        ax.set_title("DAMPED OSCILLATION DISPLACEMENT", fontsize=15, fontweight='bold', pad=15)
+        
+        ax.grid(True, which='both', linestyle=':', alpha=0.5, color='gray')
         ax.minorticks_on()
         
         ax.set_xlim(0, self.time_interval)
-        ax.set_ylim(-self.amplitude_cm - 2, self.amplitude_cm + 2)
+        ax.set_ylim(-self.amplitude_cm - 2.5, self.amplitude_cm + 2)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1997,17 +1919,16 @@ class Phy148:
                 self.amplitude = self.amplitude_cm / 100
                 break
 
-        self.answer = f"{self.omega_d:.2f}"
+        self.answer = f"{self.omega_d}"
         self.topic = "Oscillations"
         self.subtopic = "Damped oscillations"
         self.source = "Original"
         self.curriculum = "A-Level"
 
         self.description = (
-            f"A block of mass {self.mass:.2f} kg is connected between two identical springs. "
-            f"The system undergoes damped oscillations. The resulting displacement–time graph "
-            f"is shown. The damping constant is $\\beta = {self.beta:.2f}$ s$^{{-1}}$. "
-            f"Determine the damped angular frequency $\\omega_d$ and calculate the spring constant $k$ of one spring."
+            "A block is connected between two identical springs and undergoes damped oscillations. "
+            "Based on the displacement–time graph and the parameters provided in the diagram, "
+            "determine the damped angular frequency $\\omega_d$. (_) rad s^-1 (Example format: 7.89)"
         )
 
         self.reasoning = (
@@ -2037,41 +1958,45 @@ class Phy148:
         envelope = self.amplitude_cm * np.exp(-self.beta * t)
         y = envelope * np.cos(self.omega_d * t)
 
-        ax.plot(t, y, color='#2c3e50', lw=2.5, zorder=3, label='Displacement')
-        ax.plot(t, envelope, color='#e67e22', ls='--', lw=1.5, alpha=0.7, label='Envelope')
-        ax.plot(t, -envelope, color='#e67e22', ls='--', lw=1.5, alpha=0.7)
-        ax.axhline(0, color='black', lw=1.5)
+        ax.plot(t, y, color='black', lw=2.5, zorder=3)
+        ax.plot(t, envelope, color='black', ls='--', lw=1.5, alpha=0.6)
+        ax.plot(t, -envelope, color='black', ls='--', lw=1.5, alpha=0.6)
+        ax.axhline(0, color='black', lw=2)
 
         t0, t1 = 0, self.period
-        ax.vlines([t0, t1], -1.0, [self.amplitude_cm, envelope[np.abs(t-t1).argmin()]], 
-                  colors='#27ae60', ls=':', lw=2, alpha=0.8)
         
-        ax.annotate('', xy=(t1, -0.8), xytext=(t0, -0.8),
-                    arrowprops=dict(arrowstyle='<->', color='#27ae60', lw=2))
-        ax.text((t0+t1)/2, -0.6, f'$T = {self.period:.2f}$ s', 
-                ha='center', fontsize=10, fontweight='bold', color='#27ae60',
-                bbox=dict(facecolor='white', alpha=0.8, edgecolor='none'))
+        ax.vlines([t0, t1], 
+                  ymin=[-self.amplitude_cm - 0.2, -envelope[np.abs(t-t1).argmin()] - 0.2], 
+                  ymax=-self.amplitude_cm - 1.5, 
+                  colors='black', ls=':', lw=2)
+        
+        ax.annotate('', xy=(t1, -self.amplitude_cm - 1.2), xytext=(t0, -self.amplitude_cm - 1.2),
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=2))
+        
+        ax.text(t1 + 0.15, -self.amplitude_cm - 1.2, f'$T = {self.period:.2f}$ s', 
+                ha='left', va='center', fontsize=12, fontweight='bold',
+                bbox=dict(facecolor='white', alpha=0.9, edgecolor='none', pad=1.0))
 
         ax.annotate(f'$A_0 = {self.amplitude_cm:.1f}$ cm', 
-                    xy=(0, self.amplitude_cm), xytext=(0.5, self.amplitude_cm + 0.3),
-                    arrowprops=dict(arrowstyle='->', color='#c0392b', lw=1.5),
-                    fontsize=10, fontweight='bold', color='#c0392b')
+                    xy=(0, self.amplitude_cm), xytext=(0.5, self.amplitude_cm + 0.5),
+                    arrowprops=dict(arrowstyle='->', color='black', lw=2),
+                    fontsize=11, fontweight='bold')
 
-        ax.set_xlabel("Time $t$ / s", fontweight='bold')
-        ax.set_ylabel("Displacement $x$ / cm", fontweight='bold')
-        ax.set_title("DAMPED OSCILLATION ANALYSIS ($M + 2k$ System)", fontsize=12, fontweight='bold', pad=15)
+        ax.set_xlabel("Time $t$ / s", fontweight='bold', fontsize=12)
+        ax.set_ylabel("Displacement $x$ / cm", fontweight='bold', fontsize=12)
+        ax.set_title("DAMPED OSCILLATION ($M + 2k$)", fontsize=14, fontweight='bold', pad=15)
         
         ax.minorticks_on()
-        ax.grid(True, which='major', color='#bdc3c7', ls='-', alpha=0.5)
-        ax.grid(True, which='minor', color='#bdc3c7', ls=':', alpha=0.3)
+        ax.grid(True, which='major', color='gray', ls='-', alpha=0.4)
+        ax.grid(True, which='minor', color='gray', ls=':', alpha=0.2)
 
         info_text = (f"Mass $M = {self.mass:.2f}$ kg\n"
                      f"$\\beta = {self.beta:.2f}$ s$^{{-1}}$")
         ax.text(0.97, 0.95, info_text, transform=ax.transAxes, ha='right', va='top',
-                fontsize=9, fontweight='bold', bbox=dict(facecolor='#f8f9fa', edgecolor='#2c3e50', boxstyle='round,pad=0.5'))
+                fontsize=11, fontweight='bold', bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
         ax.set_xlim(0, t_end)
-        ax.set_ylim(-self.amplitude_cm - 1.5, self.amplitude_cm + 1.5)
+        ax.set_ylim(-self.amplitude_cm - 2.5, self.amplitude_cm + 1.5)
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -2105,18 +2030,16 @@ class Phy149:
             k_e * ((1 / self.r1**2) - (1 / self.r2**2))
         )
 
-        self.answer = "{:.2e}".format(self.Q)
+        self.answer = f"{self.Q}"
         self.topic = "Electric fields"
         self.subtopic = "Electric fields and field lines"
         self.source = "Save my Exam"
         self.curriculum = "A-Level"
 
         self.description = (
-            f"Two identical positive point charges $+Q$ are fixed in a vacuum with a separation of "
-            f"{self.separation_cm:.1f} cm. Point $A$ is located on the line connecting the two charges, "
-            f"at a distance of {self.offset_cm:.1f} cm from the left-hand charge. "
-            f"The resultant electric field strength at point $A$ is {self.E_given:.2e} V m$^{{-1}}$. "
-            f"Calculate the magnitude of the charge $Q$."
+            "Two identical positive point charges $+Q$ are fixed in a vacuum. Point $A$ is located on the line connecting them. "
+            "Based on the resultant electric field strength and distances shown in the diagram, "
+            "calculate the magnitude of the charge $Q$. (_) C (Example format: 1.234e-07)"
         )
 
         self.reasoning = (
@@ -2139,30 +2062,34 @@ class Phy149:
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
         ax.set_xlim(-1, 11)
-        ax.set_ylim(-2, 2.5)
+        ax.set_ylim(-2, 3)
         ax.set_aspect('equal')
         ax.axis("off")
 
         x1, x2 = 1, 9
         x_a = x1 + (self.offset_cm / self.separation_cm) * (x2 - x1)
 
-        ax.plot([x1, x2], [0, 0], color='#b2bec3', linestyle='--', lw=1, zorder=1)
+        ax.plot([x1, x2], [0, 0], color='black', linestyle='--', lw=1.5, zorder=1)
 
         for x in [x1, x2]:
-            charge = plt.Circle((x, 0), 0.25, color='#d63031', zorder=5)
+            charge = plt.Circle((x, 0), 0.25, color='white', ec='black', lw=2, zorder=5)
             ax.add_patch(charge)
-            ax.text(x, 0.5, "$+Q$", ha='center', fontsize=12, fontweight='bold', color='#d63031')
+            ax.text(x, 0.5, "$+Q$", ha='center', fontsize=12, fontweight='bold')
 
-        ax.scatter(x_a, 0, color='#0984e3', s=100, marker='x', zorder=6, lw=3)
-        ax.text(x_a, 0.4, "Point A", ha='center', fontsize=11, fontweight='bold', color='#0984e3')
+        ax.scatter(x_a, 0, color='black', s=100, marker='x', zorder=6, lw=3)
+        ax.text(x_a, 0.4, "Point A", ha='center', fontsize=12, fontweight='bold')
 
         ax.annotate('', xy=(x1, -0.8), xytext=(x2, -0.8),
-                    arrowprops=dict(arrowstyle='<->', color='#2d3436', lw=1.5))
-        ax.text((x1+x2)/2, -1.2, f"$d = {self.separation_cm:.1f}$ cm", ha='center', fontweight='bold')
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=2))
+        ax.text((x1+x2)/2, -1.2, f"$d = {self.separation_cm:.1f}$ cm", ha='center', fontweight='bold', fontsize=11)
 
         ax.annotate('', xy=(x1, 1.2), xytext=(x_a, 1.2),
-                    arrowprops=dict(arrowstyle='<->', color='#636e72', lw=1.2))
-        ax.text((x1+x_a)/2, 1.5, f"${self.offset_cm:.1f}$ cm", ha='center', color='#636e72')
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text((x1+x_a)/2, 1.5, f"${self.offset_cm:.1f}$ cm", ha='center', fontsize=11, fontweight='bold')
+
+        ax.text((x1+x2)/2, 2.5, f"$E_{{net}}$ at A = {self.E_given:.2e} V m$^{{-1}}$", 
+                ha='center', fontsize=12, fontweight='bold',
+                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
         ax.set_title("ELECTRIC FIELD SUPERPOSITION", fontsize=14, fontweight='bold', pad=10)
 
@@ -2184,11 +2111,10 @@ class Phy150:
             if self.acceleration > 0:
                 break
 
-        self.answer = round(self.acceleration, 2)
+        self.answer = f"{self.acceleration}"
         self.description = (
-            f"A uniform electric field has strength {self.E_pN:.2f} pN C⁻¹. "
-            "Calculate the acceleration of an electron placed in this field. "
-            "( _ ) m s⁻²"
+            "An electron is placed in a uniform electric field. Using the parameters provided in the diagram, "
+            "calculate the magnitude of the acceleration of the electron. ( _ ) m s⁻² (Example format: 4.56789e+10)"
         )
 
         self.topic = "Electric fields"
@@ -2230,30 +2156,30 @@ class Phy150:
         ax.set_ylim(0, 6)
         ax.axis("off")
 
-        ax.text(0.5, 4.9, f"Electric field strength, $E = {self.E_pN:.2f}$ pN C$^{-1}$", fontsize=12)
+        ax.text(0.5, 4.9, f"Electric field strength, $E = {self.E_pN:.2f}$ pN C$^{-1}$", fontsize=12, fontweight='bold')
         ax.text(0.5, 4.5, r"Charge of electron, $e = 1.60 \times 10^{-19}$ C", fontsize=12)
         ax.text(0.5, 4.1, r"Mass of electron, $m_e = 9.11 \times 10^{-31}$ kg", fontsize=12)
 
         y_positions = np.linspace(1.0, 3.5, 6)
         for y in y_positions:
             ax.arrow(9.0, y, -8.0, 0,
-                    head_width=0.15,
-                    head_length=0.3,
-                    length_includes_head=True,
-                    linewidth=1.8,
-                    color="#2c6faa",
-                    alpha=0.8)
+                     head_width=0.15,
+                     head_length=0.3,
+                     length_includes_head=True,
+                     linewidth=2.0,
+                     color="black",
+                     alpha=0.8)
         
-        ax.text(9.1, 2.25, r"$\vec{E}$", color="#2c6faa", fontsize=16, weight="bold")
+        ax.text(9.1, 2.25, r"$\vec{E}$", color="black", fontsize=16, weight="bold")
 
         electron_x, electron_y = 6.0, 2.25
-        electron = plt.Circle((electron_x, electron_y), 0.25, 
-                            facecolor="#fdfdfd", edgecolor="black", linewidth=1.5, zorder=5)
+        electron = plt.Circle((electron_x, electron_y), 0.3, 
+                              facecolor="white", edgecolor="black", linewidth=2, zorder=5)
         ax.add_patch(electron)
         ax.text(electron_x, electron_y, "-", fontsize=20, ha="center", va="center", weight="bold")
         
-        ax.text(electron_x, electron_y + 0.4, "Electron", fontsize=12, ha="center", weight="bold")
+        ax.text(electron_x, electron_y + 0.5, "Electron\n$a = ?$", fontsize=12, ha="center", weight="bold")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.2)
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.2)
         plt.close()
