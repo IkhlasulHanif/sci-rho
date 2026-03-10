@@ -10,6 +10,7 @@ import shutil
 import time
 import hashlib
 import pathlib
+import traceback
 
 from biology.helper import *
 from chemistry.helper import *
@@ -137,9 +138,14 @@ if __name__ == "__main__":
         all_classes = get_template_classes(subject)
         count = 1
         
+        # --- NEW: Lists to track both types of failures ---
+        exceeded_trials_log = []
+        runtime_errors_log = []
+        
         for class_ in all_classes:
             class_id = class_.__name__
             unique_history[class_id] = set()
+            skip_class = False  # Flag to indicate if we should abort the current class
             
             # Generate all X instances for THIS class before moving to the next class
             for index in range(num_of_loop):
@@ -168,8 +174,17 @@ if __name__ == "__main__":
                     attempt_seed = sub_seed + (trials * 100000)
                     rnd.seed(attempt_seed)
                     
-                    instance = class_()
-                    instance.generate(count)
+                    try:
+                        instance = class_()
+                        instance.generate(count)
+                    except Exception as e:
+                        # Capture the full error stack trace
+                        error_trace = traceback.format_exc()
+                        log_msg = f"Class {class_id} (Instance {index:02d}) failed with Runtime Error:\n{error_trace}\n"
+                        runtime_errors_log.append(log_msg)
+                        print(f"  [RUNTIME ERROR] {class_id} crashed. Skipping entire class.")
+                        skip_class = True
+                        break  # Break out of the trials while loop
 
                     desc = getattr(instance, "description", "")
                     expected_img_path = staging_folder / "image" / f"image{count}.png"
@@ -181,16 +196,24 @@ if __name__ == "__main__":
                         unique_history[class_id].add(signature)
                         found_unique = True
                         if trials > 0 and debug:
-                            print(f"    [{class_.__name__} - Inst {index:02d}] Unique variant found after {trials + 1} attempts.")
+                            print(f"    [{class_id} - Inst {index:02d}] Unique variant found after {trials + 1} attempts.")
                         break 
                     
                     trials += 1
 
-                if not found_unique:
-                    print(f"  [WARNING] Exceeded {max_trials} trials for {class_.__name__} (Instance {index:02d}).")
+                # Check if we broke out due to a runtime error
+                if skip_class:
+                    break  # Break out of the index for-loop
 
-                # If we are running in exp mode, the generated image is sitting in the staging folder 
-                # (e.g. dataset/physics/image/image1.png). We must extract it NOW before the next index overwrites it.
+                # Check if we failed to find a unique variant
+                if not found_unique:
+                    warning_msg = f"{class_id} (Instance {index:02d}) exceeded {max_trials} trials. Skipping entire class."
+                    print(f"  [WARNING] {warning_msg}")
+                    exceeded_trials_log.append(warning_msg)
+                    skip_class = True
+                    break  # Break out of the index for-loop
+
+                # Process successful variant extraction
                 if exp:
                     staging_img_path = staging_folder / "image" / f"image{count}.png"
                     target_img_path = target_img_dir / f"image{count}.png"
@@ -215,7 +238,10 @@ if __name__ == "__main__":
                     with open(debug_file_path, 'w', encoding='utf-8') as file:
                         file.write(instance.reasoning)
             
-            # Print completion block only if running experiment
+            # If the class was skipped halfway, do NOT increment count and skip the completion print
+            if skip_class:
+                continue
+            
             if exp:
                 print(f"  --> Completed {num_of_loop} variants for {class_.__name__}")
                 
@@ -239,8 +265,27 @@ if __name__ == "__main__":
             # Write Seed
             with open(seed_path, "w", encoding="utf-8") as file:
                 file.write(str(seed + index))
+
+        # --- NEW: Write the log files if any errors were captured ---
+        if exceeded_trials_log:
+            exceeded_log_path = staging_folder / "exceeded_trials.log"
+            with open(exceeded_log_path, "w", encoding="utf-8") as log_file:
+                log_file.write(f"Classes that exceeded {max_trials} trials for {subject}:\n")
+                log_file.write("-" * 50 + "\n")
+                for entry in exceeded_trials_log:
+                    log_file.write(f"{entry}\n")
+            print(f"  [INFO] Saved log of exceeded trials to {exceeded_log_path}")
+
+        if runtime_errors_log:
+            runtime_log_path = staging_folder / "runtime_errors.log"
+            with open(runtime_log_path, "w", encoding="utf-8") as log_file:
+                log_file.write(f"Classes that threw runtime errors for {subject}:\n")
+                log_file.write("-" * 50 + "\n")
+                for entry in runtime_errors_log:
+                    log_file.write(f"{entry}\n")
+            print(f"  [INFO] Saved log of runtime errors to {runtime_log_path}")
                 
-        print(f"\n[SUCCESS] All classes of {subject} successfully generated and deployed!")
+        print(f"\n[SUCCESS] Generation loop for {subject} finished!")
 
     end_time = time.perf_counter()
     total_time = int(end_time - start_time)
