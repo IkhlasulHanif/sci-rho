@@ -8,13 +8,35 @@ import sys
 import re
 import shutil
 import time
+import hashlib
+import pathlib
 
-from pathlib import Path
 from biology.helper import *
 from chemistry.helper import *
 from compsci.helper import *
 from mathematics.helper import *
 from physics.helper import *
+
+def get_file_hash(filepath: str):
+    """
+    Safely reads a file and returns its MD5 hash.
+    Returns None if the file doesn't exist or filepath is invalid.
+    """
+    if not filepath or not isinstance(filepath, str) or not os.path.exists(filepath):
+        return None
+    
+    # Read the file in chunks to avoid memory issues with large images
+    hasher = hashlib.md5()
+    try:
+        with open(filepath, 'rb') as f:
+            buf = f.read(65536)
+            while len(buf) > 0:
+                hasher.update(buf)
+                buf = f.read(65536)
+        return hasher.hexdigest()
+    except Exception as e:
+        print(f"  [ERROR] Could not hash image {filepath}: {e}")
+        return None
 
 def get_template_classes(subject: str):
     """
@@ -50,34 +72,17 @@ def parse_args():
     """
     available_subjects = ["mathematics", "physics", "chemistry", "biology", "compsci"]
 
-    parser = argparse.ArgumentParser(
-        description="Script for dataset generation"
-    )
-    parser.add_argument(
-        "--subject",
-        type=str,
-        default="all",
-        help=f"Subjects to include (comma-separated). Options: {available_subjects} or 'all' (default: all)"
-    )
-    parser.add_argument(
-        "--seed",
-        type=int,
-        default=rnd.randint(0,1000000),
-        help="Random seed (default: 42)"
-    )
-    parser.add_argument(
-        "--debug",
-        type=bool,
-        default=False,
-        help="Activate debug mode (default: False)"
-    )
-
-    parser.add_argument(
-        "--exp",
-        type=bool,
-        default=False,
-        help="Generate 10 instances of dataset for experiment (default: False)"
-    )
+    parser = argparse.ArgumentParser(description="Script for dataset generation")
+    parser.add_argument("--subject", type=str, default="all",
+                        help=f"Subjects to include (comma-separated). Options: {available_subjects} or 'all'")
+    parser.add_argument("--seed", type=int, default=rnd.randint(0,1000000),
+                        help="Random seed (default: random)")
+    parser.add_argument("--debug", type=bool, default=False,
+                        help="Activate debug mode (default: False)")
+    parser.add_argument("--exp", type=bool, default=False,
+                        help="Generate 10 instances of dataset for experiment (default: False)")
+    parser.add_argument("--max_trials", type=int, default=100,
+                        help="Maximum attempts to find a unique instance before skipping (default: 100)")
     
     args = parser.parse_args()
 
@@ -92,60 +97,109 @@ def parse_args():
                 print(f"Error: subject '{s}' is not valid. Choose from {available_subjects} or 'all'.")
                 sys.exit(1)
 
-    return subjects, args.seed, args.debug, args.exp
+    return subjects, args.seed, args.debug, args.exp, args.max_trials
 
 if __name__ == "__main__":
     start_time = time.perf_counter()
 
-    subjects, seed, debug, exp = parse_args()
+    subjects, seed, debug, exp, max_trials = parse_args()
 
     print("Dataset generation started")
     print(f"Master Seed: {seed}")
     if debug:
         print("RUNNING ON DEBUG MODE")
     
+    SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
+    PROJECT_ROOT = SCRIPT_DIR.parent
+    
     if exp:
-        print("GENERATING 10 INSTANCES FOR EXPERIMENT")
+        print("GENERATING 10 INSTANCES FOR EXPERIMENT (Subject-by-Subject mode)")
         num_of_loop = 10
-        # Path to this script ('dataset_generator/')
-        SCRIPT_DIR = Path(__file__).resolve().parent
-
-        # Project root (one level up from 'dataset_generator/')
-        PROJECT_ROOT = SCRIPT_DIR.parent
-
-        # Source: project_root/dataset
-        src = PROJECT_ROOT / "dataset"
     else:
         num_of_loop = 1
 
-    for index in range(num_of_loop):
-        sub_seed = seed + index # to make seed unique for each instances when generating 10 instances of problem
-        print(f"Sub Seed: {sub_seed}")
-        for subject in subjects:
-            print(f"Subject: {subject}\n")
+    for subject in subjects:
+        print(f"\n=====================================")
+        print(f"Generating Subject: {subject}")
+        print(f"=====================================")
+        
+        # Reset unique history per subject
+        unique_history = {}
+        
+        # Load existing dataset.json data to preserve old structure if needed
+        # We hold num_of_loop different dataset dictionaries in memory
+        datasets_data = [{} for _ in range(num_of_loop)]
+        
+        # Staging path where the class generator natively outputs
+        staging_folder = PROJECT_ROOT / "dataset" / subject
+        staging_folder.mkdir(parents=True, exist_ok=True)
+        
+        all_classes = get_template_classes(subject)
+        count = 1
+        
+        for class_ in all_classes:
+            class_id = class_.__name__
+            unique_history[class_id] = set()
+            
+            # Generate all X instances for THIS class before moving to the next class
+            for index in range(num_of_loop):
+                sub_seed = seed + index
+                
+                # Figure out where files actually need to go
+                if exp:
+                    target_folder = PROJECT_ROOT / "experiment" / "sample" / f"{index:02d}" / subject
+                else:
+                    target_folder = staging_folder
+                    
+                target_folder.mkdir(parents=True, exist_ok=True)
+                target_img_dir = target_folder / "image"
+                target_img_dir.mkdir(parents=True, exist_ok=True)
 
-            destination_folder = os.path.join(
-                os.path.dirname(os.getcwd()), "dataset", subject
-            )
-            os.makedirs(destination_folder, exist_ok=True)
-            json_path = os.path.join(destination_folder, "dataset.json")
+                if debug:
+                    debug_folder_path = target_folder / "debug"
+                    debug_folder_path.mkdir(parents=True, exist_ok=True)
+                
+                trials = 0
+                found_unique = False
+                instance = None
+                
+                # --- EXHAUSTIVE SEARCH LOOP ---
+                while trials < max_trials:
+                    attempt_seed = sub_seed + (trials * 100000)
+                    rnd.seed(attempt_seed)
+                    
+                    instance = class_()
+                    instance.generate(count)
 
-            if os.path.exists(json_path):
-                with open(json_path, "r", encoding="utf-8") as file:
-                    data = json.load(file)
-            else:
-                data = {}
+                    desc = getattr(instance, "description", "")
+                    expected_img_path = staging_folder / "image" / f"image{count}.png"
+                    img_hash = get_file_hash(str(expected_img_path))
 
-            if debug:
-                debug_folder_path = os.path.join(destination_folder, "debug")
-                os.makedirs(debug_folder_path, exist_ok=True)
+                    signature = (desc, img_hash)
 
-            count = 1
-            all_classes = get_template_classes(subject)
-            for class_ in all_classes:
-                instance = class_()
-                instance.generate(count)
-                temp_data = {
+                    if signature not in unique_history[class_id]:
+                        unique_history[class_id].add(signature)
+                        found_unique = True
+                        if trials > 0 and debug:
+                            print(f"    [{class_.__name__} - Inst {index:02d}] Unique variant found after {trials + 1} attempts.")
+                        break 
+                    
+                    trials += 1
+
+                if not found_unique:
+                    print(f"  [WARNING] Exceeded {max_trials} trials for {class_.__name__} (Instance {index:02d}).")
+
+                # If we are running in exp mode, the generated image is sitting in the staging folder 
+                # (e.g. dataset/physics/image/image1.png). We must extract it NOW before the next index overwrites it.
+                if exp:
+                    staging_img_path = staging_folder / "image" / f"image{count}.png"
+                    target_img_path = target_img_dir / f"image{count}.png"
+                    
+                    if staging_img_path.exists():
+                        shutil.copy2(staging_img_path, target_img_path)
+
+                # Store JSON data in memory
+                datasets_data[index][f"{count}"] = {
                     "description": instance.description,
                     "topic": instance.topic,
                     "subtopic": instance.subtopic,
@@ -157,35 +211,38 @@ if __name__ == "__main__":
                 }
 
                 if debug:
-                    debug_file_path = os.path.join(debug_folder_path, f"{count}.txt")
+                    debug_file_path = debug_folder_path / f"{count}.txt"
                     with open(debug_file_path, 'w', encoding='utf-8') as file:
                         file.write(instance.reasoning)
+            
+            # Print completion block only if running experiment
+            if exp:
+                print(f"  --> Completed {num_of_loop} variants for {class_.__name__}")
+                
+            count += 1
 
-                data[f"{count}"] = temp_data
+        # Finished generating ALL classes for this subject. Now dump the JSONs to disk.
+        for index in range(num_of_loop):
+            if exp:
+                target_folder = PROJECT_ROOT / "experiment" / "sample" / f"{index:02d}" / subject
+                seed_path = PROJECT_ROOT / "experiment" / "sample" / f"{index:02d}" / "seed.txt"
+            else:
+                target_folder = staging_folder
+                seed_path = PROJECT_ROOT / "dataset" / "seed.txt"
 
-                print(f"Generated Instance Number {count}")
-
-                count += 1
-
-            json_data = json.dumps(data, indent=4)
+            json_path = target_folder / "dataset.json"
+            
+            # Write JSON
             with open(json_path, 'w', encoding="utf-8") as file:
-                file.write(json_data)
+                json.dump(datasets_data[index], file, indent=4)
+                
+            # Write Seed
+            with open(seed_path, "w", encoding="utf-8") as file:
+                file.write(str(seed + index))
+                
+        print(f"\n[SUCCESS] All classes of {subject} successfully generated and deployed!")
 
-            print(f"All instances of {subject} are sucessfully generated!\n")
-
-        seed_path = os.path.join(os.path.dirname(os.getcwd()), "dataset", "seed.txt")
-        with open(seed_path, "w", encoding="utf-8") as file:
-            file.write(str(sub_seed))
-
-        if exp:
-            # destination at 'experiment/sample/01', 'experiment/sample/02', etc.
-            dst = os.path.join(PROJECT_ROOT, 'experiment', 'sample', f'0{index}')
-
-            # Copy folder and rename
-            shutil.copytree(src, dst, dirs_exist_ok=True)
-    
-    # benchmark time
     end_time = time.perf_counter()
     total_time = int(end_time - start_time)
     minutes, seconds = divmod(total_time, 60)
-    print(f"Total time taken: {minutes:02d}:{seconds:02d}")
+    print(f"\nTotal time taken: {minutes:02d}:{seconds:02d}")
