@@ -1,5 +1,7 @@
 # helper functions
 import numpy as np
+import matplotlib.patches as patches
+import math
 
 def val_mapper(val, new_min, new_max, old_min, old_max):
     """Convert a value from a range to another range (e.g., real world measurements to pixel ranges of an image)"""
@@ -114,3 +116,159 @@ def draw_labeled_arrow(ax, start, end, label,
             color=color, fontsize=fontsize, fontweight=fontweight,
             ha='center', va='center',
             bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, pad=1.5))
+
+
+# Layering (wires behind, components in front, text on top)
+Z_WIRE = 1
+Z_COMP = 3
+Z_TEXT = 5
+
+def setup_ax(ax, xlim=(0, 10), ylim=(0, 10)):
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_aspect("equal", adjustable="box")
+    ax.axis("off")
+
+
+def draw_wire(ax, pts, lw=2):
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    ax.plot(
+        xs, ys,
+        linewidth=lw,
+        color="black",
+        solid_capstyle="projecting",
+        solid_joinstyle="miter",
+        antialiased=True,
+        zorder=Z_WIRE
+    )
+
+
+def draw_text(ax, x, y, s, fontsize=11, ha="center", va="center", boxed=False):
+    kw = dict(ha=ha, va=va, fontsize=fontsize, zorder=Z_TEXT)
+    if boxed:
+        kw["bbox"] = dict(facecolor="white", edgecolor="none", pad=0.35)
+    ax.text(x, y, s, **kw)
+
+
+def draw_circle_meter(ax, x, y, letter, r=0.45, fontsize=14):
+    circ = patches.Circle((x, y), r, fill=False, linewidth=2, edgecolor="black", zorder=Z_COMP)
+    ax.add_patch(circ)
+    draw_text(ax, x, y, letter, fontsize=fontsize, boxed=False)
+
+    return {
+        "left": (x - r, y),
+        "right": (x + r, y),
+        "top": (x, y + r),
+        "bottom": (x, y - r),
+        "r": r
+    }
+
+
+def draw_resistor_box(ax, x, y, label, w=1.2, h=0.6, value_text=None, fontsize=11):
+    rect = patches.Rectangle((x - w/2, y - h/2), w, h, fill=False, linewidth=2,
+                             edgecolor="black", zorder=Z_COMP)
+    ax.add_patch(rect)
+    draw_text(ax, x, y, label, fontsize=fontsize, boxed=False)
+
+    if value_text is not None:
+        # Value below: boxed, so wires behind don’t visually run through digits
+        draw_text(ax, x, y - h/2 - 0.45, value_text, fontsize=fontsize, va="top", boxed=True)
+
+    return (y + h/2, y - h/2)  # top_y, bottom_y
+
+
+def draw_thermistor(ax, x, y, label="NTC", w=1.2, h=0.6, value_text=None, fontsize=11):
+    rect = patches.Rectangle((x - w/2, y - h/2), w, h, fill=False, linewidth=2,
+                             edgecolor="black", zorder=Z_COMP)
+    ax.add_patch(rect)
+
+    ax.plot([x - w/2, x + w/2], [y + h/2, y - h/2],
+            linewidth=2, color="black", zorder=Z_COMP)
+
+    draw_text(ax, x, y, label, fontsize=fontsize, boxed=False)
+
+    if value_text is not None:
+        # Value below: boxed for readability
+        draw_text(ax, x, y - h/2 - 0.45, value_text, fontsize=fontsize, va="top", boxed=True)
+
+    return (y + h/2, y - h/2)  # top_y, bottom_y
+
+
+def draw_cell_vertical(ax, x, y_bottom, y_top, value_text=None, fontsize=11):
+    """
+    Draw a single cell in a vertical wire segment.
+    Uses draw_wire() (projecting caps) so it connects cleanly.
+    """
+    y_mid = (y_bottom + y_top) / 2
+    gap = 0.25
+    y_long = y_mid + gap
+    y_short = y_mid - gap
+
+    # wires above and below plates
+    draw_wire(ax, [(x, y_top), (x, y_long)], lw=2)
+    draw_wire(ax, [(x, y_short), (x, y_bottom)], lw=2)
+
+    # plates
+    ax.plot([x - 0.55, x + 0.55], [y_long, y_long], linewidth=2, color="black", zorder=Z_COMP)
+    ax.plot([x - 0.35, x + 0.35], [y_short, y_short], linewidth=2, color="black", zorder=Z_COMP)
+
+    # + and - marks
+    draw_text(ax, x + 0.8, y_long, "+", fontsize=fontsize, boxed=False)
+    draw_text(ax, x + 0.8, y_short, "−", fontsize=fontsize, boxed=False)
+
+    if value_text is not None:
+        draw_text(ax, x + 1.2, y_mid, value_text, ha="left", fontsize=fontsize, boxed=True)
+
+    return {"top": (x, y_top), "bottom": (x, y_bottom)}
+
+
+def draw_current_symbol(ax, x, y, direction, r=0.35, lw=2):
+    """
+    direction: +1 = out of page (dot), -1 = into page (cross)
+    """
+    # Hollow circle so the symbol is always visible
+    circ = patches.Circle((x, y), r, facecolor="white", edgecolor="black", linewidth=lw)
+    ax.add_patch(circ)
+
+    if direction == 1:
+        # dot (out of page)
+        dot = patches.Circle((x, y), r*0.22, facecolor="black", edgecolor="black")
+        ax.add_patch(dot)
+    else:
+        # cross (into page)
+        ax.plot([x - r*0.55, x + r*0.55], [y - r*0.55, y + r*0.55], color="black", linewidth=lw)
+        ax.plot([x - r*0.55, x + r*0.55], [y + r*0.55, y - r*0.55], color="black", linewidth=lw)
+
+
+def arrow(ax, x, y, dx, dy, label=None, label_offset=(0, 0), fontsize=12):
+    ax.arrow(
+        x, y, dx, dy,
+        length_includes_head=True,
+        head_width=0.22, head_length=0.28,
+        linewidth=2, color="black", zorder=Z_COMP
+    )
+    if label is not None:
+        draw_text(ax, x + dx + label_offset[0], y + dy + label_offset[1], label,
+                  fontsize=fontsize, boxed=True)
+        
+
+def sig_figs(x: float, n: int = 3) -> float:
+    """Round x to n significant figures (returns float)."""
+    if x == 0:
+        return 0.0
+    return round(x, n - int(math.floor(math.log10(abs(x)))) - 1)
+
+
+def style_graph(ax, xlabel, ylabel, xlim, ylim, xticks, yticks):
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_xlabel(xlabel, fontsize=10)
+    ax.set_ylabel(ylabel, fontsize=10)
+    ax.set_xticks(xticks)
+    ax.set_yticks(yticks)
+    ax.tick_params(axis="both", labelsize=10)
+    ax.grid(True, linestyle="--", alpha=0.5)
+    # keep it clean
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)

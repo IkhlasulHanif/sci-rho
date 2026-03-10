@@ -1162,3 +1162,1176 @@ class Phy025:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
+
+class Phy026:
+
+    def __init__(self):
+        self.heat_in = rnd.randint(100, 1000) / 100
+        self.heat_out = self.heat_in
+        self.answer = self.heat_out
+        self.description = (
+            "A conductor is placed between two reservoirs. "
+            "If the conductor is maintained at a constant temperature, "
+            "it emits heat at a rate of ... kJ/s (assume that no energy transfer occurs other than heat)."
+        )
+        self.topic = "Thermal physics"
+        self.subtopic = "Transfer of thermal energy"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Rate of heat input (}} Q_{{in}} \\text{{)}} &= {round(self.heat_in, 10)}\\,\\text{{kJ/s}}\\\\"
+            "\\text{{Condition for constant temperature:}} &\\\\"
+            "\\Delta U &= 0 \\implies Q_{{in}} = Q_{{out}}\\\\"
+            "\\text{{Rate of heat output (}} Q_{{out}} \\text{{)}} &= Q_{{in}}\\\\"
+            f"&= {self.answer}\\,\\text{{kJ/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy026temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(307, 451, f"Rate = {self.heat_in} kJ/s", fontsize=8)
+        ax.text(1100, 451, f"Rate = ... kJ/s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy027:
+
+    def __init__(self):
+        self.lambda_ = rnd.randint(1, 10) * 10
+        self.frequency = rnd.randint(10, 100)
+        self.amplitude = rnd.randint(1, 5)
+        self.speed = self.lambda_ * self.frequency
+        self.answer = self.speed
+
+        self.description = (
+            f"The diagram shows a wave of certain wavelength. "
+            f"If the frequency is {self.frequency} Hz, the speed of the wave is ... cm/s"
+        )
+        self.topic = "Waves"
+        self.subtopic = "General properties of waves"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Wavelength (}} \\lambda \\text{{)}} &= {round(self.lambda_, 10)}\\,\\text{{cm}}\\\\"
+            f"\\text{{Frequency (}} f \\text{{)}} &= {round(self.frequency, 10)}\\,\\text{{Hz}}\\\\"
+            "\\text{{The wave speed (}} v \\text{{)}} &\\text{{ is calculated using:}}\\\\"
+            "v &= f \\cdot \\lambda \\\\"
+            f"&= {round(self.frequency, 10)} \\cdot {round(self.lambda_, 10)}\\\\"
+            f"&= {self.answer}\\,\\text{{cm/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        x_max = int(5 * self.lambda_)
+        xtickrange = int(x_max / 5)
+        y_max = int(1.5 * self.amplitude)
+        ytickrange = 1
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=-y_max,
+            xmax=x_max,
+            ymax=y_max,
+            xtickrange=xtickrange,
+            ytickrange=ytickrange,
+            xlabel="distance (cm)",
+            ylabel="distance (cm)"
+        )
+        x = np.linspace(0, 5 * self.lambda_, 400)
+        y = self.amplitude * np.sin(2 * np.pi * x / self.lambda_)
+        ax.plot(x, y)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy028:
+
+    def __init__(self):
+        self.lambda_ = rnd.randint(1, 10) * 10
+        self.frequency = rnd.randint(10, 100)
+        self.amplitude = rnd.randint(1, 5)
+        self.speed = self.lambda_ * self.frequency
+        self.answer = self.frequency
+
+        self.description = (
+            f"The diagram shows a wave of certain wavelength. "
+            f"If the speed of the wave is {self.speed} cm/s, its frequency is ... Hz"
+        )
+        self.topic = "Waves"
+        self.subtopic = "General properties of waves"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Wave speed (}} v \\text{{)}} &= {round(self.speed, 10)}\\,\\text{{cm/s}}\\\\"
+            f"\\text{{Wavelength (}} \\lambda \\text{{)}} &= {round(self.lambda_, 10)}\\,\\text{{cm}}\\\\"
+            "\\text{{The relationship between speed, frequency, and wavelength is:}} &\\\\"
+            "v &= f \\cdot \\lambda \\\\"
+            "\\text{{Rearranging for frequency (}} f \\text{{):}} &\\\\"
+            "f &= \\frac{v}{\\lambda} \\\\"
+            f"&= \\frac{{{round(self.speed, 10)}}}{{{round(self.lambda_, 10)}}} \\\\"
+            f"&= {self.answer}\\,\\text{{Hz}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 10))
+        x_max = int(5 * self.lambda_)
+        xtickrange = int(x_max / 5)
+        y_max = int(1.5 * self.amplitude)
+        ytickrange = 1
+        draw_cartesian(
+            ax,
+            xmin=0,
+            ymin=-y_max,
+            xmax=x_max,
+            ymax=y_max,
+            xtickrange=xtickrange,
+            ytickrange=ytickrange,
+            xlabel="distance (cm)",
+            ylabel="distance (cm)"
+        )
+        x = np.linspace(0, 5 * self.lambda_, 400)
+        y = self.amplitude * np.sin(2 * np.pi * x / self.lambda_)
+        ax.plot(x, y)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
+        plt.close()
+
+class Phy029:
+
+    def __init__(self):
+        self.c = 3 * (10**8) # speed of light in vacuum
+        self.frac_med_a = rnd.randint(80, 99) / 100
+        self.speed_medium_a = int(self.frac_med_a * self.c)
+        self.frac_med_b = rnd.randint(80, 99) / 100
+        self.speed_medium_b = int(self.frac_med_b * self.c)
+        self.answer = self.frac_med_a / self.frac_med_b
+        self.description = (
+            "Light travels through two different media, A and B. "
+            "The speed of light in each medium is given. "
+            "Calculate the ratio of refractive index of B to A!"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of light in medium A (}} v_A \\text{{)}} &= {round(self.speed_medium_a, 10)}\\,\\text{{m/s}}\\\\"
+            f"\\text{{Speed of light in medium B (}} v_B \\text{{)}} &= {round(self.speed_medium_b, 10)}\\,\\text{{m/s}}\\\\"
+            "\\text{{Refractive index is defined as:}} &\\\\"
+            "n &= \\frac{c}{v} \\\\"
+            "\\text{{Therefore, the ratio of }} n_B \\text{{ to }} n_A \\text{{ is:}} &\\\\"
+            "\\frac{n_B}{n_A} &= \\frac{c/v_B}{c/v_A} \\\\"
+            "\\frac{n_B}{n_A} &= \\frac{v_A}{v_B} \\\\"
+            f"&= \\frac{{{round(self.speed_medium_a, 10)}}}{{{round(self.speed_medium_b, 10)}}} \\\\"
+            f"&= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy029temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(200, 376, f"v = {format(self.speed_medium_a, ',').replace(',', '.')} m/s", fontsize=8)
+        ax.text(900, 376, f"v = {format(self.speed_medium_b, ',').replace(',', '.')} m/s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy030:
+
+    def __init__(self):
+        self.c = 3 * (10**8) # speed of light in vacuum
+        self.frac_med_a = rnd.randint(80, 99) / 100
+        self.speed_medium_a = int(self.frac_med_a * self.c)
+        self.frac_med_b = rnd.randint(80, 99) / 100
+        self.speed_medium_b = int(self.frac_med_b * self.c)
+        self.b_to_a_ratio = self.frac_med_a / self.frac_med_b
+        self.answer = self.speed_medium_b
+        self.description = (
+            "Light travels through two different media, A and B. "
+            f"The speed of light in medium A is given. If the ratio of refractive index of medium B to A is {self.b_to_a_ratio}, "
+            "calculate the speed of light in medium B!"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of light in medium A (}} v_A \\text{{)}} &= {round(self.speed_medium_a, 10)}\\,\\text{{m/s}}\\\\"
+            f"\\text{{Ratio of refractive indices (}} n_B / n_A \\text{{)}} &= {self.b_to_a_ratio}\\\\"
+            "\\text{{Refractive index (}} n \\text{{) is related to speed (}} v \\text{{) by:}} &\\\\"
+            "n &= \\frac{c}{v} \\\\"
+            "\\text{{Therefore, the ratio is:}} &\\\\"
+            "\\frac{n_B}{n_A} &= \\frac{c/v_B}{c/v_A} = \\frac{v_A}{v_B} \\\\"
+            "\\text{{Rearranging for the speed in medium B (}} v_B \\text{{):}} &\\\\"
+            "v_B &= \\frac{v_A}{n_B / n_A} \\\\"
+            f"&= \\frac{{{round(self.speed_medium_a, 10)}}}{{{round(self.b_to_a_ratio, 10)}}} \\\\"
+            f"&= {self.answer}\\,\\text{{m/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy030temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(200, 376, f"v = {format(self.speed_medium_a, ',').replace(',', '.')} m/s", fontsize=8)
+        ax.text(1000, 376, f"v = ... m/s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+    
+class Phy031:
+
+    def __init__(self):
+        self.n1 = rnd.randint(11, 20) / 10
+        self.n2 = rnd.randint(11, 20) / 10
+        while self.n2 == self.n1:
+            self.n2 = rnd.randint(11, 20) / 10
+        self.theta_1 = rnd.choice([10, 15, 20, 25, 30, 45])
+        self.sin_theta_2 = (self.n1/self.n2)*math.sin(self.theta_1 * math.pi / 180)
+        self.answer = self.sin_theta_2
+        self.description = (
+            f"Light is incident on the boundary between two media. "
+            f"The refractive index of the first medium is n1 and that of the second medium is n2. "
+            f"Calculate the value of sin(θ2)."
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Refractive index of medium 1, }} n_1 &= {self.n1}\\\\"
+            f"\\text{{Refractive index of medium 2, }} n_2 &= {self.n2}\\\\"
+            f"\\text{{Angle of incidence, }} \\theta_1 &= {self.theta_1}^\\circ\\\\"
+            f"\\text{{According to Snell's Law:}} &\\\\"
+            f"n_1 \\sin(\\theta_1) &= n_2 \\sin(\\theta_2)\\\\"
+            f"\\sin(\\theta_2) &= \\frac{{n_1 \\sin(\\theta_1)}}{{n_2}}\\\\"
+            f"\\sin(\\theta_2) &= \\frac{{{self.n1} \\times \\sin({self.theta_1}^\\circ)}}{{{self.n2}}}\\\\"
+            f"\\sin(\\theta_2) &= \\frac{{{self.n1} \\times {round(math.sin(math.radians(self.theta_1)), 10)}}}{{{self.n2}}}\\\\"
+            f"\\sin(\\theta_2) &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy031temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(525, 355, f"θ1 = {self.theta_1}°", fontsize=6)
+        ax.text(655, 740, f"θ2 = ...°", fontsize=6)
+        ax.text(28, 470, f"n1 = {self.n1}", fontsize=6)
+        ax.text(28, 515, f"n2 = {self.n2}", fontsize=6)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy032:
+
+    def __init__(self):
+        self.n1 = rnd.randint(11, 20) / 10
+        self.theta_1 = rnd.choice([10, 15, 20, 25, 30, 45])
+        self.theta_2 = rnd.choice([10, 15, 20, 25, 30, 45])
+        while self.theta_2 == self.theta_1:
+            self.theta_2 = rnd.choice([10, 15, 20, 25, 30, 45])
+        self.n2 = self.n1 * (math.sin(self.theta_1 * math.pi/180)/math.sin(self.theta_2 * math.pi/180))
+        self.answer = self.n2
+        self.description = (
+            f"Light is incident on the boundary between two media. "
+            f"The refractive index of the first medium is n1 and that of the second medium is n2. "
+            f"Calculate the value of n2."
+        )
+        self.topic = "Waves"
+        self.subtopic = "Light"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Refractive index of medium 1, }} n_1 &= {self.n1}\\\\"
+            f"\\text{{Angle of incidence, }} \\theta_1 &= {self.theta_1}^\\circ\\\\"
+            f"\\text{{Angle of refraction, }} \\theta_2 &= {self.theta_2}^\\circ\\\\"
+            f"\\text{{According to Snell's Law:}} &\\\\"
+            f"n_1 \\sin(\\theta_1) &= n_2 \\sin(\\theta_2)\\\\"
+            f"n_2 &= \\frac{{n_1 \\sin(\\theta_1)}}{{\\sin(\\theta_2)}}\\\\"
+            f"n_2 &= \\frac{{{self.n1} \\times \\sin({self.theta_1}^\\circ)}}{{\\sin({self.theta_2}^\\circ)}}\\\\"
+            f"n_2 &= \\frac{{{self.n1} \\times {round(math.sin(math.radians(self.theta_1)), 10)}}}{{{round(math.sin(math.radians(self.theta_2)), 10)}}}\\\\"
+            f"n_2 &= {self.answer}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy031temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(525, 355, f"θ1 = {self.theta_1}°", fontsize=6)
+        ax.text(655, 740, f"θ2 = {self.theta_2}°", fontsize=6)
+        ax.text(28, 470, f"n1 = {self.n1}", fontsize=6)
+        ax.text(28, 515, f"n2 = ...", fontsize=6)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy033:
+
+    def __init__(self):
+        self.sound_speed = rnd.randint(330, 350)
+        self.distance = rnd.randint(10, 20) * 100
+        self.time = self.distance / self.sound_speed
+        self.answer = self.sound_speed
+        self.description = (
+            f"A student stands at point A and fires a pistol. "
+            f"Another student standing at point B starts a stopwatch when they see the flash of the pistol and stops it when they hear the bang. "
+            f"The recorded time on the stopwatch is {self.time} seconds. "
+            f"Calculate the speed of sound in air (in m/s) based on this experiment! (ignore the delay due to speed of light)"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Sound"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Distance between point A and B, }} d &= {self.distance}\\,\\text{{m}}\\\\"
+            f"\\text{{Time recorded, }} t &= {round(self.time, 10)}\\,\\text{{s}}\\\\"
+            f"\\text{{The speed of sound is calculated using the formula:}} &\\\\"
+            f"v &= \\frac{{d}}{{t}}\\\\"
+            f"&= \\frac{{{self.distance}}}{{{round(self.time, 10)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{m/s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy033temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(930, 160, f"d = {self.distance} m", fontsize=6)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy034:
+
+    def __init__(self):
+        self.sound_speed = rnd.randint(148, 153) * 10
+        self.time = rnd.randint(50, 200) / 100
+        self.depth = self.sound_speed * self.time / 2
+        self.answer = self.depth
+        self.description = (
+            f"A research ship is mapping the ocean floor. It sends a pulse of sound (sonar) straight down to the seabed. "
+            f"The ship then detects the reflection (echo) of the pulse. "
+            f"Calculate the depth of the water at this location (in meters)!"
+        )
+        self.topic = "Waves"
+        self.subtopic = "Sound"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Speed of sound in water}} &= {self.sound_speed}\\,\\text{{m/s}}\\\\"
+            f"\\text{{Total time for echo}} &= {self.time}\\,\\text{{s}}\\\\"
+            f"\\text{{The sound travels down to the seabed and reflects back up.}}\\\\"
+            f"\\text{{Total distance traveled}} &= 2 \\times \\text{{Depth}}\\\\"
+            f"\\text{{Using }} d &= v \\times t:\\\\"
+            f"2 \\times \\text{{Depth}} &= {self.sound_speed} \\times {self.time}\\\\"
+            f"\\text{{Depth}} &= \\frac{{{self.sound_speed} \\times {self.time}}}{{2}}\\\\"
+            f"&= \\frac{{{round(self.sound_speed * self.time, 10)}}}{{2}}\\\\"
+            f"&= {self.answer}\\,\\text{{m}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy034temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(755, 1255, f"v = {self.sound_speed} m/s\nt = {self.time} s", fontsize=8)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+class Phy035:
+
+    def __init__(self):
+        self.current = rnd.randint(5, 50) / 10
+        self.resistance = rnd.randint(100, 1000)
+        self.time = rnd.randint(10, 60)
+        self.total_charge = self.current * self.time
+        self.answer = self.total_charge
+        self.description = (
+            f"An electric circuit is shown in the image. "
+            f"Calculate the total charge (in Coulombs) that passes through the resistor in {self.time} seconds!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Current, }} I &= {self.current}\\,\\text{{A}}\\\\"
+            f"\\text{{Time, }} t &= {self.time}\\,\\text{{s}}\\\\"
+            "\\text{{The charge is calculated using the formula:}} &\\\\"
+            "Q &= I \\times t\\\\"
+            f"&= {self.current} \\times {self.time}\\\\"
+            f"&= {self.answer}\\,\\text{{C}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy035temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(444, 20, f"R = {self.resistance} Ω", fontsize=16)
+        ax.text(592, 274, f"I = {self.current} A", fontsize=16)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.2)
+        plt.close()
+
+class Phy036:
+
+    def __init__(self):
+        self.current = rnd.randint(5, 50) / 10
+        self.resistance = rnd.randint(100, 1000)
+        self.time = rnd.randint(10, 60)
+        self.total_charge = self.current * self.time
+        self.answer = self.time
+        self.description = (
+            f"An electric circuit is shown in the image. "
+            f"Calculate the time taken for a total charge of {self.total_charge} C to pass through the resistor!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total charge (Q)}} &= {self.total_charge}\\,\\text{{C}}\\\\"
+            f"\\text{{Current (I)}} &= {self.current}\\,\\text{{A}}\\\\"
+            f"\\text{{The relationship between charge, current, and time is:}} &\\\\"
+            f"Q &= I \\times t\\\\"
+            f"\\text{{Rearranging for time (t):}} &\\\\"
+            f"t &= \\frac{{Q}}{{I}}\\\\"
+            f"&= \\frac{{{self.total_charge}}}{{{self.current}}}\\\\"
+            f"&= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy036temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(444, 20, f"R = {self.resistance} Ω", fontsize=16)
+        ax.text(592, 274, f"I = {self.current} A", fontsize=16)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.2)
+        plt.close()
+
+class Phy037:
+
+    def __init__(self):
+        self.current = rnd.randint(5, 50) / 10
+        self.resistance_A = rnd.randint(100, 1000)
+        self.resistance_B = rnd.randint(100, 1000)
+        self.time = rnd.randint(10, 60)
+        self.total_charge = self.current * self.time
+        self.answer = self.current
+        self.description = (
+            f"In the circuit provided, it is observed that a total charge of {self.total_charge} C "
+            f"passes through resistor B in {self.time} seconds. Calculate the current flowing through resistor A!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Total charge at resistor B (Q)}} &= {self.total_charge}\\,\\text{{C}}\\\\"
+            f"\\text{{Time interval (t)}} &= {self.time}\\,\\text{{s}}\\\\"
+            f"\\text{{In a series circuit, the charge flowing past resistor B is the same as at resistor A.}}\\\\"
+            f"\\text{{The current (I) is defined as the rate of flow of charge:}}\\\\"
+            f"I &= \\frac{{Q}}{{t}}\\\\"
+            f"&= \\frac{{{self.total_charge}}}{{{self.time}}}\\\\"
+            f"&= {round(self.total_charge / self.time, 10)}\\,\\text{{A}}\\\\"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy037temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(448, 276, f"R = {self.resistance_A} Ω", fontsize=12)
+        ax.text(209, 443, f"R = {self.resistance_B} Ω", fontsize=12)
+        ax.text(623, 99, f"I = ... A", fontsize=16)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy038:
+
+    def __init__(self):
+        self.work = rnd.randint(50, 600)
+        self.charge_A = rnd.randint(5, 40)
+        self.charge_B = rnd.randint (10, 50) # decoy -- do not use during calculation
+        self.voltage = round(self.work / self.charge_A, 2)
+        self.answer = self.voltage
+        self.description = (
+            f"During an electrical experiment, it is measured that {self.work} J of work is done "
+            f"in order to move charges across resistor A in the circuit. "
+            "Calculate the potential difference (voltage) between the two ends of the resistor!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Work done (W)}} &= {self.work}\\,\\text{{J}}\\\\"
+            f"\\text{{Charge moved (Q)}} &= {self.charge_A}\\,\\text{{C}}\\\\"
+            f"\\text{{Potential difference (V) is the work done per unit charge:}} &\\\\"
+            f"V &= \\frac{{W}}{{Q}}\\\\"
+            f"&= \\frac{{{self.work}}}{{{self.charge_A}}}\\\\"
+            f"&= {round(self.work / self.charge_A, 10)}\\,\\text{{V}}\\\\"
+            f"&= {self.answer}\\,\\text{{V}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy038temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(378, 276, f"Q (Charge Moved) = {self.charge_A} C", fontsize=9)
+        ax.text(209, 443, f"Q (Charge Moved) = {self.charge_B} C", fontsize=9)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy039:
+
+    def __init__(self):
+        self.voltage_A = rnd.randint(10, 50) / 10
+        self.voltage_B = rnd.randint(10, 50) / 10 # decoy -- do not use during calculation
+        self.charge = rnd.randint(5, 40)
+        self.work = self.voltage_A * self.charge
+        self.answer = self.work
+
+        self.description = (
+            f"During an electrical experiment, {self.charge} C of charges are moved across resistor A "
+            f"in the circuit. "
+            f"Calculate the total work done (in Joule)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Voltage across resistor A (V)}} &= {self.voltage_A}\\,\\text{{V}}\\\\"
+            f"\\text{{Charge moved (Q)}} &= {self.charge}\\,\\text{{C}}\\\\"
+            f"\\text{{Work done (W) is given by the formula:}} &\\\\"
+            f"W &= V \\times Q\\\\"
+            f"&= {self.voltage_A} \\times {self.charge}\\\\"
+            f"&= {round(self.voltage_A * self.charge, 10)}\\,\\text{{J}}\\\\"
+            f"&= {self.answer}\\,\\text{{J}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy039temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(398, 276, f"V = {self.voltage_A} V", fontsize=9)
+        ax.text(209, 443, f"V = {self.voltage_B} V", fontsize=9)
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy040:
+
+    def __init__(self):
+        self.voltage_A = rnd.randint(10, 50) / 10
+        self.voltage_BC = rnd.randint(10, 50) / 10 # decoy -- do not use during calculation
+        self.current_A = rnd.randint(15, 30) / 10
+        self.current_B = rnd.randint(5, 10) / 10 # decoy -- do not use during calculation
+        self.current_C = self.current_A - self.current_B
+        self.resistance_A = self.voltage_A / self.current_A
+        self.resistance_B = self.voltage_BC / self.current_B # decoy -- do not use during calculation
+        self.resistance_C = self.voltage_BC / self.current_C # decoy -- do not use during calculation
+        self.answer = self.resistance_A
+
+        self.description = f"The image shows an electric circuit. Calculate the resistance of resistor A!"
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Voltage across resistor A (V)}} &= {self.voltage_A}\\,\\text{{V}}\\\\"
+            f"\\text{{Current through resistor A (I)}} &= {self.current_A}\\,\\text{{A}}\\\\"
+            f"\\text{{According to Ohm's Law, resistance is given by:}} &\\\\"
+            f"R &= \\frac{{V}}{{I}}\\\\"
+            f"&= \\frac{{{self.voltage_A}}}{{{self.current_A}}}\\\\"
+            f"&= {round(self.voltage_A / self.current_A, 10)}\\,\\Omega\\\\"
+            f"&= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy040temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(1010, 290, f"V = {self.voltage_A} V; I = {self.current_A} A", fontsize=9) # resistor A
+        ax.text(220, -30, f"V = {self.voltage_BC} V; I = {self.current_B} A", fontsize=9) # resistor B
+        ax.text(220, 422, f"V = {self.voltage_BC} V; I = {self.current_C} A", fontsize=9) # resistor C
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy041:
+
+    def __init__(self):
+        self.voltage_BC = rnd.choice([12, 24, 36, 48, 60, 72, 84, 96])
+        self.current_B = rnd.choice([1, 2, 3, 4, 6])
+        self.current_C = rnd.choice([1, 2, 3, 4, 6])
+        self.current_A = self.current_B + self.current_C
+        self.resistance_B = self.voltage_BC / self.current_B
+        self.resistance_C = self.voltage_BC / self.current_C
+        self.resistance_A = rnd.randint(2, 20)
+        self.voltage_A = self.current_A * self.resistance_A
+        self.answer = self.current_B
+
+        self.description = f"The image shows an electric circuit. Calculate the current flowing through resistor B!"
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Voltage across the parallel branch BC (V)}} &= {self.voltage_BC}\\,\\text{{V}}\\\\"
+            f"\\text{{Resistance of resistor B (R)}} &= {round(self.resistance_B, 10)}\\,\\Omega\\\\"
+            f"\\text{{According to Ohm's Law, the current through resistor B is:}} &\\\\"
+            f"I &= \\frac{{V}}{{R}}\\\\"
+            f"&= \\frac{{{self.voltage_BC}}}{{{round(self.resistance_B, 10)}}}\\\\"
+            f"&= {round(self.voltage_BC / self.resistance_B, 10)}\\,\\text{{A}}\\\\"
+            f"&= {self.answer}\\,\\text{{A}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy041temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(1010, 290, f"V = {self.voltage_A} V; R = {self.resistance_A} Ω", fontsize=9) # resistor A
+        ax.text(220, -30, f"V = {self.voltage_BC} V; R = {self.resistance_B} Ω", fontsize=9) # resistor B
+        ax.text(220, 422, f"V = {self.voltage_BC} V; R = {self.resistance_C} Ω", fontsize=9) # resistor C
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy042:
+
+    def __init__(self):
+        self.voltage_BC = rnd.choice([12, 24, 36, 48, 60, 72, 84, 96])
+        self.current_B = rnd.choice([1, 2, 3, 4, 6])
+        self.current_C = rnd.choice([1, 2, 3, 4, 6])
+        self.current_A = self.current_B + self.current_C
+        self.resistance_B = self.voltage_BC / self.current_B
+        self.resistance_C = self.voltage_BC / self.current_C
+        self.resistance_A = rnd.randint(2, 20)
+        self.voltage_A = self.current_A * self.resistance_A
+        self.answer = self.voltage_BC
+
+        self.description = "The image shows an electric circuit. Find the voltage across resistor C!"
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Current through resistor C (I)}} &= {self.current_C}\\,\\text{{A}}\\\\"
+            f"\\text{{Resistance of resistor C (R)}} &= {round(self.resistance_C, 10)}\\,\\Omega\\\\"
+            f"\\text{{Using Ohm's Law:}} &\\\\"
+            f"V &= I \\times R\\\\"
+            f"&= {self.current_C} \\times {round(self.resistance_C, 10)}\\\\"
+            f"&= {round(self.current_C * self.resistance_C, 10)}\\,\\text{{V}}\\\\"
+            f"&= {self.answer}\\,\\text{{V}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy042temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(1010, 290, f"I = {self.current_A} A; R = {self.resistance_A} Ω", fontsize=9) # resistor A
+        ax.text(220, -30, f"I = {self.current_B} A; R = {self.resistance_B} Ω", fontsize=9) # resistor B
+        ax.text(220, 422, f"I = {self.current_C} A; R = {self.resistance_C} Ω", fontsize=9) # resistor C
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy043:
+
+    def __init__(self):
+        self.max_voltage = rnd.choice([10, 12, 14, 16, 18, 20, 24, 28, 30, 36, 40])
+        self.max_current = rnd.choice([10, 12, 14, 16, 20, 22, 24, 26, 28, 30])
+        self.resistance = self.max_voltage / self.max_current
+        self.answer = round(self.resistance, 2)
+
+        self.description = (
+            "The graph below shows the current-voltage (I-V) characteristics for a "
+            "resistor of constant resistance. According to the graph, calculate the "
+            "resistance of this resistor in ohms (Ω)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        
+        # Use the maximum plotted point for the reasoning since it guarantees a clean grid intersection
+        v_point = self.max_voltage
+        i_point = self.max_current
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{For a resistor of constant resistance, the current is directly proportional to the voltage.}\\\\"
+            "\\text{This results in a straight line through the origin on an I-V graph.}\\\\"
+            "\\text{Resistance (R) can be calculated using Ohm's Law:}\\\\"
+            "R &= \\frac{V}{I}\\\\"
+            f"\\text{{Reading a point from the straight line, for example the highest point, }} V = {v_point}\\,\\text{{V}} \\text{{ and }} I = {i_point}\\,\\text{{A:}}\\\\"
+            f"R &= \\frac{{{v_point}}}{{{i_point}}}\\\\"
+            f"&= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Added +2 to the max bounds so the graph has a little padding 
+        # but the top grid lines still align perfectly with the plotted line
+        draw_cartesian(
+            ax, 
+            xmin=0, 
+            ymin=0, 
+            xmax=self.max_voltage + 2, 
+            ymax=self.max_current + 2, 
+            tickrange=2, 
+            xlabel="Voltage (V)", 
+            ylabel="Current (A)"
+        )
+        
+        # Plot the straight line from origin to the maximum point
+        ax.plot([0, self.max_voltage], [0, self.max_current], color="blue", linewidth=2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy044:
+
+    def __init__(self):
+        # Pick a specific target coordinate that lands perfectly on the grid intersections
+        self.v_point = rnd.choice([10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40])
+        self.i_point = rnd.choice([10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30])
+        
+        # Calculate resistance at this specific point
+        self.resistance = self.v_point / self.i_point
+        self.answer = round(self.resistance, 2)
+
+        self.description = (
+            "The graph below shows the current-voltage (I-V) characteristics for a filament lamp. "
+            f"According to the graph, calculate the resistance of the filament lamp when the "
+            f"potential difference is {self.v_point} V!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{A filament lamp is a non-ohmic component, meaning its resistance changes as voltage changes.}\\\\"
+            "\\text{However, the resistance at any specific point can still be calculated using Ohm's Law:}\\\\"
+            "R &= \\frac{V}{I}\\\\"
+            f"\\text{{From the graph, when }} V = {self.v_point}\\,\\text{{V, the current is }} I = {self.i_point}\\,\\text{{A.}}\\\\"
+            f"R &= \\frac{{{self.v_point}}}{{{self.i_point}}}\\\\"
+            f"&= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+
+    def generate(self, num):
+        fig, ax = plt.subplots(figsize=(8, 8))
+        
+        # Generate points for a curve that passes through (0,0) and (v_point, i_point)
+        # A common mathematical approximation for a filament lamp curve is I = k * sqrt(V)
+        # To make it hit our target point: k = i_point / sqrt(v_point)
+        max_v_plot = self.v_point + 4
+        v_values = np.linspace(0, max_v_plot, 100)
+        k = self.i_point / np.sqrt(self.v_point)
+        i_values = k * np.sqrt(v_values)
+        
+        # Calculate appropriate max Y for the graph padding
+        max_i_plot = int(k * np.sqrt(max_v_plot)) + 2
+
+        draw_cartesian(
+            ax, 
+            xmin=0, 
+            ymin=0, 
+            xmax=max_v_plot, 
+            ymax=max_i_plot, 
+            tickrange=2, 
+            xlabel="Voltage (V)", 
+            ylabel="Current (A)"
+        )
+        
+        # Plot the curved line
+        ax.plot(v_values, i_values, color="red", linewidth=2)
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy045:
+
+    def __init__(self):
+        self.voltage_B = rnd.randint(20, 50) / 10
+        self.current_B = rnd.randint(10, 100) / 100
+        self.current_AC = rnd.randint(10, 100) / 100
+        self.voltage_AC = self.voltage_B
+        self.voltage_A = rnd.randint(10, 15) / 10
+        self.voltage_C = self.voltage_AC - self.voltage_A
+
+        # Added rounding to prevent floating-point arithmetic errors
+        self.voltage_C = round(self.voltage_AC - self.voltage_A, 2)
+        self.answer = round(self.voltage_A * self.current_AC, 4)
+
+        self.description = (
+            "The circuit diagram shows three lamps (A, B, and C) powered by a single battery. "
+            "Based on the values provided in the diagram, calculate the power dissipated by lamp A in watts (W)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Voltage across lamp A }} (V) &= {self.voltage_A}\\,\\text{{V}}\\\\"
+            f"\\text{{Current through lamp A }} (I) &= {self.current_AC}\\,\\text{{A}}\\\\"
+            "\\text{Electrical power (P) is calculated using the formula:}\\\\"
+            "P &= V \\times I\\\\"
+            f"&= {self.voltage_A} \\times {self.current_AC}\\\\"
+            f"&= {self.answer}\\,\\text{{W}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy045temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(320, 970, f"V = {self.voltage_A} V\nI = {self.current_AC} A", fontsize=9) # lamp A
+        ax.text(830, 970, f"V = {self.voltage_C} V\nI = {self.current_AC} A", fontsize=9) # lamp C
+        ax.text(830, 430, f"V = {self.voltage_B} V\nI = {self.current_B} A", fontsize=9) # lamp B
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy046:
+
+    def __init__(self):
+        self.voltage_B = rnd.randint(20, 50) / 10
+        self.current_B = rnd.randint(10, 100) / 100
+        self.current_AC = rnd.randint(10, 100) / 100
+        self.voltage_AC = self.voltage_B
+        self.voltage_A = rnd.randint(10, 15) / 10
+        
+        # Added rounding to prevent floating-point arithmetic errors
+        self.voltage_C = round(self.voltage_AC - self.voltage_A, 2)
+        
+        # Calculate power for Lamp B to provide in the description
+        self.power_B = round(self.voltage_B * self.current_B, 4)
+        
+        # The answer is now the current of Lamp B
+        self.answer = self.current_B
+
+        self.description = (
+            "The circuit diagram shows three lamps (A, B, and C) powered by a single battery. "
+            f"Given that lamp B dissipates {self.power_B} W of electrical power, calculate the "
+            "current flowing through lamp B based on the values provided in the diagram!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Power dissipated by lamp B }} (P) &= {self.power_B}\\,\\text{{W}}\\\\"
+            f"\\text{{Voltage across lamp B }} (V) &= {self.voltage_B}\\,\\text{{V}}\\\\"
+            "\\text{Electrical power (P) is related to voltage and current by the formula:}\\\\"
+            "P &= V \\times I\\\\"
+            "\\text{Rearranging to solve for current (I):}\\\\"
+            "I &= \\frac{P}{V}\\\\"
+            f"&= \\frac{{{self.power_B}}}{{{self.voltage_B}}}\\\\"
+            f"&= {self.answer}\\,\\text{{A}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy046temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(320, 970, f"V = {self.voltage_A} V\nI = {self.current_AC} A", fontsize=9) # lamp A
+        ax.text(830, 970, f"V = {self.voltage_C} V\nI = {self.current_AC} A", fontsize=9) # lamp C
+        ax.text(830, 430, f"V = {self.voltage_B} V", fontsize=9) # lamp B
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy047:
+
+    def __init__(self):
+        self.voltage_ABC = rnd.randint(10, 50) / 10
+        self.current_A = rnd.randint(20, 100) / 100
+        self.current_B = rnd.randint(20, 100) / 100
+        self.current_C = rnd.randint(20, 100) / 100
+        self.time = rnd.randint(20, 120)
+        self.answer = round(self.voltage_ABC * self.current_C * self.time, 4)
+
+        self.description = (
+            "The image shows an electric circuit with three lamps and one resistor. "
+            f"Based on the diagram, calculate the energy consumed by lamp C after being powered for {self.time} seconds!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Voltage across lamp C }} (V) &= {self.voltage_ABC}\\,\\text{{V}}\\\\"
+            f"\\text{{Current through lamp C }} (I) &= {self.current_C}\\,\\text{{A}}\\\\"
+            f"\\text{{Time }} (t) &= {self.time}\\,\\text{{s}}\\\\"
+            "\\text{The electrical energy (E) consumed can be calculated using the formula:}\\\\"
+            "E &= V \\times I \\times t\\\\"
+            f"&= {self.voltage_ABC} \\times {self.current_C} \\times {self.time}\\\\"
+            f"&= {self.answer}\\,\\text{{J}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy047temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(970, 660, f"V = {self.voltage_ABC} V\nI = {self.current_A} A", fontsize=9) # lamp A
+        ax.text(970, 1150, f"V = {self.voltage_ABC} V\nI = {self.current_B} A", fontsize=9) # lamp B
+        ax.text(970, 1640, f"V = {self.voltage_ABC} V\nI = {self.current_C} A", fontsize=9) # lamp C
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy048:
+
+    def __init__(self):
+        self.voltage_BC = rnd.randint(20, 50) / 10
+        self.voltage_A = self.voltage_BC
+        self.voltage_B = rnd.randint(10, 15) / 10
+        self.voltage_C = round(self.voltage_BC - self.voltage_B, 3)
+        self.current_BC = rnd.randint(20, 50) / 100
+        self.current_A = rnd.randint(20, 50) / 100
+        self.time = rnd.randint(20, 120)
+        self.energy_dissipated = round(self.voltage_B * self.current_BC * self.time, 4)
+        self.answer = self.time
+
+        self.description = (
+            "The circuit diagram shows three resistors (A, B, and C). "
+            f"Based on the values provided in the diagram, calculate the time required (in seconds) "
+            f"for resistor B to dissipate {self.energy_dissipated} J of electrical energy!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Energy dissipated by resistor B }} (E) &= {self.energy_dissipated}\\,\\text{{J}}\\\\"
+            f"\\text{{Voltage across resistor B }} (V) &= {self.voltage_B}\\,\\text{{V}}\\\\"
+            f"\\text{{Current through resistor B }} (I) &= {self.current_BC}\\,\\text{{A}}\\\\"
+            "\\text{The formula for electrical energy is:}\\\\"
+            "E &= V \\times I \\times t\\\\"
+            "\\text{Rearranging the formula to solve for time (t):}\\\\"
+            "t &= \\frac{E}{V \\times I}\\\\"
+            f"&= \\frac{{{self.energy_dissipated}}}{{{self.voltage_B} \\times {self.current_BC}}}\\\\"
+            f"&= \\frac{{{self.energy_dissipated}}}{{{round(self.voltage_B * self.current_BC, 4)}}}\\\\"
+            f"&= {self.answer}\\,\\text{{s}}"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy048temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(290, 360, f"V = {self.voltage_A} V\nI = {self.current_A} A", fontsize=9) # resistor A
+        ax.text(290, 1020, f"V = {self.voltage_B} V\nI = {self.current_BC} A", fontsize=9) # resistor B
+        ax.text(540, 1210, f"V = {self.voltage_C} V\nI = {self.current_BC} A", fontsize=9) # resistor C
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy049:
+
+    def __init__(self):
+        # series
+        self.RA = rnd.randint(10, 100)
+        self.RB = rnd.randint(10, 100)
+        self.RC = rnd.randint(10, 100)
+        self.RD = rnd.randint(10, 100)
+
+        # parallel
+        self.RE = rnd.randint(10, 100)
+        self.RF = rnd.randint(10, 100)
+        self.RG = rnd.randint(10, 100)
+        
+        # series equivalent resistance
+        self.series_eq = round((self.RA + self.RB + self.RC + self.RD), 4)
+
+        # parallel equivalent resistance
+        self.parallel_eq = round((self.RE * self.RF * self.RG) / (self.RE * self.RF + self.RE * self.RG + self.RF * self.RG), 4)
+
+        self.answer = self.parallel_eq
+
+        self.description = (
+            "The circuit diagram below shows an arrangement of seven resistors labelled A through G. "
+            "Based on the provided diagram, calculate the equivalent resistance of the section containing "
+            "resistors E, F, and G in ohms (Ω)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Based on the circuit diagram, resistors E, F, and G are connected in parallel.}\\\\"
+            "\\text{The formula for the equivalent resistance } (R_p) \\text{ of resistors in parallel is:}\\\\"
+            "\\frac{1}{R_p} &= \\frac{1}{R_E} + \\frac{1}{R_F} + \\frac{1}{R_G}\\\\"
+            f"\\frac{{1}}{{R_p}} &= \\frac{{1}}{{{self.RE}}} + \\frac{{1}}{{{self.RF}}} + \\frac{{1}}{{{self.RG}}}\\\\"
+            "\\text{Solving for } R_p \\text{:}\\\\"
+            f"R_p &= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy049temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(300, 1050, f"R = {self.RA} Ω", fontsize=9) # resistor A
+        ax.text(300, 520, f"R = {self.RB} Ω", fontsize=9) # resistor B
+        ax.text(620, 300, f"R = {self.RC} Ω", fontsize=9) # resistor C
+        ax.text(1740, 550, f"R = {self.RD} Ω", fontsize=9) # resistor D
+        ax.text(1250, 1050, f"R = {self.RE} Ω", fontsize=9) # resistor E
+        ax.text(1730, 1050, f"R = {self.RF} Ω", fontsize=9) # resistor F
+        ax.text(2200, 1050, f"R = {self.RG} Ω", fontsize=9) # resistor G
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()
+
+class Phy050:
+
+    def __init__(self):
+        # series
+        self.RA = rnd.randint(10, 100)
+        self.RB = rnd.randint(10, 100)
+        self.RC = rnd.randint(10, 100)
+        self.RD = rnd.randint(10, 100)
+
+        # parallel
+        self.RE = rnd.randint(10, 100)
+        self.RF = rnd.randint(10, 100)
+        self.RG = rnd.randint(10, 100)
+        
+        # series equivalent resistance
+        self.series_eq = round((self.RA + self.RB + self.RC + self.RD), 4)
+
+        # parallel equivalent resistance
+        self.parallel_eq = round((self.RE * self.RF * self.RG) / (self.RE * self.RF + self.RE * self.RG + self.RF * self.RG), 4)
+
+        self.answer = self.series_eq
+
+        self.description = (
+            "The circuit diagram below shows an arrangement of seven resistors labelled A through G. "
+            "Based on the provided diagram, calculate the equivalent resistance of the section containing "
+            "resistors A, B, C, and D in ohms (Ω)!"
+        )
+        self.topic = "Electricity and magnetism"
+        self.subtopic = "Electric circuits"
+        self.source = "Original"
+        self.curriculum = "IGCSE"
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            "\\text{Based on the circuit diagram, resistors A, B, C, and D are connected in series.}\\\\"
+            "\\text{The equivalent resistance } (R_s) \\text{ for components in series is the sum of their individual resistances:}\\\\"
+            "R_s &= R_A + R_B + R_C + R_D\\\\"
+            f"&= {self.RA} + {self.RB} + {self.RC} + {self.RD}\\\\"
+            f"&= {self.answer}\\,\\Omega"
+            "\\end{aligned}\\]"
+        )
+        
+    def generate(self, num):
+        img = Image.open('physics/temp_image/Phy050temp.png')
+        fig, ax = plt.subplots()
+        ax.imshow(img)
+        ax.text(300, 1050, f"R = {self.RA} Ω", fontsize=9) # resistor A
+        ax.text(300, 520, f"R = {self.RB} Ω", fontsize=9) # resistor B
+        ax.text(620, 300, f"R = {self.RC} Ω", fontsize=9) # resistor C
+        ax.text(1740, 550, f"R = {self.RD} Ω", fontsize=9) # resistor D
+        ax.text(1250, 1050, f"R = {self.RE} Ω", fontsize=9) # resistor E
+        ax.text(1730, 1050, f"R = {self.RF} Ω", fontsize=9) # resistor F
+        ax.text(2200, 1050, f"R = {self.RG} Ω", fontsize=9) # resistor G
+        plt.axis("off")
+
+        dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
+        plt.close()

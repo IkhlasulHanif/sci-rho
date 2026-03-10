@@ -20,13 +20,30 @@ def fmt_time(x, pos=None):
 
 # Helper for clean formatting (prevents "+ -", "1x", or "0x")
 def fmt_poly(coeff, var, is_leading=False):
-    if coeff == 0: return ""
-    sign = "+" if coeff > 0 else "-"
-    val = abs(coeff)
-    str_val = str(val) if (val != 1 or var == "") else ""
+    """
+    Helper for clean formatting (prevents '+ -', '1x', or '0x')
+    """
+    if coeff == 0: 
+        return "" if var != "" else "0"
+    
+    # Handle sign
     if is_leading:
-        return f"{'' if coeff > 0 else '-'}{str_val}{var}"
-    return f" {sign} {str_val}{var}"
+        sign = "" if coeff > 0 else "-"
+    else:
+        sign = " + " if coeff > 0 else " - "
+    
+    # Handle absolute value for coefficients
+    val = abs(coeff)
+    if val == 1 and var != "":
+        str_val = ""
+    else:
+        # Check if float and has no decimals
+        if isinstance(val, float) and val.is_integer():
+            str_val = str(int(val))
+        else:
+            str_val = str(val)
+            
+    return f"{sign}{str_val}{var}"
 
 def add_marking(ax, start, end):
     """
@@ -149,3 +166,10 @@ def draw_solid(ax, x_offset, y_offset, scale, val_h, shape_type):
     ax.text(dim_x - 0.2 * scale, (h_top + h_bottom)/2, f"{val_h}", ha='right', va='center', fontsize=12)
     
     return label_y_pos
+
+def put_vertex_label(ax, pt, label, centroid, vertex_offset_dist):
+    dir_vec = pt - centroid
+    dir_unit = dir_vec / np.linalg.norm(dir_vec)
+    pos = pt + dir_unit * vertex_offset_dist
+    ax.text(pos[0], pos[1], label, fontsize=18, fontweight='bold', 
+            ha='center', va='center')

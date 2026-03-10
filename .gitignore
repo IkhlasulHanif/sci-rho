@@ -185,4 +185,6 @@ experiment/result/
 experiment/sample/
 experiment/user_prompt.txt
 dataset/
+envlinux/
+envlinux2/
 tes.ipynb
