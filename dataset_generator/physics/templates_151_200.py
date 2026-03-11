@@ -2643,7 +2643,7 @@ class Phy180:
         self.answer = f"{self.E:.3e}"
 
         self.description = (
-            f"Calculate the energy of a photon with frequency $f = {self.f_base} \\times 10^{{14}}$ Hz. "
+            f"Calculate the energy of a photon with frequency f. "
             f"Take Planck's constant $h = 6.63 \\times 10^{{-34}}$ J s."
         )
 
@@ -2721,9 +2721,8 @@ class Phy181:
         self.answer = round(self.p, 3)
 
         self.description = (
-            f"Calculate the momentum of a photon with wavelength "
-            f"{self.lambda_base} nm. "
-            f"Take Planck's constant h = 6.63 × 10^{{-34}} J s. (_) kg m s^(-1)"
+            f"Calculate the momentum of a photon with wavelength (_) kg m s^(-1)"
+            "(Example format: 2.652e-19)"
         )
 
         self.topic = "Quantum physics"
@@ -2778,9 +2777,7 @@ class Phy182:
         self.answer = round(self.Ek, 22)
 
         self.description = (
-            f"Light of frequency {self.f_base} × 10^{{14}} Hz shines "
-            f"on a metal with work function {self.phi_base} × 10^{{-19}} J. "
-            "Calculate the maximum kinetic energy of emitted electrons. (_) J"
+            "Calculate the maximum kinetic energy of emitted electrons. (_) J. (Example format: 2.652e-19)"
         )
         self.topic = "Quantum physics", 
         self.subtopic = "Photoelectric effect"
@@ -2811,6 +2808,7 @@ class Phy182:
         ax.set_xlim(0, 5); ax.set_ylim(0, 4); ax.axis('off')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
+        
 class Phy183:
     def __init__(self):
         self.e = 1.60e-19
@@ -2821,8 +2819,8 @@ class Phy183:
 
         self.description = (
             f"In a photoelectric effect experiment, the maximum kinetic energy of the emitted "
-            f"photoelectrons is measured to be $E_{{k, \\text{{max}}}} = {self.Ek_base} \\times 10^{{-19}}$ J. "
             f"Determine the stopping potential $V_s$ required to reduce the photocurrent to zero."
+            "(Example format: 2.652e-19)"
         )
 
         self.topic = "Quantum physics"
