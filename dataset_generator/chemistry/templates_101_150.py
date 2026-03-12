@@ -5,7 +5,7 @@ import matplotlib.patches as patches
 import os
 import sys
 import math
-from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle
+from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle, FancyArrow
 from matplotlib.ticker import MultipleLocator
 
 sys.path.append(os.path.dirname(__file__))
