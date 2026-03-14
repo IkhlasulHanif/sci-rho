@@ -13,168 +13,48 @@ DESTINATION_FOLDER = os.path.join(
 )
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
 
+
 class Chem051:
     """
     Topic: 27 Group 2
     Visual: Bar chart showing reactivity trend down Group 2 (x-axis labels removed)
-    Task: Multiple question types about the chart — 6 q_types × 4 elements = 24 combinations
+    Task: Multiple question types about the chart - 6 q_types × 4 elements = 24 combinations
     """
 
     def __init__(self):
         elements = ["Mg", "Ca", "Sr", "Ba"]
-        reactivity_values = [3, 5, 7, 9]
+        # Randomise bar heights while keeping strict increase
+        base = [2, 4, 6, 9]
+        reactivity_values = sorted([b + rnd.randint(0, 2) for b in base])
         labels = ["A", "B", "C", "D"]
 
         self.elements = elements
         self.values = reactivity_values
 
-        # Pick a question type
-        q_types = [
-            "identify_element",        # Given position X, which element?
-            "identify_position",       # Given element Y, what position?
-            "highest_reactivity",      # Which element reacts most vigorously?
-            "lowest_reactivity",       # Which element reacts least vigorously?
-            "compare_positions",       # Which element is more reactive: position X or Y?
-            "reactivity_value",        # What is the reactivity value of element Y?
-        ]
-        self.q_type = rnd.choice(q_types)
+        idx = rnd.randint(0, 3)
+        self.element = elements[idx]
+        self.position = idx + 1
+        correct_val = reactivity_values[idx]
 
-        if self.q_type == "identify_element":
-            idx = rnd.randint(0, 3)
-            self.element = elements[idx]
-            self.position = idx + 1
+        wrong_vals = [v for v in reactivity_values if v != correct_val]
+        options = wrong_vals + [correct_val]
+        options = [str(v) for v in options]
+        rnd.shuffle(options)
+        self.answer = labels[options.index(str(correct_val))]
 
-            options = list(elements)
-            rnd.shuffle(options)
-            self.answer = labels[options.index(self.element)]
-
-            self.description = (
-                f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
-                f"The elements are arranged in order of atomic number (position 1 to 4). "
-                f"Which element is at position {self.position}?"
-            )
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                f"\\text{{Reactivity increases down Group 2.}} &\\\\"
-                f"\\text{{Position 1 = Mg, 2 = Ca, 3 = Sr, 4 = Ba}} &\\\\"
-                f"\\therefore \\text{{Position {self.position} = {self.element}}}"
-                "\\end{aligned}\\]"
-            )
-            self._options = options
-
-        elif self.q_type == "identify_position":
-            idx = rnd.randint(0, 3)
-            self.element = elements[idx]
-            self.position = idx + 1
-
-            all_positions = ["1", "2", "3", "4"]
-            correct = str(self.position)
-            options = list(all_positions)
-            rnd.shuffle(options)
-            self.answer = labels[options.index(correct)]
-
-            self.description = (
-                f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
-                f"The elements are arranged in order of atomic number (position 1 to 4). "
-                f"At which position is {self.element} located?"
-            )
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                f"\\text{{Group 2 order (atomic number): Mg, Ca, Sr, Ba}} &\\\\"
-                f"\\therefore \\text{{{self.element} is at position {self.position}}}"
-                "\\end{aligned}\\]"
-            )
-            self._options = options
-
-        elif self.q_type == "highest_reactivity":
-            correct = "Ba"
-            options = list(elements)
-            rnd.shuffle(options)
-            self.answer = labels[options.index(correct)]
-
-            self.description = (
-                f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
-                f"The elements are arranged in order of atomic number (position 1 to 4). "
-                f"Which element reacts most vigorously with water?"
-            )
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                "\\text{Reactivity increases down Group 2.} &\\\\"
-                "\\text{Ba has the largest atomic radius and lowest IE.} &\\\\"
-                "\\therefore \\text{Ba is most reactive.}"
-                "\\end{aligned}\\]"
-            )
-            self._options = options
-
-        elif self.q_type == "lowest_reactivity":
-            correct = "Mg"
-            options = list(elements)
-            rnd.shuffle(options)
-            self.answer = labels[options.index(correct)]
-
-            self.description = (
-                f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
-                f"The elements are arranged in order of atomic number (position 1 to 4). "
-                f"Which element reacts least vigorously with water?"
-            )
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                "\\text{Reactivity increases down Group 2.} &\\\\"
-                "\\text{Mg is highest in Group 2 and has the smallest atomic radius.} &\\\\"
-                "\\therefore \\text{Mg is least reactive.}"
-                "\\end{aligned}\\]"
-            )
-            self._options = options
-
-        elif self.q_type == "compare_positions":
-            pos_a, pos_b = rnd.sample(range(4), 2)
-            elem_a = elements[pos_a]
-            elem_b = elements[pos_b]
-            correct = elem_a if pos_a > pos_b else elem_b  # higher position = more reactive
-
-            options = [elem_a, elem_b, "They are equally reactive", "Cannot be determined"]
-            rnd.shuffle(options)
-            self.answer = labels[options.index(correct)]
-
-            self.description = (
-                f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
-                f"The elements are arranged in order of atomic number (position 1 to 4). "
-                f"Which element is more reactive: the element at position {pos_a + 1} or position {pos_b + 1}?"
-            )
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                "\\text{Reactivity increases down Group 2 (higher position = more reactive).} &\\\\"
-                f"\\text{{Position {pos_a + 1} = {elem_a}, Position {pos_b + 1} = {elem_b}}} &\\\\"
-                f"\\therefore \\text{{{correct} is more reactive.}}"
-                "\\end{aligned}\\]"
-            )
-            self._options = options
-
-        else:  # reactivity_value
-            idx = rnd.randint(0, 3)
-            self.element = elements[idx]
-            self.position = idx + 1
-            correct_val = reactivity_values[idx]
-
-            wrong_vals = [v for v in reactivity_values if v != correct_val]
-            options = wrong_vals + [correct_val]
-            options = [str(v) for v in options]
-            rnd.shuffle(options)
-            self.answer = labels[options.index(str(correct_val))]
-
-            self.description = (
-                f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
-                f"The elements are arranged in order of atomic number (position 1 to 4). "
-                f"What is the reactivity value of {self.element} (position {self.position}) shown in the chart?"
-            )
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                f"\\text{{Group 2 elements and reactivity values:}} &\\\\"
-                f"\\text{{Mg = 3, Ca = 5, Sr = 7, Ba = 9}} &\\\\"
-                f"\\therefore \\text{{{self.element} = {correct_val}}}"
-                "\\end{aligned}\\]"
-            )
-            self._options = options
+        self.description = (
+            f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
+            f"The elements are arranged in order of atomic number (position 1 to 4). "
+            f"What is the reactivity value shown for the element at position {self.position}?"
+        )
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Group 2 elements and reactivity values:}} &\\\\"
+            f"\\text{{Mg = 3, Ca = 5, Sr = 7, Ba = 9}} &\\\\"
+            f"\\therefore \\text{{{self.element} = {correct_val}}}"
+            "\\end{aligned}\\]"
+        )
+        self._options = options
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self._options))
         self.topic = "Group 2"
@@ -205,7 +85,6 @@ class Chem052:
     Topic: 28.1 General properties of transition elements
     Visual: Electron configuration diagram
     Task: Identify which element(s) are transition elements (MCQ)
-    10+ variations via expanded element list
     """
 
     def __init__(self):
@@ -355,12 +234,12 @@ class Chem052:
                bbox=dict(boxstyle='round', facecolor='lightgreen',
                         edgecolor='black', linewidth=2))
 
-        ax.text(6, 1, "Which element(s) is/are transition element(s)?",
-               fontsize=13, ha='center', fontweight='bold')
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem053:
@@ -411,8 +290,9 @@ class Chem053:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"The diagram shows test tubes containing {self.metal} compounds at different oxidation states, "
-            f"identified by color. What is the oxidation state of {self.metal} in the {self.shown_color} compound?"
+            f"The diagram shows test tubes containing {self.metal} compounds at different oxidation states. "
+            f"The test tubes are shown without colour labels. "
+            f"What is the oxidation state of {self.metal} in the highlighted test tube?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
@@ -446,18 +326,25 @@ class Chem053:
         x_start = 2
         spacing = 3
 
+        selected_idx = next(i for i,(ox,col) in enumerate(self.oxidation_states)
+                              if col == self.shown_color)
         for i, (ox_state, color) in enumerate(self.oxidation_states):
             x = x_start + i * spacing
             draw_test_tube(ax, x, 1, width=1, height=3.5, solution_height=2.5,
                           solution_color=color_map.get(color, 'lightgray'))
-            add_formula_label(ax, x + 0.5, 4.7, color, fontsize=10)
+            if i == selected_idx:
+                ax.annotate("?", xy=(x + 0.5, 4.6), xytext=(x + 0.5, 5.3),
+                            fontsize=16, fontweight='bold', color='red', ha='center',
+                            arrowprops=dict(arrowstyle='->', color='red', lw=2))
 
         add_title_box(ax, 6, 5.5, f"Compounds of {self.metal}", fontsize=16)
-        ax.text(6, 0.3, f"Which test tube is {self.shown_color}?", fontsize=12, ha='center')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem054:
@@ -494,7 +381,7 @@ class Chem054:
         self.answer = self.coordination_number
 
         self.description = (
-            f"The diagram shows the structure of {self.formula}. "
+            f"The diagram shows the structure of a transition metal complex ion. "
             f"What is the coordination number of the central metal ion?"
         )
 
@@ -543,6 +430,9 @@ class Chem054:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem055:
@@ -672,9 +562,9 @@ class Chem055:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"When excess {self.reaction['ligand_name']} is added to {self.reaction['initial_complex']}, "
-            f"a ligand exchange reaction occurs. The initial {self.reaction['initial_color']} solution "
-            f"changes color. What is the formula of the final complex ion?"
+            f"The diagram shows a ligand exchange reaction. "
+            f"The starting complex and the ligand being added are shown. "
+            f"What is the formula of the final complex ion?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
@@ -717,6 +607,9 @@ class Chem055:
         plt.close()
 
 
+
+
+
 class Chem056:
     """
     Topic: 28.3 Ligand substitution reactions
@@ -756,9 +649,9 @@ class Chem056:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"When {self.ligand} is added to {self.reactant} ({self.color1}), "
-            f"a ligand substitution reaction occurs. "
-            f"What color will the resulting solution be?"
+            f"The diagram shows a ligand substitution reaction where {self.ligand} is added "
+            f"to a complex ion. The starting solution colour is shown in the left test tube. "
+            f"What colour will the resulting solution be?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
@@ -793,7 +686,6 @@ class Chem056:
         draw_test_tube(ax, 2, 1, width=1.2, height=3.5, solution_height=2.5,
                       solution_color=self.color1_hex)
         add_formula_label(ax, 2.6, 0.3, self.reactant, fontsize=10)
-        add_formula_label(ax, 2.6, 4.8, self.color1, fontsize=10)
 
         draw_arrow(ax, 4, 3, 8, 3, label=f"+ {self.ligand}", label_position='above',
                   color='black', linewidth=2.5)
@@ -809,6 +701,9 @@ class Chem056:
         plt.close()
 
 
+
+
+
 class Chem057:
     """
     Topic: 28.3 Ligand substitution - colour of complexes
@@ -818,30 +713,19 @@ class Chem057:
     """
 
     def __init__(self):
-        data_sets = [
-            {'delta_E': 170, 'wavelength': 704},
-            {'delta_E': 200, 'wavelength': 598},
-            {'delta_E': 250, 'wavelength': 478},
-            {'delta_E': 280, 'wavelength': 427},
-            {'delta_E': 150, 'wavelength': 798},
-            {'delta_E': 220, 'wavelength': 543},
-            {'delta_E': 240, 'wavelength': 498},
-            {'delta_E': 260, 'wavelength': 461},
-            {'delta_E': 300, 'wavelength': 399},
-            {'delta_E': 180, 'wavelength': 664},
-            {'delta_E': 190, 'wavelength': 629},
-            {'delta_E': 210, 'wavelength': 570},
-        ]
+        h = 6.626e-34
+        c = 3.00e8
+        Na = 6.022e23
+        self.delta_E = rnd.choice(range(130, 410, 10))
+        lambda_m = h * c * Na / (self.delta_E * 1000)
+        self.wavelength = round(lambda_m * 1e9)
 
-        self.data = rnd.choice(data_sets)
-        self.delta_E = self.data['delta_E']
-        self.wavelength = self.data['wavelength']
-
-        self.answer = f"{self.wavelength} nm"
+        self.answer = self.wavelength
 
         self.description = (
-            f"A transition metal complex has a d-orbital splitting energy (\u0394E) of {self.delta_E} kJ/mol. "
-            f"Calculate the wavelength of light absorbed by this complex. "
+            f"The d-orbital splitting diagram shows a transition metal complex. "
+            f"The value of \u0394E is annotated on the diagram. "
+            f"Calculate the wavelength (in nm) of light absorbed by this complex. "
             f"(Given: h = 6.626\u00d710\u207b\u00b3\u2074 J\u00b7s, c = 3.00\u00d710\u2078 m/s, N\u2090 = 6.022\u00d710\u00b2\u00b3 mol\u207b\u00b9)"
         )
 
@@ -893,6 +777,9 @@ class Chem057:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem058:
@@ -972,13 +859,12 @@ class Chem058:
 
         add_title_box(ax, 5, 7.5, "Catalytic Cycle", fontsize=16)
 
-        ax.text(5, 3, "What oxidation states\ndoes this catalyst cycle between?",
-               fontsize=13, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black', linewidth=2))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem059:
@@ -1086,11 +972,8 @@ class Chem059:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"Given the stability constants:\n"
-            f"{self.exchange['initial']}: Kstab = {self.exchange['Kstab_initial']}\n"
-            f"{self.exchange['final']}: Kstab = {self.exchange['Kstab_final']}\n\n"
-            f"Is the ligand exchange from {self.exchange['initial']} to "
-            f"{self.exchange['final']} feasible when {self.exchange['ligand']} is added?"
+            f"The diagram shows two complex ions and their stability constants (Kstab). "
+            f"Is the ligand exchange shown feasible when {self.exchange['ligand']} is added?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
@@ -1127,14 +1010,13 @@ class Chem059:
                         f"Kstab = {self.exchange['Kstab_final']}",
                         facecolor='lightgreen')
 
-        question = "Is this ligand exchange feasible?"
-        ax.text(6, 1.5, question, fontsize=14, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow',
-                        edgecolor='black', linewidth=2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem060:
@@ -1213,6 +1095,9 @@ class Chem060:
         plt.close()
 
 
+
+
+
 class Chem061:
     """
     Topic: 29.4 Isomerism - structural isomers
@@ -1275,13 +1160,12 @@ class Chem061:
                             bbox_style=dict(boxstyle='round', facecolor='lightblue', pad=0.4))
             y_pos -= 1.2
 
-        ax.text(5, 0.8, "How many structural isomers does this formula have?",
-               fontsize=12, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black', linewidth=1))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem062:
@@ -1377,6 +1261,9 @@ class Chem062:
         plt.close()
 
 
+
+
+
 class Chem063:
     """
     Topic: 29.4 Optical isomerism
@@ -1456,7 +1343,7 @@ class Chem063:
         self.answer = self.molecule['chiral_position']
 
         self.description = (
-            f"The molecule {self.molecule['name']} ({self.molecule['formula']}) is optically active. "
+            f"The diagram shows the two enantiomers of {self.molecule['name']}. "
             f"One enantiomer rotates plane-polarized light by {self.rotation}{self.rotation_value}\u00b0. "
             f"At which carbon number is the chiral centre located?"
         )
@@ -1535,6 +1422,9 @@ class Chem063:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem064:
@@ -1633,9 +1523,8 @@ class Chem064:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"Benzene undergoes {self.reaction['reaction_name'].lower()} with {self.reaction['reagents']} "
-            f"at {self.reaction['temperature']} to form {self.reaction['product']}. "
-            f"The mechanism proceeds via electrophilic aromatic substitution. "
+            f"The diagram shows a benzene electrophilic aromatic substitution mechanism. "
+            f"The reagents and conditions are shown on the diagram. "
             f"What is the electrophile in this reaction?"
         )
 
@@ -1701,6 +1590,9 @@ class Chem064:
         plt.close()
 
 
+
+
+
 class Chem065:
     """
     Topic: 30.1 Alkane reactions - Free radical substitution
@@ -1738,8 +1630,9 @@ class Chem065:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"The diagram shows the propagation step of free radical substitution. "
-            f"What is the organic product when {self.alkane} reacts with {self.radical}?"
+            f"The diagram shows a propagation step of free radical substitution. "
+            f"The reactants are shown in the diagram. "
+            f"What is the organic product formed in this step?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
@@ -1776,6 +1669,9 @@ class Chem065:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem066:
@@ -1874,8 +1770,8 @@ class Chem066:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"{self.subst['compound']} contains a {self.subst['substituent']} substituent on the benzene ring. "
-            f"When {self.subst['compound']} undergoes further electrophilic substitution, "
+            f"The diagram shows a numbered benzene ring with a substituent group. "
+            f"When this compound undergoes further electrophilic substitution, "
             f"which position(s) will the new substituent preferentially occupy?"
         )
 
@@ -1931,13 +1827,12 @@ class Chem066:
                fontweight='bold',
                bbox=dict(boxstyle='round', facecolor='lightblue', pad=0.4))
 
-        ax.text(5, 1, "Which positions does this substituent direct to?",
-               fontsize=12, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black'))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem067:
@@ -1984,6 +1879,41 @@ class Chem067:
                 'pKa': [9.9, 8.5, 7.9],
                 'order': 'phenol < 2-chlorophenol < 2,4-dichlorophenol',
                 'correct': 'phenol < 2-chlorophenol < 2,4-dichlorophenol',
+            },
+            {
+                'compounds': ['ethanol', 'water', 'ethanoic acid'],
+                'formulas': ['C\u2082H\u2085OH', 'H\u2082O', 'CH\u2083COOH'],
+                'pKa': [15.9, 15.7, 4.8],
+                'order': 'ethanoic acid < water < ethanol',
+                'correct': 'ethanoic acid < water < ethanol (ethanoic acid most acidic)',
+            },
+            {
+                'compounds': ['phenol', '4-methylphenol', '4-nitrophenol'],
+                'formulas': ['C\u2086H\u2085OH', '4-CH\u2083C\u2086H\u2084OH', '4-NO\u2082C\u2086H\u2084OH'],
+                'pKa': [9.9, 10.2, 7.1],
+                'order': '4-nitrophenol < phenol < 4-methylphenol',
+                'correct': '4-nitrophenol < phenol < 4-methylphenol (4-nitrophenol most acidic)',
+            },
+            {
+                'compounds': ['methanol', 'phenol', 'carbonic acid'],
+                'formulas': ['CH\u2083OH', 'C\u2086H\u2085OH', 'H\u2082CO\u2083'],
+                'pKa': [15.5, 9.9, 6.4],
+                'order': 'carbonic acid < phenol < methanol',
+                'correct': 'carbonic acid < phenol < methanol (carbonic acid most acidic)',
+            },
+            {
+                'compounds': ['propanol', 'phenol', 'methanoic acid'],
+                'formulas': ['C\u2083H\u2087OH', 'C\u2086H\u2085OH', 'HCOOH'],
+                'pKa': [16.1, 9.9, 3.7],
+                'order': 'methanoic acid < phenol < propanol',
+                'correct': 'methanoic acid < phenol < propanol (methanoic acid most acidic)',
+            },
+            {
+                'compounds': ['phenol', 'benzoic acid', 'nitric acid'],
+                'formulas': ['C\u2086H\u2085OH', 'C\u2086H\u2085COOH', 'HNO\u2083'],
+                'pKa': [9.9, 4.2, -1.4],
+                'order': 'nitric acid < benzoic acid < phenol',
+                'correct': 'nitric acid < benzoic acid < phenol (nitric acid most acidic)',
             },
         ]
 
@@ -2055,14 +1985,12 @@ class Chem067:
             ax.text(4.5, y, self.comp['formulas'][row_idx], fontsize=12, ha='center',
                    bbox=dict(boxstyle='round', facecolor='lightyellow', pad=0.3))
 
-        ax.text(6, 1.5, "Arrange in order of increasing acidity",
-               fontsize=13, ha='center', fontweight='bold')
-        ax.text(6, 0.8, "(weakest acid \u2192 strongest acid)",
-               fontsize=11, ha='center', style='italic')
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem068:
@@ -2201,16 +2129,16 @@ class Chem068:
 
         ax.text(10, 3.5, "?", fontsize=30, ha='center', va='center', color='red', fontweight='bold',
                bbox=dict(boxstyle='round', facecolor='lightgray', edgecolor='black', linewidth=2, pad=1))
-        ax.text(10, 1.8, "Product = ?", fontsize=12, ha='center')
 
-        obs_text = f"Observation: {self.rxn['observation']}"
-        ax.text(7, 1, obs_text, fontsize=11, ha='center',
-               bbox=dict(boxstyle='round', facecolor='lightyellow',
-                        edgecolor='black', linewidth=2))
+
+        # Observation intentionally omitted – student infers product from reagent shown
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem069:
@@ -2298,6 +2226,9 @@ class Chem069:
         plt.close()
 
 
+
+
+
 class Chem070:
     """
     Topic: 32.2 Alcohol dehydration
@@ -2375,6 +2306,9 @@ class Chem070:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem071:
@@ -2543,6 +2477,9 @@ class Chem071:
         plt.close()
 
 
+
+
+
 class Chem072:
     """
     Topic: 33.3 Carboxylic acid derivatives - Hydrolysis reactivity
@@ -2552,41 +2489,35 @@ class Chem072:
     """
 
     def __init__(self):
-        self.compounds = ['CH\u2083COCl', 'CH\u2083CH\u2082Cl', 'C\u2086H\u2085Cl']
-        self.names = ['Ethanoyl chloride\n(acyl chloride)',
-                     'Chloroethane\n(alkyl chloride)',
-                     'Chlorobenzene\n(aryl chloride)']
-        self.relative_rates = [100, 1, 0.001]
-        self.types = ['acyl chloride', 'alkyl chloride', 'aryl chloride']
+        # Randomise bar heights so student must READ the highlighted bar value
+        self.acyl_rate  = rnd.randint(60, 140)   # acyl chloride: always highest
+        self.alkyl_rate = rnd.randint(1, 9)       # alkyl: moderate
+        self.aryl_rate  = round(rnd.uniform(0.0001, 0.009), 4)  # aryl: very slow
 
-        # Randomize display order
-        display_order = list(range(3))
-        rnd.shuffle(display_order)
-        self.display_compounds = [self.compounds[i] for i in display_order]
-        self.display_names = [self.names[i] for i in display_order]
-        self.display_rates = [self.relative_rates[i] for i in display_order]
-
-        correct = "acyl chloride > alkyl chloride > aryl chloride"
-        options = [
-            "acyl chloride > alkyl chloride > aryl chloride",
-            "alkyl chloride > acyl chloride > aryl chloride",
-            "aryl chloride > acyl chloride > alkyl chloride",
-            "acyl chloride > aryl chloride > alkyl chloride",
+        compounds_data = [
+            ('acyl chloride',  'CH\u2083COCl',   'Ethanoyl chloride\n(acyl chloride)',  self.acyl_rate),
+            ('alkyl chloride', 'CH\u2083CH\u2082Cl', 'Chloroethane\n(alkyl chloride)',  self.alkyl_rate),
+            ('aryl chloride',  'C\u2086H\u2085Cl',  'Chlorobenzene\n(aryl chloride)',    self.aryl_rate),
         ]
-        rnd.shuffle(options)
+        rnd.shuffle(compounds_data)
+        self.display_types     = [d[0] for d in compounds_data]
+        self.display_compounds = [d[1] for d in compounds_data]
+        self.display_names     = [d[2] for d in compounds_data]
+        self.display_rates     = [d[3] for d in compounds_data]
 
-        labels = ["A", "B", "C", "D"]
-        self.choices = options
-        self.answer = labels[options.index(correct)]
-        self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
+        self.highlighted_idx  = rnd.randint(0, 2)
+        self.highlighted_type = self.display_types[self.highlighted_idx]
+        self.highlighted_rate = self.display_rates[self.highlighted_idx]
+        self.answer = str(self.highlighted_rate)
+        self.choices = []
+        self.choices_display = {}
 
         self.description = (
-            f"The bar chart shows the relative rates of hydrolysis for three chlorine-containing compounds "
-            f"with water at room temperature. "
-            f"Which statement correctly describes the order of reactivity (fastest to slowest)?"
+            f"The bar chart shows the relative rates of hydrolysis of three chlorine-containing "
+            f"compounds with water at room temperature. The highlighted bar is labelled with its "
+            f"compound type. What is the relative rate of hydrolysis shown for the "
+            f"{self.highlighted_type}?"
         )
-
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
         self.topic = "Carboxylic acids and derivatives"
         self.subtopic = "33.3 Acyl chlorides"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -2594,10 +2525,9 @@ class Chem072:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Acyl chloride: Most reactive - C=O withdraws electrons}&\\\\"
-            "\\text{Alkyl chloride: Moderate}&\\\\"
-            "\\text{Aryl chloride: Least reactive - lone pair delocalizes into ring}&\\\\"
-            "\\text{Order: acyl > alkyl > aryl}&"
+            f"\\text{{Highlighted: {self.highlighted_type}}} &\\\\"
+            f"\\text{{Bar height shown on diagram: {self.highlighted_rate}}} &\\\\"
+            f"\\therefore \\text{{Answer = {self.highlighted_rate}}}"
             "\\end{aligned}\\]"
         )
 
@@ -2623,6 +2553,9 @@ class Chem072:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem073:
@@ -2666,8 +2599,9 @@ class Chem073:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"When an acyl chloride (RCOCl) reacts with {self.reagent_name}, "
-            f"what is the organic product formed?"
+            f"The diagram shows an acyl chloride (RCOCl) reacting with a reagent "
+            f"whose formula is shown in the diagram. "
+            f"What is the organic product formed?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
@@ -2702,6 +2636,9 @@ class Chem073:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem074:
@@ -2777,6 +2714,33 @@ class Chem074:
                 'high_pH': 'C\u2086H\u2085CH\u2082CH(NH\u2082)COO\u207b',
                 'pI': 5.5,
             },
+            {
+                'name': 'leucine',
+                'formula': '(CH\u2083)\u2082CHCH\u2082CH(NH\u2082)COOH',
+                'isoelectric_point': 6.0,
+                'low_pH': '(CH\u2083)\u2082CHCH\u2082CH(NH\u2083\u207a)COOH',
+                'zwitterion': '(CH\u2083)\u2082CHCH\u2082CH(NH\u2083\u207a)COO\u207b',
+                'high_pH': '(CH\u2083)\u2082CHCH\u2082CH(NH\u2082)COO\u207b',
+                'pI': 6.0,
+            },
+            {
+                'name': 'glutamic acid',
+                'formula': 'HOOCCH\u2082CH\u2082CH(NH\u2082)COOH',
+                'isoelectric_point': 3.2,
+                'low_pH': 'HOOCCH\u2082CH\u2082CH(NH\u2083\u207a)COOH',
+                'zwitterion': '\u207bOOCCH\u2082CH\u2082CH(NH\u2083\u207a)COOH',
+                'high_pH': '\u207bOOCCH\u2082CH\u2082CH(NH\u2082)COO\u207b',
+                'pI': 3.2,
+            },
+            {
+                'name': 'arginine',
+                'formula': 'H\u2082NC(=NH)(CH\u2082)\u2083CH(NH\u2082)COOH',
+                'isoelectric_point': 10.8,
+                'low_pH': 'H\u2082NC(=NH\u2082\u207a)(CH\u2082)\u2083CH(NH\u2083\u207a)COOH',
+                'zwitterion': 'H\u2082NC(=NH)(CH\u2082)\u2083CH(NH\u2083\u207a)COO\u207b',
+                'high_pH': 'H\u2082NC(=NH)(CH\u2082)\u2083CH(NH\u2082)COO\u207b',
+                'pI': 10.8,
+            },
         ]
 
         self.aa = rnd.choice(amino_acids)
@@ -2846,6 +2810,9 @@ class Chem074:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem075:
@@ -2949,9 +2916,8 @@ class Chem075:
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.description = (
-            f"An electrophoresis experiment is performed at pH {self.scenario['pH']}. "
-            f"{self.scenario['amino_acid'].capitalize()} (isoelectric point pI = {self.scenario['pI']}) "
-            f"is applied at the centre of the paper. "
+            f"The diagram shows an electrophoresis strip for an amino acid "
+            f"at a given pH and isoelectric point (pI). Both values are shown in the diagram. "
             f"In which direction will the amino acid migrate when voltage is applied?"
         )
 
@@ -3000,12 +2966,13 @@ class Chem075:
                bbox=dict(boxstyle='round', facecolor='lightyellow',
                         edgecolor='black', linewidth=2))
 
-        ax.text(7, 0.4, "Which direction will the amino acid migrate?",
-               fontsize=12, ha='center', fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem076:
@@ -3092,7 +3059,7 @@ class Chem076:
 
         self.description = (
             f"The diagram shows a reaction scheme for amide formation. "
-            f"The conditions shown are: {self.method['conditions']}. "
+            f"The conditions are shown on the reaction arrow. "
             f"Which reagents are used in this method?"
         )
 
@@ -3133,6 +3100,9 @@ class Chem076:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem077:
@@ -3236,8 +3206,8 @@ class Chem077:
         self.answer = chr(65 + options.index(correct))
 
         self.description = (
-            f"{self.mono['diamine']} reacts with {self.mono['diacid']} to form a polyamide "
-            f"({self.mono['polymer_name']}). "
+            f"The diagram shows two monomers reacting to form a polyamide. "
+            f"The monomer structures are shown in the diagram. "
             f"Which of the following is the repeat unit of this polymer?"
         )
 
@@ -3287,6 +3257,9 @@ class Chem077:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem078:
@@ -3390,8 +3363,8 @@ class Chem078:
         self.answer = chr(65 + options.index(correct))
 
         self.description = (
-            f"{self.mono['diol']} reacts with {self.mono['diacid']} to form a polyester "
-            f"({self.mono['polymer_name']}). "
+            f"The diagram shows two monomers reacting to form a polyester. "
+            f"The monomer structures are shown in the diagram. "
             f"Which of the following is the repeat unit of this polymer?"
         )
 
@@ -3441,6 +3414,9 @@ class Chem078:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem079:
@@ -3516,6 +3492,9 @@ class Chem079:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem080:
@@ -3690,13 +3669,14 @@ class Chem080:
             ax.text(col_x[3], y, mechanisms[row_idx], fontsize=9, ha='center',
                     bbox=dict(boxstyle='round', facecolor='wheat', pad=0.3))
 
-        ax.text(0.5, 2.5, self.scenario['question'], fontsize=11,
-                fontweight='bold', color='navy',
-                bbox=dict(boxstyle='round', facecolor='lightcyan', pad=0.4))
+
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem081:
@@ -3709,13 +3689,31 @@ class Chem081:
     def __init__(self):
         polymers = [
             ("polyester", "diol + dicarboxylic acid", "ester linkage -COO-",
-             "HO-R-OH", "HOOC-R'-COOH", 'lightblue', 'lightcoral'),
+             "HO-R-OH", "HOOC-R\u2019-COOH", 'lightblue', 'lightcoral'),
             ("polyamide", "diamine + dicarboxylic acid", "amide linkage -CONH-",
-             "H\u2082N-R-NH\u2082", "HOOC-R'-COOH", 'lightyellow', 'lightcoral'),
+             "H\u2082N-R-NH\u2082", "HOOC-R\u2019-COOH", 'lightyellow', 'lightcoral'),
             ("polyester (from hydroxy acid)", "hydroxy acid only", "ester linkage -COO-",
-             "HO-R-COOH", "(same monomer x2)", 'lightgreen', 'lightgreen'),
+             "HO-R-COOH", "(same monomer \u00d72)", 'lightgreen', 'lightgreen'),
             ("polyamide (from amino acid)", "amino acid only", "amide linkage -CONH-",
-             "H\u2082N-R-COOH", "(same monomer x2)", 'lavender', 'lavender'),
+             "H\u2082N-R-COOH", "(same monomer \u00d72)", 'lavender', 'lavender'),
+            ("polyester", "ethane-1,2-diol + benzene-1,4-dicarboxylic acid",
+             "ester linkage -COO-", "HOCH\u2082CH\u2082OH", "HOOC-C\u2086H\u2084-COOH",
+             'lightblue', 'lightyellow'),
+            ("polyamide", "1,6-diaminohexane + hexanedioic acid",
+             "amide linkage -CONH-", "H\u2082N(CH\u2082)\u2086NH\u2082", "HOOC(CH\u2082)\u2084COOH",
+             'lightyellow', 'lightcoral'),
+            ("polyamide", "p-phenylenediamine + benzene-1,4-dicarbonyl chloride",
+             "amide linkage -CONH-", "H\u2082N-C\u2086H\u2084-NH\u2082", "ClOC-C\u2086H\u2084-COCl",
+             'lightyellow', 'lightgray'),
+            ("polyester", "propane-1,3-diol + hexanedioic acid",
+             "ester linkage -COO-", "HO(CH\u2082)\u2083OH", "HOOC(CH\u2082)\u2084COOH",
+             'lightblue', 'lightcoral'),
+            ("polyamide (from amino acid)", "glycine (H\u2082NCH\u2082COOH) only",
+             "amide linkage -CONH-", "H\u2082NCH\u2082COOH", "(same monomer \u00d72)",
+             'lavender', 'lavender'),
+            ("polyester (from hydroxy acid)", "lactic acid (CH\u2083CH(OH)COOH) only",
+             "ester linkage -COO-", "CH\u2083CH(OH)COOH", "(same monomer \u00d72)",
+             'lightgreen', 'lightgreen'),
         ]
 
         self.polymer = rnd.choice(polymers)
@@ -3734,7 +3732,8 @@ class Chem081:
         self.options = options
 
         self.description = (
-            f"The diagram shows monomers used in condensation polymerization: {self.monomers}. "
+            f"The diagram shows monomers used in condensation polymerization. "
+            f"The functional groups are shown in the diagram. "
             f"What type of polymer is formed?"
         )
 
@@ -3773,12 +3772,13 @@ class Chem081:
         ax.text(9, 3.8, "?", fontsize=36, ha='center', va='center',
                 bbox=dict(boxstyle='round', facecolor='lightgray', pad=0.5))
 
-        ax.text(0.5, 1.8, "What type of polymer forms?", fontsize=11,
-                fontweight='bold', color='navy')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem082:
@@ -3934,12 +3934,13 @@ class Chem082:
 
         draw_labeled_box(ax, 9.5, 3.5, 2.5, 1, self.route['end'], facecolor='lightgreen')
 
-        ax.text(0.5, 2.5, "Identify the intermediate:", fontsize=11,
-                fontweight='bold', color='navy')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem083:
@@ -4021,8 +4022,9 @@ class Chem083:
         self.answer = chr(65 + options.index(correct))
 
         self.description = (
-            f"In the synthesis route: {self.pathway['route']}, "
-            f"identify the intermediate compound."
+            f"The diagram shows a multi-step synthesis route with a hidden intermediate. "
+            f"The starting material and final product are shown in the diagram. "
+            f"Identify the intermediate compound."
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
@@ -4063,12 +4065,13 @@ class Chem083:
 
         add_title_box(ax, 7, 5.5, "Multi-Step Synthesis", fontsize=16)
 
-        ax.text(0.5, 1.8, "Identify the intermediate:", fontsize=11,
-                fontweight='bold', color='navy')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem084:
@@ -4112,8 +4115,9 @@ class Chem084:
         self.other_peaks = list(other_mzs)
 
         self.description = (
-            f"The mass spectrum shows a peak at m/z = {self.mz}. "
-            f"Identify the fragment ion responsible for this peak."
+            f"The mass spectrum shows several peaks. The annotated peak is indicated "
+            f"with an arrow showing its m/z value. "
+            f"Identify the fragment ion responsible for this labelled peak."
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
@@ -4159,6 +4163,9 @@ class Chem084:
         plt.close()
 
 
+
+
+
 class Chem085:
     """
     Topic: 37.1 Thin-layer chromatography
@@ -4187,12 +4194,11 @@ class Chem085:
 
         self.spots.sort(key=lambda x: x['height'])
         self.questioned_spot = rnd.choice(self.spots)
-        self.answer = f"Rf = {self.questioned_spot['rf']}"
+        self.answer = self.questioned_spot['rf']
 
         self.description = (
-            f"A thin-layer chromatography experiment was performed. "
-            f"The solvent front traveled {self.solvent_front} cm from the baseline. "
-            f"{self.questioned_spot['name']} traveled {self.questioned_spot['height']} cm. "
+            f"The diagram shows a TLC plate from a chromatography experiment. "
+            f"The distances are annotated on the diagram. "
             f"Calculate the Rf value for {self.questioned_spot['name']}."
         )
 
@@ -4258,6 +4264,9 @@ class Chem085:
         plt.close()
 
 
+
+
+
 class Chem086:
     """
     Topic: 37.2 Gas-liquid chromatography
@@ -4285,7 +4294,7 @@ class Chem086:
             peak['percentage'] = round((peak['area'] / total_area) * 100, 1)
 
         self.questioned_peak = rnd.choice(self.peaks)
-        self.answer = f"{self.questioned_peak['percentage']}%"
+        self.answer = self.questioned_peak['percentage']
 
         self.description = (
             f"A gas chromatogram shows {num_peaks} peaks. "
@@ -4342,6 +4351,9 @@ class Chem086:
         plt.close()
 
 
+
+
+
 class Chem087:
     """
     Topic: 37.2 IR spectroscopy
@@ -4386,9 +4398,9 @@ class Chem087:
         self.answer = chr(65 + options.index(self.group))
 
         self.description = (
-            f"The IR spectrum shows a {self.description_text} absorption at "
-            f"{self.peak_position} cm\u207b\u00b9. "
-            f"Which functional group is responsible for this absorption?"
+            f"The IR spectrum shows a characteristic absorption. "
+            f"The wavenumber is annotated on the diagram. "
+            f"Which functional group is responsible for the labelled absorption?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
@@ -4445,6 +4457,9 @@ class Chem087:
         plt.close()
 
 
+
+
+
 class Chem088:
     """
     Topic: 37.3 ¹H NMR spectroscopy
@@ -4484,9 +4499,10 @@ class Chem088:
         self.answer = chr(65 + options.index(self.peak_assignment))
 
         self.description = (
-            f"The \u00b9H NMR spectrum of {self.compound_name} shows a peak at "
-            f"\u03b4 = {self.peak_shift} ppm with integration {self.peak_integration}H. "
-            f"Which hydrogen environment does this peak represent?"
+            f"The \u00b9H NMR spectrum of {self.compound_name} is shown. "
+            f"One peak is highlighted with its chemical shift (\u03b4) and integration "
+            f"annotated on the diagram. "
+            f"Which hydrogen environment does the labelled peak represent?"
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
@@ -4529,6 +4545,9 @@ class Chem088:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem089:
@@ -4654,13 +4673,12 @@ class Chem089:
         ax.grid(True, alpha=0.3, axis='x')
         ax.set_yticks([])
 
-        ax.text(200, 115, "How many peaks are shown?", fontsize=12,
-                fontweight='bold', color='navy',
-                bbox=dict(boxstyle='round', facecolor='lightyellow', pad=0.3))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem090:
@@ -4844,6 +4862,9 @@ class Chem090:
         plt.close()
 
 
+
+
+
 class Chem091:
     """
     Topic: 37.4 Combined spectroscopy
@@ -4945,9 +4966,7 @@ class Chem091:
         self.answer = chr(65 + options.index(correct))
 
         self.description = (
-            f"Using the combined spectroscopic data shown, identify the compound. "
-            f"Molecular formula: {self.compound['formula']}, "
-            f"M\u207a = {self.compound['molar_mass']}."
+            f"Using the combined spectroscopic data shown in the diagram, identify the compound."
         )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
@@ -4987,12 +5006,12 @@ class Chem091:
         draw_data_table(ax, table_data, start_x=1.5, start_y=6.5,
                         cell_width=5, cell_height=0.9, header_color='lightblue')
 
-        ax.text(6.5, 2.8, "Which compound matches all the data?",
-                fontsize=11, ha='center', fontweight='bold', color='navy')
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem092:
@@ -5072,6 +5091,62 @@ class Chem092:
                     "C": ("\u00bdx\u0394H\u00b0at[F\u2082(g)]", "Enthalpy of atomisation of F"),
                     "D": ("Electron affinity of F", "First electron affinity of F"),
                     "E": ("Lattice enthalpy of LiF", "Lattice enthalpy (formation) of LiF"),
+                },
+            },
+            {
+                "compound": "NaF",
+                "metal": "Na",
+                "nonmetal": "F",
+                "metal_ion": "Na\u207a",
+                "nonmetal_ion": "F\u207b",
+                "steps": {
+                    "A": ("\u0394H\u00b0at[Na(s)]", "Enthalpy of atomisation of Na"),
+                    "B": ("1st IE of Na", "First ionisation energy of Na"),
+                    "C": ("\u00bdx\u0394H\u00b0at[F\u2082(g)]", "Enthalpy of atomisation of F"),
+                    "D": ("Electron affinity of F", "First electron affinity of F"),
+                    "E": ("Lattice enthalpy of NaF", "Lattice enthalpy (formation) of NaF"),
+                },
+            },
+            {
+                "compound": "MgCl\u2082",
+                "metal": "Mg",
+                "nonmetal": "Cl",
+                "metal_ion": "Mg\u00b2\u207a",
+                "nonmetal_ion": "Cl\u207b",
+                "steps": {
+                    "A": ("\u0394H\u00b0at[Mg(s)]", "Enthalpy of atomisation of Mg"),
+                    "B": ("1st+2nd IE of Mg", "Sum of 1st and 2nd ionisation energies of Mg"),
+                    "C": ("\u0394H\u00b0at[Cl\u2082(g)]", "Enthalpy of atomisation of Cl (\u00d72)"),
+                    "D": ("2\u00d7EA of Cl", "Sum of two electron affinities of Cl"),
+                    "E": ("Lattice enthalpy of MgCl\u2082", "Lattice enthalpy (formation) of MgCl\u2082"),
+                },
+            },
+            {
+                "compound": "NaBr",
+                "metal": "Na",
+                "nonmetal": "Br",
+                "metal_ion": "Na\u207a",
+                "nonmetal_ion": "Br\u207b",
+                "steps": {
+                    "A": ("\u0394H\u00b0at[Na(s)]", "Enthalpy of atomisation of Na"),
+                    "B": ("1st IE of Na", "First ionisation energy of Na"),
+                    "C": ("\u00bdx\u0394H\u00b0at[Br\u2082(l)]", "Enthalpy of atomisation of Br"),
+                    "D": ("Electron affinity of Br", "First electron affinity of Br"),
+                    "E": ("Lattice enthalpy of NaBr", "Lattice enthalpy (formation) of NaBr"),
+                },
+            },
+            {
+                "compound": "CaF\u2082",
+                "metal": "Ca",
+                "nonmetal": "F",
+                "metal_ion": "Ca\u00b2\u207a",
+                "nonmetal_ion": "F\u207b",
+                "steps": {
+                    "A": ("\u0394H\u00b0at[Ca(s)]", "Enthalpy of atomisation of Ca"),
+                    "B": ("1st+2nd IE of Ca", "Sum of 1st and 2nd ionisation energies of Ca"),
+                    "C": ("\u0394H\u00b0at[F\u2082(g)]", "Enthalpy of atomisation of F (\u00d72)"),
+                    "D": ("2\u00d7EA of F", "Sum of two electron affinities of F"),
+                    "E": ("Lattice enthalpy of CaF\u2082", "Lattice enthalpy (formation) of CaF\u2082"),
                 },
             },
         ]
@@ -5193,13 +5268,12 @@ class Chem092:
         ax.text(5.0, 3.9, "\u0394H\u00b0f", fontsize=10, ha="center",
                 color="grey", style="italic")
 
-        ax.text(6.5, 8.1, f"? Identify step {self.asked_step}",
-                fontsize=11, ha="center", va="center", color="red", fontweight="bold",
-                bbox=dict(boxstyle="round", facecolor="mistyrose", edgecolor="red", linewidth=2))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
+
+
+
 
 
 class Chem093:
@@ -5236,61 +5310,28 @@ class Chem093:
         self.anode = self.hc1["electrode"]
         self.cathode = self.hc2["electrode"]
 
-        q_options = ["emf", "anode", "cathode"]
-        self.question_type = rnd.choice(q_options)
-
+        self.question_type = "emf"  # fixed
         if self.question_type == "emf":
-            self.answer = f"{self.emf:.2f} V"
+            self.answer = round(self.emf, 2)
+            self.options = []
             self.description = (
-                f"The diagram shows an electrochemical cell made from "
-                f"{self.hc1['electrode']}/{self.hc1['ion']} "
-                f"(E\u00b0 = {self.hc1['E_std']:+.2f} V) "
-                f"and {self.hc2['electrode']}/{self.hc2['ion']} "
-                f"(E\u00b0 = {self.hc2['E_std']:+.2f} V) half-cells. "
-                f"Calculate the standard cell EMF (E\u00b0cell)."
-            )
-        elif self.question_type == "anode":
-            options = [self.anode, self.cathode,
-                       rnd.choice([hc["electrode"] for hc in half_cells
-                                   if hc["electrode"] not in [self.anode, self.cathode]]),
-                       "salt bridge"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(self.anode))
-            self.description = (
-                f"The diagram shows an electrochemical cell with "
-                f"{self.hc1['electrode']}/{self.hc1['ion']} (E\u00b0 = {self.hc1['E_std']:+.2f} V) "
-                f"and {self.hc2['electrode']}/{self.hc2['ion']} (E\u00b0 = {self.hc2['E_std']:+.2f} V). "
-                f"Which electrode acts as the anode (site of oxidation)?"
-            )
-        else:
-            options = [self.cathode, self.anode,
-                       rnd.choice([hc["electrode"] for hc in half_cells
-                                   if hc["electrode"] not in [self.anode, self.cathode]]),
-                       "salt bridge"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(self.cathode))
-            self.description = (
-                f"The diagram shows an electrochemical cell with "
-                f"{self.hc1['electrode']}/{self.hc1['ion']} (E\u00b0 = {self.hc1['E_std']:+.2f} V) "
-                f"and {self.hc2['electrode']}/{self.hc2['ion']} (E\u00b0 = {self.hc2['E_std']:+.2f} V). "
-                f"Which electrode acts as the cathode (site of reduction)?"
+                f"The diagram shows an electrochemical cell. "
+                f"The standard electrode potentials (E\u00b0) for each half-cell "
+                f"are shown in the diagram. "
+                f"Calculate the standard cell EMF (E\u00b0cell) in V."
             )
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
-        self.topic = "Electrochemistry"
-        self.subtopic = "Electrode potentials and electrochemical cells"
+        self.topic = "Electrode potentials and electrochemical cells"
+        self.subtopic = "Standard electrode potentials"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
-
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"E^\\circ_{{cell}} &= E^\\circ_{{right}} - E^\\circ_{{left}} \\\\"
-            f"&= {self.hc2['E_std']:.2f} - ({self.hc1['E_std']:.2f}) \\\\"
-            f"&= {self.emf:.2f}\\text{{ V}} \\\\"
-            f"\\text{{Anode (oxidation, more negative): {self.anode}}} &\\\\"
-            f"\\text{{Cathode (reduction, more positive): {self.cathode}}}"
+            f"\\text{{Anode (negative): {self.anode}}} &\\\\"
+            f"\\text{{Cathode (positive): {self.cathode}}} &\\\\"
+            f"E\\degree_{{\\text{{cell}}}} &= E\\degree_{{\\text{{cathode}}}} - E\\degree_{{\\text{{anode}}}} \\\\"
+            f"&= ({self.hc2['E_std']:+.2f}) - ({self.hc1['E_std']:+.2f}) \\\\"
+            f"&= {self.emf:.2f}\\text{{ V}}"
             "\\end{aligned}\\]"
         )
 
@@ -5344,7 +5385,6 @@ class Chem093:
         ax.plot([l_rod_x, 4.8], [wire_y, wire_y], "k-", linewidth=2.5)
         ax.plot([8.2, r_rod_x], [wire_y, wire_y], "k-", linewidth=2.5)
 
-        # Voltmeter - show "?" instead of actual EMF
         voltmeter = plt.Circle((6.5, wire_y), 0.8, facecolor="white",
                                 edgecolor="black", linewidth=2.5, zorder=5)
         ax.add_patch(voltmeter)
@@ -5374,6 +5414,9 @@ class Chem093:
         plt.close()
 
 
+
+
+
 class Chem094:
     """
     Topic: 25.1 / 25.2 pH curves and buffer regions
@@ -5382,101 +5425,93 @@ class Chem094:
     """
 
     def __init__(self):
-        titrations = [
+        titration_templates = [
             {
                 "type": "strong acid / strong base",
                 "acid": "HCl",
                 "base": "NaOH",
-                "eq_vol": 25.0,
-                "start_ph": 1.0,
+                "start_ph_range": (0.8, 1.5),
                 "end_ph": 13.0,
                 "eq_ph": 7.0,
-                "buffer_region": None,
                 "has_buffer": False,
             },
             {
                 "type": "weak acid / strong base",
                 "acid": "CH\u2083COOH",
                 "base": "NaOH",
-                "eq_vol": 25.0,
-                "start_ph": 2.9,
+                "start_ph_range": (2.5, 3.2),
                 "end_ph": 12.5,
                 "eq_ph": 8.7,
-                "buffer_region": (10, 20),
                 "has_buffer": True,
             },
             {
                 "type": "strong acid / weak base",
                 "acid": "HCl",
                 "base": "NH\u2083",
-                "eq_vol": 25.0,
-                "start_ph": 1.0,
+                "start_ph_range": (0.8, 1.5),
                 "end_ph": 11.2,
                 "eq_ph": 5.3,
-                "buffer_region": None,
                 "has_buffer": False,
             },
             {
                 "type": "weak acid / strong base",
                 "acid": "HCOOH",
                 "base": "NaOH",
-                "eq_vol": 20.0,
-                "start_ph": 2.4,
+                "start_ph_range": (2.2, 2.8),
                 "end_ph": 12.5,
                 "eq_ph": 8.2,
-                "buffer_region": (7, 15),
                 "has_buffer": True,
             },
             {
                 "type": "strong acid / strong base",
                 "acid": "H\u2082SO\u2084",
                 "base": "NaOH",
-                "eq_vol": 20.0,
-                "start_ph": 0.7,
+                "start_ph_range": (0.4, 0.9),
                 "end_ph": 13.0,
                 "eq_ph": 7.0,
-                "buffer_region": None,
                 "has_buffer": False,
             },
             {
                 "type": "strong acid / weak base",
                 "acid": "HNO\u2083",
                 "base": "NH\u2083",
-                "eq_vol": 30.0,
-                "start_ph": 1.5,
+                "start_ph_range": (1.2, 1.8),
                 "end_ph": 11.0,
                 "eq_ph": 5.3,
-                "buffer_region": None,
                 "has_buffer": False,
             },
         ]
 
-        self.t = rnd.choice(titrations)
+        tmpl = rnd.choice(titration_templates)
+        eq_vol = round(rnd.uniform(15, 35), 1)
+        start_ph = round(rnd.uniform(*tmpl["start_ph_range"]), 1)
+        # Derive buffer region as (eq_vol*0.3, eq_vol*0.8) for buffered titrations
+        if tmpl["has_buffer"]:
+            buf_low = round(eq_vol * 0.3, 0)
+            buf_high = round(eq_vol * 0.8, 0)
+            buffer_region = (int(buf_low), int(buf_high))
+        else:
+            buffer_region = None
+        self.t = {**tmpl,
+                  "eq_vol": eq_vol,
+                  "start_ph": start_ph,
+                  "buffer_region": buffer_region}
 
         q_types = ["equivalence_vol", "equivalence_ph"]
-        if self.t["has_buffer"]:
-            q_types.append("buffer")
         self.q_type = rnd.choice(q_types)
 
         if self.q_type == "equivalence_vol":
-            self.answer = f"{self.t['eq_vol']:.1f} cm\u00b3"
+            self.answer = round(self.t['eq_vol'], 1)
             self.description = (
                 f"The graph shows the pH curve when {self.t['base']} is added to "
                 f"{self.t['acid']} solution ({self.t['type']}). "
                 f"What volume of {self.t['base']} is required to reach the equivalence point?"
             )
-        elif self.q_type == "equivalence_ph":
-            self.answer = f"{self.t['eq_ph']:.1f}"
+        else:
+            self.answer = self.t['eq_ph']
             self.description = (
                 f"The graph shows a {self.t['type']} titration curve. "
                 f"What is the pH at the equivalence point?"
-            )
-        else:
-            self.answer = (f"Between {self.t['buffer_region'][0]} and "
-                           f"{self.t['buffer_region'][1]} cm\u00b3")
-            self.description = (
-                f"The graph shows a {self.t['type']} titration. "
-                f"Between what volumes does the solution act as an effective buffer?"
             )
 
         self.topic = "Equilibria"
@@ -5543,6 +5578,9 @@ class Chem094:
         plt.close()
 
 
+
+
+
 class Chem095:
     """
     Topic: 26.1 / 26.2 Arrhenius equation and activation energy
@@ -5560,6 +5598,7 @@ class Chem095:
             {"name": "esterification of ethanoic acid", "Ea": 51.0, "A_ln": 26.5},
             {"name": "bromination of propanone", "Ea": 83.0, "A_ln": 33.0},
             {"name": "alkaline hydrolysis of bromoethane", "Ea": 89.0, "A_ln": 34.5},
+            {"name": "decomposition of ozone", "Ea": 72.0, "A_ln": 28.8},
         ]
 
         self.rxn = rnd.choice(reactions)
@@ -5568,50 +5607,27 @@ class Chem095:
         R = 8.314
         self.gradient = -self.Ea * 1000 / R
 
-        q_types = ["Ea_from_gradient", "gradient_meaning", "intercept_meaning"]
-        self.q_type = rnd.choice(q_types)
-
+        self.q_type = "Ea_from_gradient"  # fixed
         if self.q_type == "Ea_from_gradient":
-            self.answer = f"{self.Ea:.0f} kJ mol\u207b\u00b9"
+            self.answer = int(self.Ea)
+            self.options = []
             self.description = (
                 f"The graph shows an Arrhenius plot (ln k vs 1/T) for the {self.rxn['name']}. "
-                f"The gradient of the line is {self.gradient:.0f} K. "
-                f"Calculate the activation energy, Ea."
-            )
-        elif self.q_type == "gradient_meaning":
-            correct = "\u2212Ea/R"
-            options = [correct, "Ea/R", "ln A", "\u2212R/Ea"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The graph shows an Arrhenius plot for the {self.rxn['name']}. "
-                f"What does the gradient of this line represent?"
-            )
-        else:
-            correct = "ln A (pre-exponential/frequency factor)"
-            options = [correct, "\u2212Ea/R", "Ea (activation energy)", "R (gas constant)"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The Arrhenius plot for the {self.rxn['name']} is shown. "
-                f"What quantity does the y-intercept of the line represent?"
+                f"The gradient of the line is annotated on the diagram. "
+                f"Calculate the activation energy, Ea (in kJ mol\u207b\u00b9)."
             )
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "Reaction kinetics"
         self.subtopic = "Arrhenius equation and activation energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
-
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\ln k &= \\ln A - \\frac{E_a}{RT} \\\\"
-            "\\text{gradient} &= -\\frac{E_a}{R} \\\\"
-            f"E_a &= -\\text{{gradient}} \\times R \\\\"
-            f"&= {-self.gradient:.0f} \\times 8.314 \\\\"
-            f"&= {self.Ea * 1000:.0f}\\text{{ J mol}}^{{-1}} = {self.Ea:.0f}\\text{{ kJ mol}}^{{-1}}"
+            f"\\text{{gradient}} &= -\\frac{{E_a}}{{R}} \\\\"
+            f"-\\frac{{E_a}}{{R}} &= {self.gradient:.0f}\\text{{ K}} \\\\"
+            f"E_a &= -{self.gradient:.0f} \\times 8.314 \\\\"
+            f"E_a &= {self.Ea * 1000:.0f}\\text{{ J mol}}^{{-1}} \\\\"
+            f"E_a &= {int(self.Ea)}\\text{{ kJ mol}}^{{-1}}"
             "\\end{aligned}\\]"
         )
 
@@ -5649,6 +5665,9 @@ class Chem095:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
+
+
+
 
 
 class Chem096:
@@ -5732,54 +5751,41 @@ class Chem096:
                 "color_after": "darkgreen",
                 "oxidation_product": "cyclohexanone (ketone)",
             },
+            {
+                "name": "pentan-1-ol",
+                "class": "primary",
+                "formula": "CH\u2083(CH\u2082)\u2084OH",
+                "result_heat": "orange \u2192 green",
+                "color_before": "darkorange",
+                "color_after": "darkgreen",
+                "oxidation_product": "pentanal / pentanoic acid",
+            },
+            {
+                "name": "3-methylbutan-2-ol",
+                "class": "secondary",
+                "formula": "(CH\u2083)\u2082CHCH(OH)CH\u2083",
+                "result_heat": "orange \u2192 green",
+                "color_before": "darkorange",
+                "color_after": "darkgreen",
+                "oxidation_product": "3-methylbutan-2-one (ketone)",
+            },
         ]
 
         self.alcohol = rnd.choice(alcohols)
 
-        q_types = ["identify_class", "identify_product", "interpret_colour"]
-        self.q_type = rnd.choice(q_types)
-
-        if self.q_type == "identify_class":
-            correct = self.alcohol["class"]
-            options = ["primary", "secondary", "tertiary", "quaternary"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The diagram shows test tubes containing {self.alcohol['name']} "
-                f"({self.alcohol['formula']}) with acidified K\u2082Cr\u2082O\u2087 "
-                f"before and after heating. "
-                f"What class of alcohol is this?"
-            )
-        elif self.q_type == "identify_product":
-            correct = self.alcohol["oxidation_product"]
-            all_products = list(set([a["oxidation_product"] for a in alcohols]))
-            distractors = [p for p in all_products if p != correct]
-            rnd.shuffle(distractors)
-            options = [correct] + distractors[:3]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"Acidified K\u2082Cr\u2082O\u2087 is added to {self.alcohol['name']} "
-                f"and heated under reflux. "
-                f"What is the organic oxidation product?"
-            )
-        else:
-            correct = self.alcohol["name"] + f" ({self.alcohol['class']} alcohol)"
-            all_names = [a["name"] + f" ({a['class']} alcohol)" for a in alcohols]
-            distractors = [n for n in all_names if n != correct]
-            rnd.shuffle(distractors)
-            options = [correct] + distractors[:3]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"An unknown alcohol ({self.alcohol['formula']}) is treated with "
-                f"acidified K\u2082Cr\u2082O\u2087. "
-                f"The colour change was: {self.alcohol['result_heat']}. "
-                f"Identify the alcohol."
-            )
+        correct = self.alcohol["name"] + f" ({self.alcohol['class']} alcohol)"
+        all_names = [a["name"] + f" ({a['class']} alcohol)" for a in alcohols]
+        distractors = [n for n in all_names if n != correct]
+        rnd.shuffle(distractors)
+        options = [correct] + distractors[:3]
+        rnd.shuffle(options)
+        self.options = options
+        self.answer = chr(65 + options.index(correct))
+        self.description = (
+            f"An unknown alcohol is treated with acidified K\u2082Cr\u2082O\u2087. "
+            f"The formula and colour change after heating are shown in the diagram. "
+            f"Identify the alcohol."
+        )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "Hydroxy compounds"
@@ -5827,12 +5833,12 @@ class Chem096:
         ax.text(9.65, 5.2, self.alcohol["name"], fontsize=10,
                 ha="center", fontweight="bold")
 
-        ax.text(0.3, 1.2, f"What is the class / product?", fontsize=10,
-                fontweight='bold', color='navy')
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
+
+
+
 
 
 class Chem097:
@@ -5898,13 +5904,46 @@ class Chem097:
                 "fehling": "no reaction (negative)",
                 "dnp": "orange precipitate",
             },
+            {
+                "name": "pentanal",
+                "formula": "CH\u2083(CH\u2082)\u2083CHO",
+                "type": "aldehyde",
+                "tollens": "silver mirror (positive)",
+                "tollens_color": "silver",
+                "fehling": "brick-red precipitate (positive)",
+                "dnp": "orange precipitate",
+            },
+            {
+                "name": "pentan-2-one",
+                "formula": "CH\u2083CO(CH\u2082)\u2082CH\u2083",
+                "type": "ketone",
+                "tollens": "no reaction (negative)",
+                "tollens_color": "lightcyan",
+                "fehling": "no reaction (negative)",
+                "dnp": "orange precipitate",
+            },
+            {
+                "name": "hexanal",
+                "formula": "CH\u2083(CH\u2082)\u2084CHO",
+                "type": "aldehyde",
+                "tollens": "silver mirror (positive)",
+                "tollens_color": "silver",
+                "fehling": "brick-red precipitate (positive)",
+                "dnp": "orange precipitate",
+            },
+            {
+                "name": "hexan-3-one",
+                "formula": "CH\u2083CH\u2082CO(CH\u2082)\u2082CH\u2083",
+                "type": "ketone",
+                "tollens": "no reaction (negative)",
+                "tollens_color": "lightcyan",
+                "fehling": "no reaction (negative)",
+                "dnp": "orange precipitate",
+            },
         ]
 
         self.compound = rnd.choice(compounds)
-
-        q_types = ["identify_type", "interpret_tollens", "interpret_fehling"]
-        self.q_type = rnd.choice(q_types)
-
+        self.q_type = "identify_type"  # fixed
         if self.q_type == "identify_type":
             correct = self.compound["type"]
             options = ["aldehyde", "ketone", "carboxylic acid", "ester"]
@@ -5912,43 +5951,10 @@ class Chem097:
             self.options = options
             self.answer = chr(65 + options.index(correct))
             self.description = (
-                f"The diagram shows the test tubes after chemical tests on "
-                f"{self.compound['name']} ({self.compound['formula']}). "
+                f"The diagram shows three test tube results after chemical tests "
+                f"on an unknown carbonyl compound. "
                 f"Is the compound an aldehyde or a ketone?"
             )
-        elif self.q_type == "interpret_tollens":
-            correct = self.compound["tollens"]
-            options_map = {
-                "silver mirror (positive)": ["no reaction (negative)",
-                                              "brick-red precipitate", "blue precipitate"],
-                "no reaction (negative)": ["silver mirror (positive)",
-                                            "brick-red precipitate", "white precipitate"],
-            }
-            distractors = options_map.get(correct,
-                          ["silver mirror", "brick-red precipitate", "white precipitate"])
-            options = [correct] + distractors[:3]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"Tollens' reagent is added to {self.compound['name']} "
-                f"({self.compound['type']}) and warmed in a water bath. "
-                f"What is the expected observation?"
-            )
-        else:
-            correct = self.compound["fehling"]
-            distractors = ["silver mirror (positive)", "white precipitate",
-                           "purple colour change"]
-            options = [correct] + distractors
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"Fehling's solution is added to {self.compound['name']} "
-                f"({self.compound['type']}) and heated. "
-                f"What observation would you expect?"
-            )
-
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "Carbonyl compounds"
         self.subtopic = "Distinguishing aldehydes and ketones"
@@ -6006,6 +6012,9 @@ class Chem097:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
+
+
+
 
 
 class Chem098:
@@ -6101,43 +6110,75 @@ class Chem098:
                 "i_distractors": ["carbanion", "free radical", "carbocation (open)"],
                 "p_distractors": ["bromocyclohexane", "cyclohexane", "cyclohexanol"],
             },
+            {
+                "alkene": "but-1-ene",
+                "reagent": "HBr",
+                "electrophile": "H\u207a (from HBr)",
+                "intermediate": "secondary carbocation (CH\u2083CH\u207aCH\u2082CH\u2083)",
+                "product": "2-bromobutane",
+                "product_formula": "CH\u2083CHBrCH\u2082CH\u2083",
+                "alkene_formula": "CH\u2082=CHCH\u2082CH\u2083",
+                "step1_desc": "H\u207a attacks C-1 (Markovnikov)",
+                "step2_desc": "Br\u207b attacks secondary C-2 carbocation",
+                "e_distractors": ["Br\u207b", "HBr (whole molecule)", "Br\u2022"],
+                "i_distractors": ["primary carbocation", "carbanion", "bromonium ion"],
+                "p_distractors": ["1-bromobutane", "1,2-dibromobutane", "butan-2-ol"],
+            },
+            {
+                "alkene": "ethene",
+                "reagent": "HCl",
+                "electrophile": "H\u207a (from HCl)",
+                "intermediate": "carbocation (CH\u2083CH\u2082\u207a)",
+                "product": "chloroethane",
+                "product_formula": "CH\u2083CH\u2082Cl",
+                "alkene_formula": "CH\u2082=CH\u2082",
+                "step1_desc": "H\u207a attacks \u03c0 bond",
+                "step2_desc": "Cl\u207b attacks carbocation",
+                "e_distractors": ["Cl\u207b", "HCl (whole molecule)", "Cl\u2022"],
+                "i_distractors": ["carbanion", "free radical", "chloronium ion"],
+                "p_distractors": ["dichloroethane", "ethanol", "1,2-dichloroethane"],
+            },
+            {
+                "alkene": "propene",
+                "reagent": "Br\u2082",
+                "electrophile": "Br\u207a (induced dipole in Br\u2082)",
+                "intermediate": "bromonium ion / carbocation",
+                "product": "1,2-dibromopropane",
+                "product_formula": "CH\u2083CHBrCH\u2082Br",
+                "alkene_formula": "CH\u2083CH=CH\u2082",
+                "step1_desc": "Br\u2082 polarised; Br\u207a attacks \u03c0 bond",
+                "step2_desc": "Br\u207b attacks carbocation from opposite face",
+                "e_distractors": ["Br\u207b", "Br\u2022 (radical)", "Br\u2082 (whole molecule)"],
+                "i_distractors": ["carbanion", "primary carbocation", "Br\u2022 radical"],
+                "p_distractors": ["2-bromopropane", "propan-1-ol", "dibromomethane"],
+            },
+            {
+                "alkene": "but-2-ene",
+                "reagent": "HBr",
+                "electrophile": "H\u207a (from HBr)",
+                "intermediate": "secondary carbocation (CH\u2083CH\u207aCH\u2082CH\u2083 or CH\u2083CH\u2082CH\u207aCH\u2083)",
+                "product": "2-bromobutane",
+                "product_formula": "CH\u2083CHBrCH\u2082CH\u2083",
+                "alkene_formula": "CH\u2083CH=CHCH\u2083",
+                "step1_desc": "H\u207a attacks either C (symmetrical carbocations formed)",
+                "step2_desc": "Br\u207b attacks the secondary carbocation",
+                "e_distractors": ["Br\u207b", "HBr (whole molecule)", "Br\u2022"],
+                "i_distractors": ["primary carbocation", "carbanion", "free radical"],
+                "p_distractors": ["1-bromobutane", "1,2-dibromobutane", "butan-2-ol"],
+            },
         ]
 
         self.rxn = rnd.choice(reactions)
-        q_types = ["identify_intermediate", "identify_product", "identify_electrophile"]
-        self.q_type = rnd.choice(q_types)
-
-        if self.q_type == "identify_intermediate":
-            correct = self.rxn["intermediate"]
-            options = [correct] + self.rxn["i_distractors"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The diagram shows the electrophilic addition mechanism of {self.rxn['reagent']} "
-                f"to {self.rxn['alkene']}. What is the intermediate species formed in Step 1?"
-            )
-        elif self.q_type == "identify_product":
-            correct = self.rxn["product"]
-            options = [correct] + self.rxn["p_distractors"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The curly arrow mechanism shows {self.rxn['reagent']} reacting with "
-                f"{self.rxn['alkene']} by electrophilic addition. "
-                f"Name the organic product."
-            )
-        else:
-            correct = self.rxn["electrophile"]
-            options = [correct] + self.rxn["e_distractors"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The mechanism diagram shows electrophilic addition to {self.rxn['alkene']}. "
-                f"Identify the electrophile that initiates the reaction."
-            )
+        self.q_type = "identify_electrophile"
+        correct = self.rxn["electrophile"]
+        options = [correct] + self.rxn["e_distractors"]
+        rnd.shuffle(options)
+        self.options = options
+        self.answer = chr(65 + options.index(correct))
+        self.description = (
+            f"The mechanism diagram shows electrophilic addition to {self.rxn['alkene']}. "
+            f"Identify the electrophile that initiates the reaction."
+        )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "Introduction to organic chemistry"
@@ -6199,7 +6240,6 @@ class Chem098:
 
         draw_arrow(ax, 5.0, 4.5, 6.5, 4.5, color="black", linewidth=2.5)
 
-        # Intermediate box - hidden if that's the question
         ix = 7.5
         if self.q_type == "identify_intermediate":
             ax.text(ix, 4.5, "?", fontsize=28, ha="center", va="center",
@@ -6250,6 +6290,9 @@ class Chem098:
         plt.close()
 
 
+
+
+
 class Chem099:
     """
     Topic: 11.1 Group 17 (Halogens)
@@ -6290,51 +6333,17 @@ class Chem099:
 
         self.halide = rnd.choice(halides)
 
-        q_types = ["identify_ion", "predict_nh3", "identify_formula"]
-        self.q_type = rnd.choice(q_types)
-
-        if self.q_type == "identify_ion":
-            correct = self.halide["ion"]
-            options = [h["ion"] for h in halides]
-            options.append("F\u207b")
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"Silver nitrate solution is added to an unknown halide solution. "
-                f"A {self.halide['agno3_ppt']} forms. "
-                f"When dilute ammonia is added, the precipitate {self.halide['dil_nh3']}. "
-                f"Identify the halide ion present."
-            )
-        elif self.q_type == "predict_nh3":
-            correct = self.halide["dil_nh3"]
-            options = list(set([h["dil_nh3"] for h in halides]))
-            options.append("dissolves and reacts vigorously")
-            rnd.shuffle(options)
-            self.options = options[:4]
-            if correct not in self.options:
-                self.options[0] = correct
-                rnd.shuffle(self.options)
-            self.answer = chr(65 + self.options.index(correct))
-            self.description = (
-                f"Silver nitrate is added to a solution containing {self.halide['ion']} ions, "
-                f"forming a {self.halide['agno3_ppt']} of {self.halide['formula']}. "
-                f"What happens when dilute ammonia solution is added?"
-            )
-        else:
-            correct = self.halide["formula"]
-            options = [h["formula"] for h in halides] + ["AgF"]
-            rnd.shuffle(options)
-            self.options = options[:4]
-            if correct not in self.options:
-                self.options[0] = correct
-                rnd.shuffle(self.options)
-            self.answer = chr(65 + self.options.index(correct))
-            self.description = (
-                f"AgNO\u2083 is added to a {self.halide['name']} solution. "
-                f"A {self.halide['agno3_ppt']} forms. "
-                f"Give the formula of this precipitate."
-            )
+        all_ions = [h["ion"] for h in halides] + ["F\u207b"]
+        correct = self.halide["ion"]
+        options = all_ions[:]
+        rnd.shuffle(options)
+        self.answer = chr(65 + options.index(correct))
+        self.options = options
+        self.description = (
+            "The diagram shows silver nitrate / ammonia tests on an unknown halide. "
+            "The precipitate colour and ammonia solubility results are shown. "
+            "Identify the halide ion present."
+        )
 
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "Group 17 (Halogens)"
@@ -6417,6 +6426,9 @@ class Chem099:
         plt.close()
 
 
+
+
+
 class Chem100:
     """
     Topic: 4.1 / 4.2 States of matter — ideal gas behaviour
@@ -6426,100 +6438,51 @@ class Chem100:
 
     def __init__(self):
         gases = [
-            {"name": "H\u2082", "B_prime": 0.00002, "C_prime": 0.0000005,
+            {"name": "H\u2082",   "B_prime": +0.00002,  "C_prime": 0.0000005,
              "attractive": "very weak",
-             "high_p": "pV > nRT (molecular volume dominates)",
-             "low_p": "close to ideal (weak IMF)",
-             "moderate_p": "slightly above ideal throughout"},
-            {"name": "CO\u2082", "B_prime": -0.00025, "C_prime": 0.0000008,
+             "high_p_stmt": "pV > nRT \u2014 molecular volume dominates",
+             "low_p_stmt":  "pV > nRT \u2014 very weak attractions, volume dominates even at low p"},
+            {"name": "CO\u2082", "B_prime": -0.00025,  "C_prime": 0.0000008,
              "attractive": "moderate",
-             "high_p": "pV > nRT (molecular volume dominates)",
-             "low_p": "slightly below ideal (moderate IMF)",
-             "moderate_p": "dips below ideal then rises above"},
-            {"name": "N\u2082", "B_prime": -0.00008, "C_prime": 0.0000004,
+             "high_p_stmt": "pV > nRT \u2014 molecular volume dominates",
+             "low_p_stmt":  "pV < nRT \u2014 intermolecular attractions dominate"},
+            {"name": "N\u2082",  "B_prime": -0.00008,  "C_prime": 0.0000004,
              "attractive": "weak",
-             "high_p": "pV > nRT (molecular volume dominates)",
-             "low_p": "close to ideal",
-             "moderate_p": "slightly below ideal at moderate p"},
-            {"name": "NH\u2083", "B_prime": -0.00035, "C_prime": 0.0000007,
+             "high_p_stmt": "pV > nRT \u2014 molecular volume dominates",
+             "low_p_stmt":  "pV \u2248 nRT \u2014 close to ideal behaviour"},
+            {"name": "NH\u2083", "B_prime": -0.00035,  "C_prime": 0.0000007,
              "attractive": "strong (polar, H-bonding)",
-             "high_p": "pV > nRT (molecular volume dominates)",
-             "low_p": "below ideal (strong IMF)",
-             "moderate_p": "well below ideal then rises"},
+             "high_p_stmt": "pV > nRT \u2014 molecular volume dominates",
+             "low_p_stmt":  "pV < nRT \u2014 strong intermolecular attractions dominate"},
+            {"name": "He",   "B_prime": +0.000012, "C_prime": 0.0000002,
+             "attractive": "negligible",
+             "high_p_stmt": "pV > nRT \u2014 molecular volume dominates",
+             "low_p_stmt":  "pV > nRT \u2014 negligible attractions, volume effect even at low p"},
+            {"name": "CH\u2084", "B_prime": -0.00015,  "C_prime": 0.0000006,
+             "attractive": "moderate (London dispersion)",
+             "high_p_stmt": "pV > nRT \u2014 molecular volume dominates",
+             "low_p_stmt":  "pV < nRT \u2014 London dispersion forces cause attraction"},
         ]
 
         self.gas = rnd.choice(gases)
 
-        q_types = [
-            "high_pressure_deviation",
-            "low_pressure_behaviour",
-            "reason_dip",
-            "reason_rise",
+        self.pressure_region = "high"
+        correct = "pV > nRT \u2014 molecular volume becomes significant"
+        options = [
+            correct,
+            "pV < nRT \u2014 intermolecular attractions dominate",
+            "pV = nRT \u2014 gas behaves ideally",
+            "pV decreases linearly with increasing pressure",
         ]
-        self.q_type = rnd.choice(q_types)
 
-        if self.q_type == "high_pressure_deviation":
-            correct = "pV > nRT — molecular volume becomes significant"
-            options = [
-                correct,
-                "pV < nRT — intermolecular attractions dominate",
-                "pV = nRT — gas behaves ideally at high p",
-                "pV decreases linearly with increasing pressure",
-            ]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The graph shows pV vs p for {self.gas['name']} (real gas) "
-                f"compared to an ideal gas. At very high pressure, which statement "
-                f"describes the real gas behaviour?"
-            )
-        elif self.q_type == "low_pressure_behaviour":
-            correct = "pV \u2248 nRT — approaches ideal gas behaviour"
-            options = [
-                correct,
-                "pV = 0 — gas condenses to liquid",
-                "pV >> nRT — strong repulsions",
-                "pV < 0 — attractive forces overwhelm",
-            ]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The graph shows pV vs p for {self.gas['name']}. "
-                f"What happens to the gas behaviour as pressure approaches zero?"
-            )
-        elif self.q_type == "reason_dip":
-            correct = "Intermolecular attractions reduce the effective pressure"
-            options = [
-                correct,
-                "Molecular volume increases pV above ideal",
-                "Gas molecules speed up, increasing pV",
-                "Temperature decreases at moderate pressure",
-            ]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"At moderate pressures, the pV vs p graph for {self.gas['name']} "
-                f"dips below the ideal gas line. What causes this dip?"
-            )
-        else:
-            correct = "Molecules occupy significant volume — excluded volume increases pV"
-            options = [
-                correct,
-                "Attractive forces disappear at high pressure",
-                "Temperature increases at high pressure",
-                "Gas molecules become ideal at high pressure",
-            ]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"At very high pressures, the pV vs p graph for {self.gas['name']} "
-                f"rises above the ideal gas line. What explains this behaviour?"
-            )
-
+        rnd.shuffle(options)
+        self.options = options
+        self.answer = chr(65 + options.index(correct))
+        self.description = (
+            f"The graph shows pV vs p for {self.gas['name']} (real gas) compared to an ideal gas. "
+            f"The high-pressure region of the graph is highlighted. "
+            f"Which statement best describes the real gas behaviour in the highlighted region?"
+        )
         self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "States of matter"
         self.subtopic = "Ideal and real gas behaviour"
