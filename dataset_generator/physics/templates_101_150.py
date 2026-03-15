@@ -14,7 +14,6 @@ DESTINATION_FOLDER = os.path.join(
 )
 os.makedirs(DESTINATION_FOLDER, exist_ok=True)
 
-
 class Phy101:
     """
     Electric current: I = Q / t
@@ -2879,7 +2878,7 @@ class Phy126:
             "A car travels around a curved section of a banked road. "
             "The road is banked so that no friction is required for the turn. "
             "Based on the parameters provided in the diagram, calculate the centripetal force acting on the car. "
-            "(_) N (Example format: 12500.0 or 1.25E+04)"
+            "(_) N (Example format: 1250.0)"
         )
 
         self.topic = "Motion in a circle"
@@ -2965,7 +2964,7 @@ class Phy127:
         self.description = (
             "Based on the masses and gravitational force of attraction provided in the diagram, "
             "calculate the distance between the centres of the planet and the sun. "
-            "(_) m (Example format: 1.50E+11 or 150000000000.0)"
+            "(_) m (Example format: 150000000000.0)"
         )
 
         self.reasoning = (
@@ -3402,7 +3401,7 @@ class Phy132:
             "A planet is modeled as an isolated sphere. An object is projected vertically from "
             "the surface of the planet until it reaches a certain altitude. Using the planet's data "
             "provided in the diagram, calculate the change in gravitational potential for this movement. "
-            "(_) J kg^-1 (Example format: 3.456e+07)"
+            "(_) J kg^-1 (Example format: 44676095.446139514)"
         )
 
         self.reasoning = (
@@ -3581,7 +3580,7 @@ class Phy134:
         self.description = (
             "A rigid container of fixed volume contains an ideal gas. The gas is heated to a new temperature. "
             "Based on the initial and final states shown in the diagram, calculate the final pressure of the gas. "
-            "(_) Pa (Example format: 254321.98 or 2.54E+05)"
+            "(_) Pa (Example format: 346869.46954977704)"
         )
 
         self.reasoning = (
@@ -3654,7 +3653,7 @@ class Phy135:
             "The diagram shows two rigid cylinders, A and B, connected by a tube of "
             "negligible volume with a closed valve. Using the initial parameters provided in the diagram, "
             "calculate the final pressure of the system after the valve is opened and "
-            "equilibrium is reached at a constant temperature. (_) Pa (Example format: 2.345E+05)"
+            "equilibrium is reached at a constant temperature. (_) Pa (Example format: 291784.95446401695)"
         )
 
         self.reasoning = (
@@ -3732,7 +3731,7 @@ class Phy136:
         self.description = (
             "A sample of an ideal gas is maintained in a rigid container. "
             "Based on the state parameters provided in the diagram, calculate the root-mean-square "
-            "(r.m.s.) speed of the gas atoms. (_) m s^-1 (Example format: 456.78)"
+            "(r.m.s.) speed of the gas atoms. (_) m s^-1 (Example format: 709.5655501001263)"
         )
 
         self.reasoning = (
@@ -3884,8 +3883,8 @@ class Phy137:
 class Phy138:
     def __init__(self):
         while True:
-            self.t_low = rnd.randint(300, 500)
-            self.t_high = self.t_low + rnd.randint(400, 700)
+            self.t_low = rnd.uniform(300, 500)
+            self.t_high = self.t_low + rnd.uniform(400, 700)
             self.m_mass_g = 32.0 
             self.m_mass_kg = self.m_mass_g / 1000  
             self.R = 8.31
@@ -3906,7 +3905,7 @@ class Phy138:
         self.description = (
             "The provided graph illustrates the distribution of molecular speeds for oxygen gas at two different temperatures. "
             "Identify the characteristics of the distribution and calculate the most probable speed (v_p) for the gas at the higher temperature T_2. "
-            "(_) m s^-1 (Example format: 534.21)"
+            "(_) m s^-1 (Example format: 734.9489778209097)"
         )
 
         t2_val = f"{self.t_high}"
@@ -3966,11 +3965,11 @@ class Phy138:
 class Phy139:
     def __init__(self):
         while True:
-            self.delta_U_kJ = rnd.randint(30, 80)
-            self.Q_kJ = rnd.randint(10, 60)
+            self.delta_U_kJ = rnd.uniform(30, 80)
+            self.Q_kJ = rnd.uniform(10, 60)
             
             self.W_kJ = self.Q_kJ - self.delta_U_kJ
-            self.answer = f"{abs(self.W_kJ)}"
+            self.answer = f"{self.W_kJ}"
             self.work_direction = "on the gas" if self.W_kJ < 0 else "by the gas"
 
             if self.Q_kJ != self.delta_U_kJ:
@@ -4042,7 +4041,7 @@ class Phy139:
 class Phy140:
     def __init__(self):
         while True:
-            self.pressure_kPa = rnd.randint(100, 400)
+            self.pressure_kPa = rnd.uniform(100, 400)
             self.delta_U_kJ = rnd.randint(10, 80)
             self.Q_kJ = rnd.randint(100, 200)
 
@@ -4055,7 +4054,7 @@ class Phy140:
 
         self.W = self.Q - self.delta_U
         self.delta_V = self.W / self.pressure
-        self.answer = f"{abs(self.delta_V)}"
+        self.answer = f"{self.delta_V}"
 
         self.topic = "Thermodynamics"
         self.subtopic = "First law of thermodynamics"
@@ -4163,7 +4162,7 @@ class Phy141:
         self.description = (
             "Liquid water at 100°C is completely converted to steam at the same temperature. "
             "Based on the specific data provided in the diagram, calculate the increase in the "
-            "internal energy of the system. (_) J (Example format: 1.23E+06)"
+            "internal energy of the system. (_) J (Example format: 734566.9489778209097)"
         )
 
         self.reasoning = (
@@ -4260,7 +4259,7 @@ class Phy142:
             "A simple pendulum consists of a small bob attached to a string. "
             "The pendulum is released from rest from the position shown in the diagram. "
             "Assuming the motion is simple harmonic, calculate the maximum speed of the bob "
-            f"during its oscillation. (Use g = {g_str} m s\u207b\u00b2). (_) m s^-1 (Example format: 0.123)"
+            f"during its oscillation. (Use g = {g_str} m s\u207b\u00b2). (_) m s^-1 (Example format: 0.126778903)"
         )
 
         self.reasoning = (
@@ -4526,7 +4525,7 @@ class Phy145:
         self.description = (
             "A pendulum bob oscillates with simple harmonic motion. The variation with time $t$ "
             "of its kinetic energy $E_k$ is shown in the graph. Using the time coordinates of the successive maxima, "
-            "determine the time period $T$ of the pendulum's oscillation. (_) s (Example format: 2.34)"
+            "determine the time period $T$ of the pendulum's oscillation. (_) s Example format: 2.6430486321164166)"
         )
 
         self.reasoning = (
@@ -4662,6 +4661,7 @@ class Phy146:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
+
 class Phy147:
     def __init__(self):
         while True:
@@ -4690,7 +4690,7 @@ class Phy147:
         self.description = (
             "The figure shows the displacement-time graph for a damped oscillating system. "
             "Using the parameters embedded in the diagram and the peak coordinates, "
-            "determine the frequency of the oscillation. (_) Hz (Example format: 1.234)"
+            "determine the frequency of the oscillation. (_) Hz (Example format:1.979976539513881)"
         )
 
         self.reasoning = (
@@ -4780,7 +4780,7 @@ class Phy148:
         self.description = (
             "A block is connected between two identical springs and undergoes damped oscillations. "
             "Based on the displacement–time graph and the parameters provided in the diagram, "
-            "determine the damped angular frequency $\\omega_d$. (_) rad s^-1 (Example format: 7.89)"
+            "determine the damped angular frequency $\\omega_d$. (_) rad s^-1 (Example format: 6.90700120734646)"
         )
 
         self.reasoning = (
@@ -4891,7 +4891,7 @@ class Phy149:
         self.description = (
             "Two identical positive point charges $+Q$ are fixed in a vacuum. Point $A$ is located on the line connecting them. "
             "Based on the resultant electric field strength and distances shown in the diagram, "
-            "calculate the magnitude of the charge $Q$. (_) C (Example format: 1.234e-07)"
+            "calculate the magnitude of the charge $Q$. (_) C (Example format: 8.095898412410912e-08)"
         )
 
         self.reasoning = (
@@ -4966,7 +4966,7 @@ class Phy150:
         self.answer = f"{self.acceleration}"
         self.description = (
             "An electron is placed in a uniform electric field. Using the parameters provided in the diagram, "
-            "calculate the magnitude of the acceleration of the electron. ( _ ) m s⁻² (Example format: 4.56789e+10)"
+            "calculate the magnitude of the acceleration of the electron. ( _ ) m s⁻² (Example format:  0.4319030554713497)"
         )
 
         self.topic = "Electric fields"

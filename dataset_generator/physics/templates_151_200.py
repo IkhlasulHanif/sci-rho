@@ -589,7 +589,7 @@ class Phy155:
         self.description = (
             "The image shows two charged conducting spheres, A and B, with their respective surface electric field strengths. "
             f"If the charge stored on the surface of sphere B is {self.QB_microC:.1f} μC, its radius is ... cm "
-             "(Example Format: 3.54E-05)"
+             "(Example Format: 35.54)"
         )
 
         self.topic = "Electric fields"
@@ -662,10 +662,10 @@ class Phy156:
         self.k_val = 1 / (4 * math.pi * self.epsilon0)
 
         self.m_alpha = 6.64e-27
-        self.Z = 79
+        self.Z = rnd.choice([47, 79, 82])   # Ag, Au, Pb
 
         while True:
-            self.v_coeff = rnd.choice([3.0, 3.2, 3.5, 3.8, 4.0])
+            self.v_coeff = rnd.uniform(2.5, 5.5)
             self.v = self.v_coeff * 1e7
 
             self.q_alpha = 2 * self.e
@@ -681,10 +681,10 @@ class Phy156:
         self.answer = "{:.2f}".format(self.answer_val)
 
         self.description = (
-            "The image illustrates an alpha particle (α) approaching a gold nucleus head-on. "
-            f"If the alpha particle travels at the speed shown and the gold nucleus has proton number Z = {self.Z}, "
+            "The image illustrates an alpha particle (α) approaching a metal nucleus head-on. "
+            f"If the alpha particle travels at the speed shown and the metal nucleus has proton number Z = {self.Z}, "
             "calculate the closest distance of approach, r_min. "
-            "(Example format: 12.34)"
+            "(Example format: 1.34)"
         )
 
         self.topic = "Electric Fields"
@@ -699,7 +699,7 @@ class Phy156:
             "\\[\\begin{aligned}"
             "\\textbf{Step 1: Initial kinetic energy of the alpha particle}\\\\"
             "E_k &= \\tfrac{1}{2}mv^2\\\\"
-            f"E_k &= 0.5({self.m_alpha})( {self.v_coeff} \\times 10^7 )^2\\\\"
+            f"E_k &= 0.5({self.m_alpha})({self.v_coeff:.2f} \\times 10^7)^2\\\\"
             f"E_k &= {ke_coeff} \\times 10^{{{int(ke_power)}}}\\,\\text{{J}}\\\\"
             "\\\\"
             "\\textbf{Step 2: Conservation of energy}\\\\"
@@ -715,6 +715,7 @@ class Phy156:
             f"r_{{\\min}} &= {self.answer} \\times 10^{{-14}}\\,\\text{{m}}"
             "\\end{aligned}\\]"
         )
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(9, 5))
         ax.set_xlim(-6, 6)
@@ -731,16 +732,21 @@ class Phy156:
 
         nucleus = plt.Circle(nucleus_center, 1.6, facecolor="#f4d27a", edgecolor="black", linewidth=2)
         ax.add_patch(nucleus)
-        ax.text(nucleus_center[0], 0.6, "Au", ha="center", va="center", fontsize=16, weight="bold")
+        ax.text(nucleus_center[0], 0.6, "metal", ha="center", va="center", fontsize=16, weight="bold")
         ax.text(nucleus_center[0], -0.5, f"Z = {self.Z}", ha="center", va="center", fontsize=14)
 
         ax.annotate("", xy=(1.5, 0), xytext=(-3.5, 0),
                     arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
-        ax.text(-1.0, 0.8, rf"$v = {self.v_coeff:.2f} \times 10^7$ m/s", ha="center", fontsize=12)
+
+        ax.text(-1.0, 0.8,
+                rf"$v = {self.v_coeff:.2f} \times 10^7$ m/s",
+                ha="center", fontsize=12)
 
         ax.plot([2.0, 2.0], [-1.5, 1.5], linestyle="--", linewidth=1.5, color="#2b6cb0")
+
         ax.annotate("", xy=(nucleus_center[0], -2.2), xytext=(2.0, -2.2),
                     arrowprops=dict(arrowstyle="<->", linewidth=1.5, color="black"))
+
         ax.text(3.25, -2.6, r"$r_{\min}$", ha="center", fontsize=14, style="italic")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -766,7 +772,7 @@ class Phy157:
             "The image shows an α-particle approaching a stationary gold nucleus. "
             "At the distance shown, the α-particle momentarily comes to rest. "
             "Calculate the electric potential energy (U) of the system at this instant in Joules. "
-            "(Example Format: 3.54E+10)"
+            "(Example Format: 3.54E-10)"
         )
 
         self.topic = "Electric Fields"
@@ -907,15 +913,14 @@ class Phy159:
             if self.C1 != self.C2:
                 break
 
-        self.R = rnd.randint(2, 8) * 1e3  # ohm
-        self.V = rnd.randint(6, 12)  # V
+        self.R = rnd.uniform(2, 8) * 1e3  # ohm
+        self.V = rnd.uniform(6, 12)  # V
 
         self.Ceq = 1 / ((1 / self.C1) + (1 / self.C2))
-        self.answer = round(self.Ceq * 1e6, 2)  # µF
-
+        self.answer = "{:.4f}".format(self.Ceq * 1e6)
         self.description = (
             "Two capacitors and a resistor are connected as shown. "
-            "Calculate the combined capacitance of the two capacitors. (_) µF. (Example format: 12.34)"
+            "Calculate the combined capacitance of the two capacitors. (_) µF. (Example format: 12.3664)"
         )
 
         self.topic = "Capacitance"
@@ -993,11 +998,11 @@ class Phy160:
                 break
 
         self.Qx = self.Cx * self.V
-        self.answer = round(self.Qx, 8) 
+        self.answer = "{:.3e}".format(self.Qx)
 
         self.description = (
             "Two capacitors, X and Y, are connected in parallel to a battery. "
-            "Using the values shown in the diagram, calculate the charge on capacitor X. (_) C. (Example format: 1.23E-4 or 0.000123)"
+            "Using the values shown in the diagram, calculate the charge on capacitor X. (_) C. (Example format: 1.23E-4)"
         )
 
         self.topic = "Capacitance"
@@ -1069,6 +1074,7 @@ class Phy160:
         plt.savefig(dest_image_path, dpi=600,
                     bbox_inches="tight", pad_inches=0.05)
         plt.close()
+
 class Phy161:
     def __init__(self):
         while True:
@@ -1086,7 +1092,7 @@ class Phy161:
         self.description = (
             "Two capacitors, A and B, are connected in parallel to a DC supply. "
             "Using the values shown in the diagram, calculate the energy stored in capacitor A. "
-            "(_) J (Example format: 1.23e-03)"
+            "(_) J (Example format: 0.1234)"
         )
 
         self.topic = "Capacitance"
@@ -1144,32 +1150,27 @@ class Phy162:
     Combined capacitance of two capacitors connected in series
     and total energy stored when fully charged.
     """
-
     def __init__(self):
+
         while True:
-            self.C1 = rnd.randint(10, 40) * 1e-6  # F
-            self.C2 = rnd.randint(20, 80) * 1e-6  # F
+            self.C1 = rnd.randint(10, 40) * 1e-6
+            self.C2 = rnd.randint(20, 80) * 1e-6
             if self.C1 != self.C2:
                 break
-
-        self.R = rnd.randint(2, 8) * 1e3  # ohm
-        self.V = rnd.randint(6, 12)  # V
-
+        self.R = rnd.randint(2, 8) * 1e3
+        self.V = rnd.randint(6, 12)
         self.Ceq = 1 / ((1 / self.C1) + (1 / self.C2))
         self.energy = 0.5 * self.Ceq * self.V**2
-
-        self.answer = round(self.energy, 2)
+        self.answer = "{:.3e}".format(self.energy)
 
         self.description = (
             "Two capacitors and a resistor are connected as shown. "
-            "Determine the total energy stored in the two capacitors. (_) J. (Example format: 1.23e-4 or 0.000123) "
+            "Determine the total energy stored in the two capacitors. (_) J. (Example format: 1.23e-4) "
         )
-
         self.topic = "Capacitance"
         self.subtopic = "Energy Stored in a Capacitor"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
-
         def sci(val):
             if val == 0:
                 return "0"
@@ -1441,12 +1442,11 @@ class Phy165:
         self.C = rnd.randint(50, 200) * 1e-6   # F
 
         self.energy = 0.5 * self.C * self.V**2
-        self.answer = round(self.energy, 4)
-
+        self.answer = "{:.3e}".format(self.energy)
         self.description = (
             "A capacitor is charged through resistor P by moving the switch to position A. "
             "Using the circuit values shown in the diagram, calculate the energy stored "
-            "in the capacitor when it is fully charged. (_) J. (Example format: 0.01250)"
+            "in the capacitor when it is fully charged. (_) J. (Example format: 8.100e-03)"
         )
 
         self.topic = "Energy stored in a capacitor"
@@ -1547,7 +1547,7 @@ class Phy166:
         self.description = (
             "A straight conductor is placed in a uniform magnetic field as shown. "
             "Using the values provided in the diagram, calculate the magnetic force "
-            "acting on the conductor. (_) N. (Example format: 1.234e-03)"
+            "acting on the conductor. (_) N. (Example format: 0.012)"
         )
 
         self.topic = "Magnetic Fields"
@@ -1639,7 +1639,7 @@ class Phy167:
         self.description = (
             "A current-carrying conductor is placed at right angles to a uniform magnetic field. "
             "Based on the values shown in the diagram, what is the magnetic force acting on the conductor? (_) N "
-            "(Example Format: 3.54E+10)"
+            "(Example Format: 0.06789)"
         )
 
         self.topic = "Magnetic fields"
@@ -1723,7 +1723,7 @@ class Phy168:
         self.description = (
             "A current-carrying conductor is placed in a uniform magnetic field as shown. "
             "Based on the values provided in the diagram, calculate the magnetic force acting on the conductor. "
-            "(_) N (Example Format: 3.54E+10)"
+            "(_) N (Example Format: 0.0789098)"
         )
 
         self.topic = "Magnetic Fields"
@@ -1974,7 +1974,7 @@ class Phy171:
         self.description = (
             "A point charge is placed in a vacuum as shown. "
             "Based on the values provided in the diagram, calculate the electric field strength E at point P. "
-            "(_) V m^-1 (Example Format: 1.23E+10)"
+            "(_) V m^-1 (Example Format: 1234.23456)"
         )
         self.topic = "Electricity"
         self.subtopic = "Electric fields"
@@ -2025,8 +2025,8 @@ class Phy171:
 class Phy172:
     def __init__(self):
         self.k = 8.99e9
-        self.q = 5.0e-9
-        self.dist = 0.10 
+        self.q = rnd.uniform(2e-9, 9e-9)
+        self.dist = rnd.uniform(0.06, 0.20)
         self.E_single = (self.k * self.q) / ((self.dist/2)**2)
         self.E_total = 2 * self.E_single
         self.answer = f"{self.E_total}"
@@ -2034,7 +2034,7 @@ class Phy172:
         self.description = (
             "Two point charges, one +Q and one -Q, are separated by a distance as shown. "
             "Based on the values provided in the diagram, calculate the magnitude of the net electric field strength at the midpoint between the charges. "
-            "(_) V m^-1 (Example format: 1.23E+4)"
+            "(_) V m^-1 (Example format: 12345.2345)"
         )
         self.topic, self.subtopic = "Electricity", "Electric fields"
         self.curriculum, self.source = "A-Level", "Original"
@@ -2175,13 +2175,13 @@ class Phy174:
         self.v = rnd.randint(5,25)
 
         self.emf = self.B * self.L * self.v
-        self.answer = self.emf
+        self.answer = f"{self.emf}"
 
         self.description = (
             "A conductor of length moves with speed"
             "perpendicular to a magnetic field of B"
             "Calculate the induced emf. (_) V"
-            "(Example format: 1.23E+4)"
+            "(Example format: 11.234)"
         )
 
         self.topic = "Magnetic Fields"
@@ -2258,7 +2258,7 @@ class Phy175:
         self.description = (
             "A coil of N turns is placed in a changing magnetic field as shown. "
             "Using the values provided in the diagram, calculate the magnitude of the induced e.m.f. "
-            "(_) V (Example format: 12.34)"
+            "(_) V (Example format: 11.234)"
         )
 
         self.topic = "Magnetic Fields"
@@ -2321,7 +2321,7 @@ class Phy176:
         self.description = (
             "A rectangular coil rotates in a uniform magnetic field as shown. "
             "Based on the values provided in the diagram, calculate the peak induced e.m.f. "
-            "(_) V (Example format: 12.34)"
+            "(_) V (Example format: 120.34)"
         )
 
         self.topic = "Magnetic Fields"
@@ -2397,8 +2397,7 @@ class Phy177:
     def __init__(self):
         self.V_peak = rnd.randint(50, 400)
         self.V_rms = self.V_peak / math.sqrt(2)
-        self.answer = round(self.V_rms, 2)
-
+        self.answer = "{:.2f}".format(self.V_rms)
         self.description = (
             f"An alternating voltage has a peak value of V. "
             "Calculate the RMS voltage. (_) V (Example format: 123.45)"
@@ -2533,7 +2532,7 @@ class Phy179:
         self.description = (
             "A smoothing capacitor is connected to the output of a bridge rectifier as shown. "
             "Using the parameters provided in the diagram, determine the ripple voltage of the output. "
-            "(_) V (Example format: 12.34 or 1.23E+1)"
+            "(_) V (Example format: 12.34)"
         )
 
         self.topic = "Alternating Currents"
@@ -2579,8 +2578,11 @@ class Phy179:
         ax1.plot([4.5, 4.5], [1, 1.9], 'k-', lw=2)
         ax1.plot([4.2, 4.8], [3.1, 3.1], 'k-', lw=3)
         ax1.plot([4.2, 4.8], [1.9, 1.9], 'k-', lw=3)
-        ax1.text(4.9, 2.5, f"Capacitor\n$C = {self.C_micro}$\n$I = {self.I}\\ \\mu\\text{{F}}$", va='center')
-        
+        ax1.text(
+            4.9, 2.5,
+            f"Capacitor\n$C = {self.C_micro}\\,\\mu F$\n$I = {self.I}\\,A$",
+            va='center'
+        )        
         ax1.plot([6, 6], [4, 1], 'k-', lw=2)
         ax1.plot([5.5, 6], [4, 4], 'k-', lw=2)
         ax1.plot([5.5, 6], [1, 1], 'k-', lw=2)
@@ -2636,16 +2638,14 @@ class Phy179:
 class Phy180:
     def __init__(self):
         self.h = 6.63e-34
-        self.f_base = rnd.randint(4, 9)
-        self.f = self.f_base * 1e14
+        self.f = rnd.uniform(4.0e14, 9.0e14)
 
         self.E = self.h * self.f
-        self.answer = f"{self.E}"
+        self.answer = f"{self.E:.3e}"
 
         self.description = (
-            "Calculate the energy of the photon shown in the diagram. "
-            "Take Planck's constant $h = 6.63 \\times 10^{-34}$ J s. "
-            "(_) J (Example format: 2.652e-19)"
+            f"Calculate the energy of a photon with frequency f. "
+            "(Example format: 1.2e10-2)"
         )
 
         self.topic = "Quantum physics"
@@ -2691,12 +2691,17 @@ class Phy180:
         ax.fill_between(x, wave, color=photon_color, alpha=0.1)
         
         ax.annotate('', xy=(center + 1.2, 0.8), xytext=(center - 1.2, 0.8),
-                    arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1.5))
-        ax.text(center, 1.0, "Photon", ha='center', fontsize=12, fontweight='bold', style='italic')
+                    arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1))
+        ax.text(center, 1.0, "Localized Energy Packet", ha='center', fontsize=9, style='italic')
 
-        props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor=photon_color)
-        param_text = f"Frequency ($f$): ${self.f_base} \\times 10^{{14}}$ Hz"
-        ax.text(0.5, 0.1, param_text, transform=ax.transAxes, fontsize=12, fontweight='bold', bbox=props, ha='center')
+        props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='#bdc3c7')
+        param_text = (
+            f"$\\mathbf{{Frequency\ (f):}}$\n"
+            f"${self.f_base} \\times 10^{{14}}$ Hz\n\n"
+            f"$\\mathbf{{Planck's\ Constant\ (h):}}$\n"
+            f"$6.63 \\times 10^{{-34}}$ J s"
+        )
+        ax.text(0.2, 0, param_text, transform=ax.transAxes, fontsize=10, bbox=props, va='center')
 
         plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
@@ -2704,18 +2709,20 @@ class Phy180:
 
 
 class Phy181:
+    """
+    Momentum of a photon.
+    """
+
     def __init__(self):
         self.h = 6.63e-34
         self.lambda_base = rnd.randint(400, 700)
         self.lambda_m = self.lambda_base * 1e-9
 
         self.p = self.h / self.lambda_m
-        self.answer = f"{self.p}"
-
+        self.answer = "{:.3e}".format(self.p)
         self.description = (
-            "Calculate the momentum of the photon with the wavelength indicated in the diagram. "
-            "Take Planck's constant h = 6.63 × 10^{-34} J s. "
-            "(_) kg m s^-1 (Example format: 1.6575e-27)"
+            f"Calculate the momentum of a photon with wavelength (_) kg m s^(-1)"
+            "(Example format: 2.652e-19)"
         )
 
         self.topic = "Quantum physics"
@@ -2742,37 +2749,39 @@ class Phy181:
         x = np.linspace(0, 6*np.pi, 1000)
         y = np.sin(x)
         
-        fig, ax = plt.subplots(figsize=(8, 3), dpi=300)
-        ax.plot(x, y, color='#8e44ad', linewidth=3)
+        fig, ax = plt.subplots(figsize=(8, 3))
+        ax.plot(x, y, color='purple', linewidth=2.5)
         
         ax.annotate('', xy=(0.5*np.pi, 1.2), xytext=(2.5*np.pi, 1.2), 
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=2))
-        ax.text(1.5*np.pi, 1.5, f"$\\lambda = {self.lambda_base}$ nm", ha='center', fontweight='bold', fontsize=12)
+                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
+        ax.text(1.5*np.pi, 1.45, f"$\lambda = {self.lambda_base}$ nm", ha='center', fontweight='bold')
         
+        ax.text(4*np.pi, 1.2, f"h = 6.63 $\\times$ 10$^{{-34}}$ J s", bbox=dict(facecolor='white', alpha=0.5))
+
         ax.set_ylim(-1.5, 2.2)
         ax.axis('off')
 
-        plt.tight_layout()
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
+        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
+        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=600, bbox_inches="tight")
         plt.close()
 
-
 class Phy182:
+    """Photoelectric effect: maximum kinetic energy."""
     def __init__(self):
         self.h = 6.63e-34
-        self.f_base = rnd.randint(6, 12)
-        self.f = self.f_base * 1e14
-        self.phi_base = rnd.randint(2, 5)
-        self.phi = self.phi_base * 1e-19
-        self.Ek = self.h * self.f - self.phi
-        self.answer = f"{self.Ek}"
-
+        while True:
+            self.f_base = rnd.randint(6, 12)
+            self.f = self.f_base * 1e14
+            self.phi_base = rnd.randint(2, 5)
+            self.phi = self.phi_base * 1e-19
+            self.Ek = self.h * self.f - self.phi
+            if self.Ek > 0:
+                break
+        self.answer = "{:.3e}".format(self.Ek)
         self.description = (
-            "Light shines on a metal surface as shown in the diagram. "
-            "Calculate the maximum kinetic energy of the emitted photoelectrons. "
-            "(_) J (Example format: 1.318e-19)"
+            "Calculate the maximum kinetic energy of emitted electrons. (_) J. (Example format: 2.652e-19)"
         )
-        self.topic = "Quantum physics" 
+        self.topic = "Quantum physics", 
         self.subtopic = "Photoelectric effect"
         self.curriculum = "A-Level"
         self.source = "Original"
@@ -2791,41 +2800,31 @@ class Phy182:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4), dpi=300)
-        ax.axhspan(0, 0.8, color='#95a5a6', alpha=0.5)
-        
-        ax.annotate('', xy=(1.5, 0.9), xytext=(0.5, 2.8), 
-                    arrowprops=dict(arrowstyle='-|>,head_length=0.8,head_width=0.4', color='#f39c12', lw=3))
-        ax.text(0.1, 3.0, f"Incident Photon\n$f={self.f_base}\\times 10^{{14}}$ Hz", color='#d35400', fontsize=11, fontweight='bold')
-        
-        ax.annotate('', xy=(3.8, 2.8), xytext=(2, 0.9), 
-                    arrowprops=dict(arrowstyle='-|>,head_length=0.8,head_width=0.4', color='#2980b9', lw=3))
-        ax.text(3.9, 3.0, "Photoelectron\n($E_k$ max)", color='#2980b9', fontsize=11, fontweight='bold')
-        
-        ax.text(2.5, 0.4, f"Metal Surface\nWork Function $\\Phi = {self.phi_base}\\times 10^{{-19}}$ J", 
-                ha='center', va='center', fontweight='bold', color='black', fontsize=10)
-        
-        ax.set_xlim(0, 6)
-        ax.set_ylim(0, 4.5)
-        ax.axis('off')
-        
-        plt.tight_layout()
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.axhspan(0, 0.8, color='gray', alpha=0.3)
+        ax.annotate('', xy=(1.5, 0.9), xytext=(0.5, 2.5), arrowprops=dict(arrowstyle='->', color='orange', lw=2))
+        ax.text(0.1, 2.6, f"Photon\n$f={self.f_base}\\times 10^{{14}}$ Hz", color='orange', fontsize=9)
+        ax.annotate('', xy=(3.5, 2.5), xytext=(2, 0.9), arrowprops=dict(arrowstyle='->', color='blue', lw=2))
+        ax.text(3.6, 2.6, "Photoelectron\n($E_k$ max)", color='blue', fontsize=9)
+        ax.text(2, 0.3, f"Metal Surface ($\Phi = {self.phi_base}\\times 10^{{-19}}$ J)", ha='center', fontweight='bold')
+        ax.set_xlim(0, 5); ax.set_ylim(0, 4); ax.axis('off')
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
-
+        
 class Phy183:
     def __init__(self):
         self.e = 1.60e-19
-        self.Ek_base = rnd.randint(2, 9)
-        self.Ek = self.Ek_base * 1e-19
-        self.Vs = self.Ek / self.e
-        self.answer = f"{self.Vs}"
 
+        while True:
+            self.Ek = rnd.uniform(2e-19, 9e-19)
+            self.Vs = self.Ek / self.e
+            if 0.5 < self.Vs < 10:
+                break
+        self.answer = "{:.2f}".format(self.Vs)
         self.description = (
-            "Based on the experimental data provided in the diagrams, determine the "
-            "stopping potential $V_s$ required to reduce the photocurrent to zero. "
-            "(_) V (Example format: 1.25)"
+            f"In a photoelectric effect experiment, the maximum kinetic energy of the emitted "
+            f"Determine the stopping potential $V_s$ required to reduce the photocurrent to zero."
+            "(Example format: 2.652e-19)"
         )
 
         self.topic = "Quantum physics"
@@ -2857,61 +2856,67 @@ class Phy183:
         f_threshold = 2
         f = np.linspace(f_threshold, 6, 100)
         Ek_plot = 1.5 * (f - f_threshold)
-        ax1.plot(f, Ek_plot, color='#e67e22', lw=3, label='$E_{k,max} = hf - \\Phi$')
-        ax1.axhline(0, color='black', lw=1.5)
-        ax1.axvline(f_threshold, color='black', lw=1.5, ls='--')
+        ax1.plot(f, Ek_plot, color='#e67e22', lw=2.5, label='$E_{k,max} = hf - \Phi$')
+        ax1.axhline(0, color='black', lw=1)
+        ax1.axvline(f_threshold, color='black', lw=1, ls='--')
         
         target_Ek_y = 3
         target_f_x = 4
-        ax1.scatter(target_f_x, target_Ek_y, color='#c0392b', s=120, zorder=5)
+        ax1.scatter(target_f_x, target_Ek_y, color='#d35400', s=100, zorder=5)
         ax1.annotate(f'$E_k = {self.Ek_base} \\times 10^{{-19}}$ J', 
-                     xy=(target_f_x, target_Ek_y), xytext=(target_f_x-1.8, target_Ek_y+1.0),
-                     arrowprops=dict(arrowstyle='->', color='black', lw=1.5),
-                     fontweight='bold', fontsize=11)
+                     xy=(target_f_x, target_Ek_y), xytext=(target_f_x-1.5, target_Ek_y+0.5),
+                     arrowprops=dict(arrowstyle='->', color='black'))
 
         ax1.set_xlabel('Frequency ($f$)', fontweight='bold')
         ax1.set_ylabel('Max Kinetic Energy ($E_{k,max}$)', fontweight='bold')
-        ax1.set_xticks([])
-        ax1.set_yticks([])
+        ax1.set_xticks([]); ax1.set_yticks([])
         ax1.grid(True, alpha=0.3)
-        ax1.set_ylim(-1, 5)
 
-        ax2.set_xlim(0, 10)
-        ax2.set_ylim(0, 10)
+        ax2.set_xlim(0, 10); ax2.set_ylim(0, 10)
         ax2.axis('off')
         
+        # Vacuum tube
         tube = plt.Circle((5, 6), 3.5, color='#ecf0f1', ec='#2c3e50', lw=2)
         ax2.add_patch(tube)
         
-        ax2.plot([3, 3], [4.5, 7.5], color='#2c3e50', lw=5)
-        ax2.plot([7, 7], [4.5, 7.5], color='#2c3e50', lw=5)
-        ax2.text(2.5, 8.2, 'Cathode (-)', ha='center', fontweight='bold')
-        ax2.text(7.5, 8.2, 'Anode (+)', ha='center', fontweight='bold')
+        # Electrodes
+        ax2.plot([3, 3], [4.5, 7.5], color='#2c3e50', lw=4) # Cathode
+        ax2.plot([7, 7], [4.5, 7.5], color='#2c3e50', lw=4) # Anode
+        ax2.text(2.5, 8, 'Cathode (-)', ha='center', fontweight='bold')
+        ax2.text(7.5, 8, 'Anode (+)', ha='center', fontweight='bold')
         
+        # Photons and Electrons
         for i in range(3):
             ax2.annotate('', xy=(2.8, 7-i), xytext=(0.5, 8-i),
                          arrowprops=dict(arrowstyle='->', color='#f1c40f', lw=2, connectionstyle="arc3,rad=.2"))
-        ax2.scatter([4, 5, 5.5], [6, 5.2, 6.8], color='#3498db', s=80) 
-        ax2.text(1.5, 8.8, 'Photons', color='#d35400', fontweight='bold', fontsize=11)
+        ax2.scatter([4, 5, 5.5], [6, 5.2, 6.8], color='#3498db', s=50) # Electrons
+        ax2.text(1, 8.5, 'Photons ($hf$)', color='#f39c12', fontweight='bold')
 
+        # Voltmeter / stopping potential label
         ax2.add_patch(plt.Rectangle((3.5, 1), 3, 1.5, fill=False, ec='#c0392b', lw=2))
-        ax2.text(5, 1.75, f'$V_s = ?$ V', color='#c0392b', ha='center', fontweight='bold', fontsize=14)
-        ax2.plot([3, 3, 3.5], [4.5, 1.75, 1.75], color='#c0392b', lw=2)
-        ax2.plot([7, 7, 6.5], [4.5, 1.75, 1.75], color='#c0392b', lw=2)
-        ax2.set_title('Experiment Setup', fontsize=13, fontweight='bold')
+        ax2.text(5, 1.7, f'$V_s = ?$ V', color='#c0392b', ha='center', fontweight='bold', fontsize=12)
+        ax2.plot([3, 3, 3.5], [4.5, 1.75, 1.75], color='#c0392b', lw=1.5)
+        ax2.plot([7, 7, 6.5], [4.5, 1.75, 1.75], color='#c0392b', lw=1.5)
 
         plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
+
 class Phy184:
     def __init__(self):
-        self.h, self.m = 6.63e-34, 9.11e-31
-        self.v_base = rnd.randint(1, 5)
-        self.v = self.v_base * 1e6
-        self.lambda_val = self.h / (self.m * self.v)
-        self.answer = f"{self.lambda_val}"
 
+        self.h = 6.63e-34
+        self.m = 9.11e-31
+
+        while True:
+            self.v_base = rnd.uniform(1,6)
+            self.v = self.v_base * 1e6
+            self.lambda_val = self.h / (self.m * self.v)
+            if 1e-11 < self.lambda_val < 1e-9:
+                break
+
+        self.answer = "{:.3e}".format(self.lambda_val)
         self.description = (
             "Calculate the de Broglie wavelength associated with the electron shown in the diagram. "
             "(_) m (Example format: 1.455e-10)"
@@ -2975,11 +2980,13 @@ class Phy184:
 class Phy185:
     def __init__(self):
         self.h = 6.63e-34
-        self.f_base = rnd.randint(4, 8)
-        self.f = self.f_base * 1e14
-        self.E = self.h * self.f
-        self.answer = f"{self.E}"
-
+        while True:
+            self.f_base = rnd.uniform(4, 8) 
+            self.f = self.f_base * 1e14
+            self.E = self.h * self.f
+            if 1e-19 < self.E < 1e-18:
+                break
+        self.answer = "{:.3e}".format(self.E)
         self.description = (
             "An electron transition between two energy levels in an atom results in the emission "
             "of a photon as shown in the diagram. Calculate the energy difference $\\Delta E$ between these two levels. "
@@ -3044,12 +3051,15 @@ class Phy185:
 
 class Phy186:
     def __init__(self):
-        self.h, self.c = 6.63e-34, 3.00e8
-        self.E_base = rnd.randint(2, 9)
-        self.E = self.E_base * 1e-19
-        self.lambda_val = (self.h * self.c) / self.E
-        self.answer = f"{self.lambda_val}"
-
+        self.h = 6.63e-34
+        self.c = 3.00e8
+        while True:
+            self.E_base = rnd.randint(2, 9) 
+            self.E = self.E_base * 1e-19
+            self.lambda_val = (self.h * self.c) / self.E
+            if 1e-7 < self.lambda_val < 1e-6:
+                break
+        self.answer = "{:.3e}".format(self.lambda_val)
         self.description = (
             "An electron transition in a hydrogen atom releases energy as shown in the diagram. "
             "Calculate the wavelength $\\lambda$ of the emitted spectral line. "
@@ -3338,7 +3348,7 @@ class Phy190:
 
         self.description = (
             "Based on the experimental setup data shown in the diagram, calculate the activity "
-            "of the radioactive sample in Becquerels (Bq). (_) Bq (Example format: 1.23e+10)"
+            "of the radioactive sample in Becquerels (Bq). (_) Bq (Example format: 69314718055.99452)"
         )
         
         self.topic, self.subtopic = "Nuclear physics", "Radioactive decay"
@@ -3397,7 +3407,7 @@ class Phy191:
 
         self.description = (
             "An ultrasound pulse is emitted into soft tissue. Based on the echo time and speed of sound "
-            "provided in the diagram, calculate the depth of the reflector. (_) m (Example format: 1.2345)"
+            "provided in the diagram, calculate the depth of the reflector. (_) m (Example format: 0.63987)"
         )
         self.topic, self.subtopic = "Medical physics", "Ultrasound"
         self.curriculum, self.source = "A-Level", "Original"
@@ -3455,7 +3465,7 @@ class Phy192:
 
         self.description = (
             "Based on the transducer frequency and speed of ultrasound in the diagram, "
-            "calculate the wavelength $\\lambda$ of the waves in the tissue. (_) m (Example format: 1.23e-04)"
+            "calculate the wavelength $\\lambda$ of the waves in the tissue. (_) m (Example format: 0.000385)"
         )
         self.topic = "Medical physics"
         self.subtopic = "Production and use of ultrasound"
@@ -3732,7 +3742,7 @@ class Phy196:
 
         self.description = (
             "Using the star's luminosity and surface temperature provided in the diagram, determine its radius $R$. "
-            "(_) m (Example format: 1.23e+09)"
+            "(_) m (Example format: 503371324.81918126)"
         )
         self.topic, self.subtopic = "Astronomy and cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"
@@ -3803,7 +3813,7 @@ class Phy197:
         self.description = (
             "Using Wien's displacement law and the surface temperature provided in the stellar "
             "emission spectrum, calculate the peak wavelength $\\lambda_{max}$. "
-            "(_) m (Example format: 5.23e-07)"
+            "(_) m (Example format:5.899837133550489e-07)"
         )
         self.topic, self.subtopic = "Astronomy and Cosmology", "Wien's displacement law"
         self.curriculum, self.source = "A-Level", "Original"
@@ -3887,7 +3897,7 @@ class Phy198:
 
         self.description = (
             "A distant galaxy's spectrum is redshifted. Using the redshift value in the diagram, "
-            "calculate the recessional velocity $v$ of this galaxy. (_) m s^-1 (Example format: 1.23e+06)"
+            "calculate the recessional velocity $v$ of this galaxy. (_) m s^-1 (Example format: 5820000.0)"
         )
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Past Papers"
@@ -3946,7 +3956,7 @@ class Phy199:
 
         self.description = (
             "Based on the recessional velocity and Hubble constant provided in the diagram, "
-            "calculate the distance $d$ to the galaxy. (_) m (Example format: 1.23e+24)"
+            "calculate the distance $d$ to the galaxy. (_) m (Example format: 4.849428571428571e+24)"
         )
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Original"
@@ -4021,7 +4031,7 @@ class Phy200:
 
         self.description = (
             "Calculate the total luminosity $L$ of the star using the parameters provided in the diagram. "
-            "(_) W (Example format: 1.23e+26)"
+            "(_) W (Example format: 1.352085382994754e+27)"
         )
         self.topic, self.subtopic = "Astronomy & cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"
