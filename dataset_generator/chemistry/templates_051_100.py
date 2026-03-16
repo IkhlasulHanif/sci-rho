@@ -5584,83 +5584,76 @@ class Chem094:
 class Chem095:
     """
     Topic: 26.1 / 26.2 Arrhenius equation and activation energy
-    Visual: ln(k) vs 1/T graph with gradient annotation but no answer labels
-    Task: Calculate Ea or interpret gradient/intercept (MCQ)
+    Visual: ln(k) vs 1/T Arrhenius plot with gradient annotation; reaction name NOT shown
+    Task:   Read the annotated gradient from the diagram and calculate Ea in kJ/mol
+    Variables:
+        Ea    = rnd.randint(40, 200)  kJ/mol  -> 161 distinct integer answers
+        ln_A  = rnd.uniform(20, 50)          -> changes graph intercept/shape each instance
     """
 
     def __init__(self):
-        reactions = [
-            {"name": "decomposition of H\u2082O\u2082", "Ea": 75.0, "A_ln": 30.2},
-            {"name": "hydrolysis of sucrose", "Ea": 108.0, "A_ln": 38.5},
-            {"name": "formation of HI from H\u2082 + I\u2082", "Ea": 165.0, "A_ln": 42.1},
-            {"name": "decomposition of N\u2082O\u2085", "Ea": 88.0, "A_ln": 35.0},
-            {"name": "decomposition of NO\u2082", "Ea": 111.0, "A_ln": 37.0},
-            {"name": "esterification of ethanoic acid", "Ea": 51.0, "A_ln": 26.5},
-            {"name": "bromination of propanone", "Ea": 83.0, "A_ln": 33.0},
-            {"name": "alkaline hydrolysis of bromoethane", "Ea": 89.0, "A_ln": 34.5},
-            {"name": "decomposition of ozone", "Ea": 72.0, "A_ln": 28.8},
-        ]
-
-        self.rxn = rnd.choice(reactions)
-        self.Ea = self.rxn["Ea"]
-        self.A_ln = self.rxn["A_ln"]
         R = 8.314
-        self.gradient = -self.Ea * 1000 / R
+        self.Ea   = rnd.randint(40, 200)           # kJ/mol
+        self.ln_A = round(rnd.uniform(20, 50), 2)  # pre-exponential factor (ln A)
 
-        self.q_type = "Ea_from_gradient"  # fixed
-        if self.q_type == "Ea_from_gradient":
-            self.answer = int(self.Ea)
-            self.options = []
-            self.description = (
-                f"The graph shows an Arrhenius plot (ln k vs 1/T) for the {self.rxn['name']}. "
-                f"The gradient of the line is annotated on the diagram. "
-                f"Calculate the activation energy, Ea (in kJ mol\u207b\u00b9)."
-            )
+        self.gradient = round(-self.Ea * 1000 / R, 0)  # K  (annotated on diagram)
+        self.answer   = self.Ea                         # integer kJ/mol
 
-        self.topic = "Reaction kinetics"
-        self.subtopic = "Arrhenius equation and activation energy"
-        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.description = (
+            "The graph shows an Arrhenius plot (ln k vs 1/T) for a chemical reaction. "
+            "The gradient of the line is annotated on the diagram. "
+            "Calculate the activation energy, Ea, in kJ mol⁻¹."
+        )
+
+        self.topic      = "Reaction kinetics"
+        self.subtopic   = "Arrhenius equation and activation energy"
+        self.source     = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.options    = []
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{gradient}} &= -\\frac{{E_a}}{{R}} \\\\"
-            f"-\\frac{{E_a}}{{R}} &= {self.gradient:.0f}\\text{{ K}} \\\\"
-            f"E_a &= -{self.gradient:.0f} \\times 8.314 \\\\"
+            f"{self.gradient:.0f} &= -\\frac{{E_a}}{{8.314}} \\\\"
+            f"E_a &= {-self.gradient:.0f} \\times 8.314 \\\\"
             f"E_a &= {self.Ea * 1000:.0f}\\text{{ J mol}}^{{-1}} \\\\"
-            f"E_a &= {int(self.Ea)}\\text{{ kJ mol}}^{{-1}}"
+            f"E_a &= {self.Ea}\\text{{ kJ mol}}^{{-1}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        R = 8.314
-        T_arr = np.linspace(300, 700, 200)
-        inv_T = 1 / T_arr
-        ln_k = self.A_ln - (self.Ea * 1000 / R) * inv_T
+        R    = 8.314
+        T    = np.linspace(300, 800, 300)
+        invT = 1 / T
+        ln_k = self.ln_A + (self.gradient / 1e3) * invT * 1e3  # = ln_A - Ea*1000/R * 1/T
 
         fig, ax = plt.subplots(figsize=(10, 7))
-        ax.plot(inv_T * 1e3, ln_k, "royalblue", linewidth=3)
+        ax.plot(invT * 1e3, ln_k, color="royalblue", linewidth=3)
 
-        ax.set_xlabel("1/T \u00d7 10\u207b\u00b3 / K\u207b\u00b9", fontsize=13, fontweight="bold")
+        ax.set_xlabel("1/T / K⁻¹  (× 10⁻³)", fontsize=13, fontweight="bold")
         ax.set_ylabel("ln k", fontsize=13, fontweight="bold")
-        ax.set_title(f"Arrhenius Plot: {self.rxn['name']}", fontsize=14, fontweight="bold")
+        ax.set_title("Arrhenius Plot", fontsize=15, fontweight="bold")
         ax.grid(True, alpha=0.3, linestyle="--")
 
-        i1, i2 = 20, 160
-        x1, y1 = inv_T[i1] * 1e3, ln_k[i1]
-        x2, y2 = inv_T[i2] * 1e3, ln_k[i2]
-        ax.annotate("", xy=(x2, y2), xytext=(x1, y1),
-                    arrowprops=dict(arrowstyle="<->", color="red", lw=2))
-        ax.text((x1 + x2) / 2 + 0.05, (y1 + y2) / 2,
-                f"gradient = {self.gradient:.0f} K",
-                fontsize=10, color="red",
-                bbox=dict(boxstyle="round", facecolor="mistyrose", alpha=0.9))
+        # Annotate gradient using two points on the line
+        i1, i2 = 30, 240
+        x1, y1 = invT[i1] * 1e3, ln_k[i1]
+        x2, y2 = invT[i2] * 1e3, ln_k[i2]
 
-        ax.text(0.98, 0.95, "ln k = ln A \u2212 Ea/RT",
+        ax.plot([x1, x2], [y1, y2], "r--", linewidth=1.5, alpha=0.6)
+        ax.plot([x1, x2], [y1, y1], "r-",  linewidth=1.5, alpha=0.6)
+        ax.plot([x2, x2], [y1, y2], "r-",  linewidth=1.5, alpha=0.6)
+
+        ax.text((x1 + x2) / 2, y1 - 0.6,
+                f"gradient = {self.gradient:.0f} K",
+                fontsize=11, color="red", ha="center", va="top",
+                bbox=dict(boxstyle="round", facecolor="mistyrose", alpha=0.95))
+
+        ax.text(0.98, 0.97, "ln k = ln A − Ea / RT",
                 transform=ax.transAxes, fontsize=12,
                 ha="right", va="top", fontweight="bold",
                 bbox=dict(boxstyle="round", facecolor="lightyellow",
                           edgecolor="black", linewidth=1.5))
-
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
