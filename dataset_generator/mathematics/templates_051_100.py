@@ -1045,56 +1045,161 @@ class Mat059:
 class Mat060:
     
     def __init__(self):
-        # We choose multiples of 7 for the diameter to make the math (22/7) cleaner for students
-        self.diameter = 7 * rnd.randint(1, 6)
-        self.radius = self.diameter / 2
+        # Choose angle (avoid 0 and 360)
+        self.angle = rnd.choice([30, 45, 60, 90, 120, 135, 150, 180,
+                                 210, 225, 240, 270, 300, 315, 330])
+        
+        # Decide whether to give diameter or radius
+        self.use_diameter = rnd.choice([True, False])
+        if self.use_diameter:
+            self.diameter = rnd.randint(6, 30)          # integer diameter
+            self.radius = self.diameter / 2
+        else:
+            self.radius = rnd.randint(3, 15)            # integer radius
+            self.diameter = 2 * self.radius
+        
+        # Units
+        self.unit = rnd.choice(['cm', 'm'])
+        
+        # π mode
+        self.pi_mode = rnd.choice(['symbol', '22/7', '3.14'])
+        
+        # Compute answer
+        # arc length = (θ/360) * 2πr   or   (θ/360) * πd
+        # coefficient = (θ/360) * 2r   if using radius
+        #            = (θ/360) * d     if using diameter
+        if self.use_diameter:
+            coeff = (self.angle / 360) * self.diameter
+        else:
+            coeff = (self.angle / 180) * self.radius   # because 2r * (θ/360) = r * (θ/180)
+        
+        if self.pi_mode == 'symbol':
+            self.answer_coeff = round(coeff, 2)
+            self.answer_display = f"{self.answer_coeff}\\pi"
+            self.answer_value = self.answer_coeff   # for reasoning
+        elif self.pi_mode == '22/7':
+            pi_val = 22/7
+            numeric = coeff * pi_val
+            self.answer_value = round(numeric, 2)
+            self.answer_display = f"{self.answer_value}"
+        else:  # '3.14'
+            pi_val = 3.14
+            numeric = coeff * pi_val
+            self.answer_value = round(numeric, 2)
+            self.answer_display = f"{self.answer_value}"
+        
+        # Description for the question
+        if self.use_diameter:
+            dim_text = f"diameter = {self.diameter}{self.unit}"
+        else:
+            dim_text = f"radius = {self.radius}{self.unit}"
+        
+        pi_instruction = {
+            'symbol': "Give your answer in terms of π.",
+            '22/7': "Use π = 22/7.",
+            '3.14': "Use π = 3.14."
+        }[self.pi_mode]
 
-        self.answer = self.diameter * 22 // 7 // 2 # Half arc in terms of m
-
+        self.answer = self.answer_value
+        
         self.description = (
-            f"Calculate the length of the curved arc. Use $\\pi = \\frac{{22}}{{7}}$."
+            f"Calculate the length of the arc of the shaded sector. "
+            f"The circle has {dim_text} and the sector angle is {self.angle}°. "
+            f"{pi_instruction} Give your answer correct to 2 decimal places."
         )
-
+        
         self.topic = "Mensuration"
         self.subtopic = "Circles, arcs and sectors"
-        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 past papers"
         self.curriculum = "IGCSE"
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Diameter }} (d) &= {self.diameter}\\,\\text{{m}} \\\\"
-            f"\\text{{Circumference }} (C) &= \\pi d \\\\"
-            f"&= \\frac{{22}}{{7}} \\times {self.diameter} \\\\"
-            f"&= {self.diameter * 22 // 7}\\,\\text{{m}} \\\\"
-            f"\\text{{Length of curved arc (semicircle)}} &= \\frac{{1}}{{2}} \\times C \\\\"
-            f"&= \\frac{{1}}{{2}} \\times {self.diameter * 22 // 7} \\\\"
-            f"&= {self.answer}\\,\\text{{m}}"
-            "\\end{aligned}\\]"
-        )
         
+        # Reasoning (LaTeX)
+        # given data
+        if self.use_diameter:
+            step1 = f"\\text{{Diameter }} (d) = {self.diameter}\\,\\text{{{self.unit}}}"
+            step1b = f"\\text{{Radius }} (r) = \\frac{{d}}{{2}} = \\frac{{{self.diameter}}}{{2}} = {self.radius}\\,\\text{{{self.unit}}}"
+        else:
+            step1 = f"\\text{{Radius }} (r) = {self.radius}\\,\\text{{{self.unit}}}"
+            step1b = ""
+        
+        step_angle = f"\\text{{Angle of sector }} (\\theta) = {self.angle}^\\circ"
+        
+        # Formula line and substitution (depends on whether diameter or radius is given and pi_mode)
+        pi_val_str = "\\pi" if self.pi_mode == 'symbol' else ("\\frac{22}{7}" if self.pi_mode == '22/7' else "3.14")
+        
+        if self.use_diameter:
+            formula_line = f"\\text{{Arc length}} = \\frac{{\\theta}}{{360}} \\times \\pi d"
+            arc_sub = f"\\frac{{{self.angle}}}{{360}} \\times {pi_val_str} \\times {self.diameter}"
+        else:
+            formula_line = f"\\text{{Arc length}} = \\frac{{\\theta}}{{360}} \\times 2\\pi r"
+            arc_sub = f"\\frac{{{self.angle}}}{{360}} \\times 2 \\times {pi_val_str} \\times {self.radius}"
+        
+        # Final calculation line
+        if self.pi_mode == 'symbol':
+            calc_line = f"{self.answer_coeff}\\pi \\,\\text{{{self.unit}}}"
+        else:
+            calc_line = f"{self.answer}\\,\\text{{{self.unit}}}"
+        
+        # Assemble reasoning
+        lines = [
+            step1,
+            step1b,
+            step_angle,
+            formula_line + " \\\\",
+            f"&= {arc_sub} \\\\",
+            f"&= {calc_line}"
+        ]
+        # Remove empty strings
+        lines = [ln for ln in lines if ln != ""]
+        self.reasoning = "\\[\\begin{aligned}\n" + " \\\\\n".join(lines) + "\n\\end{aligned}\\]"
+    
     def generate(self, num):
-        # Setup Plot
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(6, 6))
         ax.set_aspect('equal')
-        ax.axis('off')  # Hide axes for a clean geometry diagram look
-
-        # Draw the Semi-Circle (The "Track")
-        # Generate angles from 0 to 180 degrees (0 to pi radians)
-        theta = np.linspace(0, np.pi, 100)
-        x_arc = self.radius * np.cos(theta)
-        y_arc = self.radius * np.sin(theta)
+        ax.axis('off')
         
-        # Plot the curved arc
-        ax.plot(x_arc, y_arc, color='black', linewidth=2.5, label='Track')
-
-        # Draw the Dashed Diameter Line
-        ax.plot([-self.radius, self.radius], [0, 0], color='black', linestyle='--', linewidth=1.5)
-
-        # Add Labels
-        # Label the diameter
-        ax.text(0, -0.15 * self.radius, f"{self.diameter} m", ha='center', va='top', fontsize=14, fontweight='bold')
-
-        plt.tight_layout(rect=[0, 0.1, 1, 1]) # Adjust layout to make room for text
-
+        center = (0, 0)
+        # Place the sector so that its bisector lies along the positive x‑axis
+        start_angle = -self.angle / 2
+        end_angle = self.angle / 2
+        
+        # Draw the sector (shaded lightly)
+        sector = patches.Wedge(center, self.radius, start_angle, end_angle,
+                               facecolor='lightblue', edgecolor='black',
+                               linewidth=2, alpha=0.6)
+        ax.add_patch(sector)
+        
+        # Small red arc for the angle
+        arc_radius = self.radius * 0.2
+        angle_arc = patches.Arc(center, 2*arc_radius, 2*arc_radius,
+                                theta1=start_angle, theta2=end_angle,
+                                color='red', linewidth=1.5)
+        ax.add_patch(angle_arc)
+        # Angle label
+        mid_angle = np.radians((start_angle + end_angle) / 2)
+        label_x = arc_radius * 1.3 * np.cos(mid_angle) + 0.25
+        label_y = arc_radius * 1.3 * np.sin(mid_angle) + 0.25
+        ax.text(label_x, label_y, f"{self.angle}°", color='red',
+                ha='center', va='center', fontsize=10)
+        
+        # Indicate radius or diameter
+        if self.use_diameter:
+            # Draw a horizontal diameter line (dashed)
+            ax.plot([-self.radius, self.radius], [0, 0], 'k--', linewidth=1, alpha=0.7)
+            ax.text(0, -0.2*self.radius, f"d = {self.diameter}{self.unit}",
+                    ha='center', va='top', fontsize=12, fontweight='bold')
+        else:
+            # Draw a radius line along the bisector (positive x‑axis)
+            ax.plot([0, self.radius], [0, 0], 'k-', linewidth=1.5)
+            ax.text(self.radius/2, -0.2*self.radius, f"r = {self.radius}{self.unit}",
+                    ha='center', va='top', fontsize=12, fontweight='bold')
+        
+        # Set limits with a little padding
+        limit = self.radius * 1.2
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
