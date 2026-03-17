@@ -1043,7 +1043,7 @@ class Mat059:
         plt.close()
 
 class Mat060:
-    
+
     def __init__(self):
         # Choose angle (avoid 0 and 360)
         self.angle = rnd.choice([30, 45, 60, 90, 120, 135, 150, 180,
@@ -1841,20 +1841,22 @@ class Mat066:
 class Mat067:
     
     def __init__(self):
-        # Radius between 3 and 10
-        self.radius = rnd.randint(3, 10)
+        # Radius with one decimal place between 3.0 and 20.0
+        self.radius = round(rnd.uniform(3.0, 20.0), 1)
         
-        # Constants
+        # Use pi = 3.14 as given
         pi_approx = 3.14
         
-        # Calculate Total Surface Area (TSA)
-        # TSA = Curved Surface Area (2*pi*r^2) + Base Area (pi*r^2) = 3*pi*r^2
-        tsa = 3 * pi_approx * (self.radius ** 2)
+        # Calculate curved surface area and base area separately for reasoning
+        curved_area = 2 * pi_approx * (self.radius ** 2)
+        base_area = pi_approx * (self.radius ** 2)
+        total_area = curved_area + base_area
 
-        self.answer = round(tsa, 2)
+        self.answer = round(total_area, 2)
 
         self.description = (
-            f"Calculate the total surface area of the solid hemisphere. Use $\\pi = 3.14$. Give your answer correct to 2 decimal places."
+            f"Calculate the total surface area of the solid hemisphere. "
+            f"Use $\\pi = 3.14$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1864,10 +1866,16 @@ class Mat067:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given radius (r)}} &= {self.radius} \\\\"
-            f"\\text{{Total Surface Area of a solid hemisphere}} &= 3\\pi r^2 \\\\"
-            f"&= 3 \\times 3.14 \\times ({self.radius})^2 \\\\"
-            f"&= 3 \\times 3.14 \\times {self.radius**2} \\\\"
-            f"&= {round(3 * 3.14 * self.radius**2, 10)} \\\\"
+            f"\\text{{Curved surface area of hemisphere}} &= 2\\pi r^2 \\\\"
+            f"&= 2 \\times 3.14 \\times ({self.radius})^2 \\\\"
+            f"&= 2 \\times 3.14 \\times {round(self.radius**2, 10)} \\\\"
+            f"&= {round(curved_area, 10)} \\\\"
+            f"\\text{{Base area (circle)}} &= \\pi r^2 \\\\"
+            f"&= 3.14 \\times ({self.radius})^2 \\\\"
+            f"&= 3.14 \\times {round(self.radius**2, 10)} \\\\"
+            f"&= {round(base_area, 10)} \\\\"
+            f"\\text{{Total surface area}} &= \\text{{Curved area}} + \\text{{Base area}} \\\\"
+            f"&= {round(curved_area, 10)} + {round(base_area, 10)} \\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -1878,7 +1886,6 @@ class Mat067:
         ax = fig.add_subplot(111, projection='3d')
         
         # -- A. Create the hemisphere (Curved Surface) --
-        # Phi goes from 0 (top) to pi/2 (equator)
         phi = np.linspace(0, np.pi/2, 30) 
         theta = np.linspace(0, 2 * np.pi, 60)
         phi_grid, theta_grid = np.meshgrid(phi, theta)
@@ -1887,25 +1894,22 @@ class Mat067:
         y_dome = self.radius * np.sin(phi_grid) * np.sin(theta_grid)
         z_dome = self.radius * np.cos(phi_grid)
         
-        # Plot the curved surface
         ax.plot_surface(x_dome, y_dome, z_dome, color='skyblue', alpha=0.5, 
                         rstride=1, cstride=1, edgecolor='none', shade=True)
         
         # -- B. Create the base (Flat Circular Disk) --
-        # r goes from 0 to radius
         r_base = np.linspace(0, self.radius, 20)
         theta_base = np.linspace(0, 2*np.pi, 60)
         r_grid, theta_grid_base = np.meshgrid(r_base, theta_base)
         
         x_base = r_grid * np.cos(theta_grid_base)
         y_base = r_grid * np.sin(theta_grid_base)
-        z_base = np.zeros_like(x_base) # Base is at z=0
+        z_base = np.zeros_like(x_base)
         
-        # Plot the flat base
         ax.plot_surface(x_base, y_base, z_base, color='royalblue', alpha=0.5, edgecolor='none')
         
         # -- C. Visual Enhancements --
-        # Draw a dark circle at the boundary to distinguish the "solid" edge
+        # Draw a dark circle at the boundary
         theta_edge = np.linspace(0, 2*np.pi, 100)
         x_edge = self.radius * np.cos(theta_edge)
         y_edge = self.radius * np.sin(theta_edge)
@@ -1913,7 +1917,6 @@ class Mat067:
         ax.plot(x_edge, y_edge, z_edge, color='darkblue', linewidth=2)
 
         # Draw the radius line
-        # From center (0,0,0) to a point on the edge (radius, 0, 0)
         ax.plot([0, self.radius], [0, 0], [0, 0], 'r-', linewidth=3)
         ax.text(self.radius/2, 0, self.radius*0.1, f'r = {self.radius}', color='red', 
                 fontsize=14, fontweight='bold', ha='center')
@@ -1921,7 +1924,7 @@ class Mat067:
         # Mark the center
         ax.scatter([0], [0], [0], color='black', s=50)
 
-        # Set aspect ratio to be accurate
+        # Set aspect ratio
         ax.set_box_aspect([1,1,0.5]) 
         ax.set_axis_off()
         
