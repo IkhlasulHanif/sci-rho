@@ -4758,98 +4758,170 @@ class Mat092:
 class Mat093:
     
     def __init__(self):
-        # Random half-length of the side (e.g., between 2 and 6)
-        self.s = rnd.randint(2, 6) 
+        # Define possible reflection lines with type, description, and transformation
+        lines = [
+            {"type": "x-axis", "desc": "the x-axis", 
+             "transform": lambda x, y: (x, -y)},
+            {"type": "y-axis", "desc": "the y-axis", 
+             "transform": lambda x, y: (-x, y)},
+            {"type": "y=x", "desc": "the line y = x", 
+             "transform": lambda x, y: (y, x)},
+            {"type": "y=-x", "desc": "the line y = -x", 
+             "transform": lambda x, y: (-y, -x)}
+        ]
         
-        # Define the original vertices (A, B, C, D)
-        # A=(s,s), B=(s,-s), C=(-s,-s), D=(-s,s)
-        self.vertices = {
-            'A': (self.s, self.s),
-            'B': (self.s, -self.s),
-            'C': (-self.s, -self.s),
-            'D': (-self.s, self.s)
-        }
-
-        self.answer = 2
-
-        self.description = (
-            f"How many vertices remain in the exact same position (invariant) after the reflection?"
-        )
-
+        # Add a vertical line x = a (a ≠ 0)
+        a = rnd.randint(-3, 3)
+        while a == 0:
+            a = rnd.randint(-3, 3)
+        lines.append({"type": "vertical", "value": a, "desc": f"the line x = {a}",
+                      "transform": lambda x, y, a=a: (2*a - x, y)})
+        
+        # Add a horizontal line y = b (b ≠ 0)
+        b = rnd.randint(-3, 3)
+        while b == 0:
+            b = rnd.randint(-3, 3)
+        lines.append({"type": "horizontal", "value": b, "desc": f"the line y = {b}",
+                      "transform": lambda x, y, b=b: (x, 2*b - y)})
+        
+        # Randomly select one line
+        self.line = rnd.choice(lines)
+        
+        # Generate a random point (x, y) that does NOT lie on the chosen line
+        while True:
+            self.x = rnd.randint(-5, 5)
+            self.y = rnd.randint(-5, 5)
+            
+            # Check if point is on the line based on its type
+            on_line = False
+            t = self.line["type"]
+            if t == "x-axis" and self.y == 0:
+                on_line = True
+            elif t == "y-axis" and self.x == 0:
+                on_line = True
+            elif t == "y=x" and self.x == self.y:
+                on_line = True
+            elif t == "y=-x" and self.x == -self.y:
+                on_line = True
+            elif t == "vertical" and self.x == self.line["value"]:
+                on_line = True
+            elif t == "horizontal" and self.y == self.line["value"]:
+                on_line = True
+            
+            if not on_line:
+                break
+        
+        # Compute the reflected point
+        self.x_prime, self.y_prime = self.line["transform"](self.x, self.y)
+        
+        # Randomly decide whether to ask for the x‑ or y‑coordinate of the image
+        self.ask_for = rnd.choice(['x', 'y'])
+        if self.ask_for == 'x':
+            self.answer = self.x_prime
+        else:
+            self.answer = self.y_prime
+        
+        self.description = (f"What is the {self.ask_for}-coordinate of the image of point A "
+                            f"after a reflection in {self.line['desc']}?")
+        
         self.topic = "Transformations and vectors"
         self.subtopic = "Transformations"
-        self.source = "Adapted from \"Symmetry and Transformations\" conceptual questions in Cambridge IGCSE / O Level Mathematics"
+        self.source = "Adapted from Cambridge IGCSE Mathematics (0580) Past Papers"
         self.curriculum = "IGCSE"
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{The vertices of the square are defined as:}} \\\\"
-            f"A &= ({self.s}, {self.s}) \\\\"
-            f"B &= ({self.s}, {-self.s}) \\\\"
-            f"C &= ({-self.s}, {-self.s}) \\\\"
-            f"D &= ({-self.s}, {self.s}) \\\\"
-            f"\\text{{For a reflection across the main diagonal }} y = x, \\text{{ the transformation is }} (x, y) \\to (y, x). \\\\"
-            f"\\text{{Applying the reflection to each vertex:}} \\\\"
-            f"A' &= ({self.s}, {self.s}) = A \\quad (\\text{{Invariant}}) \\\\"
-            f"B' &= ({-self.s}, {self.s}) = D \\neq B \\\\"
-            f"C' &= ({-self.s}, {-self.s}) = C \\quad (\\text{{Invariant}}) \\\\"
-            f"D' &= ({self.s}, {-self.s}) = B \\neq D \\\\"
-            f"\\text{{Counting the invariant vertices (A and C):}} \\\\"
-            f"\\text{{Total}} &= {self.answer}"
-            "\\end{aligned}\\]"
-        )
+        self.reasoning = self._build_reasoning()
+    
+    def _build_reasoning(self):
+        """Construct the step‑by‑step reasoning in LaTeX."""
+        t = self.line["type"]
+        if t == "x-axis":
+            rule = "(x, y) \\to (x, -y)"
+        elif t == "y-axis":
+            rule = "(x, y) \\to (-x, y)"
+        elif t == "y=x":
+            rule = "(x, y) \\to (y, x)"
+        elif t == "y=-x":
+            rule = "(x, y) \\to (-y, -x)"
+        elif t == "vertical":
+            a = self.line["value"]
+            rule = f"(x, y) \\to (2 \\times {a} - x, y)"
+        elif t == "horizontal":
+            b = self.line["value"]
+            rule = f"(x, y) \\to (x, 2 \\times {b} - y)"
         
+        reasoning = r"\[ \begin{aligned}"
+        reasoning += f"\\text{{Original point }} A &= ({self.x}, {self.y})\\\\"
+        reasoning += f"\\text{{Reflection in {self.line['desc']} follows the rule: }} & {rule}\\\\"
+        reasoning += f"\\text{{Image point }} A' &= ({self.x_prime}, {self.y_prime})\\\\"
+        reasoning += f"\\text{{The {self.ask_for}-coordinate of }} A' \\text{{ is }} {self.answer}."
+        reasoning += r" \end{aligned} \]"
+        return reasoning
+    
     def generate(self, num):
-        # Setup the Plot
-        fig, ax = plt.subplots(figsize=(8, 8))
+        """Create and save the diagram for this question."""
+        fig, ax = plt.subplots(figsize=(6, 6))
         
-        # Set plot limits with some padding
-        limit = self.s + 2
-        ax.set_xlim(-limit, limit)
-        ax.set_ylim(-limit, limit)
+        # Collect all points to determine plot limits
+        all_x = [self.x, self.x_prime]
+        all_y = [self.y, self.y_prime]
         
-        # Draw axes
-        ax.axhline(0, color='black', linewidth=1)
-        ax.axvline(0, color='black', linewidth=1)
-        ax.grid(True, linestyle=':', alpha=0.6)
+        # Include the reflection line in the limits
+        t = self.line["type"]
+        if t == "vertical":
+            all_x.append(self.line["value"])
+        elif t == "horizontal":
+            all_y.append(self.line["value"])
         
-        # Plot the Reflection Line (y = x)
-        # Generate points for the line
-        line_range = np.linspace(-limit, limit, 100)
-        ax.plot(line_range, line_range, color='green', linestyle='--', linewidth=2, label='Reflection Line (y=x)')
+        margin = 2
+        min_x = min(all_x) - margin
+        max_x = max(all_x) + margin
+        min_y = min(all_y) - margin
+        max_y = max(all_y) + margin
         
-        # Plot the Square
-        # Extract coordinates for plotting shapes (append first point at end to close the square)
-        pts = [self.vertices['A'], self.vertices['B'], self.vertices['C'], self.vertices['D'], self.vertices['A']]
-        xs, ys = zip(*pts)
+        ax.set_xlim(min_x, max_x)
+        ax.set_ylim(min_y, max_y)
+        ax.set_aspect('equal')
+        ax.grid(True, linestyle='--', alpha=0.6)
+        ax.axhline(0, color='black', linewidth=0.5)
+        ax.axvline(0, color='black', linewidth=0.5)
         
-        # Fill the square
-        ax.fill(xs, ys, color='skyblue', alpha=0.3, label='Original Square')
-        # Draw edges
-        ax.plot(xs, ys, color='blue', linewidth=2)
+        # Draw the reflection line
+        if t == "x-axis":
+            ax.axhline(0, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "y-axis":
+            ax.axvline(0, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "y=x":
+            x_vals = np.linspace(min_x, max_x, 100)
+            ax.plot(x_vals, x_vals, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "y=-x":
+            x_vals = np.linspace(min_x, max_x, 100)
+            ax.plot(x_vals, -x_vals, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "vertical":
+            a = self.line["value"]
+            ax.axvline(a, color='green', linestyle='-', linewidth=2, label=f'Reflection line x={a}')
+        elif t == "horizontal":
+            b = self.line["value"]
+            ax.axhline(b, color='green', linestyle='-', linewidth=2, label=f'Reflection line y={b}')
         
-        # Calculate and Plot Vertices (and Reflections)
-        invariant_count = 0
+        # Plot original point A
+        ax.scatter(self.x, self.y, color='blue', s=100, zorder=5)
+        ax.text(self.x + 0.2, self.y + 0.2, f'A({self.x},{self.y})', 
+                fontsize=12, color='blue')
         
-        for label, (x, y) in self.vertices.items():
-            # Reflection across y=x simply swaps coordinates: (x, y) -> (y, x)
-            x_new, y_new = y, x
+        # Plot image point A' with a placeholder for the unknown coordinate
+        if self.ask_for == 'y':
+            label = f"A'({self.x_prime}, ?)"
+        else:
+            label = f"A'(?, {self.y_prime})"
+        ax.scatter(self.x_prime, self.y_prime, color='red', s=100, zorder=5)
+        ax.text(self.x_prime + 0.2, self.y_prime + 0.2, label,
+                fontsize=12, color='red')
         
-            # Plot non-invariant points in Blue
-            ax.scatter(x, y, color='blue', s=80, zorder=5)
-            ax.text(x + 0.1, y + 0.1, f"{label}({x},{y})", fontsize=10, color='blue')
-            
-            # Optional: Show where they reflect to with an arrow
-            ax.annotate("", xy=(x_new, y_new), xytext=(x, y),
-                        arrowprops=dict(arrowstyle="->", color='gray', linestyle='dashed'))
-
-        # Final Formatting
-        ax.set_xlabel("x")
-        ax.set_ylabel("y")
-        ax.legend(loc='upper left')
-        ax.set_aspect('equal') # Essential for geometry figures
+        # Dashed line connecting A and A' (perpendicular to the mirror)
+        ax.plot([self.x, self.x_prime], [self.y, self.y_prime], 'k--', alpha=0.5)
         
+        ax.legend(loc='upper right')
         plt.tight_layout()
-
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
