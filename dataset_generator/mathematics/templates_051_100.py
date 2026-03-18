@@ -509,6 +509,9 @@ class Mat055:
             (7, 24, 25),
             (8, 15, 17),
             (9, 40, 41),
+            (10, 24, 26),
+            (12, 35, 37),
+            (15, 36, 39),
         ]
         
         # Pick a random triple
@@ -516,7 +519,7 @@ class Mat055:
         
         # Randomize base (b)
         # Ensure base is larger than the offset to maintain standard shape
-        self.b = rnd.randint(self.x_offset + 6, self.x_offset + 16)
+        self.b = rnd.randint(self.x_offset + 3, self.x_offset + 21)
 
         self.answer = self.b * self.h
 
