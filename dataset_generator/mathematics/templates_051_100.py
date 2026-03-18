@@ -2079,10 +2079,12 @@ class Mat068:
 class Mat069:
     
     def __init__(self):
-        # Length between 6 and 18, Width between 4 and 12 (even numbers preferred for easy radius)
-        self.length = rnd.randint(6, 18) # In cm
-        self.width = rnd.randrange(4, 12, 2) # In cm
-        self.radius = self.width / 2 # In cm
+        # Length: integer from 5 to 30 (26 values)
+        # Width: float with 0.5-step increments from 4.0 to 20.0 (33 values)
+        # Total combinations: 26 × 33 = 858  (>100)
+        self.length = rnd.randint(5, 30)  # In cm
+        self.width = round(float(rnd.randrange(8, 41)) * 0.5, 1)  # 4.0 to 20.0 in 0.5 steps, In cm
+        self.radius = self.width / 2  # In cm
 
         PI = 3.1416
 
@@ -2185,10 +2187,12 @@ class Mat069:
 class Mat070:
     
     def __init__(self):
-        # Length between 6 and 18, Width between 4 and 12 (even numbers preferred for easy radius)
-        self.length = rnd.randint(6, 18) # In cm
-        self.width = rnd.randrange(4, 12, 2) # In cm
-        self.radius = self.width / 2 # In cm
+        # Length: integer from 5 to 30 (26 values)
+        # Width: float with 0.5-step increments from 4.0 to 20.0 (33 values)
+        # Total combinations: 26 × 33 = 858  (>100)
+        self.length = rnd.randint(5, 30)  # In cm
+        self.width = round(float(rnd.randrange(8, 41)) * 0.5, 1)  # 4.0 to 20.0 in 0.5 steps, In cm
+        self.radius = self.width / 2  # In cm
 
         PI = 3.1416
 
@@ -2296,9 +2300,10 @@ class Mat070:
 class Mat071:
     
     def __init__(self):
-        # Randomize the variable (Side length between 6 and 30, even numbers preferred for cleaner radius)
-        self.side = rnd.randrange(6, 31, 2) # In cm
-        self.radius = self.side / 2.0 # In cm
+        # Side: float with 0.1-step increments from 6.0 to 30.0 (241 values, ≥100 ✓)
+        # randrange(60, 301) gives integers 60–300, divide by 10 for 0.1 spacing
+        self.side = round(float(rnd.randrange(60, 301)) * 0.1, 1)  # In cm (6.0 to 30.0 in 0.1 steps)
+        self.radius = self.side / 2.0  # In cm
         
         # Calculate the answer
         area_square = self.side ** 2
