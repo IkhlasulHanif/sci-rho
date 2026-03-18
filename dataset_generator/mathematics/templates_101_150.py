@@ -661,7 +661,7 @@ class Mat109:
         self.answer = round(estimated_mean, 3)
 
         self.description = (
-            "Refer to the figure. Calculate the mean number of books read by the students. Give your answer correct to 3 decimal places."
+            "Refer to the figure, which shows the heights of saplings. Calculate the estimated mean height of the saplings. Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Statistics"
@@ -871,15 +871,15 @@ class Mat112:
         self.key_value = rnd.choice([4, 8, 12, 16])
         
         # Define possible partial fractions for the problem (Quarter, Half, Three-Quarters, Full)
-        fractions = [0.25, 0.5, 0.75, 1.0]
-        fraction_names = {0.25: "one quarter-symbol", 0.5: "half-symbol", 
-                        0.75: "three quarter-symbol", 1.0: "full symbol"}
+        # Using integers to avoid floating point issues: 1=0.25, 2=0.5, 3=0.75, 4=1.0
+        fraction_numerator = rnd.choice([1, 2, 3, 4])
+        fraction_tuesday = fraction_numerator / 4.0
         
-        # Randomize Tuesday's sales
-        full_symbols_tuesday = rnd.randint(1, 4)  # Between 1 and 4 full pizzas
-        fraction_tuesday = rnd.choice(fractions)
+        # Tuesday's full symptoms
+        full_symbols_tuesday = rnd.randint(1, 4)
         
-        total_pizzas_tuesday = (full_symbols_tuesday + fraction_tuesday) * self.key_value
+        # Exact calculation using integer arithmetic since key_value is multiple of 4
+        self.answer = (full_symbols_tuesday * self.key_value) + (fraction_numerator * self.key_value // 4)
         
         # Generate random data for other days to flesh out the chart
         self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
@@ -890,9 +890,8 @@ class Mat112:
                 self.data[day] = full_symbols_tuesday + fraction_tuesday
             else:
                 # Random other days (integers or simple halves for visual variety)
-                self.data[day] = rnd.randint(1, 5) + rnd.choice([0, 0.5])
-
-        self.answer = int(total_pizzas_tuesday)
+                # Keep them consistent with 1/4 precision for visual clarity
+                self.data[day] = rnd.randint(1, 5) + rnd.choice([0, 0.25, 0.5, 0.75])
 
         self.description = (
             f"The pictogram shows pizzas sold on four evenings. "
@@ -908,9 +907,9 @@ class Mat112:
             "\\[\\begin{aligned}"
             f"\\text{{Value of 1 symbol}} &= {self.key_value}\\,\\text{{pizzas}}\\\\"
             f"\\text{{Symbols on Tuesday}} &= {full_symbols_tuesday} + {fraction_tuesday}\\\\"
-            f"&= {round(full_symbols_tuesday + fraction_tuesday, 10)}\\\\"
-            f"\\text{{Total pizzas}} &= \\text{{Symbols on Tuesday}} \\times \\text{{Value of 1 symbol}}\\\\"
-            f"&= {round(full_symbols_tuesday + fraction_tuesday, 10)} \\times {self.key_value}\\\\"
+            f"&= {full_symbols_tuesday + fraction_tuesday}\\\\"
+            f"\\text{{Total pizzas}} &= ({full_symbols_tuesday} \\times {self.key_value}) + ({fraction_tuesday} \\times {self.key_value})\\\\"
+            f"&= {full_symbols_tuesday * self.key_value} + {int(fraction_tuesday * self.key_value)}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -925,7 +924,7 @@ class Mat112:
         ax.set_yticks(y_positions)
         ax.set_yticklabels(self.days[::-1], fontsize=12, fontweight='bold')
         ax.set_xlim(0, max(self.data.values()) + 1)
-        ax.set_ylim(-0.5, len(self.days) - 0.5)
+        ax.set_ylim(-1.8, len(self.days) - 0.5)
         
         # Hide X axis
         ax.get_xaxis().set_visible(False)
@@ -967,10 +966,12 @@ class Mat112:
         # Add Key at the bottom
         key_text = f"KEY:   = {self.key_value} Pizzas"
         # Draw a small example pizza for the key
-        key_circle = Circle((0, -1.2), 0.35, facecolor='gold', edgecolor='orange', linewidth=2, clip_on=False)
+        # Use clip_on=False and set a lower ylim for a better view
+        key_circle = Circle((0.5, -1.2), 0.35, facecolor='gold', edgecolor='orange', linewidth=2, clip_on=False)
         ax.add_patch(key_circle)
-        # Since we can't easily place patches outside axes in relative coords, we use text annotation for the label
-        ax.text(0.5, -1.3, f"= {self.key_value} Pizzas", fontsize=12, ha='left', va='center', transform=ax.transData)
+        
+        # Place text relative to the key circle
+        ax.text(1.0, -1.2, f"= {self.key_value} Pizzas", fontsize=12, ha='left', va='center', fontweight='bold')
         
         plt.tight_layout()
 
