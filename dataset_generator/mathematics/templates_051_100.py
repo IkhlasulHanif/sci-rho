@@ -4946,12 +4946,12 @@ class Mat094:
     
     def __init__(self):
         # Base vectors (keep u horizontal and v vertical as per description)
-        self.u_mag = rnd.randint(1, 3)  # Magnitude of u (e.g., 1, 2, or 3)
-        self.v_mag = rnd.randint(1, 3)  # Magnitude of v
+        self.u_mag = rnd.randint(1, 5)  # Magnitude of u
+        self.v_mag = rnd.randint(1, 5)  # Magnitude of v
         
         # Scalars (coefficients)
-        self.a = rnd.randint(2, 4)      # Scalar for u
-        self.b = rnd.randint(2, 4)      # Scalar for v
+        self.a = rnd.randint(2, 5)      # Scalar for u
+        self.b = rnd.randint(2, 5)      # Scalar for v
         
         # Define vectors
         self.u_vec = np.array([self.u_mag, 0])
@@ -5046,22 +5046,22 @@ class Mat094:
 class Mat095:
     
     def __init__(self):
-        # Define Vector p (keep components small for readability)
-        self.px = rnd.randint(1, 3)
-        self.py = rnd.randint(1, 4)
+        # Define Vector p with small positive integer components for grid readability.
+        self.px = rnd.randint(1, 5)
+        self.py = rnd.randint(1, 5)
         
-        # Define Scalar Multiplier (m)
-        # This determines how much larger q is compared to p
-        self.scalar = rnd.randint(2, 4) 
+        # Scalar
+        self.scalar = rnd.randint(2, 5)
         
-        # Define Vector q based on scalar
+        # q = scalar * p; k = py * scalar is the hidden value
         self.qx = self.px * self.scalar
-        self.real_k = self.py * self.scalar  # This is the hidden value 'k'
+        self.real_k = self.py * self.scalar
 
         self.answer = self.real_k
 
         self.description = (
-            f"Vector $\\mathbf{{p}} = \\binom{{{self.px}}}{{{self.py}}}$ and Vector $\\mathbf{{q}} = \\binom{{{self.qx}}}{{k}}$. If vectors $\\mathbf{{p}}$ and $\\mathbf{{q}}$ are parallel, what is the value of $k$?"
+            "In the diagram, vectors $\\mathbf{p}$ and $\\mathbf{q}$ are shown on a grid. "
+            "If $\\mathbf{p}$ and $\\mathbf{q}$ are parallel, find the value of $k$."
         )
 
         self.topic = "Transformations and vectors"
@@ -5070,10 +5070,12 @@ class Mat095:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Since vectors }} \\mathbf{{p}} \\text{{ and }} \\mathbf{{q}} \\text{{ are parallel, their components must be proportional:}} &\\\\"
+            f"\\text{{Read from the diagram: }} \\mathbf{{p}} = \\binom{{{self.px}}}{{{self.py}}},\\; "
+            f"\\mathbf{{q}} = \\binom{{{self.qx}}}{{k}}\\\\"
+            f"\\text{{Since }} \\mathbf{{p}} \\parallel \\mathbf{{q}} \\text{{, their components are proportional:}} &\\\\"
             f"\\frac{{p_x}}{{q_x}} &= \\frac{{p_y}}{{q_y}}\\\\"
             f"\\frac{{{self.px}}}{{{self.qx}}} &= \\frac{{{self.py}}}{{k}}\\\\"
-            f"\\text{{Cross-multiplying to solve for }} k: &\\\\"
+            f"\\text{{Cross-multiplying:}} &\\\\"
             f"{self.px} \\cdot k &= {self.py} \\cdot {self.qx}\\\\"
             f"{self.px}k &= {self.py * self.qx}\\\\"
             f"k &= \\frac{{{self.py * self.qx}}}{{{self.px}}}\\\\"
@@ -5082,42 +5084,83 @@ class Mat095:
         )
         
     def generate(self, num):
-        # Generate Figure
-        fig, ax = plt.subplots(figsize=(6, 6))
+        """Draw both vectors on a labelled integer grid.
         
-        # Coordinates:
-        # Vector p starts at origin (0,0)
-        start_p = np.array([0, 0])
-        vec_p = np.array([self.px, self.py])
-        
-        # Vector q starts offset so they look parallel but don't overlap
-        # Offset x by 1 and y by -2 (visual preference)
-        start_q = np.array([1, -1]) 
-        vec_q = np.array([self.qx, self.real_k])
-        
-        # Plot Vectors using quiver
-        # angles='xy', scale_units='xy', scale=1 ensures accurate grid representation
-        ax.quiver(start_p[0], start_p[1], vec_p[0], vec_p[1], 
-                angles='xy', scale_units='xy', scale=1, color='blue', label=r'$\mathbf{p}$')
-        
-        ax.quiver(start_q[0], start_q[1], vec_q[0], vec_q[1], 
-                angles='xy', scale_units='xy', scale=1, color='red', label=r'$\mathbf{q}$')
-        
-        # Add labels near the vectors
-        ax.text(start_p[0] + vec_p[0]/2, start_p[1] + vec_p[1]/2 + 0.5, 
-                r'$\mathbf{p}$', color='blue', fontsize=14, fontweight='bold')
-        ax.text(start_q[0] + vec_q[0]/2, start_q[1] + vec_q[1]/2 + 0.5, 
-                r'$\mathbf{q}$', color='red', fontsize=14, fontweight='bold')
-        
-        # Configure Grid and Aspect Ratio
-        # Calculate limits dynamically to ensure vectors fit
-        max_coord = max(self.qx + start_q[0], self.real_k + start_q[1]) + 2
-        
-        ax.set_xlim(-1, max_coord)
-        ax.set_ylim(-2, max_coord)
-        ax.grid(True, linestyle='--', alpha=0.6)
-        ax.set_aspect('equal')
+        p is drawn from the origin; its x- and y-components are readable from
+        the grid.  q is drawn from an offset starting point; its x-component
+        is readable from the grid, while the y-component is labelled '?' so that
+        k cannot be read directly – students must use proportionality.
+        """
+        fig, ax = plt.subplots(figsize=(8, 8))
 
+        # Starting points
+        start_p = np.array([0, 0])
+        # Offset q so the two vectors are clearly separate
+        offset_x = self.qx + 2
+        start_q = np.array([offset_x, 0])
+
+        vec_p = np.array([self.px, self.py])
+        vec_q = np.array([self.qx, self.real_k])
+
+        # ── Grid and axes ──────────────────────────────────────────────────────
+        x_min = -1
+        x_max = int(start_q[0] + self.qx) + 2
+        y_min = -1
+        y_max = int(max(self.py, self.real_k)) + 2
+
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
+        ax.set_xticks(range(x_min, x_max + 1))
+        ax.set_yticks(range(y_min, y_max + 1))
+        ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+        ax.set_aspect('equal')
+        ax.axhline(0, color='black', linewidth=0.8)
+        ax.axvline(0, color='black', linewidth=0.8)
+        ax.set_xlabel('x', fontsize=12)
+        ax.set_ylabel('y', fontsize=12)
+
+        # ── Helper: draw dashed component lines ───────────────────────────────
+        def draw_components(start, vec, color):
+            # Horizontal leg
+            ax.plot([start[0], start[0] + vec[0]], [start[1], start[1]],
+                    color=color, linestyle=':', linewidth=1.2, alpha=0.6)
+            # Vertical leg
+            ax.plot([start[0] + vec[0], start[0] + vec[0]], [start[1], start[1] + vec[1]],
+                    color=color, linestyle=':', linewidth=1.2, alpha=0.6)
+
+        # ── Vector p (blue) ──────────────────────────────────────────────────
+        draw_components(start_p, vec_p, 'blue')
+        ax.quiver(start_p[0], start_p[1], vec_p[0], vec_p[1],
+                  angles='xy', scale_units='xy', scale=1,
+                  color='blue', width=0.012, headwidth=4, label=r'$\mathbf{p}$')
+        # Label p's x-component on the horizontal leg
+        ax.text(start_p[0] + vec_p[0] / 2, start_p[1] - 0.4,
+                str(self.px), color='blue', ha='center', fontsize=11, fontweight='bold')
+        # Label p's y-component on the vertical leg
+        ax.text(start_p[0] + vec_p[0] + 0.25, start_p[1] + vec_p[1] / 2,
+                str(self.py), color='blue', va='center', fontsize=11, fontweight='bold')
+        # Label the vector itself
+        ax.text(start_p[0] + vec_p[0] / 2 - 0.4, start_p[1] + vec_p[1] / 2,
+                r'$\mathbf{p}$', color='blue', fontsize=14, fontweight='bold')
+
+        # ── Vector q (red) ──────────────────────────────────────────────────
+        draw_components(start_q, vec_q, 'red')
+        ax.quiver(start_q[0], start_q[1], vec_q[0], vec_q[1],
+                  angles='xy', scale_units='xy', scale=1,
+                  color='red', width=0.012, headwidth=4, label=r'$\mathbf{q}$')
+        # Label q's x-component (readable)
+        ax.text(start_q[0] + vec_q[0] / 2, start_q[1] - 0.4,
+                str(self.qx), color='red', ha='center', fontsize=11, fontweight='bold')
+        # Label q's y-component as '?' (the unknown to find)
+        ax.text(start_q[0] + vec_q[0] + 0.25, start_q[1] + vec_q[1] / 2,
+                '?', color='red', va='center', fontsize=13, fontweight='bold')
+        # Label the vector itself
+        ax.text(start_q[0] + vec_q[0] / 2 - 0.4, start_q[1] + vec_q[1] / 2,
+                r'$\mathbf{q}$', color='red', fontsize=14, fontweight='bold')
+
+        ax.legend(loc='upper left', fontsize=11)
+        ax.set_title('Find the value of $k$ (the $y$-component of $\\mathbf{q}$)',
+                     fontsize=12, pad=10)
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
