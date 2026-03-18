@@ -2664,12 +2664,11 @@ class Mat131:
         self.answer = round(square_area, 3)
 
         self.description = (
-            f"A sector of a circle is defined by a radius $r = {self.r_val}$ cm "
-            f"and a central angle $\\theta = {self.theta_val}$ radians. "
-            f"A separate square is constructed such that its total perimeter "
-            f"is exactly equal to the total perimeter of the sector. "
-            f"Determine the area of the square in cm$^2$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure shows a sector of a circle and a square. "
+            "The square is constructed such that its total perimeter "
+            "is exactly equal to the total perimeter of the sector. "
+            "Determine the area of the square in cm$^2$. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -2788,13 +2787,12 @@ class Mat132:
         self.answer = self.r_answer
 
         self.description = (
-            f"A rear window wiper for a car clears a region shaped like part of an annulus (a ring). "
-            f"This region is formed by two concentric arcs with the same central angle: "
-            f"$\\theta = {self.theta_rad}$ radians. "
-            f"The inner radius of the cleaned region is $r$ cm. "
-            f"The outer radius is $(r + {self.width})$ cm. "
-            f"If the total area of the cleaned region (the shaded area) is exactly {self.area_display} cm$^2$, "
-            f"calculate the value of the inner radius $r$."
+            "A rear window wiper for a car clears a region shaped like part of an annulus (a ring), "
+            "as shown in the shaded area of the figure. "
+            "The region is formed by two concentric arcs with the same central angle $\\theta$. "
+            "The inner radius of the cleaned region is $r$ cm. "
+            "Using the information provided in the figure, "
+            "calculate the value of the inner radius $r$."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -2873,7 +2871,7 @@ class Mat132:
         angle_arc = patches.Arc((0,0), arc_radius*2, arc_radius*2, 
                                 theta1=start_angle, theta2=end_angle, color='green', linestyle='--')
         ax.add_patch(angle_arc)
-        ax.text(0, arc_radius + 2, f'θ = {self.theta_rad}', ha='center', color='green', fontsize=10)
+        ax.text(0, arc_radius + 2, f'θ = {self.theta_rad} rad', ha='center', color='green', fontsize=10)
 
         # Label Area
         mid_radius = self.r_answer + (self.width / 2)
@@ -2913,11 +2911,11 @@ class Mat133:
         self.answer = round(self.r, 3)
 
         self.description = (
-            f"A paper sector with a radius of $R = {self.R}$ cm and a central angle of $\\theta = {self.theta_factor}\\pi$ radians "
-            f"is cut out. The straight edges (radii) of the sector are joined together with no overlap "
-            f"to form the curved surface of a right circular cone. "
-            f"Calculate the base radius ($r$) of the resulting cone in cm. "
-            f"Give your answer correct to 3 decimal places."
+            "A paper sector is cut out as shown in the figure. "
+            "The straight edges (radii) of the sector are joined together with no overlap "
+            "to form the curved surface of a right circular cone. "
+            "Calculate the base radius ($r$) of the resulting cone in cm. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3076,12 +3074,12 @@ class Mat134:
         self.answer = round(area, 3)
 
         self.description = (
-            f"The figure displays the curve $y = \\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}}$ in the first quadrant. "
-            f"A normal line is drawn to the curve at the point $P$ where $x = {self.x_p}$. "
-            f"This normal line intersects the x-axis at point $A$ and the y-axis at point $B$, "
-            f"forming a triangle $AOB$ with the coordinate axes. "
-            f"Calculate the area of the triangle $AOB$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays a curve $y = f(x)$ in the first quadrant. "
+            "A normal line is drawn to the curve at the point $P$. "
+            "This normal line intersects the x-axis at point $A$ and the y-axis at point $B$, "
+            "forming a triangle $AOB$ with the coordinate axes. "
+            "Calculate the area of the triangle $AOB$. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3130,7 +3128,7 @@ class Mat134:
         
         # Plot Points
         ax.plot(self.x_p, self.y_p, 'ko') # Point P
-        ax.text(self.x_p, self.y_p + 0.5, '$P$', fontsize=12, fontweight='bold')
+        ax.text(self.x_p, self.y_p + 0.5, f'$P({self.x_p}, {self.y_p})$', fontsize=12, fontweight='bold')
         
         ax.plot(self.x_A, 0, 'ko')   # Point A
         ax.text(self.x_A, 0.5, '$A$', fontsize=12, fontweight='bold')
@@ -3170,15 +3168,13 @@ class Mat135:
         self.answer = round(answer_raw, 2)
 
         self.description = (
-            f"The figure illustrates a circular oil spill on the ocean surface. "
-            f"The spill is expanding such that its radius r is increasing "
-            f"at a constant rate. "
-            f"Given:\n"
-            f"• Instantaneous Radius ($r$): {self.radius_val} m\n"
-            f"• Rate of radius increase ($dr/dt$): {self.dr_dt_val} m/s\n\n"
-            f"Find the rate of increase of the area ($dA/dt$) in m$^2$/s "
-            f"at this instant. (Divide your final answer by $\\pi$). "
-            f"Give your answer correct to 2 decimal places."
+            "The figure illustrates a circular oil spill on the ocean surface. "
+            "The spill is expanding such that its radius $r$ is increasing "
+            "at a constant rate. "
+            "Using the measurements provided in the figure, "
+            "find the rate of increase of the area ($dA/dt$) in m$^2$/s "
+            "at this instant. (Divide your final answer by $\\pi$). "
+            "Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3250,9 +3246,8 @@ class Mat135:
 class Mat136:
     
     def __init__(self):
-        # Random side length (S) between 6 and 30.
-        # We allow floats but round for cleaner display, or stick to even integers.
-        self.side_length = rnd.choice(range(6, 32, 2)) 
+        # Random side length (S) between 5 and 120 to ensure more than 100 variations.
+        self.side_length = rnd.randint(5, 120)
         
         # The math for the solution:
         # V(x) = x(S - 2x)^2
@@ -3264,10 +3259,11 @@ class Mat136:
         self.answer = round(max_volume, 3)
 
         self.description = (
-            f"The figure above shows a net for an open-topped box made from a square sheet of metal of side **{self.side_length} cm** "
-            f"by cutting equal squares of side $x$ from the corners and folding up the flaps. "
-            f"Find the value of $x$ for which the volume $V$ is a maximum. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure shows a net for an open-topped box made from a square sheet of metal "
+            "by cutting equal squares of side $x$ from the corners and folding up the flaps. "
+            "Based on the dimensions provided in the figure, "
+            "find the value of $x$ for which the volume $V$ is a maximum. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3390,12 +3386,11 @@ class Mat137:
         self.answer = round(self.m_f * self.m_g, 3)
 
         self.description = (
-            f"The figure displays two linear functions. "
-            f"Line $f(x)$ passes through $({self.fx1}, {self.fy1})$ and $({self.fx2}, {self.fy2})$. "
-            f"Line $g(x)$ passes through $({self.gx1}, {self.gy1})$ and $({self.gx2}, {self.gy2})$. "
-            f"Let $h(x) = f(g(x))$. "
-            f"Calculate the value of $h'({self.x_target})$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays two linear functions, $f(x)$ and $g(x)$. "
+            "Let $h(x) = f(g(x))$. "
+            "Using the coordinates and the indicated point in the figure, "
+            "calculate the value of $h'(x)$ at the marked $x$-value. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3447,6 +3442,10 @@ class Mat137:
         plt.text(self.gx1, self.gy1, f' ({self.gx1},{self.gy1})', fontsize=9, verticalalignment='bottom')
         plt.text(self.gx2, self.gy2, f' ({self.gx2},{self.gy2})', fontsize=9, verticalalignment='bottom')
 
+        # Indicate x_target
+        plt.axvline(self.x_target, color='red', linestyle=':', alpha=0.5)
+        plt.text(self.x_target, plt.ylim()[0] + 0.1, f'x={self.x_target}', color='red', ha='center', fontsize=9)
+
         # Formatting
         plt.xlabel("x")
         plt.ylabel("y")
@@ -3466,8 +3465,8 @@ class Mat138:
         # We use the form f(x) = ax(b - x) to ensure roots at 0 and b
         # This expands to f(x) = (ab)x - ax^2
         
-        self.scale_a = rnd.randint(1, 3)      # Vertical scaling factor
-        self.root_b = rnd.randint(3, 8)       # The second root (upper bound of integration)
+        self.scale_a = rnd.randint(1, 10)      # Vertical scaling factor (increased range for variations)
+        self.root_b = rnd.randint(5, 20)       # The second root (increased range for variations)
         
         # Coefficients for standard form: cx - dx^2
         self.coeff_linear = self.scale_a * self.root_b
@@ -3487,11 +3486,11 @@ class Mat138:
             self.eq_str = f"{self.coeff_linear}x - {self.coeff_quad}x^2"
 
         self.description = (
-            f"The figure displays a shaded region in the first quadrant bounded above by the "
-            f"parabolic function $f(x) = {self.eq_str}$ and below by the x-axis. "
-            f"The region extends from $x = 0$ to $x = {self.root_b}$. "
-            f"Calculate the total area of the shaded region shown in the figure. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays a shaded region in the first quadrant bounded above by a "
+            "parabolic function $f(x)$ and below by the x-axis. "
+            "Using the information and the function given in the figure, "
+            "calculate the total area of the shaded region. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3539,6 +3538,7 @@ class Mat138:
         peak_y = func(self.root_b / 2)
         ax.set_ylim(-peak_y * 0.2, peak_y * 1.2)
         ax.set_xlim(-1, self.root_b + 1)
+        ax.set_xticks([0, self.root_b]) # Label the root on the axis
         
         plt.tight_layout()
 
@@ -3572,9 +3572,9 @@ class Mat139:
         self.answer = int(round(total_displacement, 0))
 
         self.description = (
-            f"The figure shows the graph of a velocity function $v(t)$ (in m/s) over the interval $t = [0, {self.t2}]$. "
-            f"The graph formed a line of $(0,0) \\rightarrow ({self.t1},{self.v_max}) \\rightarrow ({self.t2},{self.v_max})$. "
-            f"Calculate the total displacement of the object from $t=0$ to $t={self.t2}$."
+            "The figure shows the graph of a velocity function $v(t)$ (in m/s) over an interval of time. "
+            "Using the coordinates provided in the velocity-time graph, "
+            "calculate the total displacement of the object over the entire duration shown."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3646,8 +3646,8 @@ class Mat140:
     
     def __init__(self):
         # We will vary the coefficient 'a' in y = a*sqrt(x) and the upper limit 'b' in x = b
-        self.a = rnd.randint(1, 3)  # Random coefficient between 1 and 3
-        self.b = rnd.randint(2, 6)  # Random upper limit x between 2 and 6
+        self.a = rnd.randint(1, 10)  # Random coefficient between 1 and 10 (increased for variations)
+        self.b = rnd.randint(4, 20)  # Random upper limit x between 4 and 20 (increased for variations)
         
         # Function string for display
         self.func_str = f"{self.a}\\sqrt{{x}}" if self.a > 1 else "\\sqrt{x}"
@@ -3663,11 +3663,11 @@ class Mat140:
         self.answer = round(decimal_answer, 3)
 
         self.description = (
-            f"The figure illustrates a solid 3D shape formed by rotating a specific 2D region around the x-axis. "
-            f"The 2D region is defined by the function $y = {self.func_str}$, the vertical line $x = {self.b}$, and the x-axis. "
-            f"Calculate the volume of the solid generated by the rotation shown in the figure. "
-            f"Give your answer as a decimal rounded to three places. "
-            f"(Use $\\pi \\approx 3.14159$)."
+            "The figure illustrates a solid 3D shape formed by rotating a specific 2D region around the x-axis. "
+            "Based on the function, vertical line, and rotation indicated in the figure, "
+            "calculate the volume of the resulting solid. "
+            "Give your answer as a decimal rounded to three places. "
+            "(Use $\\pi \\approx 3.14159$)."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3775,7 +3775,7 @@ class Mat140:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
-        
+
 class Mat141:
     def __init__(self):
         # Relationship: y = k * a^x
