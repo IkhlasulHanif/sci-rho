@@ -212,7 +212,7 @@ class Mat103:
         
     def generate(self, num):
         # 2. Setup the Plot (The Net)
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(8, 7))
         
         # Hide axes
         ax.set_axis_off()
@@ -220,30 +220,36 @@ class Mat103:
         ax.set_ylim(-1, 11)
 
         # Draw "The Net" (A circular patch)
-        net_circle = patches.Circle((5, 5), 4.5, linewidth=2, edgecolor='#555', facecolor='#e0f7fa', alpha=0.5)
+        net_circle = patches.Circle((5, 5.5), 4.8, linewidth=2, edgecolor='#555', facecolor='#e0f7fa', alpha=0.5)
         ax.add_patch(net_circle)
-        ax.text(5, 9.8, "The Second Catch (The Net)", ha='center', fontsize=12, fontweight='bold', color='#333')
+        ax.text(5, 10.5, "The Second Catch (The Net)", ha='center', fontsize=14, fontweight='bold', color='#333')
 
-        # 3. Generate Fish Positions
-        # We use rejection sampling or simple random within radius to keep them inside the net
-        def get_random_points_in_circle(num_points, center_x, center_y, radius):
-            points = []
-            while len(points) < num_points:
-                x = rnd.uniform(center_x - radius, center_x + radius)
-                y = rnd.uniform(center_y - radius, center_y + radius)
-                if (x - center_x)**2 + (y - center_y)**2 > (radius - 0.5)**2: # Buffer of 0.5
-                    continue
-                add = True
-                for p in points:
-                    if (x - p[0])**2 + (y - p[1])**2 <= 0.5:
-                        add = False
-                        break
-                if add:
-                    points.append((x, y))
-            return np.array(points)
-
-        # Generate positions for all fish
-        all_positions = get_random_points_in_circle(self.n, 5, 5, 4.5)
+        # 3. Generate Fish Positions in a Grid
+        # We arrange the fish in a grid to make them easy to count and prevent overlapping.
+        # n is between 20 and 50.
+        cols = 10
+        spacing_x = 0.8
+        spacing_y = 1.0
+        
+        # Calculate rows needed
+        rows = math.ceil(self.n / cols)
+        
+        # Center the grid within the net circle
+        start_x = 5 - (cols - 1) * spacing_x / 2
+        start_y = 5.5 - (rows - 1) * spacing_y / 2
+        
+        grid_positions = []
+        for i in range(self.n):
+            r = i // cols
+            c = i % cols
+            grid_positions.append([start_x + c * spacing_x, start_y + r * spacing_y])
+        
+        all_positions = np.array(grid_positions)
+        
+        # Randomly shuffle so marked fish are dispersed
+        idx = np.arange(len(all_positions))
+        np.random.shuffle(idx)
+        all_positions = all_positions[idx]
         
         # Split positions into marked and unmarked
         marked_positions = all_positions[:self.m]
@@ -252,19 +258,28 @@ class Mat103:
         # 4. Draw the Fish
         # Plot Unmarked Fish (Blue)
         ax.scatter(unmarked_positions[:, 0], unmarked_positions[:, 1], 
-                s=200, c='#1f77b4', marker='o', edgecolors='black', label='Unmarked Fish', alpha=0.9)
-        # Add a simple 'tail' or detail to make it look less like a dot (optional simple visualization)
-        ax.scatter(unmarked_positions[:, 0]-0.15, unmarked_positions[:, 1], 
-                s=100, c='#1f77b4', marker='<', alpha=0.9) # Tail
+                s=250, c='#1f77b4', marker='o', edgecolors='black', label=f'Unmarked Fish ({len(unmarked_positions)})', alpha=0.9)
+        # Add a simple 'tail'
+        ax.scatter(unmarked_positions[:, 0]-0.2, unmarked_positions[:, 1], 
+                s=100, c='#1f77b4', marker='<', alpha=0.9)
 
-        # Plot Marked Fish (Red/Orange with a "Tag")
+        # Plot Marked Fish (Orange with a "Tag")
         ax.scatter(marked_positions[:, 0], marked_positions[:, 1], 
-                s=200, c='#ff7f0e', marker='o', edgecolors='red', linewidth=2, label='Marked Fish (Recaptured)', alpha=1.0)
-        ax.scatter(marked_positions[:, 0]-0.15, marked_positions[:, 1], 
-                s=100, c='#ff7f0e', marker='<', alpha=1.0) # Tail
+                s=250, c='#ff7f0e', marker='o', edgecolors='red', linewidth=2, label=f'Marked Fish ({self.m})', alpha=1.0)
+        ax.scatter(marked_positions[:, 0]-0.2, marked_positions[:, 1], 
+                s=100, c='#ff7f0e', marker='<', alpha=1.0)
         
+        # Add a small 'T' on marked fish for extra clarity
+        for pos in marked_positions:
+            ax.text(pos[0], pos[1], 'T', color='white', ha='center', va='center', fontweight='bold', fontsize=8)
+
         # 5. Legend and Layout
-        ax.legend(loc='lower center', ncol=2, frameon=True, bbox_to_anchor=(0.5, -0.1))
+        ax.legend(loc='lower center', ncol=2, frameon=True, bbox_to_anchor=(0.5, 0.0))
+        
+        # Add explicit count caption as recommended
+        ax.text(5, 0.5, f"Sample Note: {self.m} marked fish and {len(unmarked_positions)} unmarked fish found in the net.", 
+                ha='center', fontsize=11, fontweight='bold', color='#444')
+
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
