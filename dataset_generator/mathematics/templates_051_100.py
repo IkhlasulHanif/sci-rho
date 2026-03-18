@@ -4379,11 +4379,11 @@ class Mat089:
     
     def __init__(self):
         # Randomize base and height for Triangle A (small)
-        self.base_a = rnd.randint(2, 5)
-        self.height_a = rnd.randint(2, 5)
+        self.base_a = rnd.randint(2, 7)    # 6 values
+        self.height_a = rnd.randint(2, 7)   # 6 values
         
         # Randomize scale factor (integer for simplicity)
-        self.scale_factor = rnd.randint(2, 5)
+        self.scale_factor = rnd.randint(2, 4)  # 3 values → 6×6×3 = 108 combinations
         
         # Calculate dimensions for Triangle B (large)
         self.base_b = self.base_a * self.scale_factor
@@ -4477,11 +4477,11 @@ class Mat090:
     
     def __init__(self):
         # Choose a base side length for P (so Area P is a perfect square for simplicity, or just simple int)
-        self.side_p = rnd.randint(2, 5) # In cm
-        self.area_p = self.side_p ** 2 # In cm
+        self.side_p = rnd.randint(2, 7)  # 6 values
+        self.area_p = self.side_p ** 2   # In cm²
         
         # Choose a scale factor (k)
-        self.scale_factor = round(rnd.uniform(2, 4), 1) # In cm
+        self.scale_factor = round(rnd.uniform(2, 5), 1)  # 31 values → 6×31 = 186 combinations
         
         # Calculate Shape Q properties
         self.side_q = self.side_p * self.scale_factor # In cm
@@ -4575,8 +4575,8 @@ class Mat091:
     
     def __init__(self):
         # We choose range 2 to 8 to keep points distinct from origin and clearly visible
-        self.x = rnd.randint(2, 8) 
-        self.y = rnd.randint(2, 8)
+        self.x = rnd.randint(1, 10)  # 10 values
+        self.y = rnd.randint(1, 10)  # 10 values → 10×10 = 100 combinations
         
         # Calculate New Coordinates (90 degrees clockwise)
         # Formula: (x, y) -> (y, -x)
@@ -4755,9 +4755,16 @@ class Mat092:
         all_x = np.concatenate((self.triangle_orig[:,0], self.triangle_new[:,0]))
         all_y = np.concatenate((self.triangle_orig[:,1], self.triangle_new[:,1]))
         buffer = 2
-        ax.set_xlim(min(all_x)-buffer, max(all_x)+buffer)
-        ax.set_ylim(min(all_y)-buffer, max(all_y)+buffer)
+        x_min = int(min(all_x)) - buffer
+        x_max = int(max(all_x)) + buffer
+        y_min = int(min(all_y)) - buffer
+        y_max = int(max(all_y)) + buffer
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
         ax.set_aspect('equal')
+        # Explicitly set integer ticks so students can reliably count grid squares
+        ax.set_xticks(range(x_min, x_max + 1))
+        ax.set_yticks(range(y_min, y_max + 1))
         ax.legend()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
