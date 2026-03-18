@@ -3002,7 +3002,7 @@ class Mat179:
 class Mat180:
     def __init__(self):
         # Configuration: total chairs (n) and the pair of twins
-        self.total_students = rnd.randint(5, 15)
+        self.total_students = rnd.randint(5, 25)
         
         # Calculate permutations: Total - Together
         # Total permutations = n!
@@ -3249,7 +3249,7 @@ class Mat182:
 class Mat183:
     def __init__(self):
         # Range set to provide problem variations as per instructions
-        self.num_members = rnd.randint(8, 15)
+        self.num_members = rnd.randint(6, 25)
         
         # Logic for linear permutation with 2 specific members together:
         # 1. Treat the 2 specific members as 1 block.
