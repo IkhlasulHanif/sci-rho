@@ -41,9 +41,8 @@ class Mat151:
             f"Variables $x$ and $y$ are related by the equation $y = k e^{{ax}}$, "
             f"where $k$ and $a$ are constants. "
             f"A straight line graph is plotted on axes labeled $x$ (horizontal) "
-            f"and $\\ln y$ (vertical). The line passes through the y-intercept "
-            f"at $(0, {self.intercept_c})$ and a second point at $({self.x2}, {self.y2_log})$. "
-            f"Using the linear graph described above, determine the value of the constant $a$."
+            f"and $\\ln y$ (vertical). Using the points marked on the linear graph in the figure, "
+            f"determine the value of the constant $a$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -134,8 +133,7 @@ class Mat152:
             f"Variables $x$ and $y$ satisfy the relationship $y = Ax^n$. "
             f"The figure shows a straight line plotted on axes labeled $\\lg x$ (horizontal) "
             f"and $\\lg y$ (vertical), where $\\lg$ denotes $\\log_{{10}}$. "
-            f"The line passes through the points $({self.x1}, {self.y1})$ and $({self.x2}, {self.y2})$. "
-            f"Find the value of $n$. "
+            f"Using the points indicated in the figure, find the value of $n$. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -216,9 +214,8 @@ class Mat153:
         self.answer = actual_x
 
         self.description = (
-            f"A rectangle is shown with Length = {self.len_label} and Width = {self.wid_label}. "
-            f"The Area of this rectangle is given as {self.area_label}. "
-            f"Calculate the numerical value of $x$."
+            "A rectangle is shown in the figure with its length, width, and area expressed in terms of $x$. "
+            "Based on the labels provided in the diagram, calculate the numerical value of $x$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -294,10 +291,9 @@ class Mat154:
         self.answer = self.k_target
 
         self.description = (
-            f"The graph shows the function $y = \\log_{{{self.base}}}(x - b)$. "
-            f"The graph has a vertical asymptote indicated by a dashed line at $x = {self.b}$. "
-            f"The curve passes through the point $({self.x_point}, k)$. "
-            f"Determine the value of $k$."
+            f"The figure shows a graph of a logarithmic function. "
+            f"The graph has a vertical asymptote indicated by a dashed line and passes through a marked point. "
+            f"Using the information provided in the figure, determine the value of $k$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -366,10 +362,10 @@ class Mat155:
     
     def __init__(self):
         # Equation: y = e^(kx)
-        self.k = rnd.randint(1, 4)  # Random coefficient k (e.g., 2, 3, 4)
+        self.k = rnd.randint(1, 10)  # Random coefficient k
         
         # Limit: x = ln(a)
-        self.a = rnd.randint(2, 6)  # Random base for the log limit (e.g., ln(3), ln(5))
+        self.a = rnd.randint(2, 12)  # Random base for the log limit
         
         # Calculate the exact limit value for plotting
         self.x_limit = np.log(self.a)
@@ -385,11 +381,10 @@ class Mat155:
         self.answer = round(numerator / denominator, 3)
 
         self.description = (
-            f"The figure displays the curve $y = e^{{{self.k}x}}$. "
-            f"The region $R$ is shaded and is bounded by the curve, the x-axis, "
-            f"the y-axis (where $x=0$), and the vertical line $x = \\ln({self.a})$. "
-            f"Calculate the exact area of the shaded region $R$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays an exponential curve $y = e^{kx}$ and a shaded region $R$. "
+            "The region is bounded by the curve, the axes, and a vertical line marked in the figure. "
+            "Calculate the exact area of the shaded region $R$. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -444,8 +439,8 @@ class Mat156:
     
     def __init__(self):
         # Equation form: y = a * x * sin(b * x)
-        self.a = rnd.randint(1, 5)      # Coefficient for x (e.g., 2x, 3x)
-        self.b = rnd.randint(1, 3)      # Coefficient inside sin (e.g., sin(2x))
+        self.a = rnd.randint(1, 10)      # Coefficient for x
+        self.b = rnd.randint(1, 5)       # Coefficient inside sin
         
         # Randomize Upper Limit (limit) to be a "nice" fraction of Pi
         # Options: pi/6, pi/4, pi/3, pi/2
@@ -468,9 +463,10 @@ class Mat156:
         self.answer = round(area, 3)
 
         self.description = (
-            f"The figure shows the curve $y = {self.a}x \\sin({self.b}x)$ for $0 \\leq x \\leq {self.limit_str}$. "
-            f"The shaded region represents the area between the curve and the x-axis from the origin to $x = {self.limit_str}$. "
-            f"Find the area of the shaded region. Give your answer as a decimal rounded to three decimal places."
+            "The figure shows a curve and a shaded region under it. "
+            "The shaded area lies between the curve and the x-axis, from the origin to a marked upper limit. "
+            "Using the information in the figure, find the area of the shaded region. "
+            "Give your answer as a decimal rounded to three decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -583,11 +579,10 @@ class Mat157:
         self.answer = round(abs(np.log(k_fraction)), 3)
 
         self.description = (
-            f"The figure depicts the graph of the function "
-            f"$f(x) = \\frac{{{self.NUM}}}{{(x+{self.a})(x+{self.b})}}$. "
-            f"The area of interest is bounded by the curve, the x-axis, and the vertical lines $x={self.x1}$ and $x={self.x2}$. "
-            f"Calculate the definite integral $\\int_{{{self.x1}}}^{{{self.x2}}} f(x) \\, dx$. "
-            f"Round your answer to three decimal places."
+            "The figure depicts the graph of a rational function $f(x)$. "
+            "The area of interest is shaded and bounded by the curve, the x-axis, and two vertical lines. "
+            "Based on the visual information in the figure, calculate the definite integral of $f(x)$ over the shaded interval. "
+            "Round your answer to three decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -687,8 +682,9 @@ class Mat158:
         self.answer = round(abs(val_A * np.log(numerator_arg / denominator_arg)), 3)
 
         self.description = (
-            f"The figure shows the curve $y = {self.func_latex}$ in the first quadrant. A shaded region is defined between $x={self.lower_limit}$ and $x={self.upper_limit}$. "
-            f"Determine the area of the shaded region. Round to 3 decimal places."
+            "The figure shows a curve in the first quadrant and a shaded region bounded by the curve, the x-axis, and a vertical limit. "
+            "Using the information provided in the figure, determine the area of the shaded region. "
+            "Round your answer to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -746,13 +742,12 @@ class Mat158:
 class Mat159:
     
     def __init__(self):
-        # a: Determine the denominator (x^2 + a^2). Using integers 2-6.
-        self.a = rnd.randint(2, 6)
+        # a: Determine the denominator (x^2 + a^2). Using integers 2-12.
+        self.a = rnd.randint(2, 12)
         self.a_sq = self.a**2
 
         # numerator: Make it a multiple of 'a' to keep the coefficient simple.
-        # Corresponds to '12' in the original example (where a=3, so 12 is 4*a).
-        self.multiplier = rnd.randint(1, 6)
+        self.multiplier = rnd.randint(1, 10)
         self.numerator = self.multiplier * self.a
 
         # x_limit: The integration limit.
@@ -771,11 +766,10 @@ class Mat159:
         self.answer = round(numerical_answer, 3)
 
         self.description = (
-            f"The figure illustrates the bell-shaped curve of the "
-            f"function $y = \\frac{{{self.numerator}}}{{x^2+{self.a_sq}}}$. The region extends "
-            f"from the y-axis ($x=0$) to the vertical line $x={self.x_limit}$. "
-            f"Calculate the area of this region. "
-            f"Round your answer to 3 decimal places."
+            "The figure illustrates a bell-shaped curve and a shaded region under it "
+            "extending from the y-axis to a marked vertical line. "
+            "Based on the function and the limit shown in the diagram, calculate the area of this region. "
+            "Round your answer to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -880,9 +874,9 @@ class Mat160:
         self.answer = round(area_val, 3)
 
         self.description = (
-            f"The figure shows the graph of $y = {self.func_latex}$ "
-            f"over the interval $[0, {self.limit_text}]$. The area under the curve is shaded. "
-            f"Find the area of the shaded region. Round to 3 decimal places."
+            f"The figure shows the graph of a trigonometric function $y = f(x)$ "
+            f"over a shaded interval. Find the area of the shaded region under the curve. "
+            f"Round your answer to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
