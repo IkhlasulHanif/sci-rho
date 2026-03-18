@@ -648,7 +648,7 @@ class Com009:
 class Com010:
 
     def __init__(self):
-        self.N = rnd.randint(5, 8)
+        self.N = rnd.randint(5, 18)
         self.N_copy = self.N
         self.steps = []
         total = 0
@@ -820,7 +820,7 @@ class Com011:
 class Com012:
     
     def __init__(self):
-        self.n = rnd.randint(6, 12)
+        self.n = rnd.randint(6, 24)
         total = 0
         for i in range(1, self.n + 1):
             if i % 2 == 0:
@@ -1614,34 +1614,43 @@ class Com028:
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
         self.input_3 = rnd.choice([0, 1])
-        self.answer = int((self.input_1 ^ self.input_3) or (not(self.input_2 and (not(self.input_3)))))
+        self.input_4 = rnd.choice([0, 1])
+        self.input_5 = rnd.choice([0, 1])
+        self.answer = (self.input_1 ^ self.input_3) or (not(self.input_2 and (not(self.input_3)))) or (self.input_4 and self.input_5)
 
-        self.description = f"Here is an image of a logic circuit where input A = {self.input_1}, input B = {self.input_2}, and input C = {self.input_3}. Based on the circuit shown, what is the final output X?"
+        self.description = f"Here is an image of a logic circuit where input A = {self.input_1}, input B = {self.input_2}, input C = {self.input_3}, input D = {self.input_4}, and input E = {self.input_5}. Based on the circuit shown, what is the final output X?"
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Adapted from PapaCambridge 1.3.1 Logic Gates"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
-            "\\text{{1. Analyze the XOR gate (Inputs A and C):}} & \\\\"
-            "G_1 &= A \\oplus C \\\\"
-            f"&= {self.input_1} \\oplus {self.input_3} \\\\"
-            f"&= {int(self.input_1 ^ self.input_3)} \\\\"
-            "\\text{{2. Analyze the lower branch (Inputs B and C):}} & \\\\"
-            f"\\text{{NOT C}} &= \\neg C = \\neg({self.input_3}) = {int(not self.input_3)} \\\\"
-            "G_2 &= B \\land (\\neg C) \\\\"
-            f"&= {self.input_2} \\land {int(not self.input_3)} \\\\"
-            f"&= {int(self.input_2 and (not self.input_3))} \\\\"
-            "\\text{{3. Analyze the NAND logic in the lower branch:}} & \\\\"
-            "G_3 &= \\neg G_2 \\\\"
-            f"&= \\neg({int(self.input_2 and (not self.input_3))}) \\\\"
-            f"&= {int(not (self.input_2 and (not self.input_3)))} \\\\"
-            "\\text{{4. Analyze the final OR gate (G1 or G3):}} & \\\\"
-            "X &= G_1 \\lor G_3 \\\\"
-            f"&= {int(self.input_1 ^ self.input_3)} \\lor {int(not (self.input_2 and (not self.input_3)))} \\\\"
-            f"&= {self.answer} \\\\"
-            f"\\text{{Final Result X}} &= {self.answer}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"E &= {self.input_5}\\\\"
+            f"X &= (A \\oplus C) \\lor \\neg\\bigl(B \\land \\neg C\\bigr) \\lor (D \\land E)\\\\"
+            f"&= ({self.input_1} \\oplus {self.input_3}) \\lor \\neg\\bigl({self.input_2} \\land \\neg {self.input_3}\\bigr) \\lor ({self.input_4} \\land {self.input_5})\\\\"
+            f"\\text{{First, evaluate the XOR term:}}\\\\"
+            f"A \\oplus C &= {self.input_1} \\oplus {self.input_3}\\\\"
+            f"&= {self.input_1 ^ self.input_3}\\\\"
+            f"\\text{{Next, evaluate the negation of }} C\\text{{:}}\\\\"
+            f"\\neg C &= \\neg {self.input_3}\\\\"
+            f"&= {round(int(not self.input_3), 10)}\\\\"
+            f"\\text{{Then evaluate the AND term inside the negation:}}\\\\"
+            f"B \\land \\neg C &= {self.input_2} \\land {round(int(not self.input_3), 10)}\\\\"
+            f"&= {round(int(self.input_2 and (not self.input_3)), 10)}\\\\"
+            f"\\text{{Now negate that result:}}\\\\"
+            f"\\neg\\bigl(B \\land \\neg C\\bigr) &= \\neg {round(int(self.input_2 and (not self.input_3)), 10)}\\\\"
+            f"&= {round(int(not (self.input_2 and (not self.input_3))), 10)}\\\\"
+            f"\\text{{Next, evaluate the final AND term:}}\\\\"
+            f"D \\land E &= {self.input_4} \\land {self.input_5}\\\\"
+            f"&= {round(int(self.input_4 and self.input_5), 10)}\\\\"
+            f"\\text{{Substitute the intermediate results:}}\\\\"
+            f"X &= {self.input_1 ^ self.input_3} \\lor {round(int(not (self.input_2 and (not self.input_3))), 10)} \\lor {round(int(self.input_4 and self.input_5), 10)}\\\\"
+            f"&= {int((self.input_1 ^ self.input_3) or (not (self.input_2 and (not self.input_3))) or (self.input_4 and self.input_5))}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3355,25 +3364,32 @@ class Com047:
 class Com048:
 
     def __init__(self):
-        self.x = rnd.randint(1, 3)
-        self.y = rnd.randint(1, 3)
+        self.x = rnd.randint(1, 4)
+        self.y = rnd.randint(1, 4)
+        # Each step: (a, b, kind, value, depth)
+        # kind: "call" | "base" | "cached" | "result"
+        # value: None | 1 | cached_int | (result, left, down)
         self.steps = []
-        
-        def paths(a, b, depth=0):
-            indent = "  " * depth
-            self.steps.append(f"{indent}PATHS({a},{b}) called")
+        self._memo = {}
 
-            if a == 0 or b == 0:
-                self.steps.append(f"{indent}PATHS({a},{b}) = 1 (base case)")
+        def paths(a, b, depth=0):
+            key = (a, b)
+
+            if key in self._memo: # already solved
+                self.steps.append((a, b, "cached", self._memo[key], depth))
+                return self._memo[key]
+
+            if a == 0 or b == 0: # base case
+                self._memo[key] = 1
+                self.steps.append((a, b, "base", 1, depth))
                 return 1
 
+            self.steps.append((a, b, "call", None, depth)) # about to expand
             left = paths(a - 1, b, depth + 1)
             down = paths(a, b - 1, depth + 1)
             result = left + down
-
-            self.steps.append(
-                f"{indent}PATHS({a},{b}) = PATHS({a-1},{b}) + PATHS({a},{b-1}) = {result}"
-            )
+            self._memo[key] = result
+            self.steps.append((a, b, "result", (result, left, down), depth))
             return result
 
         self.answer = paths(self.x, self.y)
@@ -3387,11 +3403,35 @@ class Com048:
             "\\[\\begin{aligned}"
             f"\\text{{Initial Coordinate: }} & ({self.x}, {self.y}) \\\\"
             f"\\text{{Goal Coordinate: }} & (0, 0) \\\\"
-            "\\text{{Recursive Definition:}} & \\\\"
-            "\\text{{PATHS}}(a, b) &= \\begin{cases} 1 & \\text{{if }} a=0 \\lor b=0 \\\\ \\text{{PATHS}}(a-1, b) + \\text{{PATHS}}(a, b-1) & \\text{{otherwise}} \\end{cases} \\\\"
-            "\\text{{Step-by-Step Trace:}} & \\\\"
-            + " \\\\ ".join([f"\\text{{{s}}}" for s in self.steps]) + " \\\\"
-            f"\\text{{Final Calculation:}} & \\text{{PATHS}}({self.x}, {self.y}) = {self.answer} \\\\"
+            "\\text{Recursive Definition:} & \\\\"
+            "\\text{PATHS}(a,b) &= "
+            "\\begin{cases}"
+            " 1 & \\text{if } a=0 \\text{ or } b=0 \\\\"
+            " \\text{PATHS}(a-1,b) + \\text{PATHS}(a,b-1) & \\text{otherwise}"
+            "\\end{cases} \\\\"
+            "\\text{Trace} & \\\\"
+            "\\text{(indentation = recursion depth; M = memoized reuse):} & \\\\"
+            + " \\\\ ".join([
+                (
+                    "& " + "\\quad " * s[4]
+                    + f"\\text{{PATHS}}({s[0]},{s[1]}) \\rightarrow"
+                    + f" \\text{{PATHS}}({s[0]-1},{s[1]}) + \\text{{PATHS}}({s[0]},{s[1]-1})"
+                    if s[2] == "call" else
+                    "& " + "\\quad " * s[4]
+                    + f"\\text{{PATHS}}({s[0]},{s[1]}) = 1"
+                    + f" \\quad [\\text{{base case: }}{'a' if s[0]==0 else 'b'} = 0]"
+                    if s[2] == "base" else
+                    "& " + "\\quad " * s[4]
+                    + f"\\text{{PATHS}}({s[0]},{s[1]}) = {s[3]}"
+                    + " \\quad [\\text{M: already computed}]"
+                    if s[2] == "cached" else
+                    "& " + "\\quad " * s[4]
+                    + f"\\text{{PATHS}}({s[0]},{s[1]}) ="
+                    + f" \\text{{PATHS}}({s[0]-1},{s[1]}) + \\text{{PATHS}}({s[0]},{s[1]-1})"
+                    + f" = {s[3][1]} + {s[3][2]} = {s[3][0]}"
+                )
+                for s in self.steps
+            ]) + " \\\\"
             f"\\text{{Final Result}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
