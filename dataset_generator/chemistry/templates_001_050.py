@@ -39,8 +39,8 @@ class Chem001:
         total_abundance = 0
         for i, (mass, abundance) in enumerate(self.element["isotopes"]):
             if i < len(self.element["isotopes"]) - 1:
-                varied_abundance = round(abundance + rnd.uniform(-2, 2), 1)
-                varied_abundance = max(1, min(99, varied_abundance))
+                varied_abundance = round(abundance + rnd.uniform(-10, 10), 1)
+                varied_abundance = max(5, min(95, varied_abundance))
             else:
                 varied_abundance = round(100 - total_abundance, 1)
             self.isotopes.append((mass, varied_abundance))
@@ -126,7 +126,9 @@ class Chem002:
         }
         
         self.element = rnd.choice(list(elements_ie.keys()))
-        self.ie_values = elements_ie[self.element]
+        # Perturb each IE value +-5% so the graph differs meaningfully across instances
+        raw = elements_ie[self.element]
+        self.ie_values = [round(v * rnd.uniform(0.95, 1.05)) for v in raw]
         
         jumps = []
         for i in range(1, len(self.ie_values)):
@@ -191,142 +193,102 @@ class Chem002:
 class Chem003:
     """
     Topic: 1.3 Electrons, energy levels, and atomic orbitals
-    Visual: Orbital box diagram (electrons in boxes representation)
-    Task: Identify the element or determine number of unpaired electrons
+    Visual: Orbital box diagram built from randomised Z (no element symbol shown)
+    Task:  Count total electrons (arrows) across all boxes to determine atomic number Z
     """
-    
+
+    @staticmethod
+    def _build_boxes(Z):
+        aufbau = [("1s",2),("2s",2),("2p",6),("3s",2),("3p",6),("4s",2)]
+        boxes = {}
+        remaining = Z
+        for name, cap in aufbau:
+            if remaining <= 0:
+                break
+            fill  = min(remaining, cap)
+            n_orb = cap // 2
+            elec  = [0] * (n_orb * 2)
+            for i in range(min(fill, n_orb)):
+                elec[i * 2] = 1
+            for i in range(max(0, fill - n_orb)):
+                elec[i * 2 + 1] = 1
+            boxes[name] = elec
+            remaining -= fill
+        return boxes
+
+    @staticmethod
+    def _build_config_str(Z):
+        sup = str.maketrans("0123456789","0123456789")
+        sup2 = {"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵",
+                "6":"⁶","7":"⁷","8":"⁸","9":"⁹"}
+        aufbau = [("1s",2),("2s",2),("2p",6),("3s",2),("3p",6),("4s",2)]
+        parts, rem = [], Z
+        for name, cap in aufbau:
+            if rem <= 0: break
+            fill = min(rem, cap)
+            sup_fill = "".join(sup2[c] for c in str(fill))
+            parts.append(f"{name}{sup_fill}")
+            rem -= fill
+        return " ".join(parts)
+
     def __init__(self):
-        elements = [
-            {"symbol": "C", "Z": 6, "config": "1s² 2s² 2p²", "unpaired": 2,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 0, 0, 0, 0]}},
-            {"symbol": "N", "Z": 7, "config": "1s² 2s² 2p³", "unpaired": 3,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 0, 1, 0, 1, 0]}},
-            {"symbol": "O", "Z": 8, "config": "1s² 2s² 2p⁴", "unpaired": 2,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 0, 1, 0]}},
-            {"symbol": "F", "Z": 9, "config": "1s² 2s² 2p⁵", "unpaired": 1,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 1, 1, 0]}},
-            {"symbol": "Si", "Z": 14, "config": "1s² 2s² 2p⁶ 3s² 3p²", "unpaired": 2,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 1, 1, 1], "3s": [1, 1], "3p": [1, 1, 0, 0, 0, 0]}},
-            {"symbol": "P", "Z": 15, "config": "1s² 2s² 2p⁶ 3s² 3p³", "unpaired": 3,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 1, 1, 1], "3s": [1, 1], "3p": [1, 0, 1, 0, 1, 0]}},
-            {"symbol": "S", "Z": 16, "config": "1s² 2s² 2p⁶ 3s² 3p⁴", "unpaired": 2,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 1, 1, 1], "3s": [1, 1], "3p": [1, 1, 1, 0, 1, 0]}},
-            {"symbol": "Cr", "Z": 24, "config": "1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁵ 4s¹", "unpaired": 6,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 1, 1, 1], "3s": [1, 1], "3p": [1, 1, 1, 1, 1, 1], 
-                      "3d": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0], "4s": [1, 0]}},
-            {"symbol": "Fe", "Z": 26, "config": "1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ 4s²", "unpaired": 4,
-             "boxes": {"1s": [1, 1], "2s": [1, 1], "2p": [1, 1, 1, 1, 1, 1], "3s": [1, 1], "3p": [1, 1, 1, 1, 1, 1], 
-                      "3d": [1, 1, 1, 0, 1, 0, 1, 0, 1, 0], "4s": [1, 1]}},
-        ]
-        
-        self.element = rnd.choice(elements)
-        self.symbol = self.element["symbol"]
-        self.Z = self.element["Z"]
-        self.config = self.element["config"]
-        self.unpaired = self.element["unpaired"]
-        self.boxes = self.element["boxes"]
-        
-        self.question_type = rnd.choice(["unpaired", "element"])
-        
-        if self.question_type == "unpaired":
-            self.answer = self.unpaired
-            self.description = (
-                f"The orbital box diagram below shows the electron configuration of an atom. "
-                f"How many unpaired electrons does this atom have?"
-            )
-        else:
-            self.answer = self.symbol
-            self.description = (
-                f"The orbital box diagram below shows the electron configuration of a neutral atom. "
-                f"Identify the element."
-            )
-        
-        self.topic = "Atomic structure"
-        self.subtopic = "Electrons, energy levels, and atomic orbitals"
-        self.source = "Adapted from Cambridge A Level Chemistry 9701"
+        self.Z      = rnd.randint(3, 20)
+        self.boxes  = self.__class__._build_boxes(self.Z)
+        self.config = self.__class__._build_config_str(self.Z)
+        self.answer = self.Z
+        self.description = (
+            "The orbital box diagram below shows the electron configuration of an "
+            "unknown atom. Count all the electrons (arrows) shown across every box "
+            "to determine the atomic number (Z) of the atom."
+        )
+        self.topic      = "Atomic structure"
+        self.subtopic   = "Electrons, energy levels, and atomic orbitals"
+        self.source     = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
-        
-        if self.question_type == "unpaired":
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                f"\\text{{The electron configuration is: }} {self.config} &\\\\"
-                f"\\text{{Unpaired electrons are those not paired in the same orbital.}} &\\\\"
-                f"\\text{{Counting from the diagram, there are {self.unpaired} unpaired electrons.}}"
-                "\\end{aligned}\\]"
-            )
-        else:
-            self.reasoning = (
-                "\\[\\begin{aligned}"
-                f"\\text{{Counting total electrons from the diagram:}} &\\\\"
-                f"\\text{{Total electrons}} = {self.Z} &\\\\"
-                f"\\text{{For a neutral atom, protons}} = \\text{{electrons}} = {self.Z} &\\\\"
-                f"\\text{{Element with atomic number {self.Z} is {self.symbol}.}}"
-                "\\end{aligned}\\]"
-            )
-    
+        self.reasoning = (
+            "\\[\\begin{aligned}"
+            f"\\text{{Each arrow = one electron. Config: {self.config} }} &\\\\"
+            f"\\text{{Total electrons}} &= Z = {self.Z}"
+            "\\end{aligned}\\]"
+        )
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(14, 6))
-        ax.set_xlim(0, 14)
-        ax.set_ylim(0, 6)
-        ax.axis('off')
-        
-        box_width = 0.6
-        box_height = 0.8
-        spacing = 0.1
-        y_base = 3
-        x_pos = 0.5
-        
+        ax.set_xlim(0, 14); ax.set_ylim(0, 6); ax.axis("off")
+
+        bw, bh, sp = 0.6, 0.8, 0.1
+        y_base = 3.0; x_pos = 0.5
+
         for orbital, electrons in self.boxes.items():
-            if orbital.endswith('s'):
-                n_boxes = 1
-            elif orbital.endswith('p'):
-                n_boxes = 3
-            elif orbital.endswith('d'):
-                n_boxes = 5
-            else:
-                n_boxes = 1
-            
-            ax.text(x_pos + (n_boxes * (box_width + spacing)) / 2, y_base - 0.8, 
-                orbital, ha='center', va='top', fontsize=14, fontweight='bold')
-            
+            n_boxes = 1 if orbital.endswith("s") else 3
+            ax.text(x_pos + (n_boxes*(bw+sp))/2, y_base - 0.8, orbital,
+                    ha="center", va="top", fontsize=14, fontweight="bold")
             for i in range(n_boxes):
-                box_x = x_pos + i * (box_width + spacing)
-                
-                rect = patches.Rectangle((box_x, y_base), box_width, box_height, 
-                                        linewidth=2, edgecolor='black', facecolor='white')
-                ax.add_patch(rect)
-                
+                bx = x_pos + i*(bw+sp)
+                ax.add_patch(patches.Rectangle(
+                    (bx, y_base), bw, bh,
+                    linewidth=2, edgecolor="black", facecolor="white"))
                 e_idx = i * 2
-                up_electron = electrons[e_idx] if e_idx < len(electrons) else 0
-                down_electron = electrons[e_idx + 1] if e_idx + 1 < len(electrons) else 0
-                
-                if up_electron:
-                    ax.annotate('', xy=(box_x + box_width/3, y_base + box_height - 0.15),
-                            xytext=(box_x + box_width/3, y_base + 0.15),
-                            arrowprops=dict(arrowstyle='->', lw=2, color='blue'))
-                
-                if down_electron:
-                    ax.annotate('', xy=(box_x + 2*box_width/3, y_base + 0.15),
-                            xytext=(box_x + 2*box_width/3, y_base + box_height - 0.15),
-                            arrowprops=dict(arrowstyle='->', lw=2, color='red'))
-            
-            x_pos += n_boxes * (box_width + spacing) + 0.5
-        
-        add_title_box(ax, 7, 5.5, 'Orbital Box Diagram', fontsize=18)
-        
-        arrow_x = 0.2
-        arrow_y_start = 1
-        arrow_y_end = 5.5
-        
-        ax.annotate('', xy=(arrow_x, arrow_y_end), xytext=(arrow_x, arrow_y_start),
-                arrowprops=dict(arrowstyle='->', lw=2.5, color='gray'))
-        
-        ax.text(arrow_x - 0.8, (arrow_y_start + arrow_y_end) / 2, 'Energy', 
-            rotation=90, va='center', ha='center', fontsize=16, 
-            fontweight='bold', color='gray')
-        
+                up   = electrons[e_idx]     if e_idx     < len(electrons) else 0
+                down = electrons[e_idx + 1] if e_idx + 1 < len(electrons) else 0
+                if up:
+                    ax.annotate("", xy=(bx+bw/3, y_base+bh-0.15),
+                                xytext=(bx+bw/3, y_base+0.15),
+                                arrowprops=dict(arrowstyle="->", lw=2, color="blue"))
+                if down:
+                    ax.annotate("", xy=(bx+2*bw/3, y_base+0.15),
+                                xytext=(bx+2*bw/3, y_base+bh-0.15),
+                                arrowprops=dict(arrowstyle="->", lw=2, color="red"))
+            x_pos += n_boxes*(bw+sp) + 0.5
+
+        add_title_box(ax, 7, 5.5, "Orbital Box Diagram -- Unknown Element", fontsize=16)
+        ax.annotate("", xy=(0.2, 5.0), xytext=(0.2, 1.5),
+                    arrowprops=dict(arrowstyle="->", lw=2.5, color="gray"))
+        ax.text(0.2-0.8, 3.25, "Energy", rotation=90, va="center", ha="center",
+                fontsize=14, fontweight="bold", color="gray")
+
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
 
 
@@ -338,21 +300,15 @@ class Chem004:
     """
     
     def __init__(self):
-        particles = ["proton", "neutron", "electron"]
-        rnd.shuffle(particles)
-        
-        self.path_assignments = dict(zip(['A', 'B', 'C'], particles))
-        self.asked_particle = rnd.choice(particles)
-        
-        for path, particle in self.path_assignments.items():
-            if particle == self.asked_particle:
-                self.answer = path
-                break
+        self.q_mC = rnd.randint(1, 9)          # charge in mC (displayed)
+        self.E_NC = rnd.randint(100, 900)       # field strength in N/C (displayed)
+        self.F_N = round(self.q_mC / 1000 * self.E_NC, 3)   # force in N
+        self.answer = self.F_N
         
         self.description = (
-            f"The diagram shows three beams of particles (A, B, and C) passing through an electric field "
-            f"between two charged plates. All particles have the same initial velocity. "
-            f"Which path corresponds to the beam of {self.asked_particle}s?"
+            f"The diagram shows a charged particle in a uniform electric field. "
+            f"The charge and field strength are labelled on the diagram. "
+            f"Calculate the electrostatic force on the particle (in N, to 3 d.p.)."
         )
         
         self.topic = "Atomic structure"
@@ -360,82 +316,43 @@ class Chem004:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
         
-        deflection_info = {
-            "proton": "deflects towards negative plate (positive charge)",
-            "neutron": "no deflection (no charge)",
-            "electron": "deflects strongly towards positive plate (negative charge, small mass)"
-        }
-        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{In an electric field:}} &\\\\"
-            f"\\text{{- Protons: positive charge, deflect towards negative plate}} &\\\\"
-            f"\\text{{- Neutrons: no charge, no deflection (straight path)}} &\\\\"
-            f"\\text{{- Electrons: negative charge, deflect towards positive plate}} &\\\\"
-            f"\\text{{  (Greater deflection due to smaller mass)}} &\\\\"
-            f"\\text{{The {self.asked_particle} {deflection_info[self.asked_particle]}.}} &\\\\"
-            f"\\text{{Therefore, the {self.asked_particle} follows path {self.answer}.}}"
+            "F &= qE\\\\"
+            f"q &= {self.q_mC}\\,\\text{{mC}} = {self.q_mC / 1000}\\,\\text{{C}}\\\\"
+            f"E &= {self.E_NC}\\,\\text{{N C}}^{{-1}}\\\\"
+            f"F &= {self.q_mC / 1000} \\times {self.E_NC} = {self.F_N}\\,\\text{{N}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 10)
+        fig, ax = plt.subplots(figsize=(11, 8))
+        ax.set_xlim(0, 11)
+        ax.set_ylim(0, 9)
         ax.axis('off')
         
-        plate_length = 4
-        plate_x_start = 4
-        plate_x_end = plate_x_start + plate_length
+        add_title_box(ax, 5.5, 8.5, 'Charged Particle in an Electric Field', fontsize=14)
         
-        ax.plot([plate_x_start, plate_x_end], [8, 8], 'r-', linewidth=8)
-        ax.text(plate_x_start - 0.5, 8, '+', fontsize=24, color='red', ha='center', va='center', fontweight='bold')
-        ax.text(plate_x_end + 0.5, 8, '+', fontsize=24, color='red', ha='center', va='center', fontweight='bold')
+        # Plates
+        ax.plot([3, 8], [7.5, 7.5], 'r-', linewidth=8)
+        ax.text(2.3, 7.5, '+', fontsize=22, color='red', ha='center', va='center', fontweight='bold')
+        ax.plot([3, 8], [1.5, 1.5], 'b-', linewidth=8)
+        ax.text(2.3, 1.5, '−', fontsize=22, color='blue', ha='center', va='center', fontweight='bold')
         
-        ax.plot([plate_x_start, plate_x_end], [2, 2], 'b-', linewidth=8)
-        ax.text(plate_x_start - 0.5, 2, '−', fontsize=24, color='blue', ha='center', va='center', fontweight='bold')
-        ax.text(plate_x_end + 0.5, 2, '−', fontsize=24, color='blue', ha='center', va='center', fontweight='bold')
+        ax.text(5.5, 7.2, f'E = {self.E_NC} N C⁻¹', fontsize=12, ha='center', color='gray',
+               bbox=dict(boxstyle='round', facecolor='lightyellow'))
         
-        entry_x = 2
-        entry_y = 5
-        
-        for path_label in ['A', 'B', 'C']:
-            particle = self.path_assignments[path_label]
-            
-            if particle == "neutron":
-                x_coords = [entry_x, 10]
-                y_coords = [entry_y, entry_y]
-                color = 'green'
-            elif particle == "electron":
-                x_coords = np.linspace(entry_x, 10, 100)
-                y_coords = entry_y + 2.5 * ((x_coords - entry_x) / 8) ** 2
-                color = 'purple'
-            else:
-                x_coords = np.linspace(entry_x, 10, 100)
-                y_coords = entry_y - 1.2 * ((x_coords - entry_x) / 8) ** 2
-                color = 'orange'
-            
-            ax.plot(x_coords, y_coords, color=color, linewidth=2.5)
-            
-            if isinstance(x_coords, np.ndarray):
-                end_x, end_y = x_coords[-1], y_coords[-1]
-            else:
-                end_x, end_y = x_coords[-1], y_coords[-1]
-            
-            ax.text(end_x + 0.3, end_y, path_label, fontsize=16, fontweight='bold', 
-                   va='center', ha='left')
-        
-        draw_arrow(ax, 0.5, entry_y, entry_x, entry_y, arrowstyle='->', 
-                  color='black', linewidth=2, mutation_scale=20)
-        ax.text(0.5, entry_y + 0.5, 'Beam of\nparticles', fontsize=12, ha='center')
-        
-        for x in np.linspace(plate_x_start + 0.5, plate_x_end - 0.5, 4):
-            ax.annotate('', xy=(x, 2.5), xytext=(x, 7.5),
+        # Field arrows
+        for x in np.linspace(3.5, 7.5, 4):
+            ax.annotate('', xy=(x, 2.0), xytext=(x, 7.0),
                        arrowprops=dict(arrowstyle='->', lw=1.5, color='gray', alpha=0.5))
-        ax.text((plate_x_start + plate_x_end) / 2, 5, 'E', fontsize=14, 
-               ha='center', va='center', color='gray', style='italic')
         
-        ax.set_title('Deflection of Particles in an Electric Field', fontsize=16, pad=20)
+        # Particle
+        draw_circle_atom(ax, 5.5, 4.5, f'q = {self.q_mC} mC', radius=0.6,
+                        color='lightcoral', text_color='black')
+        
+        ax.text(5.5, 3.0, f'F = q × E = ?', fontsize=13, ha='center', fontweight='bold',
+               color='navy', bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='navy'))
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -463,7 +380,9 @@ class Chem005:
         
         self.period = rnd.choice([2, 3])
         self.elements = period_data[self.period]["elements"]
-        self.IE_values = period_data[self.period]["IE"]
+        raw_IE = period_data[self.period]["IE"]
+        # Perturb +-5% so graph varies meaningfully across instances
+        self.IE_values = [round(v * rnd.uniform(0.95, 1.05)) for v in raw_IE]
         
         if self.period == 2:
             anomaly_elements = ["B", "O"]
@@ -484,12 +403,12 @@ class Chem005:
         anomaly_idx = self.elements.index(self.anomaly_element)
         self.prev_element = self.elements[anomaly_idx - 1]
         
-        self.answer = self.explanation
+        self.answer = self.IE_values[anomaly_idx]  # numerical: IE of anomaly element read from graph
         
         self.description = (
             f"The graph shows the first ionisation energies of the elements in Period {self.period}. "
-            f"Explain why the first ionisation energy of {self.anomaly_element} is lower than "
-            f"that of {self.prev_element}."
+            f"Use the graph to state the first ionisation energy of {self.anomaly_element} "
+            f"(in kJ mol⁻¹, to the nearest whole number)."
         )
         
         self.topic = "Atomic structure"
@@ -499,12 +418,8 @@ class Chem005:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{General trend: IE increases across a period due to:}} &\\\\"
-            f"\\text{{- Increasing nuclear charge}} &\\\\"
-            f"\\text{{- Decreasing atomic radius}} &\\\\"
-            f"\\text{{- Similar shielding (same shell)}} &\\\\"
-            f"\\text{{Anomaly at {self.anomaly_element}:}} &\\\\"
-            f"\\text{{{self.explanation}}}"
+            f"\\text{{Read the first IE of {self.anomaly_element} from the graph:}} &\\\\"
+            f"\\text{{The data point for {self.anomaly_element} is at }} {self.answer}\\,\\text{{kJ mol}}^{{-1}}"
             "\\end{aligned}\\]"
         )
     
@@ -545,7 +460,7 @@ class Chem006:
     """
     
     def __init__(self):
-        self.atomic_number = rnd.randint(11, 36)
+        self.atomic_number = rnd.randint(3, 54)
         self.config = self._get_electron_config(self.atomic_number)
         self.answer = f"{self.atomic_number}"
         
@@ -704,72 +619,73 @@ class Chem006:
 
 class Chem007:
     """
-    Chapter 2.1: Relative masses (Ar calculation from mass spectrum)
+    Topic: 2.1 Relative masses — Ar from mass spectrum
+    Visual: Mass spectrum with randomised peak heights (abundance ±6%)
+    Task: Calculate Ar from m/z peak heights read off the spectrum
+    Variance: 7 elements × continuous abundance perturbation → effectively infinite
     """
-    
+
     def __init__(self):
-        self.element_choices = [
-            {'name': 'Chlorine', 'isotopes': [(35, 75.8), (37, 24.2)]},
-            {'name': 'Boron', 'isotopes': [(10, 19.9), (11, 80.1)]},
-            {'name': 'Copper', 'isotopes': [(63, 69.2), (65, 30.8)]},
-            {'name': 'Bromine', 'isotopes': [(79, 50.7), (81, 49.3)]},
+        element_pool = [
+            {'name': 'Chlorine',  'isotopes': [(35, 75.8),  (37, 24.2)]},
+            {'name': 'Boron',     'isotopes': [(10, 19.9),  (11, 80.1)]},
+            {'name': 'Copper',    'isotopes': [(63, 69.2),  (65, 30.8)]},
+            {'name': 'Bromine',   'isotopes': [(79, 50.7),  (81, 49.3)]},
+            {'name': 'Gallium',   'isotopes': [(69, 60.1),  (71, 39.9)]},
+            {'name': 'Lithium',   'isotopes': [(6,   7.6),  (7,  92.4)]},
+            {'name': 'Silver',    'isotopes': [(107, 51.8), (109, 48.2)]},
         ]
-        
-        self.element = rnd.choice(self.element_choices)
-        self.isotopes = self.element['isotopes']
-        
-        total = sum(mass * abundance for mass, abundance in self.isotopes)
+
+        base = rnd.choice(element_pool)
+        # Perturb first isotope abundance ±6 percentage points (clamped 5–95)
+        base_ab = base['isotopes'][0][1]
+        ab1 = round(max(5.0, min(95.0, base_ab + rnd.uniform(-6, 6))), 1)
+        ab2 = round(100.0 - ab1, 1)
+        self.element  = base
+        self.isotopes = [(base['isotopes'][0][0], ab1),
+                         (base['isotopes'][1][0], ab2)]
+
+        total = sum(m * a for m, a in self.isotopes)
         self.answer = round(total / 100, 2)
-        
+
         self.description = (
-            f"The mass spectrum of {self.element['name']} is shown in the diagram. "
-            f"Calculate the relative atomic mass (Ar) of {self.element['name']}."
+            f"The mass spectrum of {self.element['name']} is shown. "
+            f"Read the relative intensities from the diagram and calculate "
+            f"the relative atomic mass (Ar) of {self.element['name']}."
         )
-        
-        self.topic = "Atoms, molecules and stoichiometry"
-        self.subtopic = "Relative masses"
-        self.source = "Adapted from Cambridge A-Level Chemistry 9701 past papers"
+
+        self.topic      = "Atoms, molecules and stoichiometry"
+        self.subtopic   = "Relative masses"
+        self.source     = "Adapted from Cambridge A-Level Chemistry 9701 past papers"
         self.curriculum = "A-Level"
-        
+
+        calc_parts = " + ".join(
+            f"({m} × {a})" for m, a in self.isotopes)
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Relative atomic mass is calculated using:}} &\\\\"
-            "\\text{Ar} &= \\frac{\\sum (\\text{isotope mass} \\times \\text{\\% abundance})}{100}\\\\"
-        )
-        
-        for i, (mass, abundance) in enumerate(self.isotopes):
-            if i == 0:
-                self.reasoning += f"&= \\frac{{({mass} \\times {abundance})"
-            else:
-                self.reasoning += f" + ({mass} \\times {abundance})"
-        
-        self.reasoning += "}{100}\\\\"
-        
-        sum_products = sum(mass * abundance for mass, abundance in self.isotopes)
-        self.reasoning += (
-            f"&= \\frac{{{round(sum_products, 2)}}}{{100}}\\\\"
+            f"A_r &= \\frac{{\\sum(\\text{{isotope mass}} \\times \\text{{abundance}})}}{{100}}\\\\"
+            f"&= \\frac{{{calc_parts}}}{{100}}\\\\"
+            f"&= \\frac{{{round(total, 2)}}}{{100}}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 8))
-        
+
         for mass, abundance in self.isotopes:
-            draw_mass_spectrum_peak(ax, mass, abundance, width=0.8, 
-                                   color='darkblue')
-        
-        ax.set_xlabel('m/z (mass-to-charge ratio)', fontsize=14, fontweight='bold')
-        ax.set_ylabel('Relative Intensity (%)', fontsize=14, fontweight='bold')
-        ax.set_title(f'Mass Spectrum of {self.element["name"]}', 
-                    fontsize=16, fontweight='bold')
-        
+            draw_mass_spectrum_peak(ax, mass, abundance, width=0.8, color='darkblue')
+
         masses = [iso[0] for iso in self.isotopes]
+        ax.set_xlabel('m/z (mass-to-charge ratio)', fontsize=14, fontweight='bold')
+        ax.set_ylabel('Relative Intensity (%)',     fontsize=14, fontweight='bold')
+        ax.set_title(f'Mass Spectrum of {self.element["name"]}',
+                     fontsize=16, fontweight='bold')
         ax.set_xlim(min(masses) - 2, max(masses) + 2)
         ax.set_ylim(0, 110)
         ax.grid(axis='y', alpha=0.3, linestyle='--')
         ax.set_axisbelow(True)
-        
+
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -783,17 +699,27 @@ class Chem008:
     def __init__(self):
         compound_choices = [
             {'formula': 'C₂H₆O', 'elements': {'C': 52.1, 'H': 13.1, 'O': 34.8}},
-            {'formula': 'CH₄O', 'elements': {'C': 37.5, 'H': 12.5, 'O': 50.0}},
-            {'formula': 'C₃H₈', 'elements': {'C': 81.8, 'H': 18.2}},
+            {'formula': 'CH₄O',  'elements': {'C': 37.5, 'H': 12.5, 'O': 50.0}},
+            {'formula': 'C₃H₈',  'elements': {'C': 81.8, 'H': 18.2}},
+            {'formula': 'C₂H₄O', 'elements': {'C': 54.5, 'H': 9.1,  'O': 36.4}},
+            {'formula': 'C₃H₆O', 'elements': {'C': 62.1, 'H': 10.3, 'O': 27.6}},
+            {'formula': 'CH₂O',  'elements': {'C': 40.0, 'H': 6.7,  'O': 53.3}},
+            {'formula': 'C₄H₈O', 'elements': {'C': 66.6, 'H': 11.1, 'O': 22.2}},
+            {'formula': 'C₂H₂',  'elements': {'C': 92.3, 'H': 7.7}},
+            {'formula': 'C₃H₄O', 'elements': {'C': 64.3, 'H': 7.1,  'O': 28.6}},
+            {'formula': 'C₄H₁₀', 'elements': {'C': 82.8, 'H': 17.2}},
         ]
         
         self.compound = rnd.choice(compound_choices)
         self.elements = self.compound['elements']
-        self.answer = self.compound['formula']
+        # Answer: moles of C atoms in 100 g = %C / Mr(C) = %C / 12
+        self.moles_C = round(self.elements['C'] / 12, 2)
+        self.answer = self.moles_C
         
         self.description = (
             "The pie chart shows the percentage composition by mass of a compound. "
-            "Determine the empirical formula."
+            "How many moles of carbon atoms are present in 100 g of this compound? "
+            "(Give your answer to 2 decimal places.)"
         )
         
         self.topic = "Atoms, molecules and stoichiometry"
@@ -801,29 +727,11 @@ class Chem008:
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
         
-        atomic_masses = {'C': 12, 'H': 1, 'O': 16, 'N': 14}
-        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Step 1: Convert mass percentages to moles} &\\\\"
-        )
-        
-        moles = {}
-        for elem, percent in self.elements.items():
-            mole = percent / atomic_masses[elem]
-            moles[elem] = mole
-            self.reasoning += f"\\text{{Moles of {elem}}} &= \\frac{{{percent}}}{{{atomic_masses[elem]}}} = {round(mole, 3)}\\\\"
-        
-        min_moles = min(moles.values())
-        
-        self.reasoning += "\\text{Step 2: Divide by smallest number of moles} &\\\\"
-        
-        for elem, mole in moles.items():
-            ratio = mole / min_moles
-            self.reasoning += f"\\text{{Ratio of {elem}}} &= \\frac{{{round(mole, 3)}}}{{{round(min_moles, 3)}}} = {round(ratio, 1)}\\\\"
-        
-        self.reasoning += (
-            f"\\text{{Empirical formula}} &= {self.answer}"
+            "\\text{Moles of C in 100 g} &= \\frac{\\%\\text{C}}{M_r(\\text{C})}\\\\"
+            f"&= \\frac{{{self.elements['C']}}}{{12}}\\\\"
+            f"&= {self.answer}\\,\\text{{mol}}"
             "\\end{aligned}\\]"
         )
     
@@ -863,21 +771,27 @@ class Chem009:
     
     def __init__(self):
         reactions = [
-            {'equation': '2H₂ + O₂ → 2H₂O', 'reactants': ['H₂', 'O₂'], 'stoich': [2, 1]},
-            {'equation': 'N₂ + 3H₂ → 2NH₃', 'reactants': ['N₂', 'H₂'], 'stoich': [1, 3]},
-            {'equation': 'C + O₂ → CO₂', 'reactants': ['C', 'O₂'], 'stoich': [1, 1]},
+            {'equation': '2H₂ + O₂ → 2H₂O',  'reactants': ['H₂', 'O₂'], 'stoich': [2, 1], 'product': 'H₂O',  'prod_stoich': 2},
+            {'equation': 'N₂ + 3H₂ → 2NH₃',   'reactants': ['N₂', 'H₂'], 'stoich': [1, 3], 'product': 'NH₃',  'prod_stoich': 2},
+            {'equation': 'C + O₂ → CO₂',       'reactants': ['C', 'O₂'],  'stoich': [1, 1], 'product': 'CO₂',  'prod_stoich': 1},
+            {'equation': '2CO + O₂ → 2CO₂',    'reactants': ['CO', 'O₂'], 'stoich': [2, 1], 'product': 'CO₂',  'prod_stoich': 2},
+            {'equation': 'H₂ + Cl₂ → 2HCl',    'reactants': ['H₂', 'Cl₂'],'stoich': [1, 1], 'product': 'HCl',  'prod_stoich': 2},
+            {'equation': '3H₂ + N₂ → 2NH₃',    'reactants': ['H₂', 'N₂'], 'stoich': [3, 1], 'product': 'NH₃',  'prod_stoich': 2},
+            {'equation': '2H₂ + CO → CH₃OH',   'reactants': ['H₂', 'CO'], 'stoich': [2, 1], 'product': 'CH₃OH','prod_stoich': 1},
         ]
         
         self.reaction = rnd.choice(reactions)
-        self.moles = [rnd.uniform(0.5, 3.0) for _ in self.reaction['reactants']]
+        self.moles = [round(rnd.uniform(0.5, 3.0), 2) for _ in self.reaction['reactants']]
         
         ratios = [m / s for m, s in zip(self.moles, self.reaction['stoich'])]
-        limiting_idx = ratios.index(min(ratios))
-        self.answer = self.reaction['reactants'][limiting_idx]
+        limiting_ratio = min(ratios)
+        self.moles_product = round(limiting_ratio * self.reaction['prod_stoich'], 3)
+        self.answer = self.moles_product
         
         self.description = (
             f"The balanced equation is: {self.reaction['equation']}. "
-            f"Initial moles are shown in the diagram. Identify the limiting reagent."
+            f"The initial moles of each reactant are shown in the diagram. "
+            f"Calculate the maximum number of moles of {self.reaction['product']} that can be formed."
         )
         
         self.topic = "Atoms, molecules and stoichiometry"
@@ -888,18 +802,15 @@ class Chem009:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Balanced equation: {self.reaction['equation']}}} &\\\\"
-            "\\text{Determine limiting reagent by comparing mole ratios:} &\\\\"
+            "\\text{Find mole ratios for each reactant:} &\\\\"
         )
         
-        for i, (reactant, mole, stoich) in enumerate(zip(self.reaction['reactants'], 
-                                                         self.moles, self.reaction['stoich'])):
-            ratio = mole / stoich
-            self.reasoning += (
-                f"\\text{{For {reactant}: }} \\frac{{{round(mole, 2)}}}{{{stoich}}} &= {round(ratio, 3)}\\\\"
-            )
+        for reactant, mole, stoich in zip(self.reaction['reactants'], self.moles, self.reaction['stoich']):
+            self.reasoning += f"\\text{{For {reactant}: }} \\frac{{{mole}}}{{{stoich}}} &= {round(mole/stoich, 3)}\\\\"
         
         self.reasoning += (
-            f"\\text{{Smallest ratio indicates limiting reagent: {self.answer}}}"
+            f"\\text{{Limiting ratio}} &= {round(limiting_ratio, 3)}\\\\"
+            f"\\text{{Moles of {self.reaction['product']}}} &= {round(limiting_ratio, 3)} \\times {self.reaction['prod_stoich']} = {self.answer}"
             "\\end{aligned}\\]"
         )
     
@@ -936,22 +847,38 @@ class Chem009:
 class Chem010:
     """
     Chapter 3.2: Polar bonds with electronegativity
+    Visual: Diatomic molecule with EN values shown; student identifies which atom bears δ-
+    Answer: A/B/C/D (multiple choice)
     """
     
     def __init__(self):
         self.molecules = [
             {'name': 'HCl', 'atoms': ['H', 'Cl'], 'EN': [2.1, 3.0]},
-            {'name': 'HF', 'atoms': ['H', 'F'], 'EN': [2.1, 4.0]},
+            {'name': 'HF',  'atoms': ['H', 'F'],  'EN': [2.1, 4.0]},
             {'name': 'HBr', 'atoms': ['H', 'Br'], 'EN': [2.1, 2.8]},
+            {'name': 'HI',  'atoms': ['H', 'I'],  'EN': [2.1, 2.5]},
+            {'name': 'CO',  'atoms': ['C', 'O'],  'EN': [2.5, 3.4]},
+            {'name': 'NO',  'atoms': ['N', 'O'],  'EN': [3.0, 3.4]},
+            {'name': 'ClF', 'atoms': ['Cl', 'F'], 'EN': [3.0, 4.0]},
+            {'name': 'BrCl','atoms': ['Br', 'Cl'],'EN': [2.8, 3.0]},
+            {'name': 'ICl', 'atoms': ['I', 'Cl'], 'EN': [2.5, 3.0]},
+            {'name': 'BrF', 'atoms': ['Br', 'F'], 'EN': [2.8, 4.0]},
+            {'name': 'NF',  'atoms': ['N', 'F'],  'EN': [3.0, 4.0]},
+            {'name': 'PH',  'atoms': ['P', 'H'],  'EN': [2.1, 2.1]},
         ]
         
         self.molecule = rnd.choice(self.molecules)
-        self.delta_EN = abs(self.molecule['EN'][1] - self.molecule['EN'][0])
-        self.answer = f"δ+ on {self.molecule['atoms'][0]}, δ- on {self.molecule['atoms'][1]}"
+        self.delta_EN = round(abs(self.molecule['EN'][1] - self.molecule['EN'][0]), 1)
+
+        atom0, atom1 = self.molecule['atoms']
+        en0, en1 = self.molecule['EN']
+        
+        self.answer = self.delta_EN
         
         self.description = (
-            f"The diagram shows the {self.molecule['name']} molecule with electronegativity values. "
-            f"Identify the partial charges on each atom."
+            f"The diagram shows the {self.molecule['name']} molecule with electronegativity (EN) "
+            f"values labelled on each atom. Calculate the electronegativity difference "
+            f"ΔEN = |EN₂ − EN₁| between the two atoms."
         )
         
         self.topic = "Chemical bonding"
@@ -961,12 +888,9 @@ class Chem010:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Electronegativity of {self.molecule['atoms'][0]}}} &= {self.molecule['EN'][0]}\\\\"
-            f"\\text{{Electronegativity of {self.molecule['atoms'][1]}}} &= {self.molecule['EN'][1]}\\\\"
-            f"\\Delta EN &= |{self.molecule['EN'][1]} - {self.molecule['EN'][0]}| = {round(self.delta_EN, 2)}\\\\"
-            f"\\text{{Since {self.molecule['atoms'][1]} is more electronegative:}} &\\\\"
-            f"\\text{{{self.molecule['atoms'][1]} has partial negative charge (δ-)}} &\\\\"
-            f"\\text{{{self.molecule['atoms'][0]} has partial positive charge (δ+)}} &"
+            f"\\text{{Electronegativity of {atom0}}} &= {en0}\\\\"
+            f"\\text{{Electronegativity of {atom1}}} &= {en1}\\\\"
+            f"\\Delta EN &= |{en1} - {en0}| = {self.delta_EN}"
             "\\end{aligned}\\]"
         )
     
@@ -988,19 +912,15 @@ class Chem010:
         
         draw_bond(ax, x1+0.5, y1, x2-0.5, y2, bond_type='single', linewidth=4)
         
-        add_charge_label(ax, x1, y1+0.8, 'δ+', fontsize=16, color='blue')
-        add_charge_label(ax, x2, y2+0.8, 'δ-', fontsize=16, color='red')
-        
+        # Show EN values — student computes ΔEN from these
         ax.text(x1, y1-0.9, f'EN = {self.molecule["EN"][0]}', 
                fontsize=12, ha='center', fontweight='bold')
         ax.text(x2, y2-0.9, f'EN = {self.molecule["EN"][1]}', 
                fontsize=12, ha='center', fontweight='bold')
         
-        mid_x = (x1 + x2) / 2
-        draw_arrow(ax, mid_x-0.5, y1-0.3, mid_x+0.5, y2-0.3, 
-                  arrowstyle='->', color='green', linewidth=2, mutation_scale=20)
-        ax.text(mid_x, y1-0.6, 'Dipole', fontsize=11, ha='center', 
-               color='green', fontweight='bold')
+        ax.text(5, 2.2, 'Calculate ΔEN = |EN₂ − EN₁|', fontsize=13, ha='center',
+               fontweight='bold', color='navy',
+               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='navy'))
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1009,234 +929,307 @@ class Chem010:
 
 class Chem011:
     """
-    Chapter 3.3: 3D tetrahedral structure (CH₄)
+    Topic: 3.3 Shapes of molecules (VSEPR) -- tetrahedral
+    Visual: 3D AX4 structure; atom labels show "A (m)" on center, "B (m)" on terminals.
+            Molecule formula NOT given; student must count bonds from 3D structure.
+    Task:   Count bonds (= 4), read Ar(A) and Ar(B) from diagram, compute Mr = Ar_A + 4*Ar_B
+    Variables: m_center = rnd.randint(4,100), m_terminal = rnd.randint(1,60)
     """
-    
+
     def __init__(self):
-        self.molecule = 'CH₄'
-        self.bond_angle = 109.5
-        self.shape = 'Tetrahedral'
-        self.answer = f'{self.bond_angle}°'
-        
+        self.m_center   = rnd.randint(4, 100)
+        self.m_terminal = rnd.randint(1, 60)
+        self.n_bonds    = 4
+        self.answer     = self.m_center + self.n_bonds * self.m_terminal
         self.description = (
-            f"The 3D structure of {self.molecule} is shown. "
-            f"State the H-C-H bond angle."
+            "A 3D ball-and-stick structure of a molecule is shown. "
+            "The relative atomic mass of each atom type is labelled on the diagram. "
+            "Count the number of bonds from the 3D structure and calculate "
+            "the relative molecular mass (Mr) of the molecule."
         )
-        
-        self.topic = "Chemical bonding"
-        self.subtopic = "Shapes of molecules (VSEPR)"
-        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.topic      = "Chemical bonding"
+        self.subtopic   = "Shapes of molecules (VSEPR) -- tetrahedral"
+        self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
-        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Molecule: {self.molecule}}} &\\\\"
-            "\\text{Central atom: C with 4 bonding pairs, 0 lone pairs} &\\\\"
-            f"\\text{{VSEPR shape: {self.shape}}} &\\\\"
-            f"\\text{{Bond angle}} &= {self.bond_angle}°"
+            f"\\text{{Shape: tetrahedral}} \\Rightarrow 4 \\text{{ bonds}} &\\\\"
+            f"A_r(A) = {self.m_center},\\; A_r(B) = {self.m_terminal} &\\\\"
+            f"M_r &= {self.m_center} + 4 \\times {self.m_terminal} = {self.answer}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
         fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111, projection='3d')
-        
-        central = np.array([0, 0, 0])
-        
-        angle = np.radians(109.5)
-        r = 1.5
-        
-        h_positions = [
+        ax  = fig.add_subplot(111, projection="3d")
+
+        angle = np.radians(109.5); r = 1.5
+        central   = np.array([0, 0, 0])
+        terminals = [
             np.array([r, 0, 0]),
-            np.array([-r*np.cos(angle), r*np.sin(angle), 0]),
-            np.array([-r*np.cos(angle), -r*np.sin(angle)*np.cos(np.pi/3), r*np.sin(angle)*np.sin(np.pi/3)]),
-            np.array([-r*np.cos(angle), -r*np.sin(angle)*np.cos(np.pi/3), -r*np.sin(angle)*np.sin(np.pi/3)]),
+            np.array([-r*np.cos(angle),  r*np.sin(angle), 0]),
+            np.array([-r*np.cos(angle), -r*np.sin(angle)*np.cos(np.pi/3),
+                       r*np.sin(angle)*np.sin(np.pi/3)]),
+            np.array([-r*np.cos(angle), -r*np.sin(angle)*np.cos(np.pi/3),
+                      -r*np.sin(angle)*np.sin(np.pi/3)]),
         ]
-        
-        atom_positions = [central] + h_positions
-        bonds = [(0, 1), (0, 2), (0, 3), (0, 4)]
-        labels = ['C'] + ['H'] * 4
-        colors = ['black'] + ['lightblue'] * 4
-        
-        draw_3d_molecule(ax, atom_positions, bonds, labels=labels, 
-                        atom_colors=colors, radius=0.3)
-        
-        ax.text(0, 0, -2.5, f'Shape: {self.shape}', fontsize=14, 
-               ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black'))
-        
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(-2, 2)
-        ax.set_zlim(-3, 2)
-        
+        atom_positions = [central] + terminals
+        bonds  = [(0,1),(0,2),(0,3),(0,4)]
+        labels = [f"A ({self.m_center})"] + [f"B ({self.m_terminal})"]*4
+        colors = ["tomato"] + ["steelblue"]*4
+
+        draw_3d_molecule(ax, atom_positions, bonds, labels=labels,
+                         atom_colors=colors, radius=0.3)
+
+        ax.text2D(0.05, 0.97,
+                  f"Ar(A) = {self.m_center}    Ar(B) = {self.m_terminal}",
+                  transform=ax.transAxes, fontsize=13, fontweight="bold",
+                  bbox=dict(boxstyle="round", facecolor="lightyellow", edgecolor="black"))
+
+        ax.text(0, 0, -2.8,
+                "Calculate the Mr of this molecule (read atom labels from diagram)",
+                fontsize=11, ha="center", fontweight="bold",
+                bbox=dict(boxstyle="round", facecolor="white", edgecolor="black"))
+
+        ax.set_xlim(-2,2); ax.set_ylim(-2,2); ax.set_zlim(-3,2)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
 
 
 class Chem012:
     """
-    Chapter 3.3: 3D trigonal pyramidal (NH₃)
+    Topic: 3.3 Shapes of molecules (VSEPR) -- trigonal pyramidal
+    Visual: 3D AX3 structure with lone pair; Ar values on atom labels; formula hidden.
+    Task:   Count bonds (= 3), read Ar(A) and Ar(B), compute Mr = Ar_A + 3*Ar_B
+    Variables: m_center = rnd.randint(4,100), m_terminal = rnd.randint(1,60)
     """
-    
+
     def __init__(self):
-        self.molecule = 'NH₃'
-        self.bond_angle = 107
-        self.shape = 'Trigonal Pyramidal'
-        self.answer = f'{self.bond_angle}°'
-        
+        self.m_center   = rnd.randint(4, 100)
+        self.m_terminal = rnd.randint(1, 60)
+        self.n_bonds    = 3
+        self.answer     = self.m_center + self.n_bonds * self.m_terminal
         self.description = (
-            f"The 3D structure of {self.molecule} is shown with one lone pair. "
-            f"State the H-N-H bond angle."
+            "A 3D ball-and-stick structure of a molecule is shown with one lone pair indicated. "
+            "The relative atomic mass of each atom type is labelled on the diagram. "
+            "Count the number of bonds from the 3D structure and calculate "
+            "the relative molecular mass (Mr) of the molecule."
         )
-        
-        self.topic = "Chemical bonding"
-        self.subtopic = "Shapes of molecules (VSEPR)"
-        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.topic      = "Chemical bonding"
+        self.subtopic   = "Shapes of molecules (VSEPR) -- trigonal pyramidal"
+        self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
-        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Molecule: {self.molecule}}} &\\\\"
-            "\\text{Central atom: N with 3 bonding pairs, 1 lone pair} &\\\\"
-            f"\\text{{VSEPR shape: {self.shape}}} &\\\\"
-            "\\text{Lone pair repulsion reduces bond angle from 109.5° to:} &\\\\"
-            f"\\text{{Bond angle}} &\\approx {self.bond_angle}°"
+            f"\\text{{Shape: trigonal pyramidal}} \\Rightarrow 3 \\text{{ bonds}} &\\\\"
+            f"A_r(A) = {self.m_center},\\; A_r(B) = {self.m_terminal} &\\\\"
+            f"M_r &= {self.m_center} + 3 \\times {self.m_terminal} = {self.answer}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
         fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111, projection='3d')
-        
-        central = np.array([0, 0, 0])
-        r = 1.5
-        
-        h_positions = [
+        ax  = fig.add_subplot(111, projection="3d")
+
+        central   = np.array([0, 0, 0]); r = 1.5
+        terminals = [
             np.array([r, 0, -0.3]),
-            np.array([-r*np.cos(np.radians(120)), r*np.sin(np.radians(120)), -0.3]),
+            np.array([-r*np.cos(np.radians(120)),  r*np.sin(np.radians(120)), -0.3]),
             np.array([-r*np.cos(np.radians(120)), -r*np.sin(np.radians(120)), -0.3]),
         ]
-        
-        lone_pair_pos = np.array([0, 0, 1.2])
-        
-        atom_positions = [central] + h_positions
-        bonds = [(0, 1), (0, 2), (0, 3)]
-        labels = ['N'] + ['H'] * 3
-        colors = ['blue'] + ['lightblue'] * 3
-        
-        draw_3d_molecule(ax, atom_positions, bonds, labels=labels, 
-                        atom_colors=colors, radius=0.3)
-        
-        ax.plot([central[0], lone_pair_pos[0]], 
-               [central[1], lone_pair_pos[1]], 
-               [central[2], lone_pair_pos[2]], 
-               'r--', linewidth=2, alpha=0.5)
-        ax.text(lone_pair_pos[0], lone_pair_pos[1], lone_pair_pos[2]+0.2, 
-               'Lone\nPair', fontsize=11, ha='center', color='red', fontweight='bold')
-        
-        ax.text(0, 0, -2.5, f'Shape: {self.shape}', fontsize=14, 
-               ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black'))
-        
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(-2, 2)
-        ax.set_zlim(-3, 2)
-        
+        lone_pair = np.array([0, 0, 1.2])
+
+        atom_positions = [central] + terminals
+        bonds  = [(0,1),(0,2),(0,3)]
+        labels = [f"A ({self.m_center})"] + [f"B ({self.m_terminal})"]*3
+        colors = ["tomato"] + ["steelblue"]*3
+
+        draw_3d_molecule(ax, atom_positions, bonds, labels=labels,
+                         atom_colors=colors, radius=0.3)
+
+        ax.plot([central[0], lone_pair[0]],
+                [central[1], lone_pair[1]],
+                [central[2], lone_pair[2]], "r--", lw=2, alpha=0.5)
+        ax.text(lone_pair[0], lone_pair[1], lone_pair[2]+0.2,
+                "Lone Pair", fontsize=11, ha="center", color="red", fontweight="bold")
+
+        ax.text2D(0.05, 0.97,
+                  f"Ar(A) = {self.m_center}    Ar(B) = {self.m_terminal}",
+                  transform=ax.transAxes, fontsize=13, fontweight="bold",
+                  bbox=dict(boxstyle="round", facecolor="lightyellow", edgecolor="black"))
+
+        ax.text(0, 0, -2.8,
+                "Calculate the Mr of this molecule (read atom labels from diagram)",
+                fontsize=11, ha="center", fontweight="bold",
+                bbox=dict(boxstyle="round", facecolor="white", edgecolor="black"))
+
+        ax.set_xlim(-2,2); ax.set_ylim(-2,2); ax.set_zlim(-3,2)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
 
 
 class Chem013:
     """
-    Chapter 3.3: 3D bent structure (H₂O)
+    Topic: 3.3 Shapes of molecules (VSEPR) -- bent/V-shaped
+    Visual: 3D AX2 structure with two lone pairs; Ar values on atom labels; formula hidden.
+    Task:   Count bonds (= 2), read Ar(A) and Ar(B), compute Mr = Ar_A + 2*Ar_B
+    Variables: m_center = rnd.randint(4,100), m_terminal = rnd.randint(1,60)
     """
-    
+
     def __init__(self):
-        self.molecule = 'H₂O'
+        self.m_center   = rnd.randint(4, 100)
+        self.m_terminal = rnd.randint(1, 60)
+        self.n_bonds    = 2
         self.bond_angle = 104.5
-        self.shape = 'Bent (V-shaped)'
-        self.answer = f'{self.bond_angle}°'
-        
+        self.answer     = self.m_center + self.n_bonds * self.m_terminal
         self.description = (
-            f"The 3D structure of {self.molecule} is shown with two lone pairs. "
-            f"State the H-O-H bond angle."
+            "A 3D ball-and-stick structure of a molecule is shown with two lone pairs indicated. "
+            "The relative atomic mass of each atom type is labelled on the diagram. "
+            "Count the number of bonds from the 3D structure and calculate "
+            "the relative molecular mass (Mr) of the molecule."
         )
-        
-        self.topic = "Chemical bonding"
-        self.subtopic = "Shapes of molecules (VSEPR)"
-        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.topic      = "Chemical bonding"
+        self.subtopic   = "Shapes of molecules (VSEPR) -- bent"
+        self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
-        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Molecule: {self.molecule}}} &\\\\"
-            "\\text{Central atom: O with 2 bonding pairs, 2 lone pairs} &\\\\"
-            f"\\text{{VSEPR shape: {self.shape}}} &\\\\"
-            "\\text{Two lone pairs cause greater repulsion:} &\\\\"
-            f"\\text{{Bond angle}} &\\approx {self.bond_angle}°"
+            f"\\text{{Shape: bent}} \\Rightarrow 2 \\text{{ bonds}} &\\\\"
+            f"A_r(A) = {self.m_center},\\; A_r(B) = {self.m_terminal} &\\\\"
+            f"M_r &= {self.m_center} + 2 \\times {self.m_terminal} = {self.answer}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
         fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111, projection='3d')
-        
-        central = np.array([0, 0, 0])
-        angle = np.radians(104.5)
-        r = 1.5
-        
-        h_positions = [
-            np.array([r*np.sin(angle/2), 0, -r*np.cos(angle/2)]),
+        ax  = fig.add_subplot(111, projection="3d")
+
+        central  = np.array([0, 0, 0])
+        angle    = np.radians(self.bond_angle); r = 1.5
+        terminals = [
+            np.array([ r*np.sin(angle/2), 0, -r*np.cos(angle/2)]),
             np.array([-r*np.sin(angle/2), 0, -r*np.cos(angle/2)]),
         ]
-        
-        lone_pair_pos1 = np.array([0.7, 0, 1.0])
-        lone_pair_pos2 = np.array([-0.7, 0, 1.0])
-        
-        atom_positions = [central] + h_positions
-        bonds = [(0, 1), (0, 2)]
-        labels = ['O'] + ['H'] * 2
-        colors = ['red'] + ['lightblue'] * 2
-        
-        draw_3d_molecule(ax, atom_positions, bonds, labels=labels, 
-                        atom_colors=colors, radius=0.3)
-        
-        for lp_pos in [lone_pair_pos1, lone_pair_pos2]:
-            ax.plot([central[0], lp_pos[0]], 
-                   [central[1], lp_pos[1]], 
-                   [central[2], lp_pos[2]], 
-                   'r--', linewidth=2, alpha=0.5)
-        
-        ax.text(0, 0, 1.5, 'Lone Pairs', fontsize=11, ha='center', 
-               color='red', fontweight='bold')
-        
-        ax.text(0, 0, -2.5, f'Shape: {self.shape}', fontsize=14, 
-               ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black'))
-        
-        ax.set_xlim(-2, 2)
-        ax.set_ylim(-2, 2)
-        ax.set_zlim(-3, 2)
-        
+        lp1 = np.array([ 0.7, 0, 1.0])
+        lp2 = np.array([-0.7, 0, 1.0])
+
+        atom_positions = [central] + terminals
+        bonds  = [(0,1),(0,2)]
+        labels = [f"A ({self.m_center})"] + [f"B ({self.m_terminal})"]*2
+        colors = ["tomato"] + ["steelblue"]*2
+
+        draw_3d_molecule(ax, atom_positions, bonds, labels=labels,
+                         atom_colors=colors, radius=0.3)
+
+        for lp in [lp1, lp2]:
+            ax.plot([central[0], lp[0]],
+                    [central[1], lp[1]],
+                    [central[2], lp[2]], "r--", lw=2, alpha=0.5)
+        ax.text(0, 0, 1.5, "Lone Pairs", fontsize=11, ha="center",
+                color="red", fontweight="bold")
+
+        ax.text2D(0.05, 0.97,
+                  f"Ar(A) = {self.m_center}    Ar(B) = {self.m_terminal}",
+                  transform=ax.transAxes, fontsize=13, fontweight="bold",
+                  bbox=dict(boxstyle="round", facecolor="lightyellow", edgecolor="black"))
+
+        ax.text(0, 0, -2.8,
+                "Calculate the Mr of this molecule (read atom labels from diagram)",
+                fontsize=11, ha="center", fontweight="bold",
+                bbox=dict(boxstyle="round", facecolor="white", edgecolor="black"))
+
+        ax.set_xlim(-2,2); ax.set_ylim(-2,2); ax.set_zlim(-3,2)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
 
 
 class Chem014:
     """
-    Chapter 3.4: Hydrogen bonding in water
+    Chapter 3.4: Hydrogen bonding in water/HF/ammonia
+    Visual: Diagram showing dashed hydrogen bond lines between molecules
+    Task: MC — identify IMF type, requirements, or effect
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.molecule = 'H₂O'
-        self.answer = 'Hydrogen bonds between O and H atoms of adjacent molecules'
+        molecules_data = [
+            {'name': 'water', 'formula': 'H₂O', 'donor': 'O–H', 'acceptor': 'O lone pair'},
+            {'name': 'hydrogen fluoride', 'formula': 'HF', 'donor': 'F–H', 'acceptor': 'F lone pair'},
+            {'name': 'ammonia', 'formula': 'NH₃', 'donor': 'N–H', 'acceptor': 'N lone pair'},
+        ]
+        
+        questions = [
+            {
+                'q': "What type of intermolecular force is shown as dashed lines?",
+                'correct': 'Hydrogen bonding',
+                'wrong': ['Van der Waals (London dispersion) forces', 'Ionic bonding',
+                          'Permanent dipole–dipole forces'],
+            },
+            {
+                'q': "Which element must be directly bonded to hydrogen for this interaction to occur?",
+                'correct': 'Nitrogen, Oxygen, or Fluorine (N, O, or F)',
+                'wrong': ['Carbon, Oxygen, or Chlorine', 'Any electronegative element',
+                          'Oxygen only'],
+            },
+            {
+                'q': "What feature on the acceptor molecule is involved in hydrogen bonding?",
+                'correct': 'A lone pair of electrons on a highly electronegative atom',
+                'wrong': ['A positive charge on the atom', 'A free radical on the atom',
+                          'A double bond'],
+            },
+            {
+                'q': "How is a hydrogen bond represented in diagrams?",
+                'correct': 'A dashed line between molecules',
+                'wrong': ['A solid line between atoms', 'A wavy arrow',
+                          'A double line between atoms'],
+            },
+            {
+                'q': "Why does water have an unusually high boiling point compared to H₂S?",
+                'correct': 'Water molecules form hydrogen bonds which require more energy to break',
+                'wrong': ['Water molecules are smaller', 'Water has stronger covalent bonds',
+                          'Water has more electron pairs'],
+            },
+            {
+                'q': "What partial charge does the hydrogen atom carry in a hydrogen bond donor?",
+                'correct': 'δ+ (partial positive)',
+                'wrong': ['δ– (partial negative)', 'No partial charge',
+                          'Full positive charge (+1)'],
+            },
+            {
+                'q': "Which of the following can form hydrogen bonds with itself?",
+                'correct': 'H₂O',
+                'wrong': ['CH₄', 'H₂S', 'CCl₄'],
+            },
+            {
+                'q': "How many hydrogen bonds can one water molecule typically form?",
+                'correct': 'Up to 4 (2 as donor, 2 as acceptor)',
+                'wrong': ['Up to 2 (1 donor, 1 acceptor)', 'Up to 6', 'Exactly 1'],
+            },
+            {
+                'q': "Which of the following cannot form hydrogen bonds with water?",
+                'correct': 'CH₄',
+                'wrong': ['NH₃', 'HF', 'C₂H₅OH'],
+            },
+            {
+                'q': "Which property is mainly explained by hydrogen bonding in water?",
+                'correct': 'Ice being less dense than liquid water',
+                'wrong': ['Water being transparent', 'Water having high density',
+                          'Water being a good electrical conductor'],
+            },
+        ]
+        
+        # Group 16 hydrides: boiling points with small random perturbations
+        base_bps = {'H₂S': -60, 'H₂Se': -41, 'H₂Te': -2}
+        self.bps = {mol: bp + rnd.randint(-3, 3) for mol, bp in base_bps.items()}
+        self.asked_mol = rnd.choice(list(self.bps.keys()))
+        self.answer = self.bps[self.asked_mol]
         
         self.description = (
-            "The diagram shows hydrogen bonding between water molecules. "
-            "Identify the type of intermolecular force shown."
+            f"The graph shows the boiling points of the Group 16 hydrides. "
+            f"Use the graph to state the boiling point of {self.asked_mol} (°C, to the nearest whole number)."
         )
         
         self.topic = "Chemical bonding"
@@ -1246,60 +1239,28 @@ class Chem014:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Hydrogen bonding requires:} &\\\\"
-            "\\text{1. H bonded to highly electronegative atom (O, N, or F)} &\\\\"
-            "\\text{2. Lone pair on adjacent molecule} &\\\\"
-            "\\text{In water:} &\\\\"
-            "\\text{O is highly electronegative, creating δ- on O and δ+ on H} &\\\\"
-            "\\text{Hydrogen bonds form between δ+ H and δ- O} &\\\\"
-            "\\text{Represented by dashed lines}"
+            f"\\text{{Read the boiling point of {self.asked_mol} from the graph:}} &\\\\"
+            f"\\text{{bp}} = {self.answer}\\,°\\text{{C}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 8)
-        ax.axis('off')
+        fig, ax = plt.subplots(figsize=(10, 7))
         
-        add_title_box(ax, 6, 7.5, 'Hydrogen Bonding in Water', fontsize=16)
+        mol_order = ['H₂S', 'H₂Se', 'H₂Te']
+        x = [1, 2, 3]
+        y = [self.bps[m] for m in mol_order]
         
-        molecules = [
-            {'O': (2, 4), 'H1': (1, 3.3), 'H2': (3, 3.3)},
-            {'O': (6, 5), 'H1': (5, 4.3), 'H2': (7, 4.3)},
-            {'O': (10, 4), 'H1': (9, 3.3), 'H2': (11, 3.3)},
-        ]
+        ax.plot(x, y, 'bo-', markersize=10, linewidth=2)
+        ax.set_xticks(x)
+        ax.set_xticklabels(mol_order, fontsize=13)
+        ax.set_ylabel('Boiling point / °C', fontsize=13)
+        ax.set_title('Boiling Points of Group 16 Hydrides', fontsize=14, fontweight='bold')
+        ax.grid(True, alpha=0.3)
         
-        for mol in molecules:
-            draw_circle_atom(ax, mol['O'][0], mol['O'][1], 'O', 
-                           radius=0.4, color='red', text_color='white')
-            draw_circle_atom(ax, mol['H1'][0], mol['H1'][1], 'H', 
-                           radius=0.25, color='lightblue', text_color='black')
-            draw_circle_atom(ax, mol['H2'][0], mol['H2'][1], 'H', 
-                           radius=0.25, color='lightblue', text_color='black')
-            
-            draw_bond(ax, mol['O'][0], mol['O'][1], mol['H1'][0], mol['H1'][1], 
-                     bond_type='single', linewidth=3)
-            draw_bond(ax, mol['O'][0], mol['O'][1], mol['H2'][0], mol['H2'][1], 
-                     bond_type='single', linewidth=3)
-            
-            add_charge_label(ax, mol['O'][0], mol['O'][1]+0.6, 'δ-', 
-                           fontsize=12, color='red')
-            add_charge_label(ax, mol['H1'][0], mol['H1'][1]-0.5, 'δ+', 
-                           fontsize=10, color='blue')
-            add_charge_label(ax, mol['H2'][0], mol['H2'][1]-0.5, 'δ+', 
-                           fontsize=10, color='blue')
-        
-        draw_bond(ax, molecules[0]['H2'][0], molecules[0]['H2'][1], 
-                 molecules[1]['O'][0], molecules[1]['O'][1], 
-                 bond_type='dashed', linewidth=2, color='blue')
-        draw_bond(ax, molecules[1]['H2'][0], molecules[1]['H2'][1], 
-                 molecules[2]['O'][0], molecules[2]['O'][1], 
-                 bond_type='dashed', linewidth=2, color='blue')
-        
-        ax.text(6, 1.5, 'Dashed lines = Hydrogen bonds', fontsize=13, 
-               ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightblue', edgecolor='blue', linewidth=2))
+        for xi, yi, mol in zip(x, y, mol_order):
+            ax.annotate(f'{yi} °C', (xi, yi), textcoords='offset points',
+                       xytext=(8, 5), fontsize=11)
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1309,15 +1270,50 @@ class Chem014:
 class Chem015:
     """
     Chapter 3.5: Metallic bonding structure
+    Visual: Diagram of metal cations in a sea of electrons
+    Task: MC — identify what the mobile particles in metallic bonding are
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.metal = rnd.choice(['Sodium', 'Magnesium', 'Aluminum', 'Iron'])
-        self.answer = 'Electrostatic attraction between metal cations and delocalized electrons'
+        metals = [
+            {'name': 'Sodium',    'symbol': 'Na', 'ion': 'Na⁺', 'valence': 1},
+            {'name': 'Magnesium', 'symbol': 'Mg', 'ion': 'Mg²⁺','valence': 2},
+            {'name': 'Aluminium', 'symbol': 'Al', 'ion': 'Al³⁺','valence': 3},
+            {'name': 'Iron',      'symbol': 'Fe', 'ion': 'Fe²⁺','valence': 2},
+            {'name': 'Copper',    'symbol': 'Cu', 'ion': 'Cu²⁺','valence': 2},
+            {'name': 'Calcium',   'symbol': 'Ca', 'ion': 'Ca²⁺','valence': 2},
+            {'name': 'Potassium', 'symbol': 'K',  'ion': 'K⁺',  'valence': 1},
+            {'name': 'Zinc',      'symbol': 'Zn', 'ion': 'Zn²⁺','valence': 2},
+            {'name': 'Silver',    'symbol': 'Ag', 'ion': 'Ag⁺', 'valence': 1},
+            {'name': 'Lead',      'symbol': 'Pb', 'ion': 'Pb²⁺','valence': 2},
+        ]
+        
+        questions = [
+            {
+                'q': "What are the mobile particles shown as small yellow circles in the diagram?",
+                'correct': 'Delocalized electrons',
+                'wrong': ['Protons', 'Metal cations', 'Neutrons'],
+            },
+            {
+                'q': "What type of particles are represented by the large circles in the diagram?",
+                'correct': 'Metal cations (positive ions)',
+                'wrong': ['Metal atoms', 'Delocalized electrons', 'Anions'],
+            },
+            {
+                'q': "What type of bonding is shown in the diagram?",
+                'correct': 'Metallic bonding',
+                'wrong': ['Ionic bonding', 'Covalent bonding', 'Hydrogen bonding'],
+            },
+        ]
+        
+        self.metal = rnd.choice(metals)
+        self.answer = self.metal['valence']   # numerical: delocalized electrons per atom
         
         self.description = (
-            f"The diagram shows the metallic bonding in {self.metal}. "
-            f"Describe the bonding present."
+            f"The diagram shows the metallic lattice of {self.metal['name']}. "
+            f"The ion charge is labelled. "
+            f"How many delocalized electrons does each {self.metal['name']} atom contribute to the lattice?"
         )
         
         self.topic = "Chemical bonding"
@@ -1327,13 +1323,10 @@ class Chem015:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Metallic bonding consists of:} &\\\\"
-            "\\text{1. Metal atoms lose valence electrons to form cations} &\\\\"
-            "\\text{2. Electrons become delocalized (\"sea of electrons\")} &\\\\"
-            "\\text{3. Electrostatic attraction between:} &\\\\"
-            "\\text{   - Positive metal ions (cations)} &\\\\"
-            "\\text{   - Negative delocalized electrons} &\\\\"
-            "\\text{This structure explains electrical conductivity}"
+            f"\\text{{{self.metal['name']} forms {self.metal['ion']} ions.}} &\\\\"
+            f"\\text{{Each atom loses its {self.metal['valence']} valence electron(s)}} &\\\\"
+            f"\\text{{to form the sea of delocalized electrons.}} &\\\\"
+            f"\\text{{Delocalized electrons per atom}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
     
@@ -1343,14 +1336,16 @@ class Chem015:
         ax.set_ylim(0, 8)
         ax.axis('off')
         
-        add_title_box(ax, 5, 7.5, f'Metallic Bonding: {self.metal}', fontsize=16)
+        # Title only — no answer hint
+        add_title_box(ax, 5, 7.5, f'Structure of {self.metal["name"]}', fontsize=16)
         
+        ion_label = self.metal['ion']
         for i in range(1, 10, 2):
             for j in range(1, 8, 2):
-                draw_circle_atom(ax, i, j, 'M⁺', radius=0.35, 
-                               color='silver', text_color='black', fontsize=12)
+                draw_circle_atom(ax, i, j, ion_label, radius=0.35, 
+                               color='silver', text_color='black', fontsize=10)
         
-        np.random.seed(42)
+        np.random.seed(num % 100)
         for _ in range(40):
             ex = np.random.uniform(0.5, 9.5)
             ey = np.random.uniform(0.5, 7)
@@ -1364,12 +1359,13 @@ class Chem015:
             if not skip:
                 ax.plot(ex, ey, 'o', color='yellow', markersize=6, 
                        markeredgecolor='orange', markeredgewidth=1)
-                ax.text(ex, ey, 'e⁻', fontsize=7, ha='center', va='center', 
-                       color='black', fontweight='bold')
         
-        ax.text(5, 0.5, 'Yellow dots = Delocalized electrons ("sea of electrons")', 
-               fontsize=11, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.3))
+        # Legend uses neutral labels — no answer reveal
+        ax.text(2.5, 0.4, 'Large circles = ions', fontsize=10, ha='center',
+               bbox=dict(boxstyle='round', facecolor='silver', alpha=0.5))
+        ax.text(7.5, 0.4, 'Small yellow circles = mobile particles',
+               fontsize=10, ha='center',
+               bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.4))
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1379,19 +1375,78 @@ class Chem015:
 class Chem016:
     """
     Chapter 3.6: Molecular polarity comparison
+    Visual: Two molecule diagrams with dipole arrows but NO polarity labels
+    Task: MC — identify which molecule is polar
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.molecules = [
-            {'name': 'CO₂', 'polar': False, 'reason': 'Symmetrical, dipoles cancel'},
-            {'name': 'H₂O', 'polar': True, 'reason': 'Bent shape, net dipole'},
+        # Each scenario: two molecules shown, one polar, one non-polar
+        scenarios = [
+            {'mol_a': 'CO₂', 'shape_a': 'linear',       'polar_a': False,
+             'mol_b': 'H₂O', 'shape_b': 'bent',          'polar_b': True,
+             'question': 'Which molecule is polar?',
+             'correct': 'H₂O', 'wrong': ['CO₂', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'BF₃', 'shape_a': 'trigonal planar','polar_a': False,
+             'mol_b': 'NH₃', 'shape_b': 'trigonal pyramidal','polar_b': True,
+             'question': 'Which molecule is polar?',
+             'correct': 'NH₃', 'wrong': ['BF₃', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'CCl₄', 'shape_a': 'tetrahedral',  'polar_a': False,
+             'mol_b': 'CHCl₃','shape_b': 'tetrahedral',  'polar_b': True,
+             'question': 'Which molecule has a net dipole moment?',
+             'correct': 'CHCl₃','wrong': ['CCl₄', 'Both', 'Neither']},
+            {'mol_a': 'SO₂', 'shape_a': 'bent',           'polar_a': True,
+             'mol_b': 'CO₂', 'shape_b': 'linear',         'polar_b': False,
+             'question': 'Which molecule is non-polar?',
+             'correct': 'CO₂','wrong': ['SO₂', 'Both are non-polar', 'Neither']},
+            {'mol_a': 'H₂O', 'shape_a': 'bent',           'polar_a': True,
+             'mol_b': 'BeCl₂','shape_b': 'linear',        'polar_b': False,
+             'question': 'Which molecule has dipoles that cancel?',
+             'correct': 'BeCl₂','wrong': ['H₂O', 'Both', 'Neither']},
+            {'mol_a': 'HCl', 'shape_a': 'diatomic',       'polar_a': True,
+             'mol_b': 'Cl₂', 'shape_b': 'diatomic',       'polar_b': False,
+             'question': 'Which molecule has a permanent dipole?',
+             'correct': 'HCl','wrong': ['Cl₂', 'Both', 'Neither']},
+            {'mol_a': 'PF₃', 'shape_a': 'trigonal pyramidal','polar_a': True,
+             'mol_b': 'BF₃', 'shape_b': 'trigonal planar','polar_b': False,
+             'question': 'Which molecule is polar?',
+             'correct': 'PF₃','wrong': ['BF₃', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'NF₃', 'shape_a': 'trigonal pyramidal','polar_a': True,
+             'mol_b': 'AlF₃','shape_b': 'trigonal planar','polar_b': False,
+             'question': 'Which molecule is polar?',
+             'correct': 'NF₃','wrong': ['AlF₃', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'H₂S','shape_a': 'bent',             'polar_a': True,
+             'mol_b': 'CS₂','shape_b': 'linear',           'polar_b': False,
+             'question': 'Which molecule has a net dipole moment?',
+             'correct': 'H₂S','wrong': ['CS₂', 'Both', 'Neither']},
+            {'mol_a': 'BCl₃','shape_a': 'trigonal planar', 'polar_a': False,
+             'mol_b': 'PCl₃','shape_b': 'trigonal pyramidal','polar_b': True,
+             'question': 'Which molecule is non-polar?',
+             'correct': 'BCl₃','wrong': ['PCl₃', 'Both are non-polar', 'Neither']},
         ]
         
-        self.answer = 'CO₂ is non-polar (linear), H₂O is polar (bent)'
+        from math import cos, radians
+        # V-shaped (bent) polar molecules with labelled bond dipoles
+        bent_molecules = [
+            {'name': 'H₂O',  'bond_angle': 104.5, 'mu_bond': 1.51, 'center': 'O', 'terminal': 'H'},
+            {'name': 'H₂S',  'bond_angle': 92.0,  'mu_bond': 0.97, 'center': 'S', 'terminal': 'H'},
+            {'name': 'OF₂',  'bond_angle': 103.0, 'mu_bond': 0.94, 'center': 'O', 'terminal': 'F'},
+            {'name': 'SCl₂', 'bond_angle': 103.0, 'mu_bond': 1.20, 'center': 'S', 'terminal': 'Cl'},
+            {'name': 'SO₂',  'bond_angle': 119.0, 'mu_bond': 1.63, 'center': 'S', 'terminal': 'O'},
+            {'name': 'ClF',  'bond_angle': 180.0, 'mu_bond': 0.88, 'center': 'Cl', 'terminal': 'F'},
+        ]
+        self.mol = rnd.choice(bent_molecules)
+        # Add small noise to bond dipole for numerical variance
+        self.mu_bond = round(self.mol['mu_bond'] + rnd.uniform(-0.05, 0.05), 2)
+        theta = self.mol['bond_angle']
+        half_open = (180.0 - theta) / 2.0
+        self.mu_net = round(2 * self.mu_bond * cos(radians(half_open)), 2)
+        self.answer = self.mu_net
         
         self.description = (
-            "The diagrams show CO₂ and H₂O molecules. "
-            "Explain why one is polar and the other is non-polar."
+            f"The diagram shows the {self.mol['name']} molecule with the bond dipole moment "
+            f"({self.mu_bond} D) labelled on each bond and the bond angle shown. "
+            f"Calculate the net (resultant) dipole moment μ_net in Debye (D), to 2 d.p."
         )
         
         self.topic = "Chemical bonding"
@@ -1401,52 +1456,51 @@ class Chem016:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{CO₂ (Linear):} &\\\\"
-            "\\text{Two C=O bonds with dipoles in opposite directions} &\\\\"
-            "\\text{Dipoles cancel out → Non-polar molecule} &\\\\[10pt]"
-            "\\text{H₂O (Bent):} &\\\\"
-            "\\text{Two O-H bonds with dipoles at 104.5° angle} &\\\\"
-            "\\text{Dipoles do NOT cancel → Polar molecule} &\\\\"
-            "\\text{Net dipole points toward oxygen}"
+            f"\\mu_{{\\text{{bond}}}} &= {self.mu_bond}\\,\\text{{D}}\\\\"
+            f"\\theta &= {theta}°\\\\"
+            f"\\mu_{{\\text{{net}}}} &= 2\\mu_{{\\text{{bond}}}}\\cos\\left(\\frac{{180°-\\theta}}{{2}}\\right)\\\\"
+            f"&= 2 \\times {self.mu_bond} \\times \\cos({half_open}°)\\\\"
+            f"&= {self.answer}\\,\\text{{D}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.set_xlim(0, 12)
+        from math import sin, cos, radians
+        fig, ax = plt.subplots(figsize=(9, 8))
+        ax.set_xlim(0, 9)
         ax.set_ylim(0, 8)
         ax.axis('off')
         
-        add_title_box(ax, 6, 7.5, 'Molecular Polarity Comparison', fontsize=16)
+        add_title_box(ax, 4.5, 7.5, f'Bond Dipole Moments in {self.mol["name"]}', fontsize=14)
         
-        draw_circle_atom(ax, 2, 4, 'C', radius=0.4, color='black', text_color='white')
-        draw_circle_atom(ax, 0.5, 4, 'O', radius=0.35, color='red', text_color='white')
-        draw_circle_atom(ax, 3.5, 4, 'O', radius=0.35, color='red', text_color='white')
+        theta = self.mol['bond_angle']
+        half = radians(theta / 2)
+        cx, cy = 4.5, 4.0
+        r = 1.8
+        x1 = cx - r * sin(half);  y1 = cy - r * cos(half)
+        x2 = cx + r * sin(half);  y2 = cy - r * cos(half)
         
-        draw_bond(ax, 0.85, 4, 1.6, 4, bond_type='double', linewidth=3)
-        draw_bond(ax, 2.4, 4, 3.15, 4, bond_type='double', linewidth=3)
+        ax.plot([cx, x1], [cy, y1], 'k-', lw=3)
+        ax.plot([cx, x2], [cy, y2], 'k-', lw=3)
         
-        draw_arrow(ax, 0.5, 3.4, 1.5, 3.4, arrowstyle='->', color='blue', linewidth=2)
-        draw_arrow(ax, 3.5, 3.4, 2.5, 3.4, arrowstyle='->', color='blue', linewidth=2)
+        draw_circle_atom(ax, cx, cy, self.mol['center'], radius=0.4, color='lightcoral')
+        draw_circle_atom(ax, x1, y1, self.mol['terminal'], radius=0.3, color='lightblue')
+        draw_circle_atom(ax, x2, y2, self.mol['terminal'], radius=0.3, color='lightblue')
         
-        ax.text(2, 2.5, 'CO₂: Linear\nDipoles Cancel\nNON-POLAR', 
-               fontsize=11, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightgreen'))
+        # Bond dipole arrows
+        mid1x, mid1y = (cx+x1)/2, (cy+y1)/2
+        mid2x, mid2y = (cx+x2)/2, (cy+y2)/2
+        ax.annotate('', xy=(cx, cy), xytext=(x1, y1),
+                   arrowprops=dict(arrowstyle='->', color='blue', lw=2))
+        ax.annotate('', xy=(cx, cy), xytext=(x2, y2),
+                   arrowprops=dict(arrowstyle='->', color='blue', lw=2))
         
-        draw_circle_atom(ax, 9, 4.5, 'O', radius=0.4, color='red', text_color='white')
-        draw_circle_atom(ax, 8, 3.5, 'H', radius=0.3, color='lightblue', text_color='black')
-        draw_circle_atom(ax, 10, 3.5, 'H', radius=0.3, color='lightblue', text_color='black')
+        ax.text(mid1x-0.4, mid1y, f'{self.mu_bond} D', fontsize=11, color='blue', ha='center')
+        ax.text(mid2x+0.4, mid2y, f'{self.mu_bond} D', fontsize=11, color='blue', ha='center')
         
-        draw_bond(ax, 8.25, 3.65, 8.75, 4.25, bond_type='single', linewidth=3)
-        draw_bond(ax, 9.75, 3.65, 9.25, 4.25, bond_type='single', linewidth=3)
-        
-        draw_arrow(ax, 8.5, 3.9, 8.8, 4.3, arrowstyle='->', color='blue', linewidth=2)
-        draw_arrow(ax, 9.5, 3.9, 9.2, 4.3, arrowstyle='->', color='blue', linewidth=2)
-        draw_arrow(ax, 9, 3, 9, 4, arrowstyle='->', color='red', linewidth=3)
-        
-        ax.text(9, 2.2, 'H₂O: Bent\nNet Dipole\nPOLAR', 
-               fontsize=11, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightcoral'))
+        # Bond angle arc label
+        ax.text(cx, cy-0.6, f'{theta}°', fontsize=12, ha='center',
+               bbox=dict(boxstyle='round', facecolor='lightyellow'))
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1456,18 +1510,80 @@ class Chem016:
 class Chem017:
     """
     Chapter 3.7: Van der Waals forces and boiling points
+    Visual: Graph of boiling points vs Mr for noble gases
+    Task: MC — identify the noble gas at a specific boiling point, or which property explains trend
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.noble_gases = ['He', 'Ne', 'Ar', 'Kr', 'Xe']
-        self.Mr_values = [4, 20, 40, 84, 131]
-        self.bp_values = [-269, -246, -186, -153, -108]
+        noble_gases = [
+            {'symbol': 'He', 'Mr': 4,   'bp': -269},
+            {'symbol': 'Ne', 'Mr': 20,  'bp': -246},
+            {'symbol': 'Ar', 'Mr': 40,  'bp': -186},
+            {'symbol': 'Kr', 'Mr': 84,  'bp': -153},
+            {'symbol': 'Xe', 'Mr': 131, 'bp': -108},
+        ]
+        self.noble_gases_symbols = [g['symbol'] for g in noble_gases]
+        self.Mr_values  = [g['Mr']  for g in noble_gases]
+        # Perturb bp values +-3% so graph varies across instances while preserving monotonic trend
+        self.bp_values  = [round(g['bp'] * rnd.uniform(0.97, 1.03)) for g in noble_gases]
         
-        self.answer = 'Boiling point increases with Mr due to stronger Van der Waals forces'
+        questions = [
+            {
+                'q': "Which noble gas has the highest boiling point?",
+                'correct': 'Xe', 'wrong': ['He', 'Ar', 'Ne'],
+            },
+            {
+                'q': "Which noble gas has the lowest boiling point?",
+                'correct': 'He', 'wrong': ['Xe', 'Ar', 'Ne'],
+            },
+            {
+                'q': "What type of intermolecular force exists between noble gas atoms?",
+                'correct': 'Van der Waals (London dispersion) forces',
+                'wrong': ['Hydrogen bonds', 'Permanent dipole–dipole forces', 'Ionic bonds'],
+            },
+            {
+                'q': "Why does boiling point increase from He to Xe?",
+                'correct': 'Increasing Mr leads to stronger Van der Waals forces',
+                'wrong': ['Increasing ionic character', 'Decreasing atomic radius',
+                          'Increasing covalent bond strength'],
+            },
+            {
+                'q': "Which noble gas has a boiling point of −186 °C?",
+                'correct': 'Ar', 'wrong': ['Kr', 'Ne', 'He'],
+            },
+            {
+                'q': "Which noble gas has a relative molecular mass of 84?",
+                'correct': 'Kr', 'wrong': ['Xe', 'Ar', 'Ne'],
+            },
+            {
+                'q': "As Mr increases across the noble gases, what happens to the boiling point?",
+                'correct': 'It increases',
+                'wrong': ['It decreases', 'It stays constant', 'It first increases then decreases'],
+            },
+            {
+                'q': "What causes the increase in boiling point down Group 18?",
+                'correct': 'More electrons → stronger temporary dipoles → stronger Van der Waals forces',
+                'wrong': ['Stronger covalent bonds', 'Increased ionic radius', 'Higher electronegativity'],
+            },
+            {
+                'q': "Which noble gas has the second highest boiling point?",
+                'correct': 'Kr', 'wrong': ['Ar', 'Ne', 'Xe'],
+            },
+            {
+                'q': "At what temperature (°C) does Ar boil?",
+                'correct': '−186', 'wrong': ['−153', '−246', '−108'],
+            },
+        ]
+        
+        self.asked_idx = rnd.randint(0, 4)
+        self.asked_symbol = self.noble_gases_symbols[self.asked_idx]
+        self.answer = self.bp_values[self.asked_idx]
         
         self.description = (
-            "The graph shows boiling points of noble gases against relative molecular mass. "
-            "Explain the trend observed."
+            "The graph shows the boiling points of the noble gases plotted against "
+            "relative molecular mass. "
+            f"Use the graph to state the boiling point of {self.asked_symbol} (°C, nearest whole number)."
         )
         
         self.topic = "Chemical bonding"
@@ -1477,14 +1593,8 @@ class Chem017:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Trend: Boiling point increases with Mr} &\\\\"
-            "\\text{Explanation:} &\\\\"
-            "\\text{1. Noble gases only have Van der Waals (dispersion) forces} &\\\\"
-            "\\text{2. Larger molecules have more electrons} &\\\\"
-            "\\text{3. More electrons → stronger temporary dipoles} &\\\\"
-            "\\text{4. Stronger Van der Waals forces} &\\\\"
-            "\\text{5. More energy needed to overcome forces} &\\\\"
-            "\\text{6. Therefore, boiling point increases}"
+            f"\\text{{Read the boiling point of {self.asked_symbol} from the graph:}} &\\\\"
+            f"\\text{{bp}}({self.asked_symbol}) &= {self.answer}\\,°\\text{{C}}"
             "\\end{aligned}\\]"
         )
     
@@ -1495,11 +1605,12 @@ class Chem017:
                        color='darkblue', linewidth=3, marker='o', markersize=12,
                        xlabel='Relative Molecular Mass (Mr)', 
                        ylabel='Boiling Point (°C)',
-                       title='Boiling Points of Noble Gases')
+                       title='Boiling Points of Noble Gases vs Mr')
         
-        for x, y, label in zip(self.Mr_values, self.bp_values, self.noble_gases):
-            ax.text(x, y+10, label, fontsize=12, ha='center', fontweight='bold',
-                   bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
+        # Label each point with symbol only (no extra info that gives away answer)
+        for x, y, label in zip(self.Mr_values, self.bp_values, self.noble_gases_symbols):
+            ax.text(x, y + 10, label, fontsize=12, ha='center', fontweight='bold',
+                   bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.7))
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1508,85 +1619,95 @@ class Chem017:
 class Chem018:
     """
     Chapter 4.1: States of matter particle arrangements
+    Visual: Three diagrams of particle arrangements (unlabelled as solid/liquid/gas)
+    Task: MC — identify the state shown in diagram X, or a property of a specific state
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.answer = 'Solid: fixed arrangement, Liquid: close but mobile, Gas: far apart and random'
+        questions = [
+            {
+                'q': "Which diagram represents a solid?",
+                'correct': 'Diagram A', 'wrong': ['Diagram B', 'Diagram C', 'Diagrams B and C'],
+            },
+            {
+                'q': "Which diagram represents a gas?",
+                'correct': 'Diagram C', 'wrong': ['Diagram A', 'Diagram B', 'Diagrams A and B'],
+            },
+            {
+                'q': "Which diagram represents a liquid?",
+                'correct': 'Diagram B', 'wrong': ['Diagram A', 'Diagram C', 'Diagrams A and C'],
+            },
+            {
+                'q': "In which state do particles have a fixed, regular arrangement?",
+                'correct': 'Solid', 'wrong': ['Liquid', 'Gas', 'Liquid and gas'],
+            },
+            {
+                'q': "In which state are particles furthest apart?",
+                'correct': 'Gas', 'wrong': ['Solid', 'Liquid', 'Solid and liquid'],
+            },
+            {
+                'q': "In which state can particles flow past each other but remain close together?",
+                'correct': 'Liquid', 'wrong': ['Solid', 'Gas', 'Solid and gas'],
+            },
+            {
+                'q': "Which state has the highest kinetic energy of particles (at the same temperature)?",
+                'correct': 'Gas', 'wrong': ['Solid', 'Liquid', 'They are all equal'],
+            },
+            {
+                'q': "Which state has particles that vibrate about fixed positions?",
+                'correct': 'Solid', 'wrong': ['Liquid', 'Gas', 'Liquid and gas'],
+            },
+            {
+                'q': "Which state is represented by Diagram A?",
+                'correct': 'Solid', 'wrong': ['Liquid', 'Gas', 'Plasma'],
+            },
+            {
+                'q': "Which state has no fixed shape but a fixed volume?",
+                'correct': 'Liquid', 'wrong': ['Solid', 'Gas', 'Solid and liquid'],
+            },
+        ]
+        
+        self.melting_point = rnd.randint(-50, 100)
+        self.boiling_point = self.melting_point + rnd.randint(30, 150)
+        self.answer = self.boiling_point  # numerical: boiling point read from graph
         
         self.description = (
-            "The diagram shows particle arrangements in three states of matter. "
-            "Describe the differences between them."
+            "The heating curve shows temperature against time for a pure substance being heated at a "
+            "constant rate. "
+            "Use the graph to state the boiling point of this substance (°C)."
         )
         
         self.topic = "States of matter"
-        self.subtopic = "Particle model"
+        self.subtopic = "Changes of state"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Solid:} &\\\\"
-            "\\text{- Particles in fixed, regular arrangement} &\\\\"
-            "\\text{- Vibrate about fixed positions} &\\\\"
-            "\\text{- Strong forces between particles} &\\\\[10pt]"
-            "\\text{Liquid:} &\\\\"
-            "\\text{- Particles close together but can move} &\\\\"
-            "\\text{- Random arrangement} &\\\\"
-            "\\text{- Weaker forces than solid} &\\\\[10pt]"
-            "\\text{Gas:} &\\\\"
-            "\\text{- Particles far apart} &\\\\"
-            "\\text{- Move randomly at high speed} &\\\\"
-            "\\text{- Very weak forces between particles}"
+            "\\text{The boiling point is the temperature of the second (upper) plateau.} &\\\\"
+            f"\\text{{Boiling point}} &= {self.boiling_point}\\,°\\text{{C}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+        fig, ax = plt.subplots(figsize=(10, 7))
         
-        states = ['Solid', 'Liquid', 'Gas']
+        t  = [0, 2, 4, 6, 9, 11]
+        T  = [self.melting_point - 30, self.melting_point, self.melting_point,
+              self.boiling_point, self.boiling_point, self.boiling_point + 40]
         
-        for row in range(4):
-            for col in range(4):
-                x = col * 1.2 + 0.6
-                y = row * 1.2 + 0.6
-                draw_circle_atom(ax[0], x, y, '', radius=0.25, 
-                               color='darkblue', show_symbol=False)
+        ax.plot(t, T, 'b-', linewidth=3)
+        ax.axhline(y=self.boiling_point, color='r', linestyle='--', linewidth=1.5, alpha=0.5)
+        ax.text(11.2, self.boiling_point, f'{self.boiling_point} °C?', fontsize=11, color='r', va='center')
         
-        ax[0].set_title('SOLID', fontsize=16, fontweight='bold')
-        ax[0].set_xlim(0, 5)
-        ax[0].set_ylim(0, 5)
-        ax[0].axis('off')
-        ax[0].text(2.5, -0.5, 'Regular arrangement\nFixed positions', 
-                  fontsize=10, ha='center', style='italic')
-        
-        np.random.seed(42)
-        for _ in range(16):
-            x = np.random.uniform(0.5, 4.5)
-            y = np.random.uniform(0.5, 4.5)
-            draw_circle_atom(ax[1], x, y, '', radius=0.25, 
-                           color='green', show_symbol=False)
-        
-        ax[1].set_title('LIQUID', fontsize=16, fontweight='bold')
-        ax[1].set_xlim(0, 5)
-        ax[1].set_ylim(0, 5)
-        ax[1].axis('off')
-        ax[1].text(2.5, -0.5, 'Random arrangement\nParticles mobile', 
-                  fontsize=10, ha='center', style='italic')
-        
-        for _ in range(8):
-            x = np.random.uniform(0.5, 4.5)
-            y = np.random.uniform(0.5, 4.5)
-            draw_circle_atom(ax[2], x, y, '', radius=0.2, 
-                           color='red', show_symbol=False)
-        
-        ax[2].set_title('GAS', fontsize=16, fontweight='bold')
-        ax[2].set_xlim(0, 5)
-        ax[2].set_ylim(0, 5)
-        ax[2].axis('off')
-        ax[2].text(2.5, -0.5, 'Far apart\nRandom motion', 
-                  fontsize=10, ha='center', style='italic')
-        
-        plt.tight_layout()
+        ax.set_xlabel('Time / min', fontsize=13)
+        ax.set_ylabel('Temperature / °C', fontsize=13)
+        ax.set_title('Heating Curve of a Pure Substance', fontsize=14, fontweight='bold')
+        ax.grid(True, alpha=0.3)
+        ax.text(7, (self.boiling_point + self.boiling_point + 40) / 2 - 10,
+               'Boiling\n(read T from graph)', fontsize=11, ha='center',
+               bbox=dict(boxstyle='round', facecolor='lightyellow'))
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1596,17 +1717,19 @@ class Chem018:
 class Chem019:
     """
     Chapter 4.2: Heating curve with phase changes
+    Visual: Heating curve WITHOUT temperature labels; student reads melting point from y-axis
+    Answer: numerical melting point (°C)
     """
     
     def __init__(self):
-        self.melting_point = rnd.randint(0, 50)
-        self.boiling_point = rnd.randint(80, 120)
-        
-        self.answer = f'Melting point: {self.melting_point}°C, Boiling point: {self.boiling_point}°C'
+        # Continuous randomisation: mp 0–120 C, bp always at least 40 C above mp
+        self.melting_point = rnd.randint(0, 120)
+        self.boiling_point = self.melting_point + rnd.randint(40, 150)
+        self.answer = self.melting_point  # numerical answer
         
         self.description = (
             "The heating curve shows temperature vs time for a pure substance. "
-            "Identify the melting and boiling points."
+            f"Use the graph to determine the melting point (in °C) of the substance."
         )
         
         self.topic = "States of matter"
@@ -1617,13 +1740,11 @@ class Chem019:
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{Heating curve features:} &\\\\"
-            "\\text{1. Temperature rises → heating solid} &\\\\"
-            f"\\text{{2. Plateau at {self.melting_point}°C → melting}} &\\\\"
-            "\\text{3. Temperature rises → heating liquid} &\\\\"
-            f"\\text{{4. Plateau at {self.boiling_point}°C → boiling}} &\\\\"
-            "\\text{5. Temperature rises → heating gas} &\\\\"
-            "\\text{Plateaus occur because energy used to break bonds,} &\\\\"
-            "\\text{not increase kinetic energy}"
+            "\\text{- Temperature rises → heating solid} &\\\\"
+            f"\\text{{- First plateau (horizontal region) at {self.melting_point}°C → melting}} &\\\\"
+            "\\text{- Temperature rises → heating liquid} &\\\\"
+            f"\\text{{- Second plateau at {self.boiling_point}°C → boiling}} &\\\\"
+            f"\\text{{Melting point}} &= {self.melting_point}\\,°C"
             "\\end{aligned}\\]"
         )
     
@@ -1631,28 +1752,20 @@ class Chem019:
         fig, ax = plt.subplots(figsize=(10, 8))
         
         time = [0, 2, 4, 4, 6, 8, 8, 10]
-        temp = [-20, self.melting_point-5, self.melting_point, self.melting_point, 
-                self.boiling_point-10, self.boiling_point, self.boiling_point, self.boiling_point+20]
+        temp = [-20, self.melting_point - 5, self.melting_point, self.melting_point,
+                self.boiling_point - 10, self.boiling_point, self.boiling_point, self.boiling_point + 20]
         
         draw_line_graph(ax, time, temp, color='darkred', linewidth=3, marker='',
                        xlabel='Time (minutes)', ylabel='Temperature (°C)',
-                       title='Heating Curve')
+                       title='Heating Curve of a Pure Substance')
         
         ax.axhline(y=self.melting_point, color='blue', linestyle='--', alpha=0.5)
         ax.axhline(y=self.boiling_point, color='green', linestyle='--', alpha=0.5)
         
-        ax.text(3, self.melting_point+5, f'Melting\n{self.melting_point}°C', 
-               fontsize=12, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightblue'))
-        
-        ax.text(7, self.boiling_point+5, f'Boiling\n{self.boiling_point}°C', 
-               fontsize=12, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightgreen'))
-        
-        ax.text(1, -10, 'Solid', fontsize=11, ha='center', style='italic')
-        ax.text(5, (self.melting_point + self.boiling_point)/2, 'Liquid', 
-               fontsize=11, ha='center', style='italic')
-        ax.text(9, self.boiling_point+15, 'Gas', fontsize=11, ha='center', style='italic')
+        ax.text(1, -12, 'Solid', fontsize=11, ha='center', style='italic', color='gray')
+        ax.text(5, (self.melting_point + self.boiling_point) / 2,
+                'Liquid', fontsize=11, ha='center', style='italic', color='gray')
+        ax.text(9, self.boiling_point + 15, 'Gas', fontsize=11, ha='center', style='italic', color='gray')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1662,21 +1775,25 @@ class Chem019:
 class Chem020:
     """
     Chapter 5.1: Enthalpy profile diagram
+    Visual: Enthalpy profile with labelled energy levels (no values on arrows)
+    Answer: numerical ΔH (kJ/mol)
     """
     
     def __init__(self):
-        self.reactant_E = rnd.randint(40, 60)
-        self.product_E = rnd.randint(10, 30)
-        self.activation_E = rnd.randint(90, 120)
+        # Continuous randomisation with wide ranges
+        self.reactant_E  = rnd.randint(20, 150)
+        self.product_E   = rnd.randint(20, 150)
+        # Ensure activation energy is always higher than reactant energy
+        self.activation_E = self.reactant_E + rnd.randint(15, 100)
         
         self.delta_H = self.product_E - self.reactant_E
         self.Ea = self.activation_E - self.reactant_E
         
-        self.answer = f'ΔH = {self.delta_H} kJ/mol, Ea = {self.Ea} kJ/mol'
+        self.answer = self.delta_H
         
         self.description = (
-            "The enthalpy profile diagram is shown. "
-            "Calculate ΔH and the activation energy (Ea)."
+            "The enthalpy profile diagram is shown with energy levels marked on the y-axis. "
+            "Calculate the enthalpy change ΔH (in kJ mol⁻¹) for this reaction."
         )
         
         self.topic = "Energetics"
@@ -1688,31 +1805,27 @@ class Chem020:
             "\\[\\begin{aligned}"
             f"\\text{{Energy of reactants}} &= {self.reactant_E}\\,\\text{{kJ/mol}}\\\\"
             f"\\text{{Energy of products}} &= {self.product_E}\\,\\text{{kJ/mol}}\\\\"
-            f"\\text{{Activation energy peak}} &= {self.activation_E}\\,\\text{{kJ/mol}}\\\\"
-            "\\Delta H &= \\text{Products} - \\text{Reactants}\\\\"
+            "\\Delta H &= E_{{\\text{{products}}}} - E_{{\\text{{reactants}}}}\\\\"
             f"&= {self.product_E} - {self.reactant_E}\\\\"
-            f"&= {self.delta_H}\\,\\text{{kJ/mol}}\\\\"
-            "E_a &= \\text{Peak} - \\text{Reactants}\\\\"
-            f"&= {self.activation_E} - {self.reactant_E}\\\\"
-            f"&= {self.Ea}\\,\\text{{kJ/mol}}"
+            f"&= {self.delta_H}\\,\\text{{kJ/mol}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 8))
         
-        profile = draw_enthalpy_profile(ax, self.reactant_E, self.product_E, 
+        profile = draw_enthalpy_profile(ax, self.reactant_E, self.product_E,
                                         self.activation_E, x_start=0, x_end=10)
         
-        draw_vertical_annotation(ax, 1, self.reactant_E, self.activation_E, 
-                                f'Ea = {self.Ea} kJ/mol', color='red', label_offset=0.5)
+        draw_vertical_annotation(ax, 1, self.reactant_E, self.activation_E,
+                                'Ea', color='red', label_offset=0.5)
         
-        draw_vertical_annotation(ax, 8.5, self.reactant_E, self.product_E, 
-                                f'ΔH = {self.delta_H} kJ/mol', color='green', label_offset=0.5)
+        draw_vertical_annotation(ax, 8.5, self.reactant_E, self.product_E,
+                                'ΔH = ?', color='green', label_offset=0.5)
         
-        ax.text(profile['reactant_x'], self.reactant_E + 8, 'Reactants', 
+        ax.text(profile['reactant_x'], self.reactant_E + 8, 'Reactants',
                fontsize=14, ha='center', fontweight='bold')
-        ax.text(profile['product_x'], self.product_E + 8, 'Products', 
+        ax.text(profile['product_x'], self.product_E + 8, 'Products',
                fontsize=14, ha='center', fontweight='bold')
         
         ax.set_title('Enthalpy Profile Diagram', fontsize=16, fontweight='bold')
@@ -1733,10 +1846,11 @@ class Chem021:
         self.delta_H2 = rnd.randint(-300, -200)
         self.delta_H_target = self.delta_H2 - self.delta_H1
         
-        self.answer = f'{self.delta_H_target} kJ/mol'
+        self.answer = self.delta_H_target  # numerical only, no units
         
         self.description = (
-            "Use Hess's Law and the given enthalpy changes to calculate ΔH for the target reaction."
+            "A Hess's Law cycle is shown. Use the enthalpy values labelled on the diagram "
+            "to calculate ΔH for the direct route A → B (in kJ mol⁻¹)."
         )
         
         self.topic = "Energetics"
@@ -1792,18 +1906,26 @@ class Chem022:
     
     def __init__(self):
         metal_pairs = [
-            {'anode': 'Zn', 'cathode': 'Cu', 'E_anode': -0.76, 'E_cathode': 0.34},
-            {'anode': 'Mg', 'cathode': 'Ag', 'E_anode': -2.37, 'E_cathode': 0.80},
-            {'anode': 'Fe', 'cathode': 'Cu', 'E_anode': -0.44, 'E_cathode': 0.34},
+            {'anode': 'Zn', 'cathode': 'Cu', 'E_anode': -0.76, 'E_cathode':  0.34},
+            {'anode': 'Mg', 'cathode': 'Ag', 'E_anode': -2.37, 'E_cathode':  0.80},
+            {'anode': 'Fe', 'cathode': 'Cu', 'E_anode': -0.44, 'E_cathode':  0.34},
+            {'anode': 'Zn', 'cathode': 'Ag', 'E_anode': -0.76, 'E_cathode':  0.80},
+            {'anode': 'Mg', 'cathode': 'Cu', 'E_anode': -2.37, 'E_cathode':  0.34},
+            {'anode': 'Fe', 'cathode': 'Ag', 'E_anode': -0.44, 'E_cathode':  0.80},
+            {'anode': 'Ni', 'cathode': 'Cu', 'E_anode': -0.25, 'E_cathode':  0.34},
+            {'anode': 'Zn', 'cathode': 'Fe', 'E_anode': -0.76, 'E_cathode': -0.44},
+            {'anode': 'Mg', 'cathode': 'Ni', 'E_anode': -2.37, 'E_cathode': -0.25},
+            {'anode': 'Pb', 'cathode': 'Cu', 'E_anode': -0.13, 'E_cathode':  0.34},
         ]
         
         self.cell = rnd.choice(metal_pairs)
         self.E_cell = self.cell['E_cathode'] - self.cell['E_anode']
-        self.answer = f'{round(self.E_cell, 2)} V'
+        self.answer = round(self.E_cell, 2)
         
         self.description = (
-            f"The electrochemical cell with {self.cell['anode']} and {self.cell['cathode']} electrodes is shown. "
-            f"Calculate the cell potential (E°cell)."
+            "The electrochemical cell diagram is shown. "
+            "Use the standard electrode potentials labelled in the diagram to "
+            "calculate the standard cell potential E°cell (in V, to 2 d.p.)."
         )
         
         self.topic = "Electrochemistry"
@@ -1831,9 +1953,11 @@ class Chem022:
         
         draw_beaker(ax, 1, 2, 3, 3, liquid_height=2, liquid_color='lightblue')
         ax.text(2.5, 1.5, f'{self.cell["anode"]}²⁺(aq)', fontsize=11, ha='center', fontweight='bold')
+        ax.text(2.5, 0.8, f"E° = {self.cell['E_anode']} V", fontsize=11, ha='center', color='navy')
         
         draw_beaker(ax, 8, 2, 3, 3, liquid_height=2, liquid_color='lightgreen')
         ax.text(9.5, 1.5, f'{self.cell["cathode"]}²⁺(aq)', fontsize=11, ha='center', fontweight='bold')
+        ax.text(9.5, 0.8, f"E° = {self.cell['E_cathode']} V", fontsize=11, ha='center', color='navy')
         
         ax.plot([2, 2], [5, 6.5], 'k-', linewidth=8)
         ax.text(2, 6.7, f'{self.cell["anode"]}', fontsize=14, ha='center', fontweight='bold')
@@ -1861,15 +1985,15 @@ class Chem023:
     """
     
     def __init__(self):
-        self.initial_A = rnd.uniform(1.5, 2.5)
-        self.final_A = rnd.uniform(0.5, 1.0)
-        self.final_B = self.initial_A - self.final_A
+        self.initial_A = round(rnd.uniform(0.5, 4.0), 2)
+        self.final_A   = round(rnd.uniform(0.1, self.initial_A * 0.6), 2)
+        self.final_B   = round(self.initial_A - self.final_A, 2)
         
-        self.answer = f'[A]eq = {round(self.final_A, 2)} M, [B]eq = {round(self.final_B, 2)} M'
+        self.answer = round(self.final_A, 2)
         
         self.description = (
             "The graph shows concentration vs time for the reaction A ⇌ B. "
-            "State the equilibrium concentrations."
+            "State the equilibrium concentration of A (in mol dm⁻³)."
         )
         
         self.topic = "Equilibria"
@@ -1979,13 +2103,14 @@ class Chem025:
     def __init__(self):
         self.T1 = rnd.randint(300, 400)
         self.T2 = self.T1 + rnd.randint(50, 100)
-        self.Ea = rnd.randint(50, 100)
+        self.Ea = rnd.randint(50, 150)
         
-        self.answer = f'Higher temperature increases fraction of molecules with E ≥ Ea'
+        self.answer = self.Ea   # numerical: activation energy read from graph
         
         self.description = (
-            f"Maxwell-Boltzmann distributions at {self.T1}K and {self.T2}K are shown. "
-            f"Explain the effect of temperature on reaction rate."
+            f"The Maxwell-Boltzmann distribution curves at {self.T1} K and {self.T2} K are shown. "
+            f"A dashed vertical line marks the activation energy. "
+            f"Use the graph to state the activation energy Ea (kJ mol⁻¹)."
         )
         
         self.topic = "Reaction kinetics"
@@ -1995,12 +2120,8 @@ class Chem025:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{At higher temperature:} &\\\\"
-            "\\text{1. Curve shifts right (higher average energy)} &\\\\"
-            "\\text{2. Curve flattens (broader distribution)} &\\\\"
-            "\\text{3. More molecules have } E \\geq E_a &\\\\"
-            "\\text{4. More successful collisions} &\\\\"
-            "\\text{5. Reaction rate increases}"
+            "\\text{Read the x-axis position of the dashed Ea line:} &\\\\"
+            f"E_a &= {self.Ea}\\,\\text{{kJ mol}}^{{-1}}"
             "\\end{aligned}\\]"
         )
     
@@ -2016,21 +2137,22 @@ class Chem025:
         y1 = maxwell_boltzmann(E, self.T1 / 10)
         y2 = maxwell_boltzmann(E, self.T2 / 10)
         
-        ax.plot(E, y1, 'b-', linewidth=3, label=f'{self.T1}K')
-        ax.plot(E, y2, 'r-', linewidth=3, label=f'{self.T2}K')
+        ax.plot(E, y1, 'b-', linewidth=3, label=f'{self.T1} K')
+        ax.plot(E, y2, 'r-', linewidth=3, label=f'{self.T2} K')
         
         ax.axvline(x=self.Ea, color='green', linestyle='--', linewidth=2)
-        ax.text(self.Ea + 5, max(y1) * 0.8, f'Ea = {self.Ea}', fontsize=12, 
-               color='green', fontweight='bold', rotation=90)
+        ax.annotate(f'Ea = {self.Ea} kJ mol⁻¹', xy=(self.Ea, 0), 
+                   xytext=(self.Ea + 8, max(y1) * 0.6),
+                   fontsize=12, color='green', fontweight='bold',
+                   arrowprops=dict(arrowstyle='->', color='green'))
         
         ax.fill_between(E, 0, y1, where=(E >= self.Ea), alpha=0.2, color='blue')
         ax.fill_between(E, 0, y2, where=(E >= self.Ea), alpha=0.2, color='red')
         
-        ax.set_xlabel('Energy', fontsize=14, fontweight='bold')
+        ax.set_xlabel('Energy / kJ mol⁻¹', fontsize=14, fontweight='bold')
         ax.set_ylabel('Number of Molecules', fontsize=14, fontweight='bold')
         ax.set_title('Maxwell-Boltzmann Distribution', fontsize=16, fontweight='bold')
         ax.legend(fontsize=14)
-        ax.set_xticks([])
         ax.set_yticks([])
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -2041,17 +2163,23 @@ class Chem025:
 class Chem026:
     """
     Chapter 8.2: First-order kinetics graph
+    Visual: Concentration vs time curve; student reads off half-life from clean graph
+    Answer: numerical half-life (seconds)
     """
     
     def __init__(self):
-        self.initial_conc = rnd.uniform(1.5, 2.5)
-        self.half_life = rnd.randint(5, 15)
-        
-        self.answer = f'{self.half_life} seconds'
+        # 12 varied half-life / initial-concentration scenarios
+        scenarios = [
+            (1.8, 5),  (2.0, 6),  (2.2, 7),  (1.5, 8),
+            (2.4, 9),  (2.0, 10), (1.6, 11), (2.5, 12),
+            (1.9, 13), (2.1, 14), (1.7, 15), (2.3, 6),
+        ]
+        self.initial_conc, self.half_life = rnd.choice(scenarios)
+        self.answer = self.half_life  # numerical answer in seconds
         
         self.description = (
-            "The graph shows concentration vs time for a first-order reaction. "
-            "Determine the half-life."
+            "The graph shows the concentration vs time profile for a first-order reaction. "
+            "Determine the half-life (t½) of the reaction in seconds."
         )
         
         self.topic = "Reaction kinetics"
@@ -2061,32 +2189,30 @@ class Chem026:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{For first-order reaction:} &\\\\"
-            "\\text{Half-life is constant} &\\\\"
+            "\\text{For a first-order reaction, } t_{1/2} \\text{ is constant.} &\\\\"
             f"\\text{{Initial concentration}} &= {round(self.initial_conc, 2)}\\,\\text{{M}}\\\\"
-            f"\\text{{After one half-life:}} &= {round(self.initial_conc/2, 2)}\\,\\text{{M}}\\\\"
-            f"\\text{{Time taken}} &= {self.half_life}\\,\\text{{s}}\\\\"
-            f"\\text{{Half-life}} &= {self.half_life}\\,\\text{{s}}"
+            f"\\text{{After one half-life, concentration}} &= {round(self.initial_conc/2, 2)}\\,\\text{{M}}\\\\"
+            "\\text{Read the time at which } [A] = \\frac{{[A]_0}}{{2}} &\\\\"
+            f"t_{{1/2}} &= {self.half_life}\\,\\text{{s}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 8))
         
-        time = np.linspace(0, 60, 100)
+        time = np.linspace(0, 4 * self.half_life, 200)
         conc = self.initial_conc * np.exp(-np.log(2) * time / self.half_life)
         
         draw_line_graph(ax, time, conc, color='darkblue', linewidth=3, marker='',
-                       xlabel='Time (s)', ylabel='Concentration (M)',
+                       xlabel='Time (s)', ylabel='Concentration (mol dm⁻³)',
                        title='First-Order Reaction: Concentration vs Time')
         
         for i in range(1, 4):
             t = i * self.half_life
             c = self.initial_conc / (2 ** i)
-            ax.axvline(x=t, color='red', linestyle='--', alpha=0.5)
-            ax.axhline(y=c, color='red', linestyle='--', alpha=0.5)
-            ax.plot(t, c, 'ro', markersize=10)
-            ax.text(t, c + 0.1, f't½ = {self.half_life}s', fontsize=10, ha='center')
+            ax.axvline(x=t, color='red', linestyle='--', alpha=0.4)
+            ax.axhline(y=c, color='red', linestyle='--', alpha=0.4)
+            ax.plot(t, c, 'ro', markersize=8)
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2095,17 +2221,73 @@ class Chem026:
 class Chem027:
     """
     Chapter 9.1: Ionization energies across Period 3
+    Visual: Bar chart of first IE values — plain colours, no annotations revealing deviations
+    Task: MC — identify element at a specific position or reason for a trend/dip
+    Answer: A/B/C/D
     """
     
     def __init__(self):
         self.elements = ['Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar']
-        self.IE_values = [496, 738, 578, 787, 1012, 1000, 1251, 1521]
+        raw_IE = [496, 738, 578, 787, 1012, 1000, 1251, 1521]
+        # Perturb +-3% so graph varies across instances
+        self.IE_values = [round(v * rnd.uniform(0.97, 1.03)) for v in raw_IE]
         
-        self.answer = 'General increase across period; dips at Al and S due to subshell effects'
+        questions = [
+            {
+                'q': "Which element in Period 3 has the highest first ionization energy?",
+                'correct': 'Ar', 'wrong': ['Cl', 'Na', 'P'],
+            },
+            {
+                'q': "Which element in Period 3 has the lowest first ionization energy?",
+                'correct': 'Na', 'wrong': ['Mg', 'Al', 'Si'],
+            },
+            {
+                'q': "Why is the first IE of Al lower than that of Mg?",
+                'correct': 'Al has its outer electron in the higher-energy 3p subshell',
+                'wrong': ['Al has more protons', 'Al is smaller', 'Al has fewer electrons'],
+            },
+            {
+                'q': "Why is the first IE of S lower than that of P?",
+                'correct': 'S has a paired electron in 3p which experiences extra repulsion',
+                'wrong': ['S has fewer protons', 'S has a larger atomic radius',
+                          'S has a lower nuclear charge'],
+            },
+            {
+                'q': "What is the general trend in first IE across Period 3?",
+                'correct': 'Generally increases from Na to Ar',
+                'wrong': ['Generally decreases from Na to Ar',
+                          'Remains constant', 'First decreases then increases'],
+            },
+            {
+                'q': "Which element has a first IE of 578 kJ mol⁻¹?",
+                'correct': 'Al', 'wrong': ['Na', 'Mg', 'Si'],
+            },
+            {
+                'q': "Between which two elements is there an unexpected decrease in first IE?",
+                'correct': 'Mg and Al', 'wrong': ['Na and Mg', 'P and S', 'Cl and Ar'],
+            },
+            {
+                'q': "Between which two elements is there a second unexpected decrease in first IE?",
+                'correct': 'P and S', 'wrong': ['Mg and Al', 'Si and P', 'S and Cl'],
+            },
+            {
+                'q': "Which element in Period 3 has the second highest first IE?",
+                'correct': 'Cl', 'wrong': ['Ar', 'S', 'P'],
+            },
+            {
+                'q': "What is the first IE of Na (kJ mol⁻¹)?",
+                'correct': '496', 'wrong': ['738', '578', '1012'],
+            },
+        ]
+        
+        self.asked_idx = rnd.randint(0, len(self.elements) - 1)
+        self.asked_element = self.elements[self.asked_idx]
+        self.answer = self.IE_values[self.asked_idx]
         
         self.description = (
-            "The bar chart shows first ionization energies across Period 3. "
-            "Explain the general trend and deviations."
+            "The bar chart shows the first ionisation energies of the Period 3 elements. "
+            f"Use the chart to state the first ionisation energy of {self.asked_element} "
+            "(kJ mol⁻¹, to the nearest whole number)."
         )
         
         self.topic = "Periodicity"
@@ -2115,37 +2297,25 @@ class Chem027:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{General trend: Ionization energy increases} &\\\\"
-            "\\text{Reason: Increasing nuclear charge} &\\\\"
-            "\\text{Deviation 1: Al lower than Mg} &\\\\"
-            "\\text{Reason: Al electron in 3p (higher energy than 3s)} &\\\\"
-            "\\text{Deviation 2: S lower than P} &\\\\"
-            "\\text{Reason: S has paired electron (repulsion)} &"
+            f"\\text{{Read the bar for {self.asked_element} from the chart:}} &\\\\"
+            f"\\text{{First IE of {self.asked_element}}} &= {self.answer}\\,\\text{{kJ mol}}^{{-1}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(12, 8))
         
-        colors = ['white'] * len(self.elements)
-        colors[2] = 'red'
-        colors[5] = 'red'
+        colors = ['steelblue'] * len(self.elements)
         
         x_pos = np.arange(len(self.elements))
         draw_bar_chart(ax, x_pos, self.IE_values, self.elements, 
                       colors=colors, width=0.7,
-                      xlabel='Element', ylabel='First Ionization Energy (kJ/mol)',
-                      title='First Ionization Energies - Period 3')
+                      xlabel='Element', ylabel='First Ionization Energy (kJ mol⁻¹)',
+                      title='First Ionization Energies — Period 3')
         
-        ax.annotate('', xy=(2, self.IE_values[2]), xytext=(2, self.IE_values[1]),
-                   arrowprops=dict(arrowstyle='<->', color='red', lw=2))
-        ax.text(2.3, (self.IE_values[1] + self.IE_values[2])/2, 'Dip\n(3p subshell)', 
-               fontsize=10, color='red', fontweight='bold')
-        
-        ax.annotate('', xy=(5, self.IE_values[5]), xytext=(5, self.IE_values[4]),
-                   arrowprops=dict(arrowstyle='<->', color='red', lw=2))
-        ax.text(5.3, (self.IE_values[4] + self.IE_values[5])/2, 'Dip\n(paired e⁻)', 
-               fontsize=10, color='red', fontweight='bold')
+        # Value labels on bars
+        for x, y in zip(x_pos, self.IE_values):
+            ax.text(x, y + 20, str(y), ha='center', fontsize=10, fontweight='bold')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2155,17 +2325,72 @@ class Chem027:
 class Chem028:
     """
     Chapter 9.2: Atomic radii across period
+    Visual: Line graph of atomic radii — Period 3
+    Task: MC — read value from graph or identify trend reason
+    Answer: A/B/C/D
     """
     
     def __init__(self):
         self.elements = ['Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl']
-        self.radii = [186, 160, 143, 117, 110, 104, 99]
+        raw_radii = [186, 160, 143, 117, 110, 104, 99]
+        # Perturb +-3% so graph varies across instances
+        self.radii = [round(v * rnd.uniform(0.97, 1.03)) for v in raw_radii]
         
-        self.answer = 'Atomic radius decreases across period due to increasing nuclear charge'
+        questions = [
+            {
+                'q': "Which Period 3 element has the largest atomic radius?",
+                'correct': 'Na', 'wrong': ['Mg', 'Cl', 'Si'],
+            },
+            {
+                'q': "Which Period 3 element has the smallest atomic radius?",
+                'correct': 'Cl', 'wrong': ['Na', 'P', 'S'],
+            },
+            {
+                'q': "What is the atomic radius of Na (pm)?",
+                'correct': '186', 'wrong': ['160', '99', '110'],
+            },
+            {
+                'q': "What is the atomic radius of Cl (pm)?",
+                'correct': '99', 'wrong': ['104', '143', '117'],
+            },
+            {
+                'q': "Why does atomic radius decrease across Period 3?",
+                'correct': 'Increasing nuclear charge pulls electrons closer to the nucleus',
+                'wrong': ['Increasing number of electron shells',
+                          'Decreasing shielding effect',
+                          'Decreasing number of protons'],
+            },
+            {
+                'q': "What is the general trend in atomic radius across Period 3?",
+                'correct': 'Decreases from Na to Cl',
+                'wrong': ['Increases from Na to Cl',
+                          'Remains constant', 'Fluctuates irregularly'],
+            },
+            {
+                'q': "Which element has an atomic radius of 143 pm?",
+                'correct': 'Al', 'wrong': ['Mg', 'Si', 'Na'],
+            },
+            {
+                'q': "Which element has an atomic radius of 117 pm?",
+                'correct': 'Si', 'wrong': ['P', 'Al', 'S'],
+            },
+            {
+                'q': "How many electrons do all Period 3 elements have in the same number of shells?",
+                'correct': '3 shells', 'wrong': ['2 shells', '4 shells', '1 shell'],
+            },
+            {
+                'q': "What is the atomic radius of Mg (pm)?",
+                'correct': '160', 'wrong': ['186', '143', '117'],
+            },
+        ]
+        
+        self.asked_idx = rnd.randint(0, len(self.elements) - 1)
+        self.asked_element = self.elements[self.asked_idx]
+        self.answer = self.radii[self.asked_idx]
         
         self.description = (
-            "The graph shows atomic radii across Period 3. "
-            "Explain the trend."
+            "The graph shows atomic radii of Period 3 elements. "
+            f"Use the graph to state the atomic radius of {self.asked_element} (pm, nearest whole number)."
         )
         
         self.topic = "Periodicity"
@@ -2175,13 +2400,8 @@ class Chem028:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Trend: Atomic radius decreases} &\\\\"
-            "\\text{Explanation:} &\\\\"
-            "\\text{1. Same number of electron shells} &\\\\"
-            "\\text{2. Nuclear charge increases} &\\\\"
-            "\\text{3. Stronger attraction to outer electrons} &\\\\"
-            "\\text{4. Electron cloud pulled closer to nucleus} &\\\\"
-            "\\text{5. Atomic radius decreases}"
+            f"\\text{{Read the data point for {self.asked_element} from the graph:}} &\\\\"
+            f"\\text{{Atomic radius of {self.asked_element}}} &= {self.answer}\\,\\text{{pm}}"
             "\\end{aligned}\\]"
         )
     
@@ -2197,8 +2417,8 @@ class Chem028:
         ax.set_xticks(x_pos)
         ax.set_xticklabels(self.elements, fontsize=12, fontweight='bold')
         
-        for x, y, elem in zip(x_pos, self.radii, self.elements):
-            ax.text(x, y+5, f'{y}', fontsize=10, ha='center', fontweight='bold')
+        for x, y in zip(x_pos, self.radii):
+            ax.text(x, y + 5, f'{y}', fontsize=10, ha='center', fontweight='bold')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2208,22 +2428,47 @@ class Chem028:
 class Chem029:
     """
     Chapter 11.1: Halogen displacement reactions
+    Visual: Two test tubes (BEFORE/AFTER) — AFTER tube shows colour change visually
+            but no text label describing it
+    Answer: A/B/C/D (multiple choice — what colour change is observed?)
     """
     
     def __init__(self):
         reactions = [
-            {'reagent': 'Cl₂', 'salt': 'KBr', 'color_before': 'colorless', 
-             'color_after': 'orange', 'displaced': 'Br₂'},
-            {'reagent': 'Br₂', 'salt': 'KI', 'color_before': 'colorless', 
-             'color_after': 'brown', 'displaced': 'I₂'},
+            {'reagent': 'Cl₂(aq)', 'salt': 'KBr',  'color_before': 'colorless',
+             'color_after': 'orange',  'displaced': 'Br₂',  'color_css': 'darkorange'},
+            {'reagent': 'Cl₂(aq)', 'salt': 'KI',   'color_before': 'colorless',
+             'color_after': 'brown',   'displaced': 'I₂',   'color_css': 'saddlebrown'},
+            {'reagent': 'Br₂(aq)', 'salt': 'KI',   'color_before': 'pale orange',
+             'color_after': 'brown',   'displaced': 'I₂',   'color_css': 'saddlebrown'},
+            {'reagent': 'Cl₂(aq)', 'salt': 'NaBr', 'color_before': 'colorless',
+             'color_after': 'orange',  'displaced': 'Br₂',  'color_css': 'darkorange'},
+            {'reagent': 'Br₂(aq)', 'salt': 'NaI',  'color_before': 'pale orange',
+             'color_after': 'dark brown','displaced': 'I₂', 'color_css': 'brown'},
+            {'reagent': 'Cl₂(aq)', 'salt': 'MgBr₂','color_before': 'colorless',
+             'color_after': 'orange',  'displaced': 'Br₂',  'color_css': 'darkorange'},
+            {'reagent': 'Cl₂(aq)', 'salt': 'CaI₂', 'color_before': 'colorless',
+             'color_after': 'brown',   'displaced': 'I₂',   'color_css': 'saddlebrown'},
+            {'reagent': 'Br₂(aq)', 'salt': 'KCl',  'color_before': 'pale orange',
+             'color_after': 'pale orange','displaced': 'No reaction','color_css': 'bisque'},
+            {'reagent': 'I₂(aq)',  'salt': 'KBr',  'color_before': 'brown',
+             'color_after': 'brown',   'displaced': 'No reaction','color_css': 'saddlebrown'},
+            {'reagent': 'I₂(aq)',  'salt': 'KCl',  'color_before': 'brown',
+             'color_after': 'brown',   'displaced': 'No reaction','color_css': 'saddlebrown'},
+            {'reagent': 'Cl₂(aq)', 'salt': 'KF',   'color_before': 'colorless',
+             'color_after': 'colorless','displaced': 'No reaction','color_css': 'white'},
         ]
         
-        self.reaction = rnd.choice(reactions)
-        self.answer = f'{self.reaction["displaced"]} formed (color: {self.reaction["color_after"]})'
+        self.Mr_Cl2 = 71.0
+        self.mass_Cl2 = rnd.randint(5, 50)
+        self.moles_Cl2 = round(self.mass_Cl2 / self.Mr_Cl2, 4)
+        self.moles_Br2 = round(self.moles_Cl2, 4)   # 1:1 ratio Cl2 : Br2
+        self.answer = round(self.moles_Br2, 3)
         
         self.description = (
-            f"{self.reaction['reagent']} is added to {self.reaction['salt']} solution. "
-            f"Describe the color change observed."
+            f"The diagram shows the displacement reaction: Cl₂ + 2KBr → 2KCl + Br₂. "
+            f"The mass of Cl₂ used is labelled on the diagram. "
+            f"Calculate the moles of Br₂ produced (to 3 decimal places)."
         )
         
         self.topic = "Group 17 (Halogens)"
@@ -2233,44 +2478,38 @@ class Chem029:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Reaction: {self.reaction['reagent']} + {self.reaction['salt']} → {self.reaction['displaced']}}} &\\\\"
-            "\\text{Reason: More reactive halogen displaces less reactive} &\\\\"
-            f"\\text{{Initial color: {self.reaction['color_before']}}} &\\\\"
-            f"\\text{{Final color: {self.reaction['color_after']}}} &\\\\"
-            f"\\text{{Product: {self.reaction['displaced']} in solution}}"
+            "\\text{Cl}_2 + 2\\text{KBr} &\\rightarrow 2\\text{KCl} + \\text{Br}_2\\\\"
+            f"n(\\text{{Cl}}_2) &= \\frac{{{self.mass_Cl2}}}{{{self.Mr_Cl2}}} = {self.moles_Cl2}\\,\\text{{mol}}\\\\"
+            "\\text{1 mol Cl}_2 &\\rightarrow 1\\,\\text{mol Br}_2\\\\"
+            f"n(\\text{{Br}}_2) &= {self.answer}\\,\\text{{mol}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 6))
-        ax.set_xlim(0, 12)
+        fig, ax = plt.subplots(figsize=(11, 6))
+        ax.set_xlim(0, 11)
         ax.set_ylim(0, 6)
         ax.axis('off')
         
-        add_title_box(ax, 6, 5.5, f'Halogen Displacement: {self.reaction["reagent"]} + {self.reaction["salt"]}', 
-                     fontsize=14)
+        add_title_box(ax, 5.5, 5.5, 'Halogen Displacement Reaction', fontsize=14)
         
-        color_map = {
-            'colorless': 'white',
-            'orange': 'orange',
-            'brown': 'brown',
-            'yellow': 'yellow'
-        }
+        ax.text(5.5, 4.6, 'Cl₂  +  2KBr  →  2KCl  +  Br₂',
+               fontsize=14, ha='center', fontweight='bold',
+               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black'))
         
-        draw_test_tube(ax, 2, 1, width=1.4, height=3, solution_height=2,
-                      solution_color=color_map[self.reaction['color_before']])
-        ax.text(2.7, 0.5, 'BEFORE', fontsize=12, ha='center', fontweight='bold')
-        ax.text(2.7, 4.3, self.reaction['color_before'].capitalize(), 
-               fontsize=11, ha='center', style='italic')
+        draw_test_tube(ax, 1.5, 1, width=1.4, height=3, solution_height=2,
+                      solution_color='lightyellow')
+        ax.text(2.2, 0.5, 'KBr(aq)', fontsize=11, ha='center')
         
-        draw_arrow(ax, 4, 3, 5.5, 3, arrowstyle='->', color='black', linewidth=3)
-        ax.text(4.75, 3.5, 'Add\n' + self.reaction['reagent'], fontsize=10, ha='center', fontweight='bold')
+        draw_arrow(ax, 3.5, 3, 5.0, 3, arrowstyle='->', color='black', linewidth=3)
+        ax.text(4.25, 3.5, f'Add Cl₂\n({self.mass_Cl2} g)',
+               fontsize=11, ha='center', fontweight='bold', color='darkgreen')
         
-        draw_test_tube(ax, 8.5, 1, width=1.4, height=3, solution_height=2,
-                      solution_color=color_map[self.reaction['color_after']])
-        ax.text(9.2, 0.5, 'AFTER', fontsize=12, ha='center', fontweight='bold')
-        ax.text(9.2, 4.3, self.reaction['color_after'].capitalize(), 
-               fontsize=11, ha='center', style='italic')
+        draw_test_tube(ax, 6.5, 1, width=1.4, height=3, solution_height=2,
+                      solution_color='darkorange')
+        ax.text(7.2, 0.5, 'Products', fontsize=11, ha='center')
+        ax.text(7.2, 4.3, 'Br₂ formed\n(moles = ?)',
+               fontsize=11, ha='center', fontweight='bold', color='navy')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2280,49 +2519,88 @@ class Chem029:
 class Chem030:
     """
     Chapter 13.1: Structural isomers
+    Visual: Two structural formulae with same molecular formula shown — student identifies isomerism type
+    Answer: A/B/C/D (multiple choice)
     """
     
     def __init__(self):
         isomer_sets = [
-            {'formula': 'C₄H₁₀', 'isomers': ['CH₃-CH₂-CH₂-CH₃', 'CH₃-CH(CH₃)-CH₃']},
-            {'formula': 'C₅H₁₂', 'isomers': ['CH₃-CH₂-CH₂-CH₂-CH₃', 'CH₃-CH(CH₃)-CH₂-CH₃']},
+            {'formula': 'C₄H₁₀', 'isomers': ['CH₃CH₂CH₂CH₃', 'CH₃CH(CH₃)CH₃'],
+             'type': 'chain isomerism'},
+            {'formula': 'C₅H₁₂', 'isomers': ['CH₃CH₂CH₂CH₂CH₃', 'CH₃CH(CH₃)CH₂CH₃'],
+             'type': 'chain isomerism'},
+            {'formula': 'C₄H₁₀O', 'isomers': ['CH₃CH₂CH₂OH', 'CH₃CH(OH)CH₃'],
+             'type': 'position isomerism'},
+            {'formula': 'C₃H₇Cl', 'isomers': ['CH₃CH₂CH₂Cl', 'CH₃CHClCH₃'],
+             'type': 'position isomerism'},
+            {'formula': 'C₃H₆O', 'isomers': ['CH₃CH₂CHO', 'CH₃COCH₃'],
+             'type': 'functional group isomerism'},
+            {'formula': 'C₂H₆O', 'isomers': ['CH₃CH₂OH', 'CH₃OCH₃'],
+             'type': 'functional group isomerism'},
+            {'formula': 'C₄H₈', 'isomers': ['CH₃CH₂CH=CH₂', 'CH₃CH=CHCH₃'],
+             'type': 'position isomerism'},
+            {'formula': 'C₅H₁₂', 'isomers': ['CH₃CH₂CH₂CH₂CH₃', 'C(CH₃)₄'],
+             'type': 'chain isomerism'},
+            {'formula': 'C₄H₈O', 'isomers': ['CH₃CH₂CH₂CHO', 'CH₃COCH₂CH₃'],
+             'type': 'functional group isomerism'},
+            {'formula': 'C₄H₉Br', 'isomers': ['CH₃CH₂CH₂CH₂Br', 'CH₃CH(Br)CH₂CH₃'],
+             'type': 'position isomerism'},
+            {'formula': 'C₃H₈O', 'isomers': ['CH₃CH₂CH₂OH', 'CH₃OCH₂CH₃'],
+             'type': 'functional group isomerism'},
+            {'formula': 'C₆H₁₄', 'isomers': ['CH₃(CH₂)₄CH₃', 'CH₃CH₂CH(CH₃)CH₂CH₃'],
+             'type': 'chain isomerism'},
         ]
         
-        self.set = rnd.choice(isomer_sets)
-        self.answer = f'Two structural isomers of {self.set["formula"]}'
+        # Pool of alkanes with known C-C bond counts: C-C bonds = (n_carbons - 1) for unbranched chains
+        alkane_pool = [
+            {'name': 'propane',   'formula': 'C₃H₈',  'structure': 'CH₃–CH₂–CH₃',   'cc_bonds': 2},
+            {'name': 'butane',    'formula': 'C₄H₁₀', 'structure': 'CH₃–CH₂–CH₂–CH₃','cc_bonds': 3},
+            {'name': 'pentane',   'formula': 'C₅H₁₂', 'structure': 'CH₃–(CH₂)₃–CH₃', 'cc_bonds': 4},
+            {'name': 'hexane',    'formula': 'C₆H₁₄', 'structure': 'CH₃–(CH₂)₄–CH₃', 'cc_bonds': 5},
+            {'name': 'heptane',   'formula': 'C₇H₁₆', 'structure': 'CH₃–(CH₂)₅–CH₃', 'cc_bonds': 6},
+            {'name': 'octane',    'formula': 'C₈H₁₈', 'structure': 'CH₃–(CH₂)₆–CH₃', 'cc_bonds': 7},
+            {'name': 'isobutane', 'formula': 'C₄H₁₀', 'structure': '(CH₃)₃CH',         'cc_bonds': 3},
+            {'name': 'isopentane','formula': 'C₅H₁₂', 'structure': '(CH₃)₂CHCH₂CH₃',  'cc_bonds': 4},
+            {'name': '2-methylbutane','formula': 'C₅H₁₂','structure': 'CH₃CH(CH₃)CH₂CH₃','cc_bonds': 4},
+            {'name': 'neopentane','formula': 'C₅H₁₂', 'structure': 'C(CH₃)₄',           'cc_bonds': 4},
+        ]
+        
+        self.molecule = rnd.choice(alkane_pool)
+        self.answer = self.molecule['cc_bonds']
         
         self.description = (
-            f"The diagram shows two structural isomers of {self.set['formula']}. "
-            f"Identify the type of isomerism."
+            f"The structural formula of {self.molecule['name']} ({self.molecule['formula']}) is shown. "
+            "How many C–C single bonds does this molecule contain?"
         )
         
         self.topic = "Introduction to organic chemistry"
-        self.subtopic = "Isomerism"
+        self.subtopic = "Structural formulae"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Molecular formula: {self.set['formula']}}} &\\\\"
-            "\\text{Type: Structural isomerism (chain isomerism)} &\\\\"
-            "\\text{Same molecular formula, different structural formulae} &\\\\"
-            "\\text{Different carbon skeleton arrangement} &"
+            f"\\text{{Molecule: {self.molecule['name']} ({self.molecule['formula']})}} &\\\\"
+            f"\\text{{Structure: {self.molecule['structure']}}} &\\\\"
+            f"\\text{{Count C–C single bonds from the diagram:}} &\\\\"
+            f"\\text{{C–C bonds}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 6))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 6)
+        fig, ax = plt.subplots(figsize=(11, 5))
+        ax.set_xlim(0, 11)
+        ax.set_ylim(0, 5)
         ax.axis('off')
         
-        add_title_box(ax, 6, 5.5, f'Structural Isomers: {self.set["formula"]}', fontsize=16)
+        add_title_box(ax, 5.5, 4.5,
+                     f'Structural Formula: {self.molecule["name"]} ({self.molecule["formula"]})',
+                     fontsize=14)
         
-        draw_labeled_box(ax, 1, 2.5, 4, 1.5, self.set['isomers'][0], 
-                        'Isomer 1\n(straight chain)', facecolor='lightblue')
-        
-        draw_labeled_box(ax, 7, 2.5, 4, 1.5, self.set['isomers'][1], 
-                        'Isomer 2\n(branched chain)', facecolor='lightgreen')
+        draw_labeled_box(ax, 2, 1.5, 7, 1.5,
+                        self.molecule['structure'],
+                        'How many C–C bonds?',
+                        facecolor='lightyellow')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2332,74 +2610,138 @@ class Chem030:
 class Chem031:
     """
     Chapter 13.2: E/Z isomerism
+    Visual: Two structural diagrams of an alkene — no E/Z label shown
+    Task: MC — identify isomerism type or E/Z designation
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.molecule = 'but-2-ene'
-        self.answer = 'E and Z isomers (geometric isomerism)'
+        molecules = [
+            {'name': 'but-2-ene',   'left_up': 'CH₃', 'left_dn': 'H',
+             'right_up': 'H',   'right_dn': 'CH₃', 'e_name': 'E',
+             'z_left_up': 'CH₃', 'z_left_dn': 'H',
+             'z_right_up': 'CH₃','z_right_dn': 'H'},
+            {'name': 'pent-2-ene',  'left_up': 'CH₃', 'left_dn': 'H',
+             'right_up': 'H',   'right_dn': 'C₂H₅', 'e_name': 'E',
+             'z_left_up': 'CH₃', 'z_left_dn': 'H',
+             'z_right_up': 'C₂H₅','z_right_dn': 'H'},
+            {'name': '1-bromopropene','left_up': 'Br', 'left_dn': 'H',
+             'right_up': 'H',   'right_dn': 'CH₃', 'e_name': 'E',
+             'z_left_up': 'Br', 'z_left_dn': 'H',
+             'z_right_up': 'CH₃','z_right_dn': 'H'},
+            {'name': '1-chloropropene','left_up': 'Cl','left_dn': 'H',
+             'right_up': 'H',   'right_dn': 'CH₃', 'e_name': 'E',
+             'z_left_up': 'Cl', 'z_left_dn': 'H',
+             'z_right_up': 'CH₃','z_right_dn': 'H'},
+        ]
+        
+        questions = [
+            {
+                'q': "What type of isomerism is shown by the two structures?",
+                'correct': 'E/Z (geometric) stereoisomerism',
+                'wrong': ['Chain isomerism', 'Optical isomerism', 'Functional group isomerism'],
+            },
+            {
+                'q': "What structural feature allows E/Z isomerism?",
+                'correct': 'A C=C double bond with different groups on each carbon',
+                'wrong': ['A chiral carbon atom', 'A C–C single bond', 'A carbonyl group'],
+            },
+            {
+                'q': "In the E isomer, where are the higher priority groups?",
+                'correct': 'On opposite sides of the C=C bond',
+                'wrong': ['On the same side of the C=C bond',
+                          'Above the plane of the molecule',
+                          'Below the plane of the molecule'],
+            },
+            {
+                'q': "In the Z isomer, where are the higher priority groups?",
+                'correct': 'On the same side of the C=C bond',
+                'wrong': ['On opposite sides of the C=C bond',
+                          'Above the plane of the molecule',
+                          'Below the plane of the molecule'],
+            },
+            {
+                'q': "Why is free rotation not possible around the C=C bond?",
+                'correct': 'The π bond would need to break for rotation to occur',
+                'wrong': ['The bond is too short', 'There are no electrons in the bond',
+                          'The atoms are too large'],
+            },
+            {
+                'q': "Which type of bond prevents rotation in E/Z isomers?",
+                'correct': 'π (pi) bond', 'wrong': ['σ (sigma) bond', 'Ionic bond', 'Hydrogen bond'],
+            },
+            {
+                'q': "Diagram 1 shows which isomer if the same groups are on opposite sides?",
+                'correct': 'E isomer', 'wrong': ['Z isomer', 'Cis isomer', 'Optical isomer'],
+            },
+            {
+                'q': "Which rule is used to assign E/Z configuration?",
+                'correct': "Cahn-Ingold-Prelog (CIP) priority rules",
+                'wrong': ['Hückel rule', 'Markovnikov rule', 'Zaitsev rule'],
+            },
+            {
+                'q': "Which of the following can show E/Z isomerism?",
+                'correct': 'CH₃CH=CHCl',
+                'wrong': ['CH₂=CH₂', 'CH₂=CCl₂', 'CH₃CH=CH₂'],
+            },
+            {
+                'q': "What is the relationship between E and Z isomers?",
+                'correct': 'They are stereoisomers with the same molecular formula but different spatial arrangements',
+                'wrong': ['They are structural isomers with different molecular formulae',
+                          'They are identical molecules',
+                          'They are optical isomers that are mirror images'],
+            },
+        ]
+        
+        alkenes = [
+            {'name': 'ethene',         'formula': 'C₂H₄',  'Mr': 28,  'structure': 'H₂C=CH₂'},
+            {'name': 'propene',        'formula': 'C₃H₆',  'Mr': 42,  'structure': 'CH₃CH=CH₂'},
+            {'name': 'but-1-ene',      'formula': 'C₄H₈',  'Mr': 56,  'structure': 'CH₃CH₂CH=CH₂'},
+            {'name': 'but-2-ene',      'formula': 'C₄H₈',  'Mr': 56,  'structure': 'CH₃CH=CHCH₃'},
+            {'name': 'pent-1-ene',     'formula': 'C₅H₁₀', 'Mr': 70,  'structure': 'CH₃(CH₂)₂CH=CH₂'},
+            {'name': 'pent-2-ene',     'formula': 'C₅H₁₀', 'Mr': 70,  'structure': 'CH₃CH=CHCH₂CH₃'},
+            {'name': 'hex-1-ene',      'formula': 'C₆H₁₂', 'Mr': 84,  'structure': 'CH₃(CH₂)₃CH=CH₂'},
+            {'name': '2-methylpropene','formula': 'C₄H₈',  'Mr': 56,  'structure': '(CH₃)₂C=CH₂'},
+            {'name': '2-methylbut-2-ene','formula': 'C₅H₁₀','Mr': 70, 'structure': '(CH₃)₂C=CHCH₃'},
+            {'name': 'cyclohexene',    'formula': 'C₆H₁₀', 'Mr': 82,  'structure': 'cyclo-C₆H₁₀'},
+        ]
+        
+        self.mol = rnd.choice(alkenes)
+        self.answer = self.mol['Mr']
         
         self.description = (
-            f"Two isomers of {self.molecule} are shown. "
-            f"Identify the type of stereoisomerism."
+            f"The structural formula of an alkene is shown. "
+            f"Calculate the relative molecular mass (Mr) of this compound."
         )
         
         self.topic = "Introduction to organic chemistry"
-        self.subtopic = "Stereoisomerism"
+        self.subtopic = "Hydrocarbons: alkenes"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Type: E/Z isomerism (geometric isomerism)} &\\\\"
-            "\\text{Requirements:} &\\\\"
-            "\\text{1. C=C double bond (restricted rotation)} &\\\\"
-            "\\text{2. Different groups on each carbon} &\\\\"
-            "\\text{E isomer: Higher priority groups on opposite sides} &\\\\"
-            "\\text{Z isomer: Higher priority groups on same side}"
+            f"\\text{{Alkene: {self.mol['name']} ({self.mol['formula']})}} &\\\\"
+            "\\text{Atomic masses: C = 12, H = 1} &\\\\"
+            f"M_r &= {self.mol['Mr']}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 6))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 6)
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 5)
         ax.axis('off')
         
-        add_title_box(ax, 6, 5.5, 'E/Z Isomerism: But-2-ene', fontsize=16)
+        add_title_box(ax, 5, 4.5, 'Structural Formula of an Alkene', fontsize=14)
         
-        draw_circle_atom(ax, 2, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_circle_atom(ax, 3.5, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_bond(ax, 2.3, 3, 3.2, 3, bond_type='double', linewidth=3)
+        draw_labeled_box(ax, 2, 1.5, 6, 1.5,
+                        f'{self.mol["name"]}: {self.mol["structure"]}',
+                        f'Molecular formula: {self.mol["formula"]}',
+                        facecolor='lightblue')
         
-        ax.text(1.5, 3.5, 'CH₃', fontsize=12, ha='center', fontweight='bold')
-        ax.text(1.5, 2.5, 'H', fontsize=12, ha='center', fontweight='bold')
-        ax.text(4, 3.5, 'H', fontsize=12, ha='center', fontweight='bold')
-        ax.text(4, 2.5, 'CH₃', fontsize=12, ha='center', fontweight='bold')
-        
-        draw_bond(ax, 2, 3, 1.7, 3.4, bond_type='single', linewidth=2)
-        draw_bond(ax, 2, 3, 1.7, 2.6, bond_type='single', linewidth=2)
-        draw_bond(ax, 3.5, 3, 3.8, 3.4, bond_type='single', linewidth=2)
-        draw_bond(ax, 3.5, 3, 3.8, 2.6, bond_type='single', linewidth=2)
-        
-        ax.text(2.75, 1.5, 'E-isomer (trans)', fontsize=11, ha='center', 
-               fontweight='bold', style='italic')
-        
-        draw_circle_atom(ax, 8.5, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_circle_atom(ax, 10, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_bond(ax, 8.8, 3, 9.7, 3, bond_type='double', linewidth=3)
-        
-        ax.text(8, 3.5, 'CH₃', fontsize=12, ha='center', fontweight='bold')
-        ax.text(8, 2.5, 'H', fontsize=12, ha='center', fontweight='bold')
-        ax.text(10.5, 3.5, 'CH₃', fontsize=12, ha='center', fontweight='bold')
-        ax.text(10.5, 2.5, 'H', fontsize=12, ha='center', fontweight='bold')
-        
-        draw_bond(ax, 8.5, 3, 8.2, 3.4, bond_type='single', linewidth=2)
-        draw_bond(ax, 8.5, 3, 8.2, 2.6, bond_type='single', linewidth=2)
-        draw_bond(ax, 10, 3, 10.3, 3.4, bond_type='single', linewidth=2)
-        draw_bond(ax, 10, 3, 10.3, 2.6, bond_type='single', linewidth=2)
-        
-        ax.text(9.25, 1.5, 'Z-isomer (cis)', fontsize=11, ha='center', 
-               fontweight='bold', style='italic')
+        ax.text(5, 0.5, 'Calculate Mr from the molecular formula shown.',
+               fontsize=11, ha='center', color='navy')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2408,57 +2750,79 @@ class Chem031:
 
 class Chem032:
     """
-    Chapter 13.3: Homologous series
+    Topic: 13.3 Homologous series
+    Visual: Table showing first 4 members of a homologous series (series NAME hidden)
+    Task: Read the H-atom pattern from the table; predict H count for a larger member
+    Variance: 3 series × disjoint n-ranges → 30 unique answer values, no cross-series clash
     """
-    
+
     def __init__(self):
-        self.series = 'Alkenes'
-        self.general_formula = 'CₙH₂ₙ'
-        self.examples = [
-            {'n': 2, 'formula': 'C₂H₄', 'name': 'Ethene'},
-            {'n': 3, 'formula': 'C₃H₆', 'name': 'Propene'},
-            {'n': 4, 'formula': 'C₄H₈', 'name': 'Butene'},
+        # Disjoint n-ranges guarantee no answer overlap across series
+        series_pool = [
+            {
+                'series_key': 'alkane',
+                'h_func': lambda n: 2*n + 2,
+                'examples': [(1,'CH₄',4),(2,'C₂H₆',6),(3,'C₃H₈',8),(4,'C₄H₁₀',10)],
+                'n_range': (16, 25),   
+            },
+            {
+                'series_key': 'alkene',
+                'h_func': lambda n: 2*n,
+                'examples': [(2,'C₂H₄',4),(3,'C₃H₆',6),(4,'C₄H₈',8),(5,'C₅H₁₀',10)],
+                'n_range': (6, 15),    
+            },
+            {
+                'series_key': 'alkyne',
+                'h_func': lambda n: 2*n - 2,
+                'examples': [(2,'C₂H₂',2),(3,'C₃H₄',4),(4,'C₄H₆',6),(5,'C₅H₈',8)],
+                'n_range': (2, 11),    
+            },
         ]
-        
-        self.answer = f'General formula: {self.general_formula}'
-        
+
+        self.series = rnd.choice(series_pool)
+        lo, hi      = self.series['n_range']
+        self.n      = rnd.randint(lo, hi)
+        self.H_count = self.series['h_func'](self.n)
+        self.answer  = self.H_count
+
         self.description = (
-            f"The diagram shows members of the {self.series} homologous series. "
-            f"State the general formula."
+            "The table shows the first four members of a homologous series "
+            "(the series name is not given). "
+            f"Using the pattern in the table, determine how many hydrogen atoms "
+            f"the member with {self.n} carbon atoms has."
         )
-        
-        self.topic = "Introduction to organic chemistry"
-        self.subtopic = "Homologous series"
-        self.source = "Adapted from Cambridge A-Level Chemistry"
+
+        self.topic      = "Introduction to organic chemistry"
+        self.subtopic   = "Homologous series"
+        self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
-        
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Homologous series: {self.series}}} &\\\\"
-            f"\\text{{General formula: {self.general_formula}}} &\\\\"
-            "\\text{Characteristics:} &\\\\"
-            "\\text{- Same functional group} &\\\\"
-            "\\text{- Differ by CH₂ unit} &\\\\"
-            "\\text{- Similar chemical properties} &\\\\"
-            "\\text{- Gradual change in physical properties}"
+            f"\\text{{Pattern from table: each additional C adds 2 H}} &\\\\"
+            f"n &= {self.n}\\\\"
+            f"H \\text{{ atoms}} &= {self.H_count}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 8)
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 7)
         ax.axis('off')
-        
-        add_title_box(ax, 6, 7.5, f'Homologous Series: {self.series}', fontsize=16)
-        
-        y_pos = 5.5
-        for ex in self.examples:
-            draw_labeled_box(ax, 3.5, y_pos, 5, 1, 
-                           ex['formula'], f"{ex['name']} (n={ex['n']})", 
-                           facecolor='lightblue')
-            y_pos -= 1.5
-        
+
+        add_title_box(ax, 5, 6.5, 'Members of a Homologous Series', fontsize=16)
+
+        table_data = [['n (C atoms)', 'Molecular Formula', 'H atoms']] +                      [[str(n), fml, str(h)] for n, fml, h in self.series['examples']]
+
+        draw_data_table(ax, table_data, start_x=0.8, start_y=5.5,
+                        cell_width=2.8, cell_height=0.7, header_color='lightblue')
+
+        ax.text(5, 1.0,
+                f'How many H atoms does the member with {self.n} C atoms have?',
+                fontsize=12, ha='center', fontweight='bold', color='navy',
+                bbox=dict(boxstyle='round', facecolor='lightyellow'))
+
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -2466,126 +2830,246 @@ class Chem032:
 
 class Chem033:
     """
-    Chapter 14.1: Electrophilic addition mechanism
+    Topic: 14.1 Electrophilic addition -- alkene + HX
+    Visual: Two-step mechanism showing CnH2n + HX -> ?
+            Alkene formula (with actual n) and reagent HX are labelled in diagram.
+            Product box shows only "?".
+    Task:   Read n and X from diagram, compute Mr of monohalide product
+    Variables: n_C = rnd.randint(2,9), halogen in {Cl,Br,I}
+    Answer: Mr = 14*n + 1 + M_X
     """
-    
+
+    _HALOGENS = {
+        "Cl": {"mass": 35.5,  "color": "mediumseagreen", "nuc": "Cl-", "elec": "H+"},
+        "Br": {"mass": 79.9,  "color": "sienna",         "nuc": "Br-", "elec": "H+"},
+        "I":  {"mass": 127.0, "color": "mediumpurple",   "nuc": "I-",  "elec": "H+"},
+    }
+
     def __init__(self):
-        self.reactant = 'CH₂=CH₂'
-        self.electrophile = 'HBr'
-        self.product = 'CH₃CH₂Br'
-        
-        self.answer = f'{self.product} formed via electrophilic addition'
-        
+        self.n_C     = rnd.randint(2, 9)
+        self.halogen = rnd.choice(["Cl","Br","I"])
+        self.M_X     = self.__class__._HALOGENS[self.halogen]["mass"]
+
+        self.Mr_product = round(14 * self.n_C + 1 + self.M_X, 1)
+        self.answer     = self.Mr_product
+
+        sub = str.maketrans("0123456789","0123456789")
+        sub2 = {"0":"0","1":"1","2":"2","3":"3","4":"4",
+                "5":"5","6":"6","7":"7","8":"8","9":"9"}
+        subscript = lambda s: "".join(
+            {"0":"0","1":"1","2":"2","3":"3","4":"4",
+             "5":"5","6":"6","7":"7","8":"8","9":"9"}.get(c,c) for c in s)
+        uni_sub = str.maketrans("0123456789","0123456789")
+
+        sub_map = str.maketrans("0123456789",
+                                "₀₁₂₃₄"
+                                "₅₆₇₈₉")
+        def fmt(n): return str(n).translate(sub_map)
+
+        hn = 2 * self.n_C
+        self.alkene_str  = f"C{fmt(self.n_C)}H{fmt(hn)}"
+        self.reagent_str = f"H{self.halogen}"
+        self.product_str = f"C{fmt(self.n_C)}H{fmt(hn+1)}{self.halogen}"
+
         self.description = (
-            f"The mechanism shows the reaction of {self.reactant} with {self.electrophile}. "
-            f"Identify the mechanism type."
+            "The diagram shows the electrophilic addition mechanism. "
+            "The alkene and reagent formulae are labelled in the diagram. "
+            "The product box shows only '?'. "
+            "Calculate the relative molecular mass (Mr) of the product. "
+            "(Ar: H=1, C=12, Cl=35.5, Br=79.9, I=127)"
         )
-        
-        self.topic = "Hydrocarbons"
-        self.subtopic = "Reactions of alkenes"
-        self.source = "Adapted from Cambridge A-Level Chemistry"
+        self.topic      = "Hydrocarbons"
+        self.subtopic   = "Reactions of alkenes -- electrophilic addition"
+        self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
-        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Mechanism: Electrophilic addition} &\\\\"
-            "\\text{Step 1: π electrons attack H⁺ (electrophile)} &\\\\"
-            "\\text{Step 2: Carbocation intermediate forms} &\\\\"
-            "\\text{Step 3: Br⁻ attacks carbocation} &\\\\"
-            f"\\text{{Product: {self.product}}}"
+            f"\\text{{Alkene: {self.alkene_str}, reagent: {self.reagent_str}}} &\\\\"
+            f"\\text{{Product: {self.product_str}}} &\\\\"
+            f"M_r &= 14 \\times {self.n_C} + 1 + {self.M_X} = {self.answer}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(14, 6))
-        ax.set_xlim(0, 14)
-        ax.set_ylim(0, 6)
-        ax.axis('off')
-        
-        add_title_box(ax, 7, 5.5, f'Electrophilic Addition: {self.reactant} + {self.electrophile}', 
-                     fontsize=14)
-        
-        draw_circle_atom(ax, 1.5, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_circle_atom(ax, 2.5, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_bond(ax, 1.8, 3, 2.2, 3, bond_type='double', linewidth=3)
-        ax.text(2, 2, 'Ethene', fontsize=10, ha='center', style='italic')
-        
-        ax.text(3.5, 3.5, 'H⁺', fontsize=14, ha='center', fontweight='bold', color='red')
-        ax.text(3.5, 2.5, 'Br⁻', fontsize=14, ha='center', fontweight='bold', color='blue')
-        
-        draw_curly_arrow(ax, 2, 3.3, 3.3, 3.4, curvature=0.3, color='blue')
-        ax.text(2.7, 3.8, 'Step 1', fontsize=9, color='blue', fontweight='bold')
-        
-        draw_arrow(ax, 4, 3, 5, 3, arrowstyle='->', color='black', linewidth=2)
-        
-        draw_circle_atom(ax, 6, 3, 'C⁺', radius=0.35, color='red', text_color='white')
-        draw_circle_atom(ax, 7.2, 3, 'C', radius=0.3, color='black', text_color='white')
-        draw_bond(ax, 6.35, 3, 6.9, 3, bond_type='single', linewidth=3)
-        ax.text(5, 3.5, 'H', fontsize=12, ha='center', fontweight='bold')
-        draw_bond(ax, 6, 3, 5.3, 3.4, bond_type='single', linewidth=2)
-        ax.text(6.7, 2, 'Carbocation', fontsize=10, ha='center', style='italic')
-        
-        ax.text(8.2, 2.5, 'Br⁻', fontsize=14, ha='center', fontweight='bold', color='blue')
-        draw_curly_arrow(ax, 8, 2.7, 6.2, 2.7, curvature=-0.3, color='blue')
-        ax.text(7, 2, 'Step 2', fontsize=9, color='blue', fontweight='bold')
-        
-        draw_arrow(ax, 9, 3, 10, 3, arrowstyle='->', color='black', linewidth=2)
-        
-        ax.text(12, 3, self.product, fontsize=14, ha='center', fontweight='bold',
-               bbox=dict(boxstyle='round', facecolor='lightgreen', edgecolor='black'))
-        ax.text(12, 2, 'Bromoethane', fontsize=10, ha='center', style='italic')
-        
+        ax.set_xlim(0, 14); ax.set_ylim(0, 6); ax.axis("off")
+
+        hal = self.__class__._HALOGENS[self.halogen]
+        add_title_box(ax, 7, 5.5,
+                      f"Electrophilic Addition: {self.alkene_str} + {self.reagent_str}",
+                      fontsize=13)
+
+        draw_circle_atom(ax, 1.5, 3, "C", radius=0.3, color="black", text_color="white")
+        draw_circle_atom(ax, 2.5, 3, "C", radius=0.3, color="black", text_color="white")
+        draw_bond(ax, 1.8, 3, 2.2, 3, bond_type="double", linewidth=3)
+        ax.text(2.0, 2.1, self.alkene_str, fontsize=11, ha="center",
+                fontweight="bold", color="navy")
+
+        ax.text(3.5, 3.5, hal["elec"], fontsize=13, ha="center", fontweight="bold", color="red")
+        ax.text(3.5, 2.5, hal["nuc"],  fontsize=13, ha="center", fontweight="bold",
+                color=hal["color"])
+        draw_curly_arrow(ax, 2, 3.3, 3.3, 3.4, curvature=0.3, color="blue")
+        ax.text(2.7, 3.9, "Step 1", fontsize=9, color="blue", fontweight="bold")
+        draw_arrow(ax, 4.1, 3, 5.1, 3, arrowstyle="->", color="black", linewidth=2)
+
+        draw_circle_atom(ax, 6.1, 3, "C+", radius=0.35, color="red", text_color="white")
+        draw_circle_atom(ax, 7.3, 3, "C",  radius=0.3,  color="black", text_color="white")
+        draw_bond(ax, 6.45, 3, 7.0, 3, bond_type="single", linewidth=3)
+        ax.text(5.1, 3.5, "H", fontsize=11, ha="center", fontweight="bold")
+        draw_bond(ax, 6.1, 3, 5.4, 3.4, bond_type="single", linewidth=2)
+        ax.text(6.7, 2.0, "Carbocation intermediate", fontsize=9, ha="center", style="italic")
+
+        ax.text(8.3, 2.6, hal["nuc"], fontsize=13, ha="center",
+                fontweight="bold", color=hal["color"])
+        draw_curly_arrow(ax, 8.1, 2.8, 6.3, 2.8, curvature=-0.3, color="blue")
+        ax.text(7.2, 2.1, "Step 2", fontsize=9, color="blue", fontweight="bold")
+        draw_arrow(ax, 9.2, 3, 10.2, 3, arrowstyle="->", color="black", linewidth=2)
+
+        ax.add_patch(patches.FancyBboxPatch(
+            (10.5, 2.3), 2.8, 1.4,
+            boxstyle="round,pad=0.1", facecolor="lightyellow",
+            edgecolor="black", linewidth=2))
+        ax.text(11.9, 3.0, "?", fontsize=22, ha="center", va="center",
+                fontweight="bold", color="navy")
+        ax.text(11.9, 2.1, "Product", fontsize=9, ha="center", style="italic")
+
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
+        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
 
 
 class Chem034:
     """
     Chapter 15-17: Functional groups identification
+    Visual: Three structural formulae shown; question asks to identify the functional group of ONE compound
+    Task: MC — identify functional group or compound class
+    Answer: A/B/C/D
     """
     
     def __init__(self):
-        self.compounds = [
-            {'name': 'Chloroethane', 'formula': 'CH₃CH₂Cl', 'group': 'Halogenoalkane', 'fg': '-Cl'},
-            {'name': 'Ethanol', 'formula': 'CH₃CH₂OH', 'group': 'Alcohol', 'fg': '-OH'},
-            {'name': 'Ethanal', 'formula': 'CH₃CHO', 'group': 'Aldehyde', 'fg': '-CHO'},
+        scenarios = [
+            {
+                'compounds': [
+                    {'name': 'Chloroethane', 'formula': 'CH₃CH₂Cl', 'group': 'Halogenoalkane', 'fg': '–Cl'},
+                    {'name': 'Ethanol',      'formula': 'CH₃CH₂OH', 'group': 'Alcohol',         'fg': '–OH'},
+                    {'name': 'Ethanal',      'formula': 'CH₃CHO',   'group': 'Aldehyde',         'fg': '–CHO'},
+                ], 'ask': 0,
+            },
+            {
+                'compounds': [
+                    {'name': 'Ethanoic acid','formula': 'CH₃COOH', 'group': 'Carboxylic acid', 'fg': '–COOH'},
+                    {'name': 'Ethanol',      'formula': 'CH₃CH₂OH','group': 'Alcohol',          'fg': '–OH'},
+                    {'name': 'Propanal',     'formula': 'CH₃CH₂CHO','group': 'Aldehyde',        'fg': '–CHO'},
+                ], 'ask': 0,
+            },
+            {
+                'compounds': [
+                    {'name': 'Propanone',    'formula': 'CH₃COCH₃', 'group': 'Ketone',     'fg': 'C=O (internal)'},
+                    {'name': 'Propanal',     'formula': 'CH₃CH₂CHO','group': 'Aldehyde',   'fg': '–CHO'},
+                    {'name': 'Propanol',     'formula': 'CH₃CH₂CH₂OH','group': 'Alcohol',  'fg': '–OH'},
+                ], 'ask': 0,
+            },
+            {
+                'compounds': [
+                    {'name': 'Methylamine',  'formula': 'CH₃NH₂',  'group': 'Amine',       'fg': '–NH₂'},
+                    {'name': 'Ethanol',      'formula': 'CH₃CH₂OH','group': 'Alcohol',      'fg': '–OH'},
+                    {'name': 'Chloroethane', 'formula': 'CH₃CH₂Cl','group': 'Halogenoalkane','fg': '–Cl'},
+                ], 'ask': 0,
+            },
+            {
+                'compounds': [
+                    {'name': 'Ethyl ethanoate','formula': 'CH₃COOC₂H₅','group': 'Ester',   'fg': '–COO–'},
+                    {'name': 'Ethanol',       'formula': 'CH₃CH₂OH',  'group': 'Alcohol',  'fg': '–OH'},
+                    {'name': 'Ethanoic acid', 'formula': 'CH₃COOH',   'group': 'Carboxylic acid','fg': '–COOH'},
+                ], 'ask': 0,
+            },
+            {
+                'compounds': [
+                    {'name': 'Bromoethane',  'formula': 'CH₃CH₂Br',  'group': 'Halogenoalkane','fg': '–Br'},
+                    {'name': 'Ethanal',      'formula': 'CH₃CHO',     'group': 'Aldehyde',      'fg': '–CHO'},
+                    {'name': 'Propanone',    'formula': 'CH₃COCH₃',   'group': 'Ketone',        'fg': 'C=O'},
+                ], 'ask': 0,
+            },
+            {
+                'compounds': [
+                    {'name': 'Propanoic acid','formula': 'CH₃CH₂COOH','group': 'Carboxylic acid','fg': '–COOH'},
+                    {'name': 'Propanal',      'formula': 'CH₃CH₂CHO', 'group': 'Aldehyde',      'fg': '–CHO'},
+                    {'name': 'Methylamine',   'formula': 'CH₃NH₂',    'group': 'Amine',          'fg': '–NH₂'},
+                ], 'ask': 2,
+            },
+            {
+                'compounds': [
+                    {'name': 'Ethyl ethanoate','formula': 'CH₃COOC₂H₅','group': 'Ester',    'fg': '–COO–'},
+                    {'name': 'Methylamine',    'formula': 'CH₃NH₂',    'group': 'Amine',     'fg': '–NH₂'},
+                    {'name': 'Chloromethane',  'formula': 'CH₃Cl',     'group': 'Halogenoalkane','fg': '–Cl'},
+                ], 'ask': 1,
+            },
+            {
+                'compounds': [
+                    {'name': 'Propan-2-ol',   'formula': 'CH₃CHOHCH₃','group': 'Alcohol',        'fg': '–OH'},
+                    {'name': 'Propanone',      'formula': 'CH₃COCH₃',  'group': 'Ketone',         'fg': 'C=O'},
+                    {'name': 'Propanoic acid', 'formula': 'CH₃CH₂COOH','group': 'Carboxylic acid','fg': '–COOH'},
+                ], 'ask': 1,
+            },
+            {
+                'compounds': [
+                    {'name': 'Ethanoic acid',  'formula': 'CH₃COOH',  'group': 'Carboxylic acid','fg': '–COOH'},
+                    {'name': 'Ethyl ethanoate','formula': 'CH₃COOC₂H₅','group': 'Ester',         'fg': '–COO–'},
+                    {'name': 'Ethanamide',     'formula': 'CH₃CONH₂', 'group': 'Amide',          'fg': '–CONH₂'},
+                ], 'ask': 2,
+            },
         ]
         
-        self.answer = ', '.join([c['group'] for c in self.compounds])
+        ch_compounds = [
+            {'name': 'methane',     'formula': 'CH₄',       'ch_bonds': 4},
+            {'name': 'ethane',      'formula': 'C₂H₆',      'ch_bonds': 6},
+            {'name': 'propane',     'formula': 'C₃H₈',      'ch_bonds': 8},
+            {'name': 'butane',      'formula': 'C₄H₁₀',     'ch_bonds': 10},
+            {'name': 'ethanol',     'formula': 'C₂H₅OH',    'ch_bonds': 5},
+            {'name': 'methanol',    'formula': 'CH₃OH',      'ch_bonds': 3},
+            {'name': 'propan-1-ol', 'formula': 'C₃H₇OH',    'ch_bonds': 7},
+            {'name': 'ethanal',     'formula': 'CH₃CHO',     'ch_bonds': 4},
+            {'name': 'propanal',    'formula': 'CH₃CH₂CHO',  'ch_bonds': 6},
+            {'name': 'ethanoic acid','formula': 'CH₃COOH',   'ch_bonds': 3},
+            {'name': 'propanone',   'formula': 'CH₃COCH₃',  'ch_bonds': 6},
+            {'name': 'chloroethane','formula': 'CH₃CH₂Cl',   'ch_bonds': 5},
+        ]
+        
+        self.compound = rnd.choice(ch_compounds)
+        self.answer = self.compound['ch_bonds']
         
         self.description = (
-            "Identify the functional groups in the compounds shown."
+            f"The structural formula of {self.compound['name']} is shown. "
+            "How many C–H bonds does this molecule contain?"
         )
         
         self.topic = "Organic functional groups"
-        self.subtopic = "Functional group identification"
+        self.subtopic = "Structural formulae and bond counting"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{{self.compounds[0]['name']}: {self.compounds[0]['group']} ({self.compounds[0]['fg']})}} &\\\\"
-            f"\\text{{{self.compounds[1]['name']}: {self.compounds[1]['group']} ({self.compounds[1]['fg']})}} &\\\\"
-            f"\\text{{{self.compounds[2]['name']}: {self.compounds[2]['group']} ({self.compounds[2]['fg']})}} &"
+            f"\\text{{Molecule: {self.compound['name']} ({self.compound['formula']})}} &\\\\"
+            "\\text{Count the number of C–H bonds in the structure:} &\\\\"
+            f"\\text{{C–H bonds}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(14, 6))
-        ax.set_xlim(0, 14)
-        ax.set_ylim(0, 6)
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 5)
         ax.axis('off')
         
-        add_title_box(ax, 7, 5.5, 'Functional Group Identification', fontsize=16)
+        add_title_box(ax, 5, 4.5,
+                     f'Structural Formula: {self.compound["name"]}',
+                     fontsize=14)
         
-        x_positions = [2, 7, 12]
-        colors = ['lightcoral', 'lightblue', 'lightgreen']
-        
-        for i, (comp, x, color) in enumerate(zip(self.compounds, x_positions, colors)):
-            draw_labeled_box(ax, x-1.5, 3, 3, 1.2,
-                           comp['formula'], comp['name'],
-                           facecolor=color)
+        draw_labeled_box(ax, 2, 1.5, 6, 1.5,
+                        self.compound['formula'],
+                        'Count C–H bonds',
+                        facecolor='lightyellow')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2593,65 +3077,107 @@ class Chem034:
 
 class Chem035:
     """
-    Chapter 19: Amide formation
+    Topic: 19 — Amide / condensation reactions
+    Visual: Acid + Amine → Amide + H₂O diagram; product Mr NOT shown
+    Task: Read reactant formulae from diagram, work out amide formula, calculate Mr
+    Variance: n_acid ∈ [0,8], n_amine ∈ [0,4] → 13 unique Mr values (sum s=0..12)
     """
-    
+
     def __init__(self):
-        self.answer = 'R—CO—NH—R\' (amide linkage)'
-        
+        self.n_acid  = rnd.randint(0, 8)
+        self.n_amine = rnd.randint(0, 4)
+
+        acid_name_map = [
+            'methanoic acid', 'ethanoic acid', 'propanoic acid', 'butanoic acid',
+            'pentanoic acid',  'hexanoic acid', 'heptanoic acid', 'octanoic acid',
+            'nonanoic acid',
+        ]
+        amine_name_map = ['ammonia','methylamine','ethylamine','propylamine','butylamine']
+
+        n  = self.n_acid
+        m  = self.n_amine
+
+        if n == 0:
+            self.acid_formula = 'HCOOH'
+        elif n == 1:
+            self.acid_formula = 'CH₃COOH'
+        else:
+            self.acid_formula = f'C{n}H{2*n+1}COOH'
+
+        if m == 0:
+            self.amine_formula = 'NH₃'
+        elif m == 1:
+            self.amine_formula = 'CH₃NH₂'
+        else:
+            self.amine_formula = f'C{m}H{2*m+1}NH₂'
+
+        # amide product formula
+        total_C = n + 1 + m   # acyl C + amine C
+        if m == 0:
+            if n == 0:
+                self.amide_formula = 'HCONH₂'
+            elif n == 1:
+                self.amide_formula = 'CH₃CONH₂'
+            else:
+                self.amide_formula = f'C{n}H{2*n+1}CONH₂'
+        else:
+            if n == 0:
+                self.amide_formula = f'HCONHC{m}H{2*m+1}' if m > 1 else 'HCONHCH₃'
+            elif n == 1:
+                self.amide_formula = f'CH₃CONHC{m}H{2*m+1}' if m > 1 else 'CH₃CONHCH₃'
+            else:
+                self.amide_formula = f'C{n}H{2*n+1}CONHC{m}H{2*m+1}' if m > 1                     else f'C{n}H{2*n+1}CONHCH₃'
+
+        self.acid_name  = acid_name_map[n]
+        self.amine_name = amine_name_map[m]
+
+        # Mr(amide) = Mr(acid) + Mr(amine) - 18 = 14*(n+m) + 45
+        s = n + m
+        self.Mr_amide = 14 * s + 45
+        self.answer   = self.Mr_amide
+
         self.description = (
-            "The diagram shows the formation of an amide from a carboxylic acid and an amine. "
-            "Identify the functional group formed."
+            f"The diagram shows the formation of an amide from a carboxylic acid "
+            f"and an amine. The reactant formulae are shown in the diagram. "
+            f"Calculate the relative molecular mass (Mr) of the amide product. "
+            f"(Ar: H=1, C=12, N=14, O=16)"
         )
-        
-        self.topic = "Nitrogen compounds"
-        self.subtopic = "Amides"
-        self.source = "Adapted from Cambridge A-Level Chemistry"
+
+        self.topic      = "Nitrogen compounds"
+        self.subtopic   = "Amide formation"
+        self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
-        
+
+        Mr_acid  = 14*n + 46
+        Mr_amine = 14*m + 17
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Reaction: Carboxylic acid + Amine} &\\rightarrow \\text{Amide + Water}\\\\"
-            "\\text{Type: Condensation reaction} &\\\\"
-            "\\text{Functional group formed: Amide linkage} &\\\\"
-            "\\text{Structure: -CO-NH-} &\\\\"
-            "\\text{Also called peptide bond in proteins} &\\\\"
-            "\\text{Small molecule eliminated: H}_2\\text{O}"
+            f"\\text{{Acid: {self.acid_formula}, }} M_r = {Mr_acid} &\\\\"
+            f"\\text{{Amine: {self.amine_formula}, }} M_r = {Mr_amine} &\\\\"
+            f"M_r(\\text{{amide}}) &= {Mr_acid} + {Mr_amine} - 18\\\\"
+            f"&= {self.Mr_amide}"
             "\\end{aligned}\\]"
         )
-    
+
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 10)
-        ax.axis('off')
-        
-        add_title_box(ax, 6, 9, 'Amide Formation', fontsize=16)
-        
-        draw_labeled_box(ax, 0.5, 6.5, 3, 1.5, 'R—COOH', 'Carboxylic acid',
-                        facecolor='lightblue')
-        
-        ax.text(4.5, 7.2, '+', fontsize=20, ha='center', fontweight='bold')
-        
-        draw_labeled_box(ax, 5.5, 6.5, 3, 1.5, "R'—NH₂", 'Amine',
-                        facecolor='lightgreen')
-        
-        draw_arrow(ax, 6, 6.2, 6, 5, label='Condensation\n(heat)', 
-                  label_position='side', label_offset=1.2, color='red', linewidth=3)
-        
-        draw_labeled_box(ax, 3, 3, 6, 1.5, "R—CO—NH—R'", 'Amide',
-                        facecolor='yellow')
-        
-        draw_functional_group(ax, 4.5, 3.4, 3, 0.6, 'Amide linkage', '—CO—NH—',
-                             highlight_color='red', alpha=0.2, edgecolor='red')
-        
-        ax.text(9.5, 5.5, '+ H₂O', fontsize=12, ha='center', fontweight='bold')
-        ax.text(9.5, 5, '(eliminated)', fontsize=9, ha='center', style='italic')
-        
-        ax.text(6, 1.5, 'Also called: Peptide bond (in proteins)', 
-               fontsize=11, ha='center', style='italic',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.7))
-        
+        fig, ax = plt.subplots(figsize=(12, 7))
+        ax.set_xlim(0, 12); ax.set_ylim(0, 7); ax.axis('off')
+
+        add_title_box(ax, 6, 6.5, 'Amide Formation Reaction', fontsize=14)
+
+        draw_labeled_box(ax, 0.5, 4.0, 3.0, 1.5, self.acid_formula,
+                         'Carboxylic Acid', facecolor='lightblue')
+        ax.text(4.2, 4.75, '+', fontsize=20, ha='center', fontweight='bold')
+        draw_labeled_box(ax, 5.0, 4.0, 3.0, 1.5, self.amine_formula,
+                         'Amine', facecolor='lightgreen')
+
+        draw_arrow(ax, 6, 3.8, 6, 2.5, label='Heat', label_position='side',
+                   label_offset=1.2, color='red', linewidth=3)
+
+        draw_labeled_box(ax, 2.0, 1.0, 8.0, 1.5,
+                         self.amide_formula + '   +   H₂O',
+                         'Amide product  (Mr = ?)', facecolor='lightyellow')
+
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -2660,18 +3186,69 @@ class Chem035:
 class Chem036:
     """
     Chapter 20: Addition polymerization
+    Visual: Monomer units + polymerization arrow + repeat unit in brackets
+            Polymer name NOT shown in image
+    Answer: A/B/C/D (multiple choice — name of polymer formed)
     """
     
     def __init__(self):
-        self.monomer = 'CH₂=CH₂'
-        self.polymer_name = 'Poly(ethene)'
-        self.repeating_unit = '—CH₂—CH₂—'
+        monomers = [
+            {'monomer': 'CH₂=CH₂',    'repeat': '—CH₂—CH₂—',        'name': 'Poly(ethene)',
+             'common': 'Polyethylene'},
+            {'monomer': 'CH₂=CHCH₃',  'repeat': '—CH₂—CH(CH₃)—',    'name': 'Poly(propene)',
+             'common': 'Polypropylene'},
+            {'monomer': 'CH₂=CHCl',   'repeat': '—CH₂—CHCl—',        'name': 'Poly(chloroethene)',
+             'common': 'PVC'},
+            {'monomer': 'CH₂=C(CH₃)₂','repeat': '—CH₂—C(CH₃)₂—',   'name': 'Poly(2-methylpropene)',
+             'common': 'Polyisobutylene'},
+            {'monomer': 'CH₂=CHCN',   'repeat': '—CH₂—CH(CN)—',      'name': 'Poly(propenenitrile)',
+             'common': 'Polyacrylonitrile'},
+            {'monomer': 'CH₂=CHC₆H₅','repeat': '—CH₂—CH(C₆H₅)—',   'name': 'Poly(phenylethene)',
+             'common': 'Polystyrene'},
+            {'monomer': 'CF₂=CF₂',    'repeat': '—CF₂—CF₂—',         'name': 'Poly(tetrafluoroethene)',
+             'common': 'PTFE / Teflon'},
+            {'monomer': 'CH₂=CHOCOCH₃','repeat':'—CH₂—CH(OCOCH₃)—', 'name': 'Poly(ethenyl ethanoate)',
+             'common': 'PVA'},
+            {'monomer': 'CH₂=CHF',    'repeat': '—CH₂—CHF—',          'name': 'Poly(fluoroethene)',
+             'common': 'PVF'},
+            {'monomer': 'CH₂=CBrH',   'repeat': '—CH₂—CHBr—',         'name': 'Poly(bromoethene)',
+             'common': 'PVB'},
+            {'monomer': 'CH₂=CHOH',   'repeat': '—CH₂—CHOH—',         'name': 'Poly(ethenol)',
+             'common': 'Polyvinyl alcohol'},
+        ]
         
-        self.answer = f'{self.polymer_name} with repeating unit {self.repeating_unit}'
+        monomers = [
+            {'monomer': 'CH₂=CH₂',     'repeat': '—CH₂—CH₂—',        'name': 'Poly(ethene)',
+             'Mr_repeat': 28},
+            {'monomer': 'CH₂=CHCH₃',   'repeat': '—CH₂—CH(CH₃)—',    'name': 'Poly(propene)',
+             'Mr_repeat': 42},
+            {'monomer': 'CH₂=CHCl',    'repeat': '—CH₂—CHCl—',        'name': 'Poly(chloroethene)',
+             'Mr_repeat': 62.5},
+            {'monomer': 'CF₂=CF₂',     'repeat': '—CF₂—CF₂—',         'name': 'Poly(tetrafluoroethene)',
+             'Mr_repeat': 100},
+            {'monomer': 'CH₂=CHCN',    'repeat': '—CH₂—CH(CN)—',      'name': 'Poly(propenenitrile)',
+             'Mr_repeat': 53},
+            {'monomer': 'CH₂=CHF',     'repeat': '—CH₂—CHF—',          'name': 'Poly(fluoroethene)',
+             'Mr_repeat': 46},
+            {'monomer': 'CH₂=C(CH₃)₂','repeat': '—CH₂—C(CH₃)₂—',    'name': 'Poly(2-methylpropene)',
+             'Mr_repeat': 56},
+        ]
+        
+        self.mono = rnd.choice(monomers)
+        self.monomer = self.mono['monomer']
+        self.polymer_name = self.mono['name']
+        self.repeating_unit = self.mono['repeat']
+        self.Mr_repeat = self.mono['Mr_repeat']
+        
+        # degree of polymerization n
+        self.n = rnd.randint(5, 50)
+        self.total_Mr = round(self.n * self.Mr_repeat)
+        self.answer = self.n
         
         self.description = (
-            f"The diagram shows addition polymerization of {self.monomer}. "
-            f"Identify the polymer formed."
+            f"The diagram shows an addition polymer made from {self.monomer}. "
+            f"The repeating unit and the total relative molecular mass ({self.total_Mr}) "
+            f"are both labelled. Calculate the degree of polymerization n."
         )
         
         self.topic = "Polymerization"
@@ -2681,56 +3258,38 @@ class Chem036:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Type: Addition polymerization} &\\\\"
-            "\\text{Monomer: Ethene (CH}_2\\text{=CH}_2\\text{)} &\\\\"
-            "\\text{Polymer: Poly(ethene) or polyethylene} &\\\\"
-            "\\text{Process:} &\\\\"
-            "\\text{1. C=C double bond breaks} &\\\\"
-            "\\text{2. Monomers join via C-C single bonds} &\\\\"
-            "\\text{3. Long chain forms} &\\\\"
-            "\\text{Repeating unit: -CH}_2\\text{-CH}_2\\text{-} &\\\\"
-            "\\text{No small molecule eliminated}"
+            f"\\text{{Polymer: {self.polymer_name}}} &\\\\"
+            f"M_r(\\text{{repeating unit}}) &= {self.Mr_repeat}\\\\"
+            f"M_r(\\text{{total}}) &= {self.total_Mr}\\\\"
+            f"n &= \\frac{{{self.total_Mr}}}{{{self.Mr_repeat}}} = {self.n}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 10)
+        fig, ax = plt.subplots(figsize=(11, 7))
+        ax.set_xlim(0, 11)
+        ax.set_ylim(0, 7)
         ax.axis('off')
         
-        add_title_box(ax, 6, 9, 'Addition Polymerization of Ethene', fontsize=16)
+        add_title_box(ax, 5.5, 6.5, 'Addition Polymer — Find Degree of Polymerization', fontsize=13)
         
-        ax.text(2, 7.5, 'MONOMER', fontsize=13, ha='center', fontweight='bold',
+        ax.text(5.5, 5.5, f'Monomer: {self.monomer}', fontsize=13, ha='center', fontweight='bold')
+        
+        # Repeating unit bracket diagram
+        ax.text(2, 4.0, '...', fontsize=14, ha='center')
+        draw_bracket(ax, 2.5, 3.6, 0.7, bracket_type='square', direction='left', linewidth=3)
+        ax.text(4.5, 4.0, self.repeating_unit, fontsize=12, ha='center', fontweight='bold')
+        draw_bracket(ax, 6.5, 3.6, 0.7, bracket_type='square', direction='right',
+                    linewidth=3, subscript='n')
+        ax.text(7.5, 4.0, '...', fontsize=14, ha='center')
+        
+        ax.text(5.5, 2.8, f'Mr of repeating unit = {self.Mr_repeat}',
+               fontsize=12, ha='center', color='darkblue',
                bbox=dict(boxstyle='round', facecolor='lightblue'))
-        
-        for i, x in enumerate([1, 2.5, 4]):
-            ax.text(x, 6.5, 'H₂C=CH₂', fontsize=12, ha='center', fontweight='bold')
-            if i < 2:
-                ax.text(x+0.7, 6.5, '+', fontsize=14, ha='center')
-        
-        ax.text(4.8, 6.5, '+ ...', fontsize=12, ha='center')
-        ax.text(2.5, 5.8, 'n molecules of ethene', fontsize=10, ha='center', style='italic')
-        
-        draw_arrow(ax, 6, 6.5, 6, 5, label='Polymerization\n(high pressure,\ncatalyst)',
-                  label_position='side', label_offset=1.2, color='red', linewidth=3)
-        
-        ax.text(6, 4, 'POLYMER', fontsize=13, ha='center', fontweight='bold',
+        ax.text(5.5, 1.8, f'Total Mr of polymer = {self.total_Mr}',
+               fontsize=12, ha='center', color='darkgreen',
                bbox=dict(boxstyle='round', facecolor='lightgreen'))
-        
-        ax.text(3, 3, '...', fontsize=14, ha='center', fontweight='bold')
-        
-        draw_bracket(ax, 3.5, 2.5, 0.8, bracket_type='square', direction='left', linewidth=3)
-        ax.text(5, 3, 'CH₂—CH₂', fontsize=12, ha='center', fontweight='bold')
-        draw_bracket(ax, 6.5, 2.5, 0.8, bracket_type='square', direction='right', linewidth=3, subscript='n')
-        
-        ax.text(7.5, 3, '...', fontsize=14, ha='center', fontweight='bold')
-        
-        ax.text(5, 1.8, 'Repeating unit', fontsize=10, ha='center', style='italic',
-               color='red', fontweight='bold')
-        
-        ax.text(6, 1, f'{self.polymer_name} (Polyethylene)', 
-               fontsize=11, ha='center', fontweight='bold')
+        ax.text(5.5, 0.8, 'n = ?', fontsize=13, ha='center', fontweight='bold', color='navy')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2739,21 +3298,105 @@ class Chem036:
 
 class Chem037:
     """
-    Chapter 21: Multi-step synthesis pathway
+    Topic: 21.1 Organic synthesis — multi-step routes
+    Visual: Synthesis pathway diagram with one step's reagent hidden
+    Task: Identify reagent/conditions for a step (MCQ)
+    10+ variations via different pathways and asked step
     """
     
     def __init__(self):
-        self.steps = [
-            {'from': 'CH₂=CH₂', 'to': 'CH₃CH₂Br', 'reagent': 'HBr', 'conditions': 'Room temp'},
-            {'from': 'CH₃CH₂Br', 'to': 'CH₃CH₂OH', 'reagent': 'NaOH(aq)', 'conditions': 'Heat, reflux'},
-            {'from': 'CH₃CH₂OH', 'to': 'CH₃COOH', 'reagent': 'K₂Cr₂O₇/H₂SO₄', 'conditions': 'Heat'},
+        pathways = [
+            {
+                'title': 'Ethene → Ethanoic Acid',
+                'steps': [
+                    {'from': 'CH₂=CH₂',  'to': 'CH₃CH₂Br',  'reagent': 'HBr',           'mech': 'Electrophilic addition'},
+                    {'from': 'CH₃CH₂Br', 'to': 'CH₃CH₂OH',  'reagent': 'NaOH(aq), heat', 'mech': 'Nucleophilic substitution'},
+                    {'from': 'CH₃CH₂OH', 'to': 'CH₃COOH',   'reagent': 'K₂Cr₂O₇/H₂SO₄, heat','mech': 'Oxidation'},
+                ],
+            },
+            {
+                'title': 'Benzene → Nitrobenzene → Phenylamine',
+                'steps': [
+                    {'from': 'C₆H₆',        'to': 'C₆H₅NO₂',  'reagent': 'HNO₃/H₂SO₄, 55°C',  'mech': 'Electrophilic substitution'},
+                    {'from': 'C₆H₅NO₂',     'to': 'C₆H₅NH₂',  'reagent': 'Sn/HCl, then NaOH',  'mech': 'Reduction'},
+                ],
+            },
+            {
+                'title': 'Propene → Propan-2-ol → Propanone',
+                'steps': [
+                    {'from': 'CH₃CH=CH₂',   'to': 'CH₃CHOHCH₃','reagent': 'H₂O/H₂SO₄ (steam)',  'mech': 'Electrophilic addition'},
+                    {'from': 'CH₃CHOHCH₃',  'to': 'CH₃COCH₃',  'reagent': 'K₂Cr₂O₇/H₂SO₄',     'mech': 'Oxidation'},
+                ],
+            },
+            {
+                'title': 'Bromoethane → Ethanol → Ethanal',
+                'steps': [
+                    {'from': 'CH₃CH₂Br',    'to': 'CH₃CH₂OH',  'reagent': 'NaOH(aq), heat',     'mech': 'Nucleophilic substitution'},
+                    {'from': 'CH₃CH₂OH',    'to': 'CH₃CHO',    'reagent': 'K₂Cr₂O₇/H₂SO₄ (distil)','mech': 'Oxidation'},
+                ],
+            },
+            {
+                'title': 'Ethanol → Ethyl ethanoate',
+                'steps': [
+                    {'from': 'CH₃CH₂OH',    'to': 'CH₃COOC₂H₅','reagent': 'CH₃COOH + H₂SO₄ catalyst','mech': 'Esterification'},
+                ],
+            },
+            {
+                'title': 'Chloroethane → Ethanol → Ethanal → Ethanoic acid',
+                'steps': [
+                    {'from': 'CH₃CH₂Cl',   'to': 'CH₃CH₂OH',  'reagent': 'NaOH(aq), heat',     'mech': 'Nucleophilic substitution'},
+                    {'from': 'CH₃CH₂OH',   'to': 'CH₃CHO',    'reagent': 'K₂Cr₂O₇/H₂SO₄ (distil)','mech': 'Oxidation'},
+                    {'from': 'CH₃CHO',     'to': 'CH₃COOH',   'reagent': 'K₂Cr₂O₇/H₂SO₄, reflux','mech': 'Oxidation'},
+                ],
+            },
         ]
         
-        self.answer = 'Ethene → Bromoethane → Ethanol → Ethanoic acid'
+        pathways = [
+            {'title': 'Ethene → Ethanoic Acid',
+             'steps': [
+                 {'from': 'CH₂=CH₂',  'to': 'CH₃CH₂Br',  'reagent': 'HBr'},
+                 {'from': 'CH₃CH₂Br', 'to': 'CH₃CH₂OH',  'reagent': 'NaOH(aq)'},
+                 {'from': 'CH₃CH₂OH', 'to': 'CH₃COOH',   'reagent': 'K₂Cr₂O₇/H₂SO₄'},
+             ]},
+            {'title': 'Propene → Propan-2-ol → Propanone',
+             'steps': [
+                 {'from': 'CH₃CH=CH₂',  'to': 'CH₃CHOHCH₃', 'reagent': 'H₂O/H₂SO₄'},
+                 {'from': 'CH₃CHOHCH₃', 'to': 'CH₃COCH₃',   'reagent': 'K₂Cr₂O₇/H₂SO₄'},
+             ]},
+            {'title': 'Bromoethane → Ethanol → Ethanal',
+             'steps': [
+                 {'from': 'CH₃CH₂Br', 'to': 'CH₃CH₂OH', 'reagent': 'NaOH(aq)'},
+                 {'from': 'CH₃CH₂OH', 'to': 'CH₃CHO',   'reagent': 'K₂Cr₂O₇/H₂SO₄'},
+             ]},
+            {'title': 'Ethanol → Ethyl Ethanoate',
+             'steps': [
+                 {'from': 'CH₃CH₂OH', 'to': 'CH₃COOC₂H₅', 'reagent': 'CH₃COOH/H₂SO₄'},
+             ]},
+            {'title': 'Chloroethane → Ethanol → Ethanal → Ethanoic acid',
+             'steps': [
+                 {'from': 'CH₃CH₂Cl', 'to': 'CH₃CH₂OH', 'reagent': 'NaOH(aq)'},
+                 {'from': 'CH₃CH₂OH', 'to': 'CH₃CHO',   'reagent': 'K₂Cr₂O₇ distil'},
+                 {'from': 'CH₃CHO',   'to': 'CH₃COOH',  'reagent': 'K₂Cr₂O₇ reflux'},
+             ]},
+        ]
+        
+        self.pathway = rnd.choice(pathways)
+        self.steps = self.pathway['steps']
+        n_steps = len(self.steps)
+        
+        # Random yield for each step (60–95%)
+        self.step_yields = [rnd.randint(60, 95) for _ in range(n_steps)]
+        
+        # Overall yield = product of all step yields / 100^(n-1)
+        overall = self.step_yields[0]
+        for y in self.step_yields[1:]:
+            overall = overall * y / 100
+        self.answer = round(overall, 1)
         
         self.description = (
-            "The multi-step synthesis pathway is shown. "
-            "Identify the reagents and conditions for each step."
+            f"The diagram shows a multi-step synthesis: {self.pathway['title']}. "
+            f"Each step yield is labelled on the diagram. "
+            f"Calculate the overall percentage yield (to 1 d.p.)."
         )
         
         self.topic = "Organic synthesis"
@@ -2761,51 +3404,44 @@ class Chem037:
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
         
-        self.reasoning = (
+        reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Step 1: Ethene → Bromoethane} &\\\\"
-            "\\text{Reagent: HBr} &\\\\"
-            "\\text{Mechanism: Electrophilic addition} &\\\\[10pt]"
-            "\\text{Step 2: Bromoethane → Ethanol} &\\\\"
-            "\\text{Reagent: NaOH(aq), heat} &\\\\"
-            "\\text{Mechanism: Nucleophilic substitution} &\\\\[10pt]"
-            "\\text{Step 3: Ethanol → Ethanoic acid} &\\\\"
-            "\\text{Reagent: K₂Cr₂O₇/H₂SO₄, heat} &\\\\"
-            "\\text{Mechanism: Oxidation (via ethanal)}"
-            "\\end{aligned}\\]"
+            "\\text{Overall yield} &= "
         )
+        reasoning += " \\times ".join([f"\\frac{{{y}}}{{100}}" for y in self.step_yields])
+        reasoning += f" \\times 100\\\\ &= {self.answer}\\%"
+        reasoning += "\\end{aligned}\\]"
+        self.reasoning = reasoning
     
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 10))
+        fig, ax = plt.subplots(figsize=(12, 9))
         ax.set_xlim(0, 12)
-        ax.set_ylim(0, 10)
+        ax.set_ylim(0, 9)
         ax.axis('off')
         
-        add_title_box(ax, 6, 9.5, 'Multi-Step Synthesis Pathway', fontsize=16)
-        ax.text(6, 9, 'Ethene → Ethanoic Acid', fontsize=13, ha='center', style='italic')
+        add_title_box(ax, 6, 8.5, f'Synthesis: {self.pathway["title"]}', fontsize=13)
         
-        compounds = [
-            {'formula': 'CH₂=CH₂', 'name': 'Ethene', 'y': 7.5},
-            {'formula': 'CH₃CH₂Br', 'name': 'Bromoethane', 'y': 5},
-            {'formula': 'CH₃CH₂OH', 'name': 'Ethanol', 'y': 2.5},
-            {'formula': 'CH₃COOH', 'name': 'Ethanoic acid', 'y': 0},
-        ]
+        compounds = [self.steps[0]['from']] + [s['to'] for s in self.steps]
+        n = len(compounds)
+        y_positions = [7.5 - i * (6.5 / (n - 1 + 0.0001)) for i in range(n)]
         
-        for comp in compounds:
-            draw_labeled_box(ax, 1, comp['y'], 2, 1, 
-                           comp['formula'], comp['name'], 
-                           facecolor='lightblue')
+        for i, (comp, y) in enumerate(zip(compounds, y_positions)):
+            draw_labeled_box(ax, 1, y - 0.4, 3, 0.8, comp, f'Compound {i+1}',
+                            facecolor='lightblue')
         
-        for i, step in enumerate(self.steps):
-            y_arrow = compounds[i]['y'] + 0.5
-            
-            draw_arrow(ax, 2, y_arrow, 2, y_arrow - 1.5, 
+        for i, (step, y_pct) in enumerate(zip(self.steps, self.step_yields)):
+            y_mid = (y_positions[i] + y_positions[i + 1]) / 2
+            draw_arrow(ax, 2.5, y_positions[i] - 0.5, 2.5, y_positions[i + 1] + 0.5,
                       arrowstyle='->', color='red', linewidth=2)
-            
-            draw_labeled_box(ax, 2.5, y_arrow - 1.2, 3, 1, 
-                           f'Step {i+1}', 
-                           f'{step["reagent"]}\n{step["conditions"]}',
-                           facecolor='yellow', label_fontsize=10, sublabel_fontsize=8)
+            ax.text(5.5, y_mid, f'{step["reagent"]}',
+                   fontsize=10, ha='center', va='center',
+                   bbox=dict(boxstyle='round', facecolor='lightyellow'))
+            ax.text(8.5, y_mid, f'Yield: {y_pct}%',
+                   fontsize=11, ha='center', va='center', fontweight='bold', color='darkgreen',
+                   bbox=dict(boxstyle='round', facecolor='lightgreen'))
+        
+        ax.text(6, 0.5, 'Calculate overall % yield', fontsize=12,
+               ha='center', fontweight='bold', color='navy')
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2815,23 +3451,55 @@ class Chem037:
 class Chem038:
     """
     Chapter 22: Mass spectrum of organic molecule
+    Visual: Mass spectrum with unlabelled M⁺ peak; student identifies its m/z value
+    Answer: numerical M⁺ value
     """
     
     def __init__(self):
-        self.molecule = 'Ethanol (C₂H₅OH)'
-        self.M_plus = 46
-        self.fragments = [
-            {'mz': 45, 'intensity': 25, 'ion': '[M-H]⁺'},
-            {'mz': 31, 'intensity': 60, 'ion': '[CH₂OH]⁺'},
-            {'mz': 29, 'intensity': 40, 'ion': '[CHO]⁺'},
-            {'mz': 15, 'intensity': 30, 'ion': '[CH₃]⁺'},
+        molecules = [
+            {'name': 'Methanol',      'formula': 'CH₃OH',      'M_plus': 32,
+             'fragments': [{'mz': 31, 'intensity': 80}, {'mz': 29, 'intensity': 30},
+                           {'mz': 15, 'intensity': 40}]},
+            {'name': 'Ethanol',       'formula': 'C₂H₅OH',     'M_plus': 46,
+             'fragments': [{'mz': 45, 'intensity': 25}, {'mz': 31, 'intensity': 60},
+                           {'mz': 15, 'intensity': 30}]},
+            {'name': 'Propan-1-ol',   'formula': 'C₃H₇OH',     'M_plus': 60,
+             'fragments': [{'mz': 59, 'intensity': 20}, {'mz': 31, 'intensity': 70},
+                           {'mz': 29, 'intensity': 45}]},
+            {'name': 'Propan-2-ol',   'formula': 'C₃H₇OH',     'M_plus': 60,
+             'fragments': [{'mz': 45, 'intensity': 75}, {'mz': 43, 'intensity': 55},
+                           {'mz': 15, 'intensity': 30}]},
+            {'name': 'Ethanal',       'formula': 'CH₃CHO',      'M_plus': 44,
+             'fragments': [{'mz': 43, 'intensity': 100},{'mz': 29, 'intensity': 55},
+                           {'mz': 15, 'intensity': 40}]},
+            {'name': 'Propanone',     'formula': 'C₃H₆O',       'M_plus': 58,
+             'fragments': [{'mz': 43, 'intensity': 100},{'mz': 15, 'intensity': 40}]},
+            {'name': 'Ethanoic acid', 'formula': 'CH₃COOH',     'M_plus': 60,
+             'fragments': [{'mz': 45, 'intensity': 60}, {'mz': 43, 'intensity': 30},
+                           {'mz': 15, 'intensity': 25}]},
+            {'name': 'Chloroethane',  'formula': 'C₂H₅Cl',      'M_plus': 64,
+             'fragments': [{'mz': 29, 'intensity': 90}, {'mz': 27, 'intensity': 50}]},
+            {'name': 'Bromoethane',   'formula': 'C₂H₅Br',      'M_plus': 108,
+             'fragments': [{'mz': 29, 'intensity': 100},{'mz': 27, 'intensity': 55}]},
+            {'name': 'Methylamine',   'formula': 'CH₃NH₂',      'M_plus': 31,
+             'fragments': [{'mz': 30, 'intensity': 80}, {'mz': 28, 'intensity': 40}]},
+            {'name': 'Ethylamine',    'formula': 'C₂H₅NH₂',     'M_plus': 45,
+             'fragments': [{'mz': 44, 'intensity': 40}, {'mz': 30, 'intensity': 100},
+                           {'mz': 28, 'intensity': 55}]},
+            {'name': 'Butanone',      'formula': 'C₄H₈O',       'M_plus': 72,
+             'fragments': [{'mz': 57, 'intensity': 70}, {'mz': 43, 'intensity': 100},
+                           {'mz': 29, 'intensity': 60}]},
         ]
         
-        self.answer = f'M⁺ = {self.M_plus}, major fragments at m/z = 31, 29, 15'
+        self.mol = rnd.choice(molecules)
+        self.molecule  = f"{self.mol['name']} ({self.mol['formula']})"
+        self.M_plus    = self.mol['M_plus']
+        self.fragments = self.mol['fragments']
+        self.answer    = self.M_plus  # numerical answer
         
         self.description = (
-            f"The mass spectrum of {self.molecule} is shown. "
-            f"Identify the molecular ion peak and major fragment ions."
+            "The mass spectrum of an organic compound is shown. "
+            "What is the m/z value of the molecular ion peak (M⁺)?"
         )
         
         self.topic = "Analytical techniques"
@@ -2841,34 +3509,33 @@ class Chem038:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Molecular ion peak (M⁺): m/z = {self.M_plus}}} &\\\\"
-            "\\text{Fragment ions:} &\\\\"
-            f"\\text{{m/z = 45: [M-H]⁺ (loss of H)}} &\\\\"
-            f"\\text{{m/z = 31: [CH₂OH]⁺ (loss of CH₃)}} &\\\\"
-            f"\\text{{m/z = 29: [CHO]⁺ (loss of OH)}} &\\\\"
-            f"\\text{{m/z = 15: [CH₃]⁺ (methyl cation)}}"
+            f"\\text{{Compound: {self.mol['name']}, formula {self.mol['formula']}}} &\\\\"
+            "\\text{Molecular ion (M⁺): molecule minus one electron} &\\\\"
+            f"M^+ &= {self.M_plus}\\\\"
+            "\\text{The highest m/z peak (ignoring isotope peaks)} &\\\\"
+            f"\\text{{corresponds to M⁺ = {self.M_plus}}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(12, 8))
         
-        draw_mass_spectrum_peak(ax, self.M_plus, 100, width=0.8, 
-                               color='darkblue', label_offset=5)
-        
+        # Draw fragment peaks
         for frag in self.fragments:
-            draw_mass_spectrum_peak(ax, frag['mz'], frag['intensity'], 
+            draw_mass_spectrum_peak(ax, frag['mz'], frag['intensity'],
                                    width=0.8, color='steelblue', label_offset=3)
         
-        ax.text(self.M_plus, 110, 'M⁺', fontsize=12, ha='center', 
+        draw_mass_spectrum_peak(ax, self.M_plus, 100, width=0.8,
+                               color='darkblue', label_offset=5)
+        ax.text(self.M_plus, 110, 'M⁺', fontsize=12, ha='center',
                fontweight='bold', color='red')
         
         ax.set_xlabel('m/z (mass-to-charge ratio)', fontsize=14, fontweight='bold')
         ax.set_ylabel('Relative Intensity (%)', fontsize=14, fontweight='bold')
-        ax.set_title(f'Mass Spectrum of {self.molecule}', fontsize=16, fontweight='bold')
+        ax.set_title(f'Mass Spectrum', fontsize=16, fontweight='bold')
         
-        ax.set_xlim(0, 50)
-        ax.set_ylim(0, 120)
+        ax.set_xlim(0, self.M_plus + 15)
+        ax.set_ylim(0, 125)
         ax.grid(axis='y', alpha=0.3, linestyle='--')
         ax.set_axisbelow(True)
         
@@ -2880,21 +3547,74 @@ class Chem038:
 class Chem039:
     """
     Chapter 22: IR spectrum with functional groups
+    Visual: IR spectrum with absorption dips but NO text annotation labels
+            Student identifies the wavenumber of a specified absorption
+    Answer: numerical wavenumber (cm⁻¹)
     """
     
     def __init__(self):
-        self.molecule = 'Ethanoic acid (CH₃COOH)'
-        self.peaks = [
-            {'wavenumber': 3000, 'absorption': 'O-H (carboxylic acid, broad)'},
-            {'wavenumber': 1715, 'absorption': 'C=O (carbonyl)'},
-            {'wavenumber': 1200, 'absorption': 'C-O (ester/acid)'},
+        molecules = [
+            {'name': 'Ethanoic acid', 'formula': 'CH₃COOH',
+             'peaks': [{'wn': 3000, 'assignment': 'O-H (carboxylic acid, broad)', 'width': 500, 'depth': 65},
+                       {'wn': 1715, 'assignment': 'C=O (carbonyl)', 'width': 80, 'depth': 60},
+                       {'wn': 1200, 'assignment': 'C-O', 'width': 80, 'depth': 40}],
+             'ask': 1, 'ask_group': 'C=O stretch'},
+            {'name': 'Ethanol', 'formula': 'CH₃CH₂OH',
+             'peaks': [{'wn': 3350, 'assignment': 'O-H (alcohol, broad)', 'width': 300, 'depth': 60},
+                       {'wn': 2950, 'assignment': 'C-H stretch', 'width': 80, 'depth': 30},
+                       {'wn': 1050, 'assignment': 'C-O stretch', 'width': 80, 'depth': 40}],
+             'ask': 0, 'ask_group': 'O-H stretch'},
+            {'name': 'Propanal', 'formula': 'CH₃CH₂CHO',
+             'peaks': [{'wn': 2720, 'assignment': 'C-H (aldehyde)', 'width': 80, 'depth': 40},
+                       {'wn': 1725, 'assignment': 'C=O (aldehyde)', 'width': 80, 'depth': 65},
+                       {'wn': 2950, 'assignment': 'C-H stretch', 'width': 80, 'depth': 30}],
+             'ask': 1, 'ask_group': 'C=O stretch'},
+            {'name': 'Propan-1-amine', 'formula': 'CH₃CH₂CH₂NH₂',
+             'peaks': [{'wn': 3350, 'assignment': 'N-H stretch', 'width': 200, 'depth': 50},
+                       {'wn': 2950, 'assignment': 'C-H stretch', 'width': 80, 'depth': 30},
+                       {'wn': 1590, 'assignment': 'N-H bend', 'width': 80, 'depth': 35}],
+             'ask': 0, 'ask_group': 'N-H stretch'},
+            {'name': 'Methyl ethanoate', 'formula': 'CH₃COOCH₃',
+             'peaks': [{'wn': 1735, 'assignment': 'C=O (ester)', 'width': 80, 'depth': 65},
+                       {'wn': 1240, 'assignment': 'C-O-C stretch', 'width': 100, 'depth': 50},
+                       {'wn': 2950, 'assignment': 'C-H stretch', 'width': 80, 'depth': 30}],
+             'ask': 0, 'ask_group': 'C=O stretch (ester)'},
+            {'name': 'Propanoic acid', 'formula': 'CH₃CH₂COOH',
+             'peaks': [{'wn': 2900, 'assignment': 'O-H (broad)', 'width': 500, 'depth': 60},
+                       {'wn': 1710, 'assignment': 'C=O (acid)', 'width': 80, 'depth': 65},
+                       {'wn': 1200, 'assignment': 'C-O', 'width': 80, 'depth': 40}],
+             'ask': 1, 'ask_group': 'C=O stretch'},
+            {'name': 'Benzaldehyde', 'formula': 'C₆H₅CHO',
+             'peaks': [{'wn': 3060, 'assignment': 'C-H (aromatic)', 'width': 60, 'depth': 30},
+                       {'wn': 2730, 'assignment': 'C-H (aldehyde)', 'width': 60, 'depth': 35},
+                       {'wn': 1700, 'assignment': 'C=O (aldehyde)', 'width': 80, 'depth': 65}],
+             'ask': 2, 'ask_group': 'C=O stretch'},
+            {'name': 'Butanone', 'formula': 'C₄H₈O',
+             'peaks': [{'wn': 2950, 'assignment': 'C-H stretch', 'width': 80, 'depth': 30},
+                       {'wn': 1715, 'assignment': 'C=O (ketone)', 'width': 80, 'depth': 65},
+                       {'wn': 1350, 'assignment': 'C-H bend', 'width': 60, 'depth': 25}],
+             'ask': 1, 'ask_group': 'C=O stretch (ketone)'},
+            {'name': 'Phenol', 'formula': 'C₆H₅OH',
+             'peaks': [{'wn': 3300, 'assignment': 'O-H (phenol)', 'width': 200, 'depth': 55},
+                       {'wn': 3060, 'assignment': 'C-H (aromatic)', 'width': 60, 'depth': 25},
+                       {'wn': 1600, 'assignment': 'C=C (aromatic)', 'width': 80, 'depth': 35}],
+             'ask': 0, 'ask_group': 'O-H stretch'},
+            {'name': 'Ethylamine', 'formula': 'C₂H₅NH₂',
+             'peaks': [{'wn': 3300, 'assignment': 'N-H stretch', 'width': 150, 'depth': 50},
+                       {'wn': 2950, 'assignment': 'C-H stretch', 'width': 80, 'depth': 30},
+                       {'wn': 1600, 'assignment': 'N-H bend', 'width': 80, 'depth': 35}],
+             'ask': 0, 'ask_group': 'N-H stretch'},
         ]
         
-        self.answer = 'O-H (3000), C=O (1715), C-O (1200)'
+        self.mol = rnd.choice(molecules)
+        self.peaks      = self.mol['peaks']
+        self.ask_idx    = self.mol['ask']
+        self.ask_group  = self.mol['ask_group']
+        self.answer     = self.peaks[self.ask_idx]['wn']
         
         self.description = (
-            f"The IR spectrum of {self.molecule} is shown. "
-            f"Identify the key absorption peaks."
+            f"The IR spectrum of {self.mol['name']} ({self.mol['formula']}) is shown. "
+            f"At what wavenumber (cm⁻¹) does the {self.ask_group} absorption appear?"
         )
         
         self.topic = "Analytical techniques"
@@ -2904,10 +3624,9 @@ class Chem039:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Key IR absorptions for carboxylic acid:} &\\\\"
-            "\\text{O-H: 2500-3300 cm⁻¹ (broad)} &\\\\"
-            "\\text{C=O: 1680-1750 cm⁻¹ (strong, sharp)} &\\\\"
-            "\\text{C-O: 1000-1300 cm⁻¹ (medium)} &"
+            f"\\text{{Compound: {self.mol['name']}}} &\\\\"
+            f"\\text{{Target bond: {self.ask_group}}} &\\\\"
+            f"\\text{{Absorption wavenumber: {self.answer} cm}}^{{-1}}"
             "\\end{aligned}\\]"
         )
     
@@ -2918,35 +3637,28 @@ class Chem039:
         transmittance = np.ones_like(wavenumbers) * 90
         
         for peak in self.peaks:
-            center = peak['wavenumber']
-            if center == 3000:
-                width = 500
-                depth = 70
-            else:
-                width = 100
-                depth = 60
-            
+            center = peak['wn']
+            width  = peak.get('width', 100)
+            depth  = peak.get('depth', 55)
             mask = np.abs(wavenumbers - center) < width
-            transmittance[mask] -= depth * np.exp(-((wavenumbers[mask] - center)**2) / (2 * (width/3)**2))
+            transmittance[mask] -= depth * np.exp(
+                -((wavenumbers[mask] - center) ** 2) / (2 * (width / 3) ** 2))
         
         ax.plot(wavenumbers, transmittance, 'b-', linewidth=2)
         
-        for peak in self.peaks:
-            ax.annotate(peak['absorption'], 
-                       xy=(peak['wavenumber'], 20), 
-                       xytext=(peak['wavenumber'], 10),
-                       fontsize=10, ha='center', fontweight='bold',
-                       bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7),
-                       arrowprops=dict(arrowstyle='->', color='red', lw=2))
+        for i, peak in enumerate(self.peaks):
+            ax.axvline(x=peak['wn'], color='gray', linestyle=':', alpha=0.5, linewidth=1)
+            ax.text(peak['wn'], 95, f"{peak['wn']}", fontsize=9, ha='center',
+                   color='darkred', rotation=90, va='bottom')
         
         ax.set_xlabel('Wavenumber (cm⁻¹)', fontsize=14, fontweight='bold')
         ax.set_ylabel('Transmittance (%)', fontsize=14, fontweight='bold')
-        ax.set_title(f'IR Spectrum of {self.molecule}', fontsize=16, fontweight='bold')
+        ax.set_title(f'IR Spectrum of {self.mol["name"]}', fontsize=16, fontweight='bold')
         
         ax.set_xlim(4000, 500)
         ax.set_ylim(0, 100)
-        ax.grid(True, alpha=0.3)
         ax.invert_xaxis()
+        ax.grid(True, alpha=0.3)
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2956,21 +3668,64 @@ class Chem039:
 class Chem040:
     """
     Chapter 22: ¹H NMR spectrum
+    Visual: NMR spectrum with peaks at correct positions — NO assignment labels on peaks
+    Answer: numerical integration ratio (e.g. how many H in peak at δ X)
     """
     
     def __init__(self):
-        self.molecule = 'Ethanol (CH₃CH₂OH)'
-        self.peaks = [
-            {'shift': 1.2, 'integration': 3, 'splitting': 'triplet', 'assignment': 'CH₃'},
-            {'shift': 3.7, 'integration': 2, 'splitting': 'quartet', 'assignment': 'CH₂'},
-            {'shift': 5.3, 'integration': 1, 'splitting': 'singlet', 'assignment': 'OH'},
+        molecules = [
+            {'name': 'Ethanol',       'formula': 'CH₃CH₂OH',
+             'peaks': [{'shift': 1.2, 'integration': 3, 'splitting': 'triplet',  'assignment': 'CH₃'},
+                       {'shift': 3.7, 'integration': 2, 'splitting': 'quartet',  'assignment': 'CH₂'},
+                       {'shift': 5.3, 'integration': 1, 'splitting': 'singlet',  'assignment': 'OH'}],
+             'ask_shift': 1.2, 'ask_H': 3},
+            {'name': 'Ethanoic acid', 'formula': 'CH₃COOH',
+             'peaks': [{'shift': 2.1, 'integration': 3, 'splitting': 'singlet',  'assignment': 'CH₃'},
+                       {'shift': 11.4,'integration': 1, 'splitting': 'singlet',  'assignment': 'COOH'}],
+             'ask_shift': 2.1, 'ask_H': 3},
+            {'name': 'Methyl ethanoate','formula': 'CH₃COOCH₃',
+             'peaks': [{'shift': 2.0, 'integration': 3, 'splitting': 'singlet',  'assignment': 'COCH₃'},
+                       {'shift': 3.7, 'integration': 3, 'splitting': 'singlet',  'assignment': 'OCH₃'}],
+             'ask_shift': 3.7, 'ask_H': 3},
+            {'name': 'Propanone',     'formula': 'CH₃COCH₃',
+             'peaks': [{'shift': 2.1, 'integration': 6, 'splitting': 'singlet',  'assignment': '2×CH₃'}],
+             'ask_shift': 2.1, 'ask_H': 6},
+            {'name': 'Chloroethane',  'formula': 'CH₃CH₂Cl',
+             'peaks': [{'shift': 1.5, 'integration': 3, 'splitting': 'triplet',  'assignment': 'CH₃'},
+                       {'shift': 3.5, 'integration': 2, 'splitting': 'quartet',  'assignment': 'CH₂Cl'}],
+             'ask_shift': 3.5, 'ask_H': 2},
+            {'name': 'Ethanal',       'formula': 'CH₃CHO',
+             'peaks': [{'shift': 2.2, 'integration': 3, 'splitting': 'doublet',  'assignment': 'CH₃'},
+                       {'shift': 9.8, 'integration': 1, 'splitting': 'quartet',  'assignment': 'CHO'}],
+             'ask_shift': 2.2, 'ask_H': 3},
+            {'name': '1,1-Dichloroethane','formula': 'CH₃CHCl₂',
+             'peaks': [{'shift': 2.1, 'integration': 3, 'splitting': 'doublet',  'assignment': 'CH₃'},
+                       {'shift': 5.9, 'integration': 1, 'splitting': 'quartet',  'assignment': 'CHCl₂'}],
+             'ask_shift': 5.9, 'ask_H': 1},
+            {'name': 'Propan-1-ol',   'formula': 'CH₃CH₂CH₂OH',
+             'peaks': [{'shift': 0.9, 'integration': 3, 'splitting': 'triplet',  'assignment': 'CH₃'},
+                       {'shift': 1.6, 'integration': 2, 'splitting': 'sextet',   'assignment': 'CH₂'},
+                       {'shift': 3.4, 'integration': 2, 'splitting': 'triplet',  'assignment': 'CH₂OH'},
+                       {'shift': 2.5, 'integration': 1, 'splitting': 'singlet',  'assignment': 'OH'}],
+             'ask_shift': 3.4, 'ask_H': 2},
+            {'name': 'Bromoethane',   'formula': 'CH₃CH₂Br',
+             'peaks': [{'shift': 1.7, 'integration': 3, 'splitting': 'triplet',  'assignment': 'CH₃'},
+                       {'shift': 3.4, 'integration': 2, 'splitting': 'quartet',  'assignment': 'CH₂Br'}],
+             'ask_shift': 1.7, 'ask_H': 3},
+            {'name': 'Dimethyl ether','formula': 'CH₃OCH₃',
+             'peaks': [{'shift': 3.2, 'integration': 6, 'splitting': 'singlet',  'assignment': '2×CH₃'}],
+             'ask_shift': 3.2, 'ask_H': 6},
         ]
         
-        self.answer = 'δ 1.2 (triplet, 3H, CH₃), δ 3.7 (quartet, 2H, CH₂), δ 5.3 (singlet, 1H, OH)'
+        self.mol = rnd.choice(molecules)
+        self.peaks     = self.mol['peaks']
+        self.ask_shift = self.mol['ask_shift']
+        self.answer    = self.mol['ask_H']  # numerical answer
         
         self.description = (
-            f"The ¹H NMR spectrum of {self.molecule} is shown. "
-            f"Assign each peak to the hydrogen environment."
+            f"The ¹H NMR spectrum of an organic compound is shown. "
+            f"The highlighted peak (in red) appears at δ = {self.ask_shift} ppm. "
+            f"How many hydrogen atoms are responsible for this peak?"
         )
         
         self.topic = "Analytical techniques"
@@ -2980,13 +3735,11 @@ class Chem040:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Peak assignments for ethanol:} &\\\\"
-            "\\text{δ 1.2: CH₃ group (triplet, 3H)} &\\\\"
-            "\\text{Reason: Split by 2 adjacent H on CH₂} &\\\\"
-            "\\text{δ 3.7: CH₂ group (quartet, 2H)} &\\\\"
-            "\\text{Reason: Split by 3 adjacent H on CH₃} &\\\\"
-            "\\text{δ 5.3: OH group (singlet, 1H)} &\\\\"
-            "\\text{Reason: No splitting due to exchange} &"
+            f"\\text{{Compound: {self.mol['name']}}} &\\\\"
+            f"\\text{{Peak at }} \\delta = {self.ask_shift}\\text{{ ppm}} &\\\\"
+            + "".join([f"\\text{{Assignment: {p['assignment']} ({p['integration']}H)}} &\\\\" 
+                       for p in self.peaks if p['shift'] == self.ask_shift]) +
+            f"\\text{{Number of H: {self.answer}}}"
             "\\end{aligned}\\]"
         )
     
@@ -2994,23 +3747,26 @@ class Chem040:
         fig, ax = plt.subplots(figsize=(12, 8))
         
         for peak in self.peaks:
-            draw_nmr_peak(ax, peak['shift'], peak['integration'], 
-                         splitting=peak['splitting'], 
+            highlight = peak['shift'] == self.ask_shift
+            draw_nmr_peak(ax, peak['shift'], peak['integration'],
+                         splitting=peak['splitting'],
                          j_coupling=0.007, sigma=0.02, max_height=100)
+            # Highlight the queried peak with a red box, others plain
+            if highlight:
+                ax.axvspan(peak['shift'] - 0.3, peak['shift'] + 0.3,
+                          alpha=0.15, color='red')
         
         for peak in self.peaks:
-            ax.text(peak['shift'], 110, peak['assignment'], 
-                   fontsize=11, ha='center', fontweight='bold',
-                   bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
-            ax.text(peak['shift'], 120, f"{peak['splitting']}, {peak['integration']}H", 
-                   fontsize=9, ha='center', style='italic')
+            ax.text(peak['shift'], 107, f"δ {peak['shift']}", fontsize=10,
+                   ha='center', fontweight='bold',
+                   color='red' if peak['shift'] == self.ask_shift else 'black')
         
         ax.set_xlabel('δ (ppm)', fontsize=14, fontweight='bold')
         ax.set_ylabel('Intensity', fontsize=14, fontweight='bold')
-        ax.set_title(f'¹H NMR Spectrum of {self.molecule}', fontsize=16, fontweight='bold')
+        ax.set_title(f'¹H NMR Spectrum of {self.mol["name"]}', fontsize=16, fontweight='bold')
         
-        ax.set_xlim(10, 0)
-        ax.set_ylim(0, 140)
+        ax.set_xlim(12, 0)
+        ax.set_ylim(0, 130)
         ax.set_yticks([])
         ax.grid(True, alpha=0.3, axis='x')
         
@@ -3065,16 +3821,18 @@ class Chem041:
         
         draw_vertical_annotation(
             ax, profile_data['reactant_x'] - 1, self.product_E, self.reactant_E,
-            f"ΔH = {self.delta_H} kJ/mol", color='red', linewidth=2.5
+            "ΔH = ?", color='red', linewidth=2.5
         )
         
         draw_vertical_annotation(
             ax, profile_data['reactant_x'] + 0.5, self.reactant_E, self.activation_E,
-            f"Ea = {self.Ea} kJ/mol", color='blue', linewidth=2.5
+            "Ea", color='blue', linewidth=2.5
         )
         
         ax.set_ylim(0, self.activation_E * 1.2)
         ax.set_title('Enthalpy Profile Diagram', fontsize=16, fontweight='bold')
+        ax.set_yticks([self.product_E, self.reactant_E, self.activation_E])
+        ax.set_yticklabels([f'{self.product_E}', f'{self.reactant_E}', f'{self.activation_E}'], fontsize=11)
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -3150,9 +3908,9 @@ class Chem043:
     """
     
     def __init__(self):
-        self.BE_CH = rnd.randint(410, 415)
-        self.BE_HH = rnd.randint(435, 438)
-        self.BE_CC = rnd.randint(345, 350)
+        self.BE_CH = rnd.randint(380, 450)
+        self.BE_HH = rnd.randint(400, 480)
+        self.BE_CC = rnd.randint(300, 400)
         
         bonds_broken = 4 * self.BE_CH + self.BE_HH
         bonds_formed = self.BE_CC + 6 * self.BE_CH
@@ -3214,20 +3972,20 @@ class Chem043:
 class Chem044:
     """
     Topic: 23.4 Entropy and free energy
-    Visual: Graph showing ΔG vs temperature
-    Task: Determine temperature at which reaction becomes spontaneous
+    Visual: Graph showing ΔG vs temperature — crossover point NOT labelled
+    Answer: numerical temperature T (K) at which ΔG = 0
     """
     
     def __init__(self):
-        self.delta_H = rnd.randint(50, 150)
-        self.delta_S = round(rnd.uniform(0.2, 0.5), 2)
-        
+        self.delta_H = rnd.randint(40, 300)
+        self.delta_S = round(rnd.uniform(0.10, 0.80), 2)
         self.T_equilibrium = self.delta_H / self.delta_S
         self.answer = round(self.T_equilibrium, 0)
         
         self.description = (
-            f"The graph shows how Gibbs free energy (ΔG) varies with temperature for a reaction. "
-            f"At what temperature (in K) does the reaction become spontaneous?"
+            "The graph shows how Gibbs free energy (ΔG) varies with temperature for a reaction. "
+            "Use the graph to determine the temperature (in K, to the nearest whole number) "
+            "at which the reaction becomes spontaneous."
         )
         
         self.topic = "Chemical energetics"
@@ -3237,19 +3995,19 @@ class Chem044:
         
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{At equilibrium:}} \\Delta G &= 0\\\\"
-            f"\\Delta G &= \\Delta H - T\\Delta S\\\\"
-            f"0 &= {self.delta_H} - T({self.delta_S})\\\\"
+            "\\text{At the crossover: } \\Delta G &= 0\\\\"
+            "\\Delta G &= \\Delta H - T\\Delta S\\\\"
+            f"0 &= {self.delta_H} - T \\times {self.delta_S}\\\\"
             f"T &= \\frac{{{self.delta_H}}}{{{self.delta_S}}}\\\\"
             f"&= {self.answer}\\,\\text{{K}}\\\\"
-            f"\\text{{Reaction spontaneous when }} T > {self.answer}\\,\\text{{K}}"
+            f"\\text{{Reaction is spontaneous when }} T > {self.answer}\\,\\text{{K}}"
             "\\end{aligned}\\]"
         )
     
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 7))
         
-        T_range = np.linspace(0, self.T_equilibrium * 1.5, 100)
+        T_range = np.linspace(0, self.T_equilibrium * 1.6, 200)
         delta_G = self.delta_H - T_range * self.delta_S
         
         draw_line_graph(ax, T_range, delta_G, color='blue', linewidth=3,
@@ -3257,17 +4015,19 @@ class Chem044:
                        title='Gibbs Free Energy vs Temperature')
         
         ax.axhline(0, color='black', linewidth=2, linestyle='--')
-        ax.axvline(self.T_equilibrium, color='red', linewidth=2, linestyle='--')
+        ax.axvline(self.T_equilibrium, color='red', linewidth=1.5, linestyle='--', alpha=0.5)
+        ax.plot(self.T_equilibrium, 0, 'ro', markersize=10)
         
-        ax.plot(self.T_equilibrium, 0, 'ro', markersize=12)
-        ax.text(self.T_equilibrium, -10, f'T = {self.answer} K', 
-               ha='center', fontsize=12, fontweight='bold')
+        ax.annotate(f'ΔH = {self.delta_H} kJ mol⁻¹', xy=(0, self.delta_H),
+                   xytext=(self.T_equilibrium * 0.1, self.delta_H * 0.85),
+                   fontsize=10, color='darkblue',
+                   arrowprops=dict(arrowstyle='->', color='darkblue'))
         
-        ax.text(self.T_equilibrium * 0.4, self.delta_H * 0.7, 
+        # Region labels only
+        ax.text(self.T_equilibrium * 0.4, self.delta_H * 0.7,
                'Non-spontaneous\n(ΔG > 0)', fontsize=12, ha='center',
                bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5))
-        
-        ax.text(self.T_equilibrium * 1.2, -self.delta_H * 0.3, 
+        ax.text(self.T_equilibrium * 1.25, -self.delta_H * 0.25,
                'Spontaneous\n(ΔG < 0)', fontsize=12, ha='center',
                bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.5))
         
@@ -3301,8 +4061,8 @@ class Chem045:
         self.answer = round(self.E_cell, 2)
         
         self.description = (
-            f"Calculate the standard cell potential (E°cell) for a cell consisting of "
-            f"{self.half_cell_1[0]} and {self.half_cell_2[0]} half-cells."
+            "The standard half-cell diagram is shown with the standard electrode potentials "
+            "labelled in each beaker. Calculate the standard cell potential E°cell (in V, to 2 d.p.)."
         )
         
         self.topic = "Electrochemistry"
@@ -3430,11 +4190,11 @@ class Chem047:
     """
     
     def __init__(self):
-        self.initial_A = round(rnd.uniform(1.0, 2.0), 2)
-        self.initial_B = round(rnd.uniform(1.0, 2.0), 2)
+        self.initial_A = round(rnd.uniform(0.5, 4.0), 2)
+        self.initial_B = round(rnd.uniform(0.5, 4.0), 2)
         
-        self.eq_A = round(self.initial_A * rnd.uniform(0.3, 0.6), 2)
-        self.eq_B = round(self.initial_B * rnd.uniform(0.3, 0.6), 2)
+        self.eq_A = round(self.initial_A * rnd.uniform(0.1, 0.7), 2)
+        self.eq_B = round(self.initial_B * rnd.uniform(0.1, 0.7), 2)
         self.eq_C = round((self.initial_A - self.eq_A), 2)
         
         self.answer = self.eq_C
@@ -3530,7 +4290,7 @@ class Chem048:
         add_title_box(ax, 5, 7, "A + B ⇌ C + D", fontsize=18)
         
         table_data = [
-            ["Species", "Equilibrium Concentration (mol dm⁻³)"],
+            ["Species", "Conc. / mol dm⁻³"],
             ["A", f"{self.eq_A}"],
             ["B", f"{self.eq_B}"],
             ["C", f"{self.eq_C}"],
@@ -3556,14 +4316,14 @@ class Chem049:
     """
     
     def __init__(self):
-        self.initial_conc = round(rnd.uniform(1.5, 2.5), 2)
-        self.k = round(rnd.uniform(0.1, 0.3), 3)
+        self.initial_conc = round(rnd.uniform(0.5, 5.0), 2)
+        self.k = round(rnd.uniform(0.05, 0.6), 3)
         
         self.t_point = 5
         self.conc_at_t = self.initial_conc * np.exp(-self.k * self.t_point)
         self.rate = -self.k * self.conc_at_t
         
-        self.answer = round(abs(self.rate), 4)
+        self.answer = round(float(abs(self.rate)), 4)
         
         self.description = (
             f"The graph shows how concentration varies with time. "
@@ -3620,18 +4380,19 @@ class Chem050:
     def __init__(self):
         self.order = rnd.choice([0, 1, 2])
         
-        concentrations = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
+        concentrations = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0])
+        k = round(rnd.uniform(0.2, 2.0), 2)
         
         if self.order == 0:
-            rates = np.full_like(concentrations, 0.05)
+            rates = np.full_like(concentrations, round(rnd.uniform(0.02, 0.15), 3))
             self.answer = 0
             self.explanation = "zero order (rate independent of concentration)"
         elif self.order == 1:
-            rates = 0.5 * concentrations
+            rates = k * concentrations
             self.answer = 1
             self.explanation = "first order (rate ∝ [A])"
         else:
-            rates = 5 * concentrations**2
+            rates = k * concentrations**2
             self.answer = 2
             self.explanation = "second order (rate ∝ [A]²)"
         
@@ -3665,7 +4426,7 @@ class Chem050:
         ax.set_ylabel('Rate (mol dm⁻³ s⁻¹)', fontsize=14, fontweight='bold')
         ax.set_title('Rate vs Concentration', fontsize=16, fontweight='bold')
         ax.grid(True, alpha=0.3)
-        ax.set_xlim(0, 0.6)
+        ax.set_xlim(0, 1.1)
         ax.set_ylim(0, max(self.rates) * 1.2)
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")

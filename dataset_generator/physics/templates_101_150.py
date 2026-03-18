@@ -1740,7 +1740,7 @@ class Phy117:
         self.description = (
             "The circuit contains two loops with a shared resistor. Values are shown in the diagram.\n"
             "Using Kirchhoff’s laws, determine the current in the shared resistor R3.\n"
-            "Current = (_) A, direction = (upwards/downwards)"
+            "Current = (_) A, direction = (upwards/downwards). Answer format: (_) A upwards/downwards"
         )
 
         self.topic = "D.C. circuits"

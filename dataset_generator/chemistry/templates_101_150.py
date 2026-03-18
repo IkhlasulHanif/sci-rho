@@ -5,7 +5,7 @@ import matplotlib.patches as patches
 import os
 import sys
 import math
-from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle
+from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle, FancyArrow
 from matplotlib.ticker import MultipleLocator
 
 sys.path.append(os.path.dirname(__file__))
@@ -312,22 +312,37 @@ class Chem104:
     def __init__(self):
 
         molecules = [
-            {"name": "hydrogen", "formula": "H2", "atoms": ["H", "H"], "bonds": 1},
-            {"name": "chlorine", "formula": "Cl2", "atoms": ["Cl", "Cl"], "bonds": 1},
-            {"name": "oxygen", "formula": "O2", "atoms": ["O", "O"], "bonds": 2},
-            {"name": "nitrogen", "formula": "N2", "atoms": ["N", "N"], "bonds": 3},
-            {"name": "water", "formula": "H2O", "atoms": ["H", "O", "H"], "bonds": 2},
-            {"name": "carbon dioxide", "formula": "CO2", "atoms": ["O", "C", "O"], "bonds": 4},
-            {"name": "methane", "formula": "CH4", "atoms": ["H", "C", "H", "H", "H"], "bonds": 4},
-            {"name": "ammonia", "formula": "NH3", "atoms": ["H", "N", "H", "H"], "bonds": 3},
+            {"name": "hydrogen",           "formula": "H₂",    "atoms": ["H", "H"],             "bonds": 1},
+            {"name": "hydrogen chloride",  "formula": "HCl",   "atoms": ["H", "Cl"],            "bonds": 1},
+            {"name": "hydrogen fluoride",  "formula": "HF",    "atoms": ["H", "F"],             "bonds": 1},
+            {"name": "hydrogen bromide",   "formula": "HBr",   "atoms": ["H", "Br"],            "bonds": 1},
+            {"name": "chlorine",           "formula": "Cl₂",   "atoms": ["Cl", "Cl"],           "bonds": 1},
+            {"name": "fluorine",           "formula": "F₂",    "atoms": ["F", "F"],             "bonds": 1},
+            {"name": "bromine",            "formula": "Br₂",   "atoms": ["Br", "Br"],           "bonds": 1},
+            {"name": "iodine",             "formula": "I₂",    "atoms": ["I", "I"],             "bonds": 1},
+            {"name": "oxygen",             "formula": "O₂",    "atoms": ["O", "O"],             "bonds": 2},
+            {"name": "water",              "formula": "H₂O",   "atoms": ["H", "O", "H"],        "bonds": 2},
+            {"name": "sulfur dioxide",     "formula": "SO₂",   "atoms": ["O", "S", "O"],        "bonds": 2},
+            {"name": "hydrogen sulfide",   "formula": "H₂S",   "atoms": ["H", "S", "H"],        "bonds": 2},
+            {"name": "nitrogen",           "formula": "N₂",    "atoms": ["N", "N"],             "bonds": 3},
+            {"name": "ammonia",            "formula": "NH₃",   "atoms": ["H", "N", "H", "H"],   "bonds": 3},
+            {"name": "phosphine",          "formula": "PH₃",   "atoms": ["H", "P", "H", "H"],   "bonds": 3},
+            {"name": "methane",            "formula": "CH₄",   "atoms": ["H", "C", "H", "H", "H"], "bonds": 4},
+            {"name": "carbon dioxide",     "formula": "CO₂",   "atoms": ["O", "C", "O"],            "bonds": 4},
+            {"name": "silicon tetrafluoride", "formula": "SiF₄", "atoms": ["F", "Si", "F", "F", "F"], "bonds": 4},
+            {"name": "carbon tetrachloride", "formula": "CCl₄", "atoms": ["Cl", "C", "Cl", "Cl", "Cl"], "bonds": 4},
+            {"name": "tetrafluoromethane", "formula": "CF₄",   "atoms": ["F", "C", "F", "F", "F"],  "bonds": 4},
+            {"name": "phosphorus pentachloride", "formula": "PCl₅", "atoms": ["Cl", "P", "Cl", "Cl", "Cl", "Cl"], "bonds": 5},
+            {"name": "ethane",             "formula": "C₂H₆",  "atoms": ["H", "C", "C", "H", "H", "H", "H", "H"], "bonds": 7},
+            {"name": "ethene",             "formula": "C₂H₄",  "atoms": ["H", "C", "C", "H", "H", "H"],            "bonds": 6},
+            {"name": "ethyne",             "formula": "C₂H₂",  "atoms": ["H", "C", "C", "H"],                       "bonds": 5},
         ]
 
         self.molecule = rnd.choice(molecules)
-        self.name = self.molecule["name"]
-        self.formula = self.molecule["formula"]
-        self.atoms = self.molecule["atoms"]
-
-        self.answer = self.molecule["bonds"]
+        self.name     = self.molecule["name"]
+        self.formula  = self.molecule["formula"]
+        self.atoms    = self.molecule["atoms"]
+        self.answer   = self.molecule["bonds"]
 
         self.description = (
             f"The dot-and-cross diagram shows the covalent bonding in a molecule of {self.name} "
@@ -335,9 +350,9 @@ class Chem104:
             "How many covalent bonds are shown in the diagram?"
         )
 
-        self.topic = "Atoms, elements and compounds"
-        self.subtopic = "Simple molecules and covalent bonds"
-        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.topic     = "Atoms, elements and compounds"
+        self.subtopic  = "Simple molecules and covalent bonds"
+        self.source    = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "GCSE"
 
         self.reasoning = (
@@ -449,19 +464,36 @@ class Chem105:
     def __init__(self):
 
         molecules = [
-            {"name": "hydrogen", "formula": "H2", "shared_electrons": 2},
-            {"name": "chlorine", "formula": "Cl2", "shared_electrons": 2},
-            {"name": "oxygen", "formula": "O2", "shared_electrons": 4},
-            {"name": "nitrogen", "formula": "N2", "shared_electrons": 6},
-            {"name": "water", "formula": "H2O", "shared_electrons": 4},
-            {"name": "ammonia", "formula": "NH3", "shared_electrons": 6},
-            {"name": "methane", "formula": "CH4", "shared_electrons": 8},
-            {"name": "carbon dioxide", "formula": "CO2", "shared_electrons": 8},
+            {"name": "hydrogen",                "formula": "H₂",    "bonds": 1,  "shared_electrons": 2},
+            {"name": "hydrogen chloride",       "formula": "HCl",   "bonds": 1,  "shared_electrons": 2},
+            {"name": "hydrogen fluoride",       "formula": "HF",    "bonds": 1,  "shared_electrons": 2},
+            {"name": "hydrogen bromide",        "formula": "HBr",   "bonds": 1,  "shared_electrons": 2},
+            {"name": "chlorine",                "formula": "Cl₂",   "bonds": 1,  "shared_electrons": 2},
+            {"name": "fluorine",                "formula": "F₂",    "bonds": 1,  "shared_electrons": 2},
+            {"name": "bromine",                 "formula": "Br₂",   "bonds": 1,  "shared_electrons": 2},
+            {"name": "iodine",                  "formula": "I₂",    "bonds": 1,  "shared_electrons": 2},
+            {"name": "oxygen",                  "formula": "O₂",    "bonds": 2,  "shared_electrons": 4},
+            {"name": "water",                   "formula": "H₂O",   "bonds": 2,  "shared_electrons": 4},
+            {"name": "hydrogen sulfide",        "formula": "H₂S",   "bonds": 2,  "shared_electrons": 4},
+            {"name": "sulfur dioxide",          "formula": "SO₂",   "bonds": 2,  "shared_electrons": 4},
+            {"name": "nitrogen",                "formula": "N₂",    "bonds": 3,  "shared_electrons": 6},
+            {"name": "ammonia",                 "formula": "NH₃",   "bonds": 3,  "shared_electrons": 6},
+            {"name": "phosphine",               "formula": "PH₃",   "bonds": 3,  "shared_electrons": 6},
+            {"name": "methane",                 "formula": "CH₄",   "bonds": 4,  "shared_electrons": 8},
+            {"name": "carbon dioxide",          "formula": "CO₂",   "bonds": 4,  "shared_electrons": 8},
+            {"name": "carbon tetrachloride",    "formula": "CCl₄",  "bonds": 4,  "shared_electrons": 8},
+            {"name": "tetrafluoromethane",      "formula": "CF₄",   "bonds": 4,  "shared_electrons": 8},
+            {"name": "silicon tetrafluoride",   "formula": "SiF₄",  "bonds": 4,  "shared_electrons": 8},
+            {"name": "phosphorus pentachloride","formula": "PCl₅",  "bonds": 5,  "shared_electrons": 10},
+            {"name": "ethyne",                  "formula": "C₂H₂",  "bonds": 5,  "shared_electrons": 10},
+            {"name": "ethene",                  "formula": "C₂H₄",  "bonds": 6,  "shared_electrons": 12},
+            {"name": "ethane",                  "formula": "C₂H₆",  "bonds": 7,  "shared_electrons": 14},
         ]
 
-        self.molecule = rnd.choice(molecules)
-        self.name = self.molecule["name"]
-        self.formula = self.molecule["formula"]
+        self.molecule         = rnd.choice(molecules)
+        self.name             = self.molecule["name"]
+        self.formula          = self.molecule["formula"]
+        self.bonds            = self.molecule["bonds"]
         self.shared_electrons = self.molecule["shared_electrons"]
 
         self.answer = self.shared_electrons
@@ -471,19 +503,18 @@ class Chem105:
             "Determine the total number of bonding (shared) electrons in the molecule."
         )
 
-        self.topic = "Atoms, elements and compounds"
-        self.subtopic = "Simple molecules and covalent bonds"
-        self.source = "Adapted from GCSE Chemistry Past Papers"
+        self.topic      = "Atoms, elements and compounds"
+        self.subtopic   = "Simple molecules and covalent bonds"
+        self.source     = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "GCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Molecule: }} & {self.name} \\text{{ ({self.formula})}} \\\\"
-            f"\\text{{Number of shared electrons per single covalent bond}} &= 2 \\\\"
-            "\\text{{Total bonding electrons}} &= \\text{{Total number of shared electron pairs}} \\times 2 \\\\"
-            f"\\text{{Based on the dot-and-cross structure of }} {self.formula} & \\text{{:}} \\\\"
-            f"n_{{shared}} &= {round(float(self.shared_electrons), 10)} \\\\"
-            f"\\text{{Result}} &= {self.answer} \\\\"
+            f"\\text{{Number of covalent bonds}} &= {self.bonds} \\\\"
+            f"\\text{{Shared electrons per bond}} &= 2 \\\\"
+            f"\\text{{Total bonding electrons}} &= {self.bonds} \\times 2 \\\\"
+            f"n_{{shared}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1513,7 +1544,7 @@ class Chem111:
             "Cu^{2+} + 2e^- → Cu\n\n"
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of copper deposited."
+            "Calculate the mass of copper deposited. (round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1659,7 +1690,7 @@ class Chem112:
             f"Concentration = {self.conc} mol dm⁻³\n"
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of metal deposited."
+            "Calculate the mass of metal deposited. (round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1767,7 +1798,7 @@ class Chem113:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Balanced equation gives volume ratio H2:O2 = 2:1}}\\\\"
+            f"\\text{{Equation gives volume ratio H2:O2 = 2:1}}\\\\"
             f"\\text{{Volume ratio used}} &= {round(calc_ratio,10)}\\\\"
             f"V_{{unknown}} &= V_{{given}} \\times \\text{{ratio}}\\\\"
             f"&= {round(self.given_volume,10)} \\times {round(calc_ratio,10)}\\\\"
@@ -1856,7 +1887,7 @@ class Chem114:
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n"
             f"Surface area plated = {self.area_cm2} cm²\n\n"
-            "Calculate the coating thickness in micrometres (µm)."
+            "Calculate the coating thickness in micrometres (µm). (Round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1959,7 +1990,7 @@ class Chem115:
             f"Purity = {self.purity_percent}%\n"
             f"Current = {self.current} A\n"
             f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of pure metal deposited."
+            "Calculate the mass of pure metal deposited. (Round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -2015,19 +2046,6 @@ class Chem115:
         arrow = FancyArrowPatch((10, 7), (12.5, 7), arrowstyle="->", mutation_scale=15, linewidth=2, color=self.metal["color"])
         ax.add_patch(arrow)
         ax.text(11.3, 7.6, f"{self.metal['metal']} ions", ha="center", fontsize=10)
-
-        ore_box = Rectangle((2, 7), 3, 2, fill=False, linewidth=2)
-        ax.add_patch(ore_box)
-        ax.text(3.5, 8, "Ore", ha="center", fontsize=11)
-
-        furnace = Rectangle((5.5, 7), 3, 2, fill=False, linewidth=2)
-        ax.add_patch(furnace)
-        ax.text(7, 8, "Extraction", ha="center", fontsize=11)
-
-        arrow_flow1 = FancyArrowPatch((5, 8), (5.5, 8), arrowstyle="->", mutation_scale=15)
-        arrow_flow2 = FancyArrowPatch((8.5, 8), (8, 8), arrowstyle="->", mutation_scale=15)
-        ax.add_patch(arrow_flow1)
-        ax.add_patch(arrow_flow2)
 
         ax.set_title("Impure Ore → Extraction → Electrolysis Purification", fontsize=16, fontweight="bold")
 
@@ -5015,26 +5033,43 @@ class Chem147:
     def __init__(self):
 
         variations = [
-            ("C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2CO₂ + 2C₂H₅OH", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂", "glucose", "carbon dioxide", "C₆H₁₂O₆", "CO₂", 1, 2),
-            ("C₆H₁₂O₆ → 2CO₂ + 2C₂H₅OH", "glucose", "carbon dioxide", "C₆H₁₂O₆", "CO₂", 1, 2),
-            ("C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2CO₂ + 2C₂H₅OH", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2CO₂ + 2C₂H₅OH", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
-            ("C₆H₁₂O₆ → 2CO₂ + 2C₂H₅OH", "glucose", "ethanol", "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
+            (1,   "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 1, 2),
+            (1,   "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    1, 2),
+            (2,   "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 2, 4),
+            (2,   "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    2, 4),
+            (3,   "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 3, 6),
+            (3,   "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    3, 6),
+            (4,   "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 4, 8),
+            (4,   "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    4, 8),
+            (5,   "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 5, 10),
+            (5,   "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    5, 10),
+            (6,   "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 6, 12),
+            (6,   "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    6, 12),
+            (10,  "glucose", "ethanol",         "C₆H₁₂O₆", "C₂H₅OH", 10, 20),
+            (10,  "glucose", "carbon dioxide",  "C₆H₁₂O₆", "CO₂",    10, 20),
         ]
 
-        self.equation, self.reactant_name, self.product_name, self.reactant_formula, self.product_formula, self.reactant_coeff, self.product_coeff = rnd.choice(variations)
+        (
+            self.given_amount,
+            self.reactant_name,
+            self.product_name,
+            self.reactant_formula,
+            self.product_formula,
+            self.reactant_coeff,
+            self.product_coeff,
+        ) = rnd.choice(variations)
 
-        self.answer = int(self.product_coeff / self.reactant_coeff)
+        # Fixed balanced equation (always the same reaction)
+        self.equation = "C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂"
+
+        # Answer scales with given_amount: n glucose → 2n product molecules
+        self.answer = self.product_coeff  # already scaled per variation
 
         self.description = (
             "Fermentation of glucose produces ethanol.\n"
             "Using the equation shown in the diagram, calculate:\n"
-            f"How many molecules of {self.product_name} are formed from one molecule of {self.reactant_name}?"
+            f"How many molecules of {self.product_name} are formed from "
+            f"{self.given_amount} molecule{'s' if self.given_amount > 1 else ''} of {self.reactant_name}?"
         )
 
         self.topic = "Organic chemistry"
@@ -5045,8 +5080,9 @@ class Chem147:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the balanced equation:}}\\\\"
-            f"{self.reactant_coeff}\\,\\text{{molecule {self.reactant_formula}}} \\rightarrow {self.product_coeff}\\,\\text{{molecules {self.product_formula}}}\\\\"
-            f"\\text{{So from 1 molecule {self.reactant_formula}:}} &= {self.answer}\\,\\text{{molecules {self.product_formula}}}"
+            f"1\\,\\text{{molecule {self.reactant_formula}}} \\rightarrow 2\\,\\text{{molecules {self.product_formula}}}\\\\"
+            f"\\therefore {self.reactant_coeff}\\,\\text{{molecules {self.reactant_formula}}} "
+            f"\\rightarrow {self.reactant_coeff} \\times 2 &= {self.answer}\\,\\text{{molecules {self.product_formula}}}"
             "\\end{aligned}\\]"
         )
 
