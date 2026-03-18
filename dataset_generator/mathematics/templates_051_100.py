@@ -3171,7 +3171,7 @@ class Mat080:
         self.description = (
             f"The diagram shows the graph of a trigonometric function of the form "
             f"$y = a {self.func_name}(bx + c) + d$. "
-            f"Find the values of $a$, $b$, $c$, and $d$."
+            f"Find the values of $a$, $b$, $c$, and $d$. (Provide your answer in the format: a, b, c, d. Example: 1, 2, 3, 4)"
         )
         
         self.topic = "Trigonometry"
