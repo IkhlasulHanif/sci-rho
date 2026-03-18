@@ -80,7 +80,7 @@ class Com052:
 
     def __init__(self):
         self.array = [None, 8, 12, 16, 20, 12, 14, 16, 20, 20, 22] # Starts from index 1
-        self.x = 1
+        self.x = rnd.randint(1, 10)
         self.trace = []
         # func itik
         def itik_logic(a: int, b:int) -> int:
@@ -111,30 +111,37 @@ class Com052:
         
         self.answer = bebek_logic(self.x)
 
-        self.description = f"What is the output of the given program, if insert_num is {self.x}?"
+        self.description = f"What is the output of the given program, if x is {self.x}?"
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Recursion"
         self.source = "Adapted from Indonesia's National Science Olympiad Selection Test for Informatics at the Regency/City Level 2018"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Input x}} &= {self.x} \\\\"
-            f"\\text{{Array (1-based indexing)}} &= {self.array[1:]} \\\\"
-            f"\\text{{The function }} itik(a, b) &\\text{{ calculates }} \\gcd(a, b).\\\\"
-            f"\\text{{The function }} bebek(x) &\\text{{ is defined recursively:}}\\\\"
-            f"bebek(x) &= \\begin{{cases}} 0 & \\text{{if }} x > 10 \\\\ itik(array[x], bebek(2x)) & \\text{{otherwise}} \\end{{cases}}\\\\"
-            "\\text{{Evaluation:}} &\\\\"
+            f"\\text{{Input: }} x &= {self.x} \\\\"
+            f"\\text{{Array (1-based indexing):}} &= {self.array[1:]} \\\\"
+            "\\text{Itik}(a, b) &= \\gcd(a, b) \\quad [\\text{Euclidean algorithm}] \\\\"
+            "\\text{Bebek}(x) &= "
+            "\\begin{cases}"
+            " 0 & \\text{if } x > 10 \\\\"
+            " \\text{Itik}(\\text{data}[x],\\, \\text{Bebek}(2x)) & \\text{otherwise}"
+            "\\end{cases} \\\\"
+            "\\text{Step 1: Recursive descent (top-down call chain):} & \\\\"
+            "& " + " \\rightarrow ".join([
+                f"\\text{{Bebek}}({t['x']})"
+                for t in reversed(self.trace)
+            ]) + " \\\\"
+            "\\text{Step 2: Base case fires:} & \\\\"
+            + f"& \\text{{Bebek}}({self.trace[0]['x']}) = 0"
+            + f" \\quad [\\text{{since }} {self.trace[0]['x']} > 10] \\\\"
+            "\\text{Step 3: Unwind} & \\text{(resolve bottom-up):} \\\\"
             + " \\\\ ".join([
-                f"\\text{{Base Case: }} bebek({t['x']}) &= {round(float(t['val']), 10)}" if t['is_base']
-                else (
-                    f"bebek({t['x']}) &= itik(array[{t['x']}], bebek({t['next_x']}))\\\\"
-                    f"&= itik({round(float(t['array_val']), 10)}, {round(float(t['next_val']), 10)})\\\\"
-                    f"&= {round(float(t['val']), 10)}"
-                )
-                for t in self.trace
-            ])
-            + f"\\\\ \\text{{Therefore, the final result is:}} &\\\\"
-            + f"\\text{{Output}} &= {self.answer}"
+                f"\\text{{Bebek}}({t['x']}) &= \\text{{Itik}}(\\text{{data}}[{t['x']}],\\, \\text{{Bebek}}({t['next_x']})) \\\\"
+                f"&= \\text{{Itik}}({round(float(t['array_val']), 10)},\\, {round(float(t['next_val']), 10)}) \\\\"
+                f"&= {round(float(t['val']), 10)}"
+                for t in self.trace if not t["is_base"]
+            ]) + " \\\\"
+            f"\\text{{Final Result}} &= {self.answer}"
             "\\end{aligned}\\]"
         )
 
