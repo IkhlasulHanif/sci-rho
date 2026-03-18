@@ -1107,7 +1107,6 @@ class Mat060:
         
         self.description = (
             f"Calculate the length of the arc of the shaded sector. "
-            f"The circle has {dim_text} and the sector angle is {self.angle}°. "
             f"{pi_instruction} Give your answer correct to 2 decimal places."
         )
         
@@ -1210,8 +1209,8 @@ class Mat060:
 class Mat061:
     
     def __init__(self):
-        self.width = rnd.randint(4, 12) # In cm
-        self.height = rnd.randint(4, 10) # In cm
+        self.width = rnd.randint(4, 20) # In cm
+        self.height = rnd.randint(4, 20) # In cm
         
         self.radius = self.width / 2 # In cm
 
@@ -1296,8 +1295,8 @@ class Mat061:
 class Mat062:
     
     def __init__(self):
-        # Random Outer Radius (R) between 6 and 15
-        self.R = rnd.randint(6, 15)
+        # Random Outer Radius (R) between 6 and 25
+        self.R = rnd.randint(6, 25)
         # Random Inner Radius (r) between 2 and R-3 (ensures distinct gap)
         self.r = rnd.randint(2, self.R - 3)
 
