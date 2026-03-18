@@ -5261,7 +5261,7 @@ class Mat097:
         # Create a random Direction Vector (dx, dy, dz)
         # We avoid (0,0,0) to ensure a line exists
         direction = np.random.randint(-5, 6, size=3)
-        while np.all(direction == 0):
+        while np.all(direction[1:] == 0): # Ensure at least one of y or z is non-zero
             direction = np.random.randint(-5, 6, size=3)
 
         # Generate scalars (multipliers) for A and C
@@ -5392,10 +5392,9 @@ class Mat098:
         self.answer = round(k_solution, 3)
 
         self.description = (
-            f"Trapezium $OABC$ where $OA$ is parallel to $CB$. "
-            f"$OA = {self.c1}\\mathbf{{a}}$ and $OB = {self.c2}\\mathbf{{b}}$. "
-            f"Point $P$ is on $AB$ such that $AP:PB = {self.m}:{self.n}$. "
-            f"If vector $OP = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})$, find $k$. "
+            "In the diagram, $OABC$ is a trapezium where $OA$ is parallel to $CB$. "
+            "Point $P$ lies on the line segment $AB$. "
+            f"Find the value of $k$ given that $\\vec{{OP}} = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})$. "
             "Give your answer correct to 3 decimal places."
         )
 
@@ -5490,8 +5489,11 @@ class Mat099:
     def __init__(self):
         # We pick the answer first to ensure the graph looks nice, 
         # but we hide 'k' in the final output.
-        self.val_x = rnd.randint(3, 8)       # The known i component
-        self.val_k = rnd.randint(3, 10)      # The unknown j component (the answer)
+        self.val_x = rnd.randint(1, 20)       # The known i component
+        self.val_k = rnd.randint(1, 20)      # The unknown j component (the answer)
+        while self.val_x**2 + self.val_k**2 < 20: # Avoid overly small vectors
+             self.val_x = rnd.randint(1, 20)
+             self.val_k = rnd.randint(1, 20)
 
         # Calculate Magnitude symbolically to get the exact sqrt string (e.g., 3sqrt(17))
         self.magnitude_sym = sympy.sqrt(self.val_x**2 + self.val_k**2)
@@ -5500,8 +5502,7 @@ class Mat099:
         self.answer = self.val_k
 
         self.description = (
-            f"Find positive $k$ given $\\vec{{v}} = {self.val_x}\\mathbf{{i}} + k\\mathbf{{j}}$ "
-            f"and $|\\vec{{v}}| = {self.magnitude_latex}$"
+            "Use the information in the vector diagram to find the value of the positive scalar $k$."
         )
 
         self.topic = "Transformations and vectors"
@@ -5597,8 +5598,8 @@ class Mat100:
         self.B = np.array([rnd.uniform(4, 7), rnd.uniform(1, 3)])
         
         # Randomize the ratio AP:PB = m:n
-        self.m = rnd.randint(1, 5)
-        self.n = rnd.randint(1, 5)
+        self.m = rnd.randint(1, 10)
+        self.n = rnd.randint(1, 10)
         
         # Calculate Point P using the Section Formula
         # P = (n*A + m*B) / (m + n)
@@ -5610,10 +5611,8 @@ class Mat100:
         self.answer = round(k, 3)
 
         self.description = (
-            f"In triangle $OAB$, vector $OA = \\mathbf{{a}}$ and vector $OB = \\mathbf{{b}}$. "
-            f"Point $P$ is on $AB$ such that $AP:PB = {self.m}:{self.n}$. "
-            f"The vector $OP$ can be expressed as $k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$. "
-            "Find the value of $k$. "
+            "In the triangle $OAB$, vector $\\vec{OA} = \\mathbf{a}$ and vector $\\vec{OB} = \\mathbf{b}$. "
+            f"Given that $\\vec{{OP}} = k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$, find the value of $k$. "
             "Give your answer correct to 3 decimal places."
         )
 
