@@ -1515,12 +1515,12 @@ class Mat063:
 class Mat064:
     
     def __init__(self):
-        # Radius between 2 and 6 (so Diameter is 4 to 12)
-        self.radius = rnd.randint(2, 6)
-        self.diameter = self.radius * 2
+        # Radius: 1 d.p. float in [2.0, 12.0] → ~101 distinct values
+        self.radius = round(rnd.uniform(2.0, 12.0), 1)
+        self.diameter = round(self.radius * 2, 1)
         
-        # Cylinder height usually larger than radius for a silo look
-        self.cyl_height = rnd.randint(self.radius + 2, self.radius + 10)
+        # Cylinder height: 1 d.p. float in [radius+2, radius+15] → many distinct values
+        self.cyl_height = round(rnd.uniform(self.radius + 2.0, self.radius + 15.0), 1)
 
         vol_cyl = self.radius**2 * self.cyl_height
         vol_hemi = (2 / 3) * self.radius**3
@@ -1537,8 +1537,8 @@ class Mat064:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Radius }} (r) &= {self.radius}\\\\"
-            f"\\text{{Height }} (h) &= {self.cyl_height}\\\\"
+            f"\\text{{Radius }} (r) &= {self.radius}\\,\\text{{m}}\\\\"
+            f"\\text{{Height }} (h) &= {self.cyl_height}\\,\\text{{m}}\\\\"
             f"\\text{{Volume of Cylinder}} &= \\pi r^2 h\\\\"
             f"&= \\pi ({self.radius})^2 ({self.cyl_height})\\\\"
             f"&= {round(self.radius**2 * self.cyl_height, 10)}\\pi\\\\"
@@ -1725,10 +1725,12 @@ class Mat065:
 class Mat066:
     
     def __init__(self):
-        self.radius = rnd.randint(3, 8)       # Random radius between 3 cm and 8 cm
-        self.height = rnd.randint(5, 12)      # Random height between 5 cm and 12 cm
+        # Radius: 1 d.p. float in [2.0, 15.0] → ~131 distinct values
+        self.radius = round(rnd.uniform(2.0, 15.0), 1)
+        # Height: 1 d.p. float in [3.0, 20.0] → ~171 distinct values
+        self.height = round(rnd.uniform(3.0, 20.0), 1)
 
-        slant_height = np.sqrt(self.radius**2 + self.height**2)
+        slant_height = round(np.sqrt(self.radius**2 + self.height**2), 4)
         pi_val = 3.142
         curved_area = pi_val * self.radius * slant_height
         base_area = pi_val * self.radius**2
@@ -1746,7 +1748,7 @@ class Mat066:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}}, \\text{{ Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
+            f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}},\\quad \\text{{Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
             f"\\text{{Slant Height }} (l) &= \\sqrt{{r^2 + h^2}}\\\\"
             f"&= \\sqrt{{{self.radius}^2 + {self.height}^2}}\\\\"
             f"&= \\sqrt{{{self.radius**2} + {self.height**2}}}\\\\"
