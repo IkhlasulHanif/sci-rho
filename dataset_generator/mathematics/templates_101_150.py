@@ -1795,10 +1795,12 @@ class Mat121:
 class Mat122:
     
     def __init__(self):
-        # Randomize variables (Ensure a != b for clarity)
-        self.a = rnd.randint(2, 4)
-        self.b = rnd.randint(6, 9)
-        if self.a == self.b: self.b += 2  # Force difference if they collide
+        # Randomize variables (Ensure |a - b| >= 2 for clarity in plot)
+        while True:
+            self.a = rnd.randint(2, 15)
+            self.b = rnd.randint(2, 15)
+            if abs(self.a - self.b) >= 2:
+                break
 
         # x = f(a) = b
         self.answer = self.b
@@ -2058,15 +2060,13 @@ class Mat125:
     
     def __init__(self):
         # We work backwards to ensure integer answers.
-        # Choose a scale factor 'k' for y = h(kx) (e.g., 2, 3, or 0.5)
-        k_options = [2, 3, 4] 
+        # Choose a scale factor 'k' for y = h(kx)
+        k_options = [2, 3, 4, 5, 6, 8, 10] 
         self.k = rnd.choice(k_options)
         
-        # Choose the 'new' intercept first (the answer), so the 'original' intercept is a multiple of k
-        answer_intercept = rnd.randint(1, 4)
-        self.original_intercept = answer_intercept * self.k
-
-        self.answer = answer_intercept
+        # Choose the 'new' intercept first (the answer)
+        self.answer = rnd.randint(2, 20)
+        self.original_intercept = self.answer * self.k
 
         self.description = (
             f"The blue solid line in the figure displays the graph of $y = h(x)$, "
@@ -2473,12 +2473,12 @@ class Mat128:
 class Mat129:
     
     def __init__(self):
-        # Random radius between 2 and 9
-        self.r = rnd.randint(2, 9)
+        # Random radius between 2 and 20
+        self.r = rnd.randint(2, 20)
         
         # Random y-coordinate for the center (y_c). 
-        # We ensure it's > r so the circle doesn't touch the x-axis (strictly touching y-axis only for this problem logic)
-        self.y_c = rnd.randint(self.r + 2, self.r + 8)
+        # We ensure it's > r so the circle doesn't touch the x-axis
+        self.y_c = rnd.randint(self.r + 2, self.r + 20)
         
         # Calculate values for the equation (x - k)^2 + (y - b)^2 = r^2
         r_squared = self.r**2
