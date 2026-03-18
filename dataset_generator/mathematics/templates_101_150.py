@@ -985,7 +985,7 @@ class Mat113:
         # Randomize the Target Point P
         # Age between 2 and 8 years, Value between 5k and 20k
         self.target_age = rnd.randint(2, 8)
-        self.target_value = 5 * rnd.randint(1, 4)
+        self.target_value = round(rnd.uniform(2, 25), 1)
         
         # Generate Random Data Points (Background Noise)
         # Create 9 other points with a general downward trend (older = cheaper)
@@ -1181,8 +1181,8 @@ class Mat115:
         self.student_a_y_predicted = self.slope * self.student_a_x + self.intercept
         
         # Randomize the ACTUAL score (off the line)
-        # Ensure the residual is noticeable (at least +/- 8 points away)
-        residual_offset = rnd.choice([-1, 1]) * rnd.randint(8, 15)
+        # Ensure the residual is noticeable (at least +/- 5 points away)
+        residual_offset = rnd.choice([-1, 1]) * round(rnd.uniform(5, 20), 1)
         self.student_a_y_actual = round(self.student_a_y_predicted + residual_offset, 1)
 
         self.answer = round(abs(self.student_a_y_actual - self.student_a_y_predicted), 3)
@@ -1356,20 +1356,20 @@ class Mat116:
 class Mat117:
     
     def __init__(self):
-        self.total_frequency = 80
+        self.total_frequency = rnd.choice([60, 80, 100, 120, 160, 200, 240])
         
         # Calculate Y-axis positions for quartiles
-        self.y_q1 = 0.25 * self.total_frequency  # Lower Quartile position (25% of 80 = 20)
+        self.y_q1 = 0.25 * self.total_frequency  # Lower Quartile position
         self.y_median = 0.50 * self.total_frequency # Median position
-        self.y_q3 = 0.75 * self.total_frequency  # Upper Quartile position (75% of 80 = 60)
+        self.y_q3 = 0.75 * self.total_frequency  # Upper Quartile position
 
         # Randomize X-axis values (Heights in cm)
         # We ensure they are strictly increasing: Min < Q1 < Median < Q3 < Max
-        self.h_min = rnd.randint(5, 15)
-        self.h_q1 = rnd.randint(self.h_min + 5, self.h_min + 15)      # Q1 Height
-        self.h_median = rnd.randint(self.h_q1 + 5, self.h_q1 + 15)    # Median Height
-        self.h_q3 = rnd.randint(self.h_median + 10, self.h_median + 20) # Q3 Height
-        self.h_max = rnd.randint(self.h_q3 + 5, self.h_q3 + 15)
+        self.h_min = round(rnd.uniform(2, 10), 1)
+        self.h_q1 = round(self.h_min + rnd.uniform(5, 12), 1)        # Q1 Height
+        self.h_median = round(self.h_q1 + rnd.uniform(5, 12), 1)     # Median Height
+        self.h_q3 = round(self.h_median + rnd.uniform(10, 20), 1)    # Q3 Height
+        self.h_max = round(self.h_q3 + rnd.uniform(5, 15), 1)
 
         # Calculate the Answer (IQR)
         iqr = self.h_q3 - self.h_q1
@@ -1423,12 +1423,12 @@ class Mat117:
         # Add guidelines for Q1
         plt.hlines(y=self.y_q1, xmin=0, xmax=self.h_q1, colors='green', linestyles='dashed')
         plt.vlines(x=self.h_q1, ymin=0, ymax=self.y_q1, colors='green', linestyles='dashed')
-        plt.text(0, self.y_q1 + 1, f'20 (25%)', color='green', va='bottom', fontsize=9)
+        plt.text(0, self.y_q1 + (self.total_frequency * 0.02), f'{int(self.y_q1)} (25%)', color='green', va='bottom', fontsize=9)
 
         # Add guidelines for Q3
         plt.hlines(y=self.y_q3, xmin=0, xmax=self.h_q3, colors='red', linestyles='dashed')
         plt.vlines(x=self.h_q3, ymin=0, ymax=self.y_q3, colors='red', linestyles='dashed')
-        plt.text(0, self.y_q3 + 1, f'60 (75%)', color='red', va='bottom', fontsize=9)
+        plt.text(0, self.y_q3 + (self.total_frequency * 0.02), f'{int(self.y_q3)} (75%)', color='red', va='bottom', fontsize=9)
 
         # Formatting the Graph
         plt.title(f"Cumulative Frequency of Plant Heights (N={self.total_frequency})")
@@ -1594,23 +1594,23 @@ class Mat120:
         
         # Generate Group A
         self.width_a = rnd.choice(possible_widths)
-        self.height_a = rnd.randint(2, 8) # Randomize height (Freq Density) directly for integer results
-        self.freq_a = self.width_a * self.height_a
+        self.height_a = round(rnd.uniform(2, 8), 1) # Randomize height (Freq Density)
+        self.freq_a = round(self.width_a * self.height_a, 1)
         
         # Generate Group B (ensure it's different enough to be interesting)
         self.width_b = rnd.choice(possible_widths)
-        self.height_b = rnd.randint(2, 8)
+        self.height_b = round(rnd.uniform(2, 8), 1)
         
         # Ensure heights are not equal so there is always a difference
-        while self.height_b == self.height_a:
-            self.height_b = rnd.randint(2, 8)
+        while abs(self.height_b - self.height_a) < 0.2:
+            self.height_b = round(rnd.uniform(2, 8), 1)
         
-        self.freq_b = self.width_b * self.height_b
+        self.freq_b = round(self.width_b * self.height_b, 1)
 
         # Calculate the answer
         diff = abs(self.height_b - self.height_a)
 
-        self.answer = diff
+        self.answer = round(diff, 1)
 
         self.description = (
             f"If these groups are plotted on the same histogram, "
