@@ -2038,20 +2038,37 @@ class Phy172:
         )
         self.topic, self.subtopic = "Electricity", "Electric fields"
         self.curriculum, self.source = "A-Level", "Original"
+class Phy172:
+    def __init__(self):
+        self.k = 8.99e9
+        self.q = rnd.uniform(2e-9, 9e-9)
+        self.dist = rnd.uniform(0.06, 0.20)
+
+        r = self.dist / 2
+
+        self.E_single = (self.k * self.q) / (r**2)
+        self.E_total = 2 * self.E_single
+
+        self.answer = f"{self.E_total:.4f}"
+
+        self.description = (
+            "Two point charges, one +Q and one -Q, are separated by a distance as shown. "
+            "Based on the values provided in the diagram, calculate the magnitude of the net electric field strength at the midpoint between the charges. "
+            "(_) V m^-1 (Example format: 12345.2345)"
+        )
+
+        self.topic, self.subtopic = "Electricity", "Electric fields"
+        self.curriculum, self.source = "A-Level", "Original"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "&\\mathbf{Step\ 1:\ Identify\ Field\ Directions} \\\\"
-            "&\\text{Field from } +Q \\text{ points away from it (to the right).} \\\\"
-            "&\\text{Field from } -Q \\text{ points towards it (also to the right).} \\\\"
-            "&\\text{Net field } E_{net} = E_1 + E_2 \\\\[8pt]"
-            "&\\mathbf{Step\ 2:\ Calculate\ Individual\ Field\ Magnitudes} \\\\"
-            "&r = 0.05\\,\\text{m (midpoint)} \\\\"
-            "&E = \\frac{8.99 \\times 10^9 \\times 5.0 \\times 10^{-9}}{(0.05)^2} = 17980\\,\\text{V m}^{-1} \\\\[8pt]"
-            "&\\mathbf{Step\ 3:\ Summation} \\\\"
-            "&E_{net} = 17980 + 17980 = 35960\\,\\text{V m}^{-1} \\\\[8pt]"
-            "&\\mathbf{Final\ Answer:} \\\\"
-            "&E = 3.60 \\times 10^4\\,\\text{V m}^{-1}"
+            "&\\mathbf{Step\ 1:\ Distance\ to\ midpoint} \\\\"
+            f"&r = \\frac{{{self.dist:.3f}}}{{2}} = {r:.3f}\\,\\text{{m}} \\\\[6pt]"
+            "&\\mathbf{Step\ 2:\ Field\ from\ one\ charge} \\\\"
+            f"&E = \\frac{{8.99\\times10^9 \\times {self.q:.2e}}}{{({r:.3f})^2}} \\\\[6pt]"
+            "&\\mathbf{Step\ 3:\ Net\ field} \\\\"
+            "&E_{net} = 2E \\\\[6pt]"
+            f"&E_{{net}} = {self.E_total:.4f}\\,\\text{{V m}}^{{-1}}"
             "\\end{aligned}\\]"
         )
 
@@ -2638,273 +2655,6 @@ class Phy179:
 class Phy180:
     def __init__(self):
         self.h = 6.63e-34
-        self.f = rnd.uniform(4.0e14, 9.0e14)
-
-        self.E = self.h * self.f
-        self.answer = f"{self.E:.3e}"
-
-        self.description = (
-            f"Calculate the energy of a photon with frequency f. "
-            "(Example format: 1.2e10-2)"
-        )
-
-        self.topic = "Quantum physics"
-        self.subtopic = "Energy and momentum of a photon"
-        self.curriculum = "A-Level"
-        self.source = "Original"
-
-        lE = f"{self.E:.3e}".replace("e", "\\times 10^{") + "}"
-        self.reasoning = (
-            "\\["
-            "\\begin{aligned}"
-            "&\\mathbf{Step\ 1:\ Identify\ Known\ Quantities} \\\\"
-            "&h = 6.63 \\times 10^{-34}\\,\\text{J s} \\\\"
-            "&f = " + str(self.f_base) + " \\times 10^{14}\\,\\text{Hz} \\\\[8pt]"
-            "&\\mathbf{Step\ 2:\ State\ Photon\ Energy\ Formula} \\\\"
-            "&E = hf \\\\[8pt]"
-            "&\\mathbf{Step\ 3:\ Calculation} \\\\"
-            "&E = (6.63 \\times 10^{-34})(" + str(self.f_base) + " \\times 10^{14}) \\\\"
-            "&E = \\mathbf{" + lE + "\\,J} \\\\[8pt]"
-            "&\\mathbf{Final\ Answer:} \\\\"
-            "&E = " + self.answer + "\\,\\text{J}"
-            "\\end{aligned}"
-            "\\]"
-        )
-
-    def generate(self, num):
-        plt.style.use("default")
-        fig, ax = plt.subplots(figsize=(8, 4), dpi=300)
-        ax.set_xlim(0, 10)
-        ax.set_ylim(-1.5, 1.5)
-        ax.axis('off')
-
-        x = np.linspace(0, 10, 1000)
-        sigma = 1.5
-        center = 5
-        envelope = np.exp(-(x - center)**2 / (2 * sigma**2))
-        wave = envelope * np.sin(2 * np.pi * x * (self.f_base/3))
-
-        colors = {4: '#e74c3c', 5: '#e67e22', 6: '#f1c40f', 7: '#2ecc71', 8: '#3498db', 9: '#9b59b6'}
-        photon_color = colors.get(self.f_base, '#f39c12')
-
-        ax.plot(x, wave, color=photon_color, lw=3, zorder=3)
-        ax.fill_between(x, wave, color=photon_color, alpha=0.1)
-        
-        ax.annotate('', xy=(center + 1.2, 0.8), xytext=(center - 1.2, 0.8),
-                    arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1))
-        ax.text(center, 1.0, "Localized Energy Packet", ha='center', fontsize=9, style='italic')
-
-        props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='#bdc3c7')
-        param_text = (
-            f"$\\mathbf{{Frequency\ (f):}}$\n"
-            f"${self.f_base} \\times 10^{{14}}$ Hz\n\n"
-            f"$\\mathbf{{Planck's\ Constant\ (h):}}$\n"
-            f"$6.63 \\times 10^{{-34}}$ J s"
-        )
-        ax.text(0.2, 0, param_text, transform=ax.transAxes, fontsize=10, bbox=props, va='center')
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
-        plt.close()
-
-
-class Phy181:
-    """
-    Momentum of a photon.
-    """
-
-    def __init__(self):
-        self.h = 6.63e-34
-        self.lambda_base = rnd.randint(400, 700)
-        self.lambda_m = self.lambda_base * 1e-9
-
-        self.p = self.h / self.lambda_m
-        self.answer = "{:.3e}".format(self.p)
-        self.description = (
-            f"Calculate the momentum of a photon with wavelength (_) kg m s^(-1)"
-            "(Example format: 2.652e-19)"
-        )
-
-        self.topic = "Quantum physics"
-        self.subtopic = "Energy and Momentum of a photon"
-        self.curriculum = "A-Level"
-        self.source = "Original"
-
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Step 1: Identify given wavelength}} &\\\\"
-            f"\\lambda &= {self.lambda_base}\\,\\text{{nm}} = {self.lambda_base} \\times 10^{{-9}}\\,\\text{{m}} \\\\"
-            f"\\text{{Step 2: Apply the de Broglie relation}} &\\\\"
-            f"p &= \\frac{{h}}{{\\lambda}} \\\\"
-            f"\\text{{Step 3: Substitute constants and values}} &\\\\"
-            f"p &= \\frac{{6.63 \\times 10^{{-34}}}}{{{self.lambda_base} \\times 10^{{-9}}}} \\\\"
-            f"\\text{{Step 4: Solve for momentum}} &\\\\"
-            f"p &= {round(self.p, 10)}\\,\\text{{kg m s}}^{{-1}} \\\\"
-            f"\\text{{Final Answer:}} &\\\\"
-            f"p &= {self.answer}\\,\\text{{kg m s}}^{{-1}}"
-            "\\end{aligned}\\]"
-        )
-
-    def generate(self, num):
-        x = np.linspace(0, 6*np.pi, 1000)
-        y = np.sin(x)
-        
-        fig, ax = plt.subplots(figsize=(8, 3))
-        ax.plot(x, y, color='purple', linewidth=2.5)
-        
-        ax.annotate('', xy=(0.5*np.pi, 1.2), xytext=(2.5*np.pi, 1.2), 
-                    arrowprops=dict(arrowstyle='<->', color='black', lw=1.5))
-        ax.text(1.5*np.pi, 1.45, f"$\lambda = {self.lambda_base}$ nm", ha='center', fontweight='bold')
-        
-        ax.text(4*np.pi, 1.2, f"h = 6.63 $\\times$ 10$^{{-34}}$ J s", bbox=dict(facecolor='white', alpha=0.5))
-
-        ax.set_ylim(-1.5, 2.2)
-        ax.axis('off')
-
-        os.makedirs(DESTINATION_FOLDER, exist_ok=True)
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=600, bbox_inches="tight")
-        plt.close()
-
-class Phy182:
-    """Photoelectric effect: maximum kinetic energy."""
-    def __init__(self):
-        self.h = 6.63e-34
-        while True:
-            self.f_base = rnd.randint(6, 12)
-            self.f = self.f_base * 1e14
-            self.phi_base = rnd.randint(2, 5)
-            self.phi = self.phi_base * 1e-19
-            self.Ek = self.h * self.f - self.phi
-            if self.Ek > 0:
-                break
-        self.answer = "{:.3e}".format(self.Ek)
-        self.description = (
-            "Calculate the maximum kinetic energy of emitted electrons. (_) J. (Example format: 2.652e-19)"
-        )
-        self.topic = "Quantum physics", 
-        self.subtopic = "Photoelectric effect"
-        self.curriculum = "A-Level"
-        self.source = "Original"
-
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            "\\text{Step 1: Einstein's photoelectric equation} &\\\\"
-            "E_{k, \\text{max}} &= hf - \\Phi \\\\"
-            "\\text{Step 2: Calculate photon energy (} hf \\text{)} &\\\\"
-            f"hf &= (6.63 \\times 10^{{-34}})({self.f_base} \\times 10^{{14}}) = {round(self.h*self.f, 22)}\\,\\text{{J}} \\\\"
-            "\\text{Step 3: Subtract work function} &\\\\"
-            f"E_k &= {round(self.h*self.f, 22)} - ({self.phi_base} \\times 10^{{-19}}) \\\\"
-            "\\text{Final Answer:} &\\\\"
-            f"E_k &= {self.Ek}\\,\\text{{J}}"
-            "\\end{aligned}\\]"
-        )
-
-    def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.axhspan(0, 0.8, color='gray', alpha=0.3)
-        ax.annotate('', xy=(1.5, 0.9), xytext=(0.5, 2.5), arrowprops=dict(arrowstyle='->', color='orange', lw=2))
-        ax.text(0.1, 2.6, f"Photon\n$f={self.f_base}\\times 10^{{14}}$ Hz", color='orange', fontsize=9)
-        ax.annotate('', xy=(3.5, 2.5), xytext=(2, 0.9), arrowprops=dict(arrowstyle='->', color='blue', lw=2))
-        ax.text(3.6, 2.6, "Photoelectron\n($E_k$ max)", color='blue', fontsize=9)
-        ax.text(2, 0.3, f"Metal Surface ($\Phi = {self.phi_base}\\times 10^{{-19}}$ J)", ha='center', fontweight='bold')
-        ax.set_xlim(0, 5); ax.set_ylim(0, 4); ax.axis('off')
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
-        plt.close()
-        
-class Phy183:
-    def __init__(self):
-        self.e = 1.60e-19
-
-        while True:
-            self.Ek = rnd.uniform(2e-19, 9e-19)
-            self.Vs = self.Ek / self.e
-            if 0.5 < self.Vs < 10:
-                break
-        self.answer = "{:.2f}".format(self.Vs)
-        self.description = (
-            f"In a photoelectric effect experiment, the maximum kinetic energy of the emitted "
-            f"Determine the stopping potential $V_s$ required to reduce the photocurrent to zero."
-            "(Example format: 2.652e-19)"
-        )
-
-        self.topic = "Quantum physics"
-        self.subtopic = "Photoelectric effect"
-        self.curriculum = "A-Level"
-        self.source = "Original"
-
-        self.reasoning = (
-            "\\["
-            "\\begin{aligned}"
-            "&\\mathbf{Step\ 1:\ Identify\ the\ Relationship} \\\\"
-            "&\\text{The work done by the stopping potential equals the maximum kinetic energy:} \\\\"
-            "&E_{k, \\text{max}} = e V_s \\\\[8pt]"
-            "&\\mathbf{Step\ 2:\ Rearrange\ for\ Stopping\ Potential\ (V_s)} \\\\"
-            "&V_s = \\frac{E_{k, \\text{max}}}{e} \\\\[8pt]"
-            "&\\mathbf{Step\ 3:\ Substitution} \\\\"
-            "&e = 1.60 \\times 10^{-19}\\,\\text{C} \\\\"
-            "&V_s = \\frac{" + str(self.Ek_base) + " \\times 10^{-19}}{1.60 \\times 10^{-19}} \\\\[8pt]"
-            "&\\mathbf{Step\ 4:\ Final\ Calculation} \\\\"
-            "&V_s = \\mathbf{" + self.answer + "\\,V} \\\\"
-            "\\end{aligned}"
-            "\\]"
-        )
-
-    def generate(self, num):
-        plt.style.use("default")
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), dpi=300)
-        
-        f_threshold = 2
-        f = np.linspace(f_threshold, 6, 100)
-        Ek_plot = 1.5 * (f - f_threshold)
-        ax1.plot(f, Ek_plot, color='#e67e22', lw=2.5, label='$E_{k,max} = hf - \Phi$')
-        ax1.axhline(0, color='black', lw=1)
-        ax1.axvline(f_threshold, color='black', lw=1, ls='--')
-        
-        target_Ek_y = 3
-        target_f_x = 4
-        ax1.scatter(target_f_x, target_Ek_y, color='#d35400', s=100, zorder=5)
-        ax1.annotate(f'$E_k = {self.Ek_base} \\times 10^{{-19}}$ J', 
-                     xy=(target_f_x, target_Ek_y), xytext=(target_f_x-1.5, target_Ek_y+0.5),
-                     arrowprops=dict(arrowstyle='->', color='black'))
-
-        ax1.set_xlabel('Frequency ($f$)', fontweight='bold')
-        ax1.set_ylabel('Max Kinetic Energy ($E_{k,max}$)', fontweight='bold')
-        ax1.set_xticks([]); ax1.set_yticks([])
-        ax1.grid(True, alpha=0.3)
-
-        ax2.set_xlim(0, 10); ax2.set_ylim(0, 10)
-        ax2.axis('off')
-        
-        # Vacuum tube
-        tube = plt.Circle((5, 6), 3.5, color='#ecf0f1', ec='#2c3e50', lw=2)
-        ax2.add_patch(tube)
-        
-        # Electrodes
-        ax2.plot([3, 3], [4.5, 7.5], color='#2c3e50', lw=4) # Cathode
-        ax2.plot([7, 7], [4.5, 7.5], color='#2c3e50', lw=4) # Anode
-        ax2.text(2.5, 8, 'Cathode (-)', ha='center', fontweight='bold')
-        ax2.text(7.5, 8, 'Anode (+)', ha='center', fontweight='bold')
-        
-        # Photons and Electrons
-        for i in range(3):
-            ax2.annotate('', xy=(2.8, 7-i), xytext=(0.5, 8-i),
-                         arrowprops=dict(arrowstyle='->', color='#f1c40f', lw=2, connectionstyle="arc3,rad=.2"))
-        ax2.scatter([4, 5, 5.5], [6, 5.2, 6.8], color='#3498db', s=50) # Electrons
-        ax2.text(1, 8.5, 'Photons ($hf$)', color='#f39c12', fontweight='bold')
-
-        # Voltmeter / stopping potential label
-        ax2.add_patch(plt.Rectangle((3.5, 1), 3, 1.5, fill=False, ec='#c0392b', lw=2))
-        ax2.text(5, 1.7, f'$V_s = ?$ V', color='#c0392b', ha='center', fontweight='bold', fontsize=12)
-        ax2.plot([3, 3, 3.5], [4.5, 1.75, 1.75], color='#c0392b', lw=1.5)
-        ax2.plot([7, 7, 6.5], [4.5, 1.75, 1.75], color='#c0392b', lw=1.5)
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
-        plt.close()
-
-class Phy180:
-    def __init__(self):
-        self.h = 6.63e-34
         self.f_base = rnd.randint(4, 9)
         self.f = self.f_base * 1e14
 
@@ -3172,7 +2922,6 @@ class Phy183:
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
 
-
 class Phy184:
     def __init__(self):
 
@@ -3324,10 +3073,10 @@ class Phy186:
         self.h = 6.63e-34
         self.c = 3.00e8
         while True:
-            self.E_base = rnd.randint(2, 9) 
+            self.E_base = rnd.uniform(2, 9) 
             self.E = self.E_base * 1e-19
             self.lambda_val = (self.h * self.c) / self.E
-            if 1e-7 < self.lambda_val < 1e-6:
+            if 1e-7 < self.lambda_val < 1e-6: 
                 break
         self.answer = "{:.3e}".format(self.lambda_val)
         self.description = (
@@ -3486,7 +3235,7 @@ class Phy187:
 class Phy188:
     def __init__(self):
         self.c = 3.00e8
-        self.dm_base = rnd.randint(1, 9)
+        self.dm_base = rnd.uniform(1, 9)
         self.dm = self.dm_base * 1e-29
 
         self.E = self.dm * (self.c**2)
@@ -4288,7 +4037,6 @@ class Phy199:
         plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
         plt.close()
-
 
 class Phy200:
     def __init__(self):
