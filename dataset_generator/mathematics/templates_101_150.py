@@ -212,7 +212,7 @@ class Mat103:
         
     def generate(self, num):
         # 2. Setup the Plot (The Net)
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(8, 7))
         
         # Hide axes
         ax.set_axis_off()
@@ -220,30 +220,36 @@ class Mat103:
         ax.set_ylim(-1, 11)
 
         # Draw "The Net" (A circular patch)
-        net_circle = patches.Circle((5, 5), 4.5, linewidth=2, edgecolor='#555', facecolor='#e0f7fa', alpha=0.5)
+        net_circle = patches.Circle((5, 5.5), 4.8, linewidth=2, edgecolor='#555', facecolor='#e0f7fa', alpha=0.5)
         ax.add_patch(net_circle)
-        ax.text(5, 9.8, "The Second Catch (The Net)", ha='center', fontsize=12, fontweight='bold', color='#333')
+        ax.text(5, 10.5, "The Second Catch (The Net)", ha='center', fontsize=14, fontweight='bold', color='#333')
 
-        # 3. Generate Fish Positions
-        # We use rejection sampling or simple random within radius to keep them inside the net
-        def get_random_points_in_circle(num_points, center_x, center_y, radius):
-            points = []
-            while len(points) < num_points:
-                x = rnd.uniform(center_x - radius, center_x + radius)
-                y = rnd.uniform(center_y - radius, center_y + radius)
-                if (x - center_x)**2 + (y - center_y)**2 > (radius - 0.5)**2: # Buffer of 0.5
-                    continue
-                add = True
-                for p in points:
-                    if (x - p[0])**2 + (y - p[1])**2 <= 0.5:
-                        add = False
-                        break
-                if add:
-                    points.append((x, y))
-            return np.array(points)
-
-        # Generate positions for all fish
-        all_positions = get_random_points_in_circle(self.n, 5, 5, 4.5)
+        # 3. Generate Fish Positions in a Grid
+        # We arrange the fish in a grid to make them easy to count and prevent overlapping.
+        # n is between 20 and 50.
+        cols = 10
+        spacing_x = 0.8
+        spacing_y = 1.0
+        
+        # Calculate rows needed
+        rows = math.ceil(self.n / cols)
+        
+        # Center the grid within the net circle
+        start_x = 5 - (cols - 1) * spacing_x / 2
+        start_y = 5.5 - (rows - 1) * spacing_y / 2
+        
+        grid_positions = []
+        for i in range(self.n):
+            r = i // cols
+            c = i % cols
+            grid_positions.append([start_x + c * spacing_x, start_y + r * spacing_y])
+        
+        all_positions = np.array(grid_positions)
+        
+        # Randomly shuffle so marked fish are dispersed
+        idx = np.arange(len(all_positions))
+        np.random.shuffle(idx)
+        all_positions = all_positions[idx]
         
         # Split positions into marked and unmarked
         marked_positions = all_positions[:self.m]
@@ -252,19 +258,28 @@ class Mat103:
         # 4. Draw the Fish
         # Plot Unmarked Fish (Blue)
         ax.scatter(unmarked_positions[:, 0], unmarked_positions[:, 1], 
-                s=200, c='#1f77b4', marker='o', edgecolors='black', label='Unmarked Fish', alpha=0.9)
-        # Add a simple 'tail' or detail to make it look less like a dot (optional simple visualization)
-        ax.scatter(unmarked_positions[:, 0]-0.15, unmarked_positions[:, 1], 
-                s=100, c='#1f77b4', marker='<', alpha=0.9) # Tail
+                s=250, c='#1f77b4', marker='o', edgecolors='black', label=f'Unmarked Fish ({len(unmarked_positions)})', alpha=0.9)
+        # Add a simple 'tail'
+        ax.scatter(unmarked_positions[:, 0]-0.2, unmarked_positions[:, 1], 
+                s=100, c='#1f77b4', marker='<', alpha=0.9)
 
-        # Plot Marked Fish (Red/Orange with a "Tag")
+        # Plot Marked Fish (Orange with a "Tag")
         ax.scatter(marked_positions[:, 0], marked_positions[:, 1], 
-                s=200, c='#ff7f0e', marker='o', edgecolors='red', linewidth=2, label='Marked Fish (Recaptured)', alpha=1.0)
-        ax.scatter(marked_positions[:, 0]-0.15, marked_positions[:, 1], 
-                s=100, c='#ff7f0e', marker='<', alpha=1.0) # Tail
+                s=250, c='#ff7f0e', marker='o', edgecolors='red', linewidth=2, label=f'Marked Fish ({self.m})', alpha=1.0)
+        ax.scatter(marked_positions[:, 0]-0.2, marked_positions[:, 1], 
+                s=100, c='#ff7f0e', marker='<', alpha=1.0)
         
+        # Add a small 'T' on marked fish for extra clarity
+        for pos in marked_positions:
+            ax.text(pos[0], pos[1], 'T', color='white', ha='center', va='center', fontweight='bold', fontsize=8)
+
         # 5. Legend and Layout
-        ax.legend(loc='lower center', ncol=2, frameon=True, bbox_to_anchor=(0.5, -0.1))
+        ax.legend(loc='lower center', ncol=2, frameon=True, bbox_to_anchor=(0.5, 0.0))
+        
+        # Add explicit count caption as recommended
+        ax.text(5, 0.5, f"Sample Note: {self.m} marked fish and {len(unmarked_positions)} unmarked fish found in the net.", 
+                ha='center', fontsize=11, fontweight='bold', color='#444')
+
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -646,7 +661,7 @@ class Mat109:
         self.answer = round(estimated_mean, 3)
 
         self.description = (
-            "Refer to the figure. Calculate the mean number of books read by the students. Give your answer correct to 3 decimal places."
+            "Refer to the figure, which shows the heights of saplings. Calculate the estimated mean height of the saplings. Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Statistics"
@@ -856,15 +871,15 @@ class Mat112:
         self.key_value = rnd.choice([4, 8, 12, 16])
         
         # Define possible partial fractions for the problem (Quarter, Half, Three-Quarters, Full)
-        fractions = [0.25, 0.5, 0.75, 1.0]
-        fraction_names = {0.25: "one quarter-symbol", 0.5: "half-symbol", 
-                        0.75: "three quarter-symbol", 1.0: "full symbol"}
+        # Using integers to avoid floating point issues: 1=0.25, 2=0.5, 3=0.75, 4=1.0
+        fraction_numerator = rnd.choice([1, 2, 3, 4])
+        fraction_tuesday = fraction_numerator / 4.0
         
-        # Randomize Tuesday's sales
-        full_symbols_tuesday = rnd.randint(1, 4)  # Between 1 and 4 full pizzas
-        fraction_tuesday = rnd.choice(fractions)
+        # Tuesday's full symptoms
+        full_symbols_tuesday = rnd.randint(1, 4)
         
-        total_pizzas_tuesday = (full_symbols_tuesday + fraction_tuesday) * self.key_value
+        # Exact calculation using integer arithmetic since key_value is multiple of 4
+        self.answer = (full_symbols_tuesday * self.key_value) + (fraction_numerator * self.key_value // 4)
         
         # Generate random data for other days to flesh out the chart
         self.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
@@ -875,9 +890,8 @@ class Mat112:
                 self.data[day] = full_symbols_tuesday + fraction_tuesday
             else:
                 # Random other days (integers or simple halves for visual variety)
-                self.data[day] = rnd.randint(1, 5) + rnd.choice([0, 0.5])
-
-        self.answer = int(total_pizzas_tuesday)
+                # Keep them consistent with 1/4 precision for visual clarity
+                self.data[day] = rnd.randint(1, 5) + rnd.choice([0, 0.25, 0.5, 0.75])
 
         self.description = (
             f"The pictogram shows pizzas sold on four evenings. "
@@ -893,9 +907,9 @@ class Mat112:
             "\\[\\begin{aligned}"
             f"\\text{{Value of 1 symbol}} &= {self.key_value}\\,\\text{{pizzas}}\\\\"
             f"\\text{{Symbols on Tuesday}} &= {full_symbols_tuesday} + {fraction_tuesday}\\\\"
-            f"&= {round(full_symbols_tuesday + fraction_tuesday, 10)}\\\\"
-            f"\\text{{Total pizzas}} &= \\text{{Symbols on Tuesday}} \\times \\text{{Value of 1 symbol}}\\\\"
-            f"&= {round(full_symbols_tuesday + fraction_tuesday, 10)} \\times {self.key_value}\\\\"
+            f"&= {full_symbols_tuesday + fraction_tuesday}\\\\"
+            f"\\text{{Total pizzas}} &= ({full_symbols_tuesday} \\times {self.key_value}) + ({fraction_tuesday} \\times {self.key_value})\\\\"
+            f"&= {full_symbols_tuesday * self.key_value} + {int(fraction_tuesday * self.key_value)}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -910,7 +924,7 @@ class Mat112:
         ax.set_yticks(y_positions)
         ax.set_yticklabels(self.days[::-1], fontsize=12, fontweight='bold')
         ax.set_xlim(0, max(self.data.values()) + 1)
-        ax.set_ylim(-0.5, len(self.days) - 0.5)
+        ax.set_ylim(-1.8, len(self.days) - 0.5)
         
         # Hide X axis
         ax.get_xaxis().set_visible(False)
@@ -952,10 +966,12 @@ class Mat112:
         # Add Key at the bottom
         key_text = f"KEY:   = {self.key_value} Pizzas"
         # Draw a small example pizza for the key
-        key_circle = Circle((0, -1.2), 0.35, facecolor='gold', edgecolor='orange', linewidth=2, clip_on=False)
+        # Use clip_on=False and set a lower ylim for a better view
+        key_circle = Circle((0.5, -1.2), 0.35, facecolor='gold', edgecolor='orange', linewidth=2, clip_on=False)
         ax.add_patch(key_circle)
-        # Since we can't easily place patches outside axes in relative coords, we use text annotation for the label
-        ax.text(0.5, -1.3, f"= {self.key_value} Pizzas", fontsize=12, ha='left', va='center', transform=ax.transData)
+        
+        # Place text relative to the key circle
+        ax.text(1.0, -1.2, f"= {self.key_value} Pizzas", fontsize=12, ha='left', va='center', fontweight='bold')
         
         plt.tight_layout()
 
@@ -969,7 +985,7 @@ class Mat113:
         # Randomize the Target Point P
         # Age between 2 and 8 years, Value between 5k and 20k
         self.target_age = rnd.randint(2, 8)
-        self.target_value = 5 * rnd.randint(1, 4)
+        self.target_value = round(rnd.uniform(2, 25), 1)
         
         # Generate Random Data Points (Background Noise)
         # Create 9 other points with a general downward trend (older = cheaper)
@@ -1165,8 +1181,8 @@ class Mat115:
         self.student_a_y_predicted = self.slope * self.student_a_x + self.intercept
         
         # Randomize the ACTUAL score (off the line)
-        # Ensure the residual is noticeable (at least +/- 8 points away)
-        residual_offset = rnd.choice([-1, 1]) * rnd.randint(8, 15)
+        # Ensure the residual is noticeable (at least +/- 5 points away)
+        residual_offset = rnd.choice([-1, 1]) * round(rnd.uniform(5, 20), 1)
         self.student_a_y_actual = round(self.student_a_y_predicted + residual_offset, 1)
 
         self.answer = round(abs(self.student_a_y_actual - self.student_a_y_predicted), 3)
@@ -1340,20 +1356,20 @@ class Mat116:
 class Mat117:
     
     def __init__(self):
-        self.total_frequency = 80
+        self.total_frequency = rnd.choice([60, 80, 100, 120, 160, 200, 240])
         
         # Calculate Y-axis positions for quartiles
-        self.y_q1 = 0.25 * self.total_frequency  # Lower Quartile position (25% of 80 = 20)
+        self.y_q1 = 0.25 * self.total_frequency  # Lower Quartile position
         self.y_median = 0.50 * self.total_frequency # Median position
-        self.y_q3 = 0.75 * self.total_frequency  # Upper Quartile position (75% of 80 = 60)
+        self.y_q3 = 0.75 * self.total_frequency  # Upper Quartile position
 
         # Randomize X-axis values (Heights in cm)
         # We ensure they are strictly increasing: Min < Q1 < Median < Q3 < Max
-        self.h_min = rnd.randint(5, 15)
-        self.h_q1 = rnd.randint(self.h_min + 5, self.h_min + 15)      # Q1 Height
-        self.h_median = rnd.randint(self.h_q1 + 5, self.h_q1 + 15)    # Median Height
-        self.h_q3 = rnd.randint(self.h_median + 10, self.h_median + 20) # Q3 Height
-        self.h_max = rnd.randint(self.h_q3 + 5, self.h_q3 + 15)
+        self.h_min = round(rnd.uniform(2, 10), 1)
+        self.h_q1 = round(self.h_min + rnd.uniform(5, 12), 1)        # Q1 Height
+        self.h_median = round(self.h_q1 + rnd.uniform(5, 12), 1)     # Median Height
+        self.h_q3 = round(self.h_median + rnd.uniform(10, 20), 1)    # Q3 Height
+        self.h_max = round(self.h_q3 + rnd.uniform(5, 15), 1)
 
         # Calculate the Answer (IQR)
         iqr = self.h_q3 - self.h_q1
@@ -1407,12 +1423,12 @@ class Mat117:
         # Add guidelines for Q1
         plt.hlines(y=self.y_q1, xmin=0, xmax=self.h_q1, colors='green', linestyles='dashed')
         plt.vlines(x=self.h_q1, ymin=0, ymax=self.y_q1, colors='green', linestyles='dashed')
-        plt.text(0, self.y_q1 + 1, f'20 (25%)', color='green', va='bottom', fontsize=9)
+        plt.text(0, self.y_q1 + (self.total_frequency * 0.02), f'{int(self.y_q1)} (25%)', color='green', va='bottom', fontsize=9)
 
         # Add guidelines for Q3
         plt.hlines(y=self.y_q3, xmin=0, xmax=self.h_q3, colors='red', linestyles='dashed')
         plt.vlines(x=self.h_q3, ymin=0, ymax=self.y_q3, colors='red', linestyles='dashed')
-        plt.text(0, self.y_q3 + 1, f'60 (75%)', color='red', va='bottom', fontsize=9)
+        plt.text(0, self.y_q3 + (self.total_frequency * 0.02), f'{int(self.y_q3)} (75%)', color='red', va='bottom', fontsize=9)
 
         # Formatting the Graph
         plt.title(f"Cumulative Frequency of Plant Heights (N={self.total_frequency})")
@@ -1578,23 +1594,23 @@ class Mat120:
         
         # Generate Group A
         self.width_a = rnd.choice(possible_widths)
-        self.height_a = rnd.randint(2, 8) # Randomize height (Freq Density) directly for integer results
-        self.freq_a = self.width_a * self.height_a
+        self.height_a = round(rnd.uniform(2, 8), 1) # Randomize height (Freq Density)
+        self.freq_a = round(self.width_a * self.height_a, 1)
         
         # Generate Group B (ensure it's different enough to be interesting)
         self.width_b = rnd.choice(possible_widths)
-        self.height_b = rnd.randint(2, 8)
+        self.height_b = round(rnd.uniform(2, 8), 1)
         
         # Ensure heights are not equal so there is always a difference
-        while self.height_b == self.height_a:
-            self.height_b = rnd.randint(2, 8)
+        while abs(self.height_b - self.height_a) < 0.2:
+            self.height_b = round(rnd.uniform(2, 8), 1)
         
-        self.freq_b = self.width_b * self.height_b
+        self.freq_b = round(self.width_b * self.height_b, 1)
 
         # Calculate the answer
         diff = abs(self.height_b - self.height_a)
 
-        self.answer = diff
+        self.answer = round(diff, 1)
 
         self.description = (
             f"If these groups are plotted on the same histogram, "
@@ -1779,10 +1795,12 @@ class Mat121:
 class Mat122:
     
     def __init__(self):
-        # Randomize variables (Ensure a != b for clarity)
-        self.a = rnd.randint(2, 4)
-        self.b = rnd.randint(6, 9)
-        if self.a == self.b: self.b += 2  # Force difference if they collide
+        # Randomize variables (Ensure |a - b| >= 2 for clarity in plot)
+        while True:
+            self.a = rnd.randint(2, 15)
+            self.b = rnd.randint(2, 15)
+            if abs(self.a - self.b) >= 2:
+                break
 
         # x = f(a) = b
         self.answer = self.b
@@ -2042,15 +2060,13 @@ class Mat125:
     
     def __init__(self):
         # We work backwards to ensure integer answers.
-        # Choose a scale factor 'k' for y = h(kx) (e.g., 2, 3, or 0.5)
-        k_options = [2, 3, 4] 
+        # Choose a scale factor 'k' for y = h(kx)
+        k_options = [2, 3, 4, 5, 6, 8, 10] 
         self.k = rnd.choice(k_options)
         
-        # Choose the 'new' intercept first (the answer), so the 'original' intercept is a multiple of k
-        answer_intercept = rnd.randint(1, 4)
-        self.original_intercept = answer_intercept * self.k
-
-        self.answer = answer_intercept
+        # Choose the 'new' intercept first (the answer)
+        self.answer = rnd.randint(2, 20)
+        self.original_intercept = self.answer * self.k
 
         self.description = (
             f"The blue solid line in the figure displays the graph of $y = h(x)$, "
@@ -2457,12 +2473,12 @@ class Mat128:
 class Mat129:
     
     def __init__(self):
-        # Random radius between 2 and 9
-        self.r = rnd.randint(2, 9)
+        # Random radius between 2 and 20
+        self.r = rnd.randint(2, 20)
         
         # Random y-coordinate for the center (y_c). 
-        # We ensure it's > r so the circle doesn't touch the x-axis (strictly touching y-axis only for this problem logic)
-        self.y_c = rnd.randint(self.r + 2, self.r + 8)
+        # We ensure it's > r so the circle doesn't touch the x-axis
+        self.y_c = rnd.randint(self.r + 2, self.r + 20)
         
         # Calculate values for the equation (x - k)^2 + (y - b)^2 = r^2
         r_squared = self.r**2
@@ -2648,12 +2664,11 @@ class Mat131:
         self.answer = round(square_area, 3)
 
         self.description = (
-            f"A sector of a circle is defined by a radius $r = {self.r_val}$ cm "
-            f"and a central angle $\\theta = {self.theta_val}$ radians. "
-            f"A separate square is constructed such that its total perimeter "
-            f"is exactly equal to the total perimeter of the sector. "
-            f"Determine the area of the square in cm$^2$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure shows a sector of a circle and a square. "
+            "The square is constructed such that its total perimeter "
+            "is exactly equal to the total perimeter of the sector. "
+            "Determine the area of the square in cm$^2$. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -2772,13 +2787,12 @@ class Mat132:
         self.answer = self.r_answer
 
         self.description = (
-            f"A rear window wiper for a car clears a region shaped like part of an annulus (a ring). "
-            f"This region is formed by two concentric arcs with the same central angle: "
-            f"$\\theta = {self.theta_rad}$ radians. "
-            f"The inner radius of the cleaned region is $r$ cm. "
-            f"The outer radius is $(r + {self.width})$ cm. "
-            f"If the total area of the cleaned region (the shaded area) is exactly {self.area_display} cm$^2$, "
-            f"calculate the value of the inner radius $r$."
+            "A rear window wiper for a car clears a region shaped like part of an annulus (a ring), "
+            "as shown in the shaded area of the figure. "
+            "The region is formed by two concentric arcs with the same central angle $\\theta$. "
+            "The inner radius of the cleaned region is $r$ cm. "
+            "Using the information provided in the figure, "
+            "calculate the value of the inner radius $r$."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -2857,7 +2871,7 @@ class Mat132:
         angle_arc = patches.Arc((0,0), arc_radius*2, arc_radius*2, 
                                 theta1=start_angle, theta2=end_angle, color='green', linestyle='--')
         ax.add_patch(angle_arc)
-        ax.text(0, arc_radius + 2, f'θ = {self.theta_rad}', ha='center', color='green', fontsize=10)
+        ax.text(0, arc_radius + 2, f'θ = {self.theta_rad} rad', ha='center', color='green', fontsize=10)
 
         # Label Area
         mid_radius = self.r_answer + (self.width / 2)
@@ -2897,11 +2911,11 @@ class Mat133:
         self.answer = round(self.r, 3)
 
         self.description = (
-            f"A paper sector with a radius of $R = {self.R}$ cm and a central angle of $\\theta = {self.theta_factor}\\pi$ radians "
-            f"is cut out. The straight edges (radii) of the sector are joined together with no overlap "
-            f"to form the curved surface of a right circular cone. "
-            f"Calculate the base radius ($r$) of the resulting cone in cm. "
-            f"Give your answer correct to 3 decimal places."
+            "A paper sector is cut out as shown in the figure. "
+            "The straight edges (radii) of the sector are joined together with no overlap "
+            "to form the curved surface of a right circular cone. "
+            "Calculate the base radius ($r$) of the resulting cone in cm. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3060,12 +3074,12 @@ class Mat134:
         self.answer = round(area, 3)
 
         self.description = (
-            f"The figure displays the curve $y = \\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}}$ in the first quadrant. "
-            f"A normal line is drawn to the curve at the point $P$ where $x = {self.x_p}$. "
-            f"This normal line intersects the x-axis at point $A$ and the y-axis at point $B$, "
-            f"forming a triangle $AOB$ with the coordinate axes. "
-            f"Calculate the area of the triangle $AOB$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays a curve $y = f(x)$ in the first quadrant. "
+            "A normal line is drawn to the curve at the point $P$. "
+            "This normal line intersects the x-axis at point $A$ and the y-axis at point $B$, "
+            "forming a triangle $AOB$ with the coordinate axes. "
+            "Calculate the area of the triangle $AOB$. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3114,7 +3128,7 @@ class Mat134:
         
         # Plot Points
         ax.plot(self.x_p, self.y_p, 'ko') # Point P
-        ax.text(self.x_p, self.y_p + 0.5, '$P$', fontsize=12, fontweight='bold')
+        ax.text(self.x_p, self.y_p + 0.5, f'$P({self.x_p}, {self.y_p})$', fontsize=12, fontweight='bold')
         
         ax.plot(self.x_A, 0, 'ko')   # Point A
         ax.text(self.x_A, 0.5, '$A$', fontsize=12, fontweight='bold')
@@ -3154,15 +3168,13 @@ class Mat135:
         self.answer = round(answer_raw, 2)
 
         self.description = (
-            f"The figure illustrates a circular oil spill on the ocean surface. "
-            f"The spill is expanding such that its radius r is increasing "
-            f"at a constant rate. "
-            f"Given:\n"
-            f"• Instantaneous Radius ($r$): {self.radius_val} m\n"
-            f"• Rate of radius increase ($dr/dt$): {self.dr_dt_val} m/s\n\n"
-            f"Find the rate of increase of the area ($dA/dt$) in m$^2$/s "
-            f"at this instant. (Divide your final answer by $\\pi$). "
-            f"Give your answer correct to 2 decimal places."
+            "The figure illustrates a circular oil spill on the ocean surface. "
+            "The spill is expanding such that its radius $r$ is increasing "
+            "at a constant rate. "
+            "Using the measurements provided in the figure, "
+            "find the rate of increase of the area ($dA/dt$) in m$^2$/s "
+            "at this instant. (Divide your final answer by $\\pi$). "
+            "Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3234,9 +3246,8 @@ class Mat135:
 class Mat136:
     
     def __init__(self):
-        # Random side length (S) between 6 and 30.
-        # We allow floats but round for cleaner display, or stick to even integers.
-        self.side_length = rnd.choice(range(6, 32, 2)) 
+        # Random side length (S) between 5 and 120 to ensure more than 100 variations.
+        self.side_length = rnd.randint(5, 120)
         
         # The math for the solution:
         # V(x) = x(S - 2x)^2
@@ -3248,10 +3259,11 @@ class Mat136:
         self.answer = round(max_volume, 3)
 
         self.description = (
-            f"The figure above shows a net for an open-topped box made from a square sheet of metal of side **{self.side_length} cm** "
-            f"by cutting equal squares of side $x$ from the corners and folding up the flaps. "
-            f"Find the value of $x$ for which the volume $V$ is a maximum. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure shows a net for an open-topped box made from a square sheet of metal "
+            "by cutting equal squares of side $x$ from the corners and folding up the flaps. "
+            "Based on the dimensions provided in the figure, "
+            "find the value of $x$ for which the volume $V$ is a maximum. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3374,12 +3386,11 @@ class Mat137:
         self.answer = round(self.m_f * self.m_g, 3)
 
         self.description = (
-            f"The figure displays two linear functions. "
-            f"Line $f(x)$ passes through $({self.fx1}, {self.fy1})$ and $({self.fx2}, {self.fy2})$. "
-            f"Line $g(x)$ passes through $({self.gx1}, {self.gy1})$ and $({self.gx2}, {self.gy2})$. "
-            f"Let $h(x) = f(g(x))$. "
-            f"Calculate the value of $h'({self.x_target})$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays two linear functions, $f(x)$ and $g(x)$. "
+            "Let $h(x) = f(g(x))$. "
+            "Using the coordinates and the indicated point in the figure, "
+            "calculate the value of $h'(x)$ at the marked $x$-value. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3431,6 +3442,10 @@ class Mat137:
         plt.text(self.gx1, self.gy1, f' ({self.gx1},{self.gy1})', fontsize=9, verticalalignment='bottom')
         plt.text(self.gx2, self.gy2, f' ({self.gx2},{self.gy2})', fontsize=9, verticalalignment='bottom')
 
+        # Indicate x_target
+        plt.axvline(self.x_target, color='red', linestyle=':', alpha=0.5)
+        plt.text(self.x_target, plt.ylim()[0] + 0.1, f'x={self.x_target}', color='red', ha='center', fontsize=9)
+
         # Formatting
         plt.xlabel("x")
         plt.ylabel("y")
@@ -3450,8 +3465,8 @@ class Mat138:
         # We use the form f(x) = ax(b - x) to ensure roots at 0 and b
         # This expands to f(x) = (ab)x - ax^2
         
-        self.scale_a = rnd.randint(1, 3)      # Vertical scaling factor
-        self.root_b = rnd.randint(3, 8)       # The second root (upper bound of integration)
+        self.scale_a = rnd.randint(1, 10)      # Vertical scaling factor (increased range for variations)
+        self.root_b = rnd.randint(5, 20)       # The second root (increased range for variations)
         
         # Coefficients for standard form: cx - dx^2
         self.coeff_linear = self.scale_a * self.root_b
@@ -3471,11 +3486,11 @@ class Mat138:
             self.eq_str = f"{self.coeff_linear}x - {self.coeff_quad}x^2"
 
         self.description = (
-            f"The figure displays a shaded region in the first quadrant bounded above by the "
-            f"parabolic function $f(x) = {self.eq_str}$ and below by the x-axis. "
-            f"The region extends from $x = 0$ to $x = {self.root_b}$. "
-            f"Calculate the total area of the shaded region shown in the figure. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays a shaded region in the first quadrant bounded above by a "
+            "parabolic function $f(x)$ and below by the x-axis. "
+            "Using the information and the function given in the figure, "
+            "calculate the total area of the shaded region. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3523,6 +3538,7 @@ class Mat138:
         peak_y = func(self.root_b / 2)
         ax.set_ylim(-peak_y * 0.2, peak_y * 1.2)
         ax.set_xlim(-1, self.root_b + 1)
+        ax.set_xticks([0, self.root_b]) # Label the root on the axis
         
         plt.tight_layout()
 
@@ -3556,9 +3572,9 @@ class Mat139:
         self.answer = int(round(total_displacement, 0))
 
         self.description = (
-            f"The figure shows the graph of a velocity function $v(t)$ (in m/s) over the interval $t = [0, {self.t2}]$. "
-            f"The graph formed a line of $(0,0) \\rightarrow ({self.t1},{self.v_max}) \\rightarrow ({self.t2},{self.v_max})$. "
-            f"Calculate the total displacement of the object from $t=0$ to $t={self.t2}$."
+            "The figure shows the graph of a velocity function $v(t)$ (in m/s) over an interval of time. "
+            "Using the coordinates provided in the velocity-time graph, "
+            "calculate the total displacement of the object over the entire duration shown."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3630,8 +3646,8 @@ class Mat140:
     
     def __init__(self):
         # We will vary the coefficient 'a' in y = a*sqrt(x) and the upper limit 'b' in x = b
-        self.a = rnd.randint(1, 3)  # Random coefficient between 1 and 3
-        self.b = rnd.randint(2, 6)  # Random upper limit x between 2 and 6
+        self.a = rnd.randint(1, 10)  # Random coefficient between 1 and 10 (increased for variations)
+        self.b = rnd.randint(4, 20)  # Random upper limit x between 4 and 20 (increased for variations)
         
         # Function string for display
         self.func_str = f"{self.a}\\sqrt{{x}}" if self.a > 1 else "\\sqrt{x}"
@@ -3647,11 +3663,11 @@ class Mat140:
         self.answer = round(decimal_answer, 3)
 
         self.description = (
-            f"The figure illustrates a solid 3D shape formed by rotating a specific 2D region around the x-axis. "
-            f"The 2D region is defined by the function $y = {self.func_str}$, the vertical line $x = {self.b}$, and the x-axis. "
-            f"Calculate the volume of the solid generated by the rotation shown in the figure. "
-            f"Give your answer as a decimal rounded to three places. "
-            f"(Use $\\pi \\approx 3.14159$)."
+            "The figure illustrates a solid 3D shape formed by rotating a specific 2D region around the x-axis. "
+            "Based on the function, vertical line, and rotation indicated in the figure, "
+            "calculate the volume of the resulting solid. "
+            "Give your answer as a decimal rounded to three places. "
+            "(Use $\\pi \\approx 3.14159$)."
         )
 
         self.topic = "Pure Mathematics 1"
@@ -3759,7 +3775,7 @@ class Mat140:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
-        
+
 class Mat141:
     def __init__(self):
         # Relationship: y = k * a^x

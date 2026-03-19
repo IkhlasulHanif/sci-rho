@@ -509,6 +509,9 @@ class Mat055:
             (7, 24, 25),
             (8, 15, 17),
             (9, 40, 41),
+            (10, 24, 26),
+            (12, 35, 37),
+            (15, 36, 39),
         ]
         
         # Pick a random triple
@@ -516,7 +519,7 @@ class Mat055:
         
         # Randomize base (b)
         # Ensure base is larger than the offset to maintain standard shape
-        self.b = rnd.randint(self.x_offset + 6, self.x_offset + 16)
+        self.b = rnd.randint(self.x_offset + 3, self.x_offset + 21)
 
         self.answer = self.b * self.h
 
@@ -1043,58 +1046,162 @@ class Mat059:
         plt.close()
 
 class Mat060:
-    
+
     def __init__(self):
-        # We choose multiples of 7 for the diameter to make the math (22/7) cleaner for students
-        self.diameter = 7 * rnd.randint(1, 6)
-        self.radius = self.diameter / 2
+        # Choose angle (avoid 0 and 360)
+        self.angle = rnd.choice([30, 45, 60, 90, 120, 135, 150, 180,
+                                 210, 225, 240, 270, 300, 315, 330])
+        
+        # Decide whether to give diameter or radius
+        self.use_diameter = rnd.choice([True, False])
+        if self.use_diameter:
+            self.diameter = rnd.randint(6, 30)          # integer diameter
+            self.radius = self.diameter / 2
+        else:
+            self.radius = rnd.randint(3, 15)            # integer radius
+            self.diameter = 2 * self.radius
+        
+        # Units
+        self.unit = rnd.choice(['cm', 'm'])
+        
+        # π mode
+        self.pi_mode = rnd.choice(['symbol', '22/7', '3.14'])
+        
+        # Compute answer
+        # arc length = (θ/360) * 2πr   or   (θ/360) * πd
+        # coefficient = (θ/360) * 2r   if using radius
+        #            = (θ/360) * d     if using diameter
+        if self.use_diameter:
+            coeff = (self.angle / 360) * self.diameter
+        else:
+            coeff = (self.angle / 180) * self.radius   # because 2r * (θ/360) = r * (θ/180)
+        
+        if self.pi_mode == 'symbol':
+            self.answer_coeff = round(coeff, 2)
+            self.answer_display = f"{self.answer_coeff}\\pi"
+            self.answer_value = self.answer_coeff   # for reasoning
+        elif self.pi_mode == '22/7':
+            pi_val = 22/7
+            numeric = coeff * pi_val
+            self.answer_value = round(numeric, 2)
+            self.answer_display = f"{self.answer_value}"
+        else:  # '3.14'
+            pi_val = 3.14
+            numeric = coeff * pi_val
+            self.answer_value = round(numeric, 2)
+            self.answer_display = f"{self.answer_value}"
+        
+        # Description for the question
+        if self.use_diameter:
+            dim_text = f"diameter = {self.diameter}{self.unit}"
+        else:
+            dim_text = f"radius = {self.radius}{self.unit}"
+        
+        pi_instruction = {
+            'symbol': "Give your answer in terms of π.",
+            '22/7': "Use π = 22/7.",
+            '3.14': "Use π = 3.14."
+        }[self.pi_mode]
 
-        self.answer = self.diameter * 22 // 7 // 2 # Half arc in terms of m
-
+        self.answer = self.answer_value
+        
         self.description = (
-            f"Calculate the length of the curved arc. Use $\\pi = \\frac{{22}}{{7}}$."
+            f"Calculate the length of the arc of the shaded sector. "
+            f"{pi_instruction} Give your answer correct to 2 decimal places."
         )
-
+        
         self.topic = "Mensuration"
         self.subtopic = "Circles, arcs and sectors"
-        self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
+        self.source = "Adapted from Cambridge IGCSE Mathematics 0580 past papers"
         self.curriculum = "IGCSE"
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Diameter }} (d) &= {self.diameter}\\,\\text{{m}} \\\\"
-            f"\\text{{Circumference }} (C) &= \\pi d \\\\"
-            f"&= \\frac{{22}}{{7}} \\times {self.diameter} \\\\"
-            f"&= {self.diameter * 22 // 7}\\,\\text{{m}} \\\\"
-            f"\\text{{Length of curved arc (semicircle)}} &= \\frac{{1}}{{2}} \\times C \\\\"
-            f"&= \\frac{{1}}{{2}} \\times {self.diameter * 22 // 7} \\\\"
-            f"&= {self.answer}\\,\\text{{m}}"
-            "\\end{aligned}\\]"
-        )
         
+        # Reasoning (LaTeX)
+        # given data
+        if self.use_diameter:
+            step1 = f"\\text{{Diameter }} (d) = {self.diameter}\\,\\text{{{self.unit}}}"
+            step1b = f"\\text{{Radius }} (r) = \\frac{{d}}{{2}} = \\frac{{{self.diameter}}}{{2}} = {self.radius}\\,\\text{{{self.unit}}}"
+        else:
+            step1 = f"\\text{{Radius }} (r) = {self.radius}\\,\\text{{{self.unit}}}"
+            step1b = ""
+        
+        step_angle = f"\\text{{Angle of sector }} (\\theta) = {self.angle}^\\circ"
+        
+        # Formula line and substitution (depends on whether diameter or radius is given and pi_mode)
+        pi_val_str = "\\pi" if self.pi_mode == 'symbol' else ("\\frac{22}{7}" if self.pi_mode == '22/7' else "3.14")
+        
+        if self.use_diameter:
+            formula_line = f"\\text{{Arc length}} = \\frac{{\\theta}}{{360}} \\times \\pi d"
+            arc_sub = f"\\frac{{{self.angle}}}{{360}} \\times {pi_val_str} \\times {self.diameter}"
+        else:
+            formula_line = f"\\text{{Arc length}} = \\frac{{\\theta}}{{360}} \\times 2\\pi r"
+            arc_sub = f"\\frac{{{self.angle}}}{{360}} \\times 2 \\times {pi_val_str} \\times {self.radius}"
+        
+        # Final calculation line
+        if self.pi_mode == 'symbol':
+            calc_line = f"{self.answer_coeff}\\pi \\,\\text{{{self.unit}}}"
+        else:
+            calc_line = f"{self.answer}\\,\\text{{{self.unit}}}"
+        
+        # Assemble reasoning
+        lines = [
+            step1,
+            step1b,
+            step_angle,
+            formula_line + " \\\\",
+            f"&= {arc_sub} \\\\",
+            f"&= {calc_line}"
+        ]
+        # Remove empty strings
+        lines = [ln for ln in lines if ln != ""]
+        self.reasoning = "\\[\\begin{aligned}\n" + " \\\\\n".join(lines) + "\n\\end{aligned}\\]"
+    
     def generate(self, num):
-        # Setup Plot
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(6, 6))
         ax.set_aspect('equal')
-        ax.axis('off')  # Hide axes for a clean geometry diagram look
-
-        # Draw the Semi-Circle (The "Track")
-        # Generate angles from 0 to 180 degrees (0 to pi radians)
-        theta = np.linspace(0, np.pi, 100)
-        x_arc = self.radius * np.cos(theta)
-        y_arc = self.radius * np.sin(theta)
+        ax.axis('off')
         
-        # Plot the curved arc
-        ax.plot(x_arc, y_arc, color='black', linewidth=2.5, label='Track')
-
-        # Draw the Dashed Diameter Line
-        ax.plot([-self.radius, self.radius], [0, 0], color='black', linestyle='--', linewidth=1.5)
-
-        # Add Labels
-        # Label the diameter
-        ax.text(0, -0.15 * self.radius, f"{self.diameter} m", ha='center', va='top', fontsize=14, fontweight='bold')
-
-        plt.tight_layout(rect=[0, 0.1, 1, 1]) # Adjust layout to make room for text
-
+        center = (0, 0)
+        # Place the sector so that its bisector lies along the positive x‑axis
+        start_angle = -self.angle / 2
+        end_angle = self.angle / 2
+        
+        # Draw the sector (shaded lightly)
+        sector = patches.Wedge(center, self.radius, start_angle, end_angle,
+                               facecolor='lightblue', edgecolor='black',
+                               linewidth=2, alpha=0.6)
+        ax.add_patch(sector)
+        
+        # Small red arc for the angle
+        arc_radius = self.radius * 0.2
+        angle_arc = patches.Arc(center, 2*arc_radius, 2*arc_radius,
+                                theta1=start_angle, theta2=end_angle,
+                                color='red', linewidth=1.5)
+        ax.add_patch(angle_arc)
+        # Angle label
+        mid_angle = np.radians((start_angle + end_angle) / 2)
+        label_x = arc_radius * 1.3 * np.cos(mid_angle) + 0.25
+        label_y = arc_radius * 1.3 * np.sin(mid_angle) + 0.25
+        ax.text(label_x, label_y, f"{self.angle}°", color='red',
+                ha='center', va='center', fontsize=10)
+        
+        # Indicate radius or diameter
+        if self.use_diameter:
+            # Draw a horizontal diameter line (dashed)
+            ax.plot([-self.radius, self.radius], [0, 0], 'k--', linewidth=1, alpha=0.7)
+            ax.text(0, -0.2*self.radius, f"d = {self.diameter}{self.unit}",
+                    ha='center', va='top', fontsize=12, fontweight='bold')
+        else:
+            # Draw a radius line along the bisector (positive x‑axis)
+            ax.plot([0, self.radius], [0, 0], 'k-', linewidth=1.5)
+            ax.text(self.radius/2, -0.2*self.radius, f"r = {self.radius}{self.unit}",
+                    ha='center', va='top', fontsize=12, fontweight='bold')
+        
+        # Set limits with a little padding
+        limit = self.radius * 1.2
+        ax.set_xlim(-limit, limit)
+        ax.set_ylim(-limit, limit)
+        
+        plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
@@ -1102,8 +1209,8 @@ class Mat060:
 class Mat061:
     
     def __init__(self):
-        self.width = rnd.randint(4, 12) # In cm
-        self.height = rnd.randint(4, 10) # In cm
+        self.width = rnd.randint(4, 20) # In cm
+        self.height = rnd.randint(4, 20) # In cm
         
         self.radius = self.width / 2 # In cm
 
@@ -1188,8 +1295,8 @@ class Mat061:
 class Mat062:
     
     def __init__(self):
-        # Random Outer Radius (R) between 6 and 15
-        self.R = rnd.randint(6, 15)
+        # Random Outer Radius (R) between 6 and 25
+        self.R = rnd.randint(6, 25)
         # Random Inner Radius (r) between 2 and R-3 (ensures distinct gap)
         self.r = rnd.randint(2, self.R - 3)
 
@@ -1408,12 +1515,12 @@ class Mat063:
 class Mat064:
     
     def __init__(self):
-        # Radius between 2 and 6 (so Diameter is 4 to 12)
-        self.radius = rnd.randint(2, 6)
-        self.diameter = self.radius * 2
+        # Radius: 1 d.p. float in [2.0, 12.0] → ~101 distinct values
+        self.radius = round(rnd.uniform(2.0, 12.0), 1)
+        self.diameter = round(self.radius * 2, 1)
         
-        # Cylinder height usually larger than radius for a silo look
-        self.cyl_height = rnd.randint(self.radius + 2, self.radius + 10)
+        # Cylinder height: 1 d.p. float in [radius+2, radius+15] → many distinct values
+        self.cyl_height = round(rnd.uniform(self.radius + 2.0, self.radius + 15.0), 1)
 
         vol_cyl = self.radius**2 * self.cyl_height
         vol_hemi = (2 / 3) * self.radius**3
@@ -1430,8 +1537,8 @@ class Mat064:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Radius }} (r) &= {self.radius}\\\\"
-            f"\\text{{Height }} (h) &= {self.cyl_height}\\\\"
+            f"\\text{{Radius }} (r) &= {self.radius}\\,\\text{{m}}\\\\"
+            f"\\text{{Height }} (h) &= {self.cyl_height}\\,\\text{{m}}\\\\"
             f"\\text{{Volume of Cylinder}} &= \\pi r^2 h\\\\"
             f"&= \\pi ({self.radius})^2 ({self.cyl_height})\\\\"
             f"&= {round(self.radius**2 * self.cyl_height, 10)}\\pi\\\\"
@@ -1618,10 +1725,12 @@ class Mat065:
 class Mat066:
     
     def __init__(self):
-        self.radius = rnd.randint(3, 8)       # Random radius between 3 cm and 8 cm
-        self.height = rnd.randint(5, 12)      # Random height between 5 cm and 12 cm
+        # Radius: 1 d.p. float in [2.0, 15.0] → ~131 distinct values
+        self.radius = round(rnd.uniform(2.0, 15.0), 1)
+        # Height: 1 d.p. float in [3.0, 20.0] → ~171 distinct values
+        self.height = round(rnd.uniform(3.0, 20.0), 1)
 
-        slant_height = np.sqrt(self.radius**2 + self.height**2)
+        slant_height = round(np.sqrt(self.radius**2 + self.height**2), 4)
         pi_val = 3.142
         curved_area = pi_val * self.radius * slant_height
         base_area = pi_val * self.radius**2
@@ -1639,7 +1748,7 @@ class Mat066:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}}, \\text{{ Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
+            f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}},\\quad \\text{{Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
             f"\\text{{Slant Height }} (l) &= \\sqrt{{r^2 + h^2}}\\\\"
             f"&= \\sqrt{{{self.radius}^2 + {self.height}^2}}\\\\"
             f"&= \\sqrt{{{self.radius**2} + {self.height**2}}}\\\\"
@@ -1736,20 +1845,22 @@ class Mat066:
 class Mat067:
     
     def __init__(self):
-        # Radius between 3 and 10
-        self.radius = rnd.randint(3, 10)
+        # Radius with one decimal place between 3.0 and 20.0
+        self.radius = round(rnd.uniform(3.0, 20.0), 1)
         
-        # Constants
+        # Use pi = 3.14 as given
         pi_approx = 3.14
         
-        # Calculate Total Surface Area (TSA)
-        # TSA = Curved Surface Area (2*pi*r^2) + Base Area (pi*r^2) = 3*pi*r^2
-        tsa = 3 * pi_approx * (self.radius ** 2)
+        # Calculate curved surface area and base area separately for reasoning
+        curved_area = 2 * pi_approx * (self.radius ** 2)
+        base_area = pi_approx * (self.radius ** 2)
+        total_area = curved_area + base_area
 
-        self.answer = round(tsa, 2)
+        self.answer = round(total_area, 2)
 
         self.description = (
-            f"Calculate the total surface area of the solid hemisphere. Use $\\pi = 3.14$. Give your answer correct to 2 decimal places."
+            f"Calculate the total surface area of the solid hemisphere. "
+            f"Use $\\pi = 3.14$. Give your answer correct to 2 decimal places."
         )
 
         self.topic = "Mensuration"
@@ -1759,10 +1870,16 @@ class Mat067:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given radius (r)}} &= {self.radius} \\\\"
-            f"\\text{{Total Surface Area of a solid hemisphere}} &= 3\\pi r^2 \\\\"
-            f"&= 3 \\times 3.14 \\times ({self.radius})^2 \\\\"
-            f"&= 3 \\times 3.14 \\times {self.radius**2} \\\\"
-            f"&= {round(3 * 3.14 * self.radius**2, 10)} \\\\"
+            f"\\text{{Curved surface area of hemisphere}} &= 2\\pi r^2 \\\\"
+            f"&= 2 \\times 3.14 \\times ({self.radius})^2 \\\\"
+            f"&= 2 \\times 3.14 \\times {round(self.radius**2, 10)} \\\\"
+            f"&= {round(curved_area, 10)} \\\\"
+            f"\\text{{Base area (circle)}} &= \\pi r^2 \\\\"
+            f"&= 3.14 \\times ({self.radius})^2 \\\\"
+            f"&= 3.14 \\times {round(self.radius**2, 10)} \\\\"
+            f"&= {round(base_area, 10)} \\\\"
+            f"\\text{{Total surface area}} &= \\text{{Curved area}} + \\text{{Base area}} \\\\"
+            f"&= {round(curved_area, 10)} + {round(base_area, 10)} \\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -1773,7 +1890,6 @@ class Mat067:
         ax = fig.add_subplot(111, projection='3d')
         
         # -- A. Create the hemisphere (Curved Surface) --
-        # Phi goes from 0 (top) to pi/2 (equator)
         phi = np.linspace(0, np.pi/2, 30) 
         theta = np.linspace(0, 2 * np.pi, 60)
         phi_grid, theta_grid = np.meshgrid(phi, theta)
@@ -1782,25 +1898,22 @@ class Mat067:
         y_dome = self.radius * np.sin(phi_grid) * np.sin(theta_grid)
         z_dome = self.radius * np.cos(phi_grid)
         
-        # Plot the curved surface
         ax.plot_surface(x_dome, y_dome, z_dome, color='skyblue', alpha=0.5, 
                         rstride=1, cstride=1, edgecolor='none', shade=True)
         
         # -- B. Create the base (Flat Circular Disk) --
-        # r goes from 0 to radius
         r_base = np.linspace(0, self.radius, 20)
         theta_base = np.linspace(0, 2*np.pi, 60)
         r_grid, theta_grid_base = np.meshgrid(r_base, theta_base)
         
         x_base = r_grid * np.cos(theta_grid_base)
         y_base = r_grid * np.sin(theta_grid_base)
-        z_base = np.zeros_like(x_base) # Base is at z=0
+        z_base = np.zeros_like(x_base)
         
-        # Plot the flat base
         ax.plot_surface(x_base, y_base, z_base, color='royalblue', alpha=0.5, edgecolor='none')
         
         # -- C. Visual Enhancements --
-        # Draw a dark circle at the boundary to distinguish the "solid" edge
+        # Draw a dark circle at the boundary
         theta_edge = np.linspace(0, 2*np.pi, 100)
         x_edge = self.radius * np.cos(theta_edge)
         y_edge = self.radius * np.sin(theta_edge)
@@ -1808,7 +1921,6 @@ class Mat067:
         ax.plot(x_edge, y_edge, z_edge, color='darkblue', linewidth=2)
 
         # Draw the radius line
-        # From center (0,0,0) to a point on the edge (radius, 0, 0)
         ax.plot([0, self.radius], [0, 0], [0, 0], 'r-', linewidth=3)
         ax.text(self.radius/2, 0, self.radius*0.1, f'r = {self.radius}', color='red', 
                 fontsize=14, fontweight='bold', ha='center')
@@ -1816,7 +1928,7 @@ class Mat067:
         # Mark the center
         ax.scatter([0], [0], [0], color='black', s=50)
 
-        # Set aspect ratio to be accurate
+        # Set aspect ratio
         ax.set_box_aspect([1,1,0.5]) 
         ax.set_axis_off()
         
@@ -1967,10 +2079,12 @@ class Mat068:
 class Mat069:
     
     def __init__(self):
-        # Length between 6 and 18, Width between 4 and 12 (even numbers preferred for easy radius)
-        self.length = rnd.randint(6, 18) # In cm
-        self.width = rnd.randrange(4, 12, 2) # In cm
-        self.radius = self.width / 2 # In cm
+        # Length: integer from 5 to 30 (26 values)
+        # Width: float with 0.5-step increments from 4.0 to 20.0 (33 values)
+        # Total combinations: 26 × 33 = 858  (>100)
+        self.length = rnd.randint(5, 30)  # In cm
+        self.width = round(float(rnd.randrange(8, 41)) * 0.5, 1)  # 4.0 to 20.0 in 0.5 steps, In cm
+        self.radius = self.width / 2  # In cm
 
         PI = 3.1416
 
@@ -2073,10 +2187,12 @@ class Mat069:
 class Mat070:
     
     def __init__(self):
-        # Length between 6 and 18, Width between 4 and 12 (even numbers preferred for easy radius)
-        self.length = rnd.randint(6, 18) # In cm
-        self.width = rnd.randrange(4, 12, 2) # In cm
-        self.radius = self.width / 2 # In cm
+        # Length: integer from 5 to 30 (26 values)
+        # Width: float with 0.5-step increments from 4.0 to 20.0 (33 values)
+        # Total combinations: 26 × 33 = 858  (>100)
+        self.length = rnd.randint(5, 30)  # In cm
+        self.width = round(float(rnd.randrange(8, 41)) * 0.5, 1)  # 4.0 to 20.0 in 0.5 steps, In cm
+        self.radius = self.width / 2  # In cm
 
         PI = 3.1416
 
@@ -2184,9 +2300,10 @@ class Mat070:
 class Mat071:
     
     def __init__(self):
-        # Randomize the variable (Side length between 6 and 30, even numbers preferred for cleaner radius)
-        self.side = rnd.randrange(6, 31, 2) # In cm
-        self.radius = self.side / 2.0 # In cm
+        # Side: float with 0.1-step increments from 6.0 to 30.0 (241 values, ≥100 ✓)
+        # randrange(60, 301) gives integers 60–300, divide by 10 for 0.1 spacing
+        self.side = round(float(rnd.randrange(60, 301)) * 0.1, 1)  # In cm (6.0 to 30.0 in 0.1 steps)
+        self.radius = self.side / 2.0  # In cm
         
         # Calculate the answer
         area_square = self.side ** 2
@@ -3171,7 +3288,7 @@ class Mat080:
         self.description = (
             f"The diagram shows the graph of a trigonometric function of the form "
             f"$y = a {self.func_name}(bx + c) + d$. "
-            f"Find the values of $a$, $b$, $c$, and $d$."
+            f"Find the values of $a$, $b$, $c$, and $d$. (Provide your answer in the format: a, b, c, d. Example: 1, 2, 3, 4)"
         )
         
         self.topic = "Trigonometry"
@@ -4262,11 +4379,11 @@ class Mat089:
     
     def __init__(self):
         # Randomize base and height for Triangle A (small)
-        self.base_a = rnd.randint(2, 5)
-        self.height_a = rnd.randint(2, 5)
+        self.base_a = rnd.randint(2, 7)    # 6 values
+        self.height_a = rnd.randint(2, 7)   # 6 values
         
         # Randomize scale factor (integer for simplicity)
-        self.scale_factor = rnd.randint(2, 5)
+        self.scale_factor = rnd.randint(2, 4)  # 3 values → 6×6×3 = 108 combinations
         
         # Calculate dimensions for Triangle B (large)
         self.base_b = self.base_a * self.scale_factor
@@ -4360,11 +4477,11 @@ class Mat090:
     
     def __init__(self):
         # Choose a base side length for P (so Area P is a perfect square for simplicity, or just simple int)
-        self.side_p = rnd.randint(2, 5) # In cm
-        self.area_p = self.side_p ** 2 # In cm
+        self.side_p = rnd.randint(2, 7)  # 6 values
+        self.area_p = self.side_p ** 2   # In cm²
         
         # Choose a scale factor (k)
-        self.scale_factor = round(rnd.uniform(2, 4), 1) # In cm
+        self.scale_factor = round(rnd.uniform(2, 5), 1)  # 31 values → 6×31 = 186 combinations
         
         # Calculate Shape Q properties
         self.side_q = self.side_p * self.scale_factor # In cm
@@ -4458,8 +4575,8 @@ class Mat091:
     
     def __init__(self):
         # We choose range 2 to 8 to keep points distinct from origin and clearly visible
-        self.x = rnd.randint(2, 8) 
-        self.y = rnd.randint(2, 8)
+        self.x = rnd.randint(1, 10)  # 10 values
+        self.y = rnd.randint(1, 10)  # 10 values → 10×10 = 100 combinations
         
         # Calculate New Coordinates (90 degrees clockwise)
         # Formula: (x, y) -> (y, -x)
@@ -4638,9 +4755,16 @@ class Mat092:
         all_x = np.concatenate((self.triangle_orig[:,0], self.triangle_new[:,0]))
         all_y = np.concatenate((self.triangle_orig[:,1], self.triangle_new[:,1]))
         buffer = 2
-        ax.set_xlim(min(all_x)-buffer, max(all_x)+buffer)
-        ax.set_ylim(min(all_y)-buffer, max(all_y)+buffer)
+        x_min = int(min(all_x)) - buffer
+        x_max = int(max(all_x)) + buffer
+        y_min = int(min(all_y)) - buffer
+        y_max = int(max(all_y)) + buffer
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
         ax.set_aspect('equal')
+        # Explicitly set integer ticks so students can reliably count grid squares
+        ax.set_xticks(range(x_min, x_max + 1))
+        ax.set_yticks(range(y_min, y_max + 1))
         ax.legend()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4650,98 +4774,170 @@ class Mat092:
 class Mat093:
     
     def __init__(self):
-        # Random half-length of the side (e.g., between 2 and 6)
-        self.s = rnd.randint(2, 6) 
+        # Define possible reflection lines with type, description, and transformation
+        lines = [
+            {"type": "x-axis", "desc": "the x-axis", 
+             "transform": lambda x, y: (x, -y)},
+            {"type": "y-axis", "desc": "the y-axis", 
+             "transform": lambda x, y: (-x, y)},
+            {"type": "y=x", "desc": "the line y = x", 
+             "transform": lambda x, y: (y, x)},
+            {"type": "y=-x", "desc": "the line y = -x", 
+             "transform": lambda x, y: (-y, -x)}
+        ]
         
-        # Define the original vertices (A, B, C, D)
-        # A=(s,s), B=(s,-s), C=(-s,-s), D=(-s,s)
-        self.vertices = {
-            'A': (self.s, self.s),
-            'B': (self.s, -self.s),
-            'C': (-self.s, -self.s),
-            'D': (-self.s, self.s)
-        }
-
-        self.answer = 2
-
-        self.description = (
-            f"How many vertices remain in the exact same position (invariant) after the reflection?"
-        )
-
+        # Add a vertical line x = a (a ≠ 0)
+        a = rnd.randint(-3, 3)
+        while a == 0:
+            a = rnd.randint(-3, 3)
+        lines.append({"type": "vertical", "value": a, "desc": f"the line x = {a}",
+                      "transform": lambda x, y, a=a: (2*a - x, y)})
+        
+        # Add a horizontal line y = b (b ≠ 0)
+        b = rnd.randint(-3, 3)
+        while b == 0:
+            b = rnd.randint(-3, 3)
+        lines.append({"type": "horizontal", "value": b, "desc": f"the line y = {b}",
+                      "transform": lambda x, y, b=b: (x, 2*b - y)})
+        
+        # Randomly select one line
+        self.line = rnd.choice(lines)
+        
+        # Generate a random point (x, y) that does NOT lie on the chosen line
+        while True:
+            self.x = rnd.randint(-5, 5)
+            self.y = rnd.randint(-5, 5)
+            
+            # Check if point is on the line based on its type
+            on_line = False
+            t = self.line["type"]
+            if t == "x-axis" and self.y == 0:
+                on_line = True
+            elif t == "y-axis" and self.x == 0:
+                on_line = True
+            elif t == "y=x" and self.x == self.y:
+                on_line = True
+            elif t == "y=-x" and self.x == -self.y:
+                on_line = True
+            elif t == "vertical" and self.x == self.line["value"]:
+                on_line = True
+            elif t == "horizontal" and self.y == self.line["value"]:
+                on_line = True
+            
+            if not on_line:
+                break
+        
+        # Compute the reflected point
+        self.x_prime, self.y_prime = self.line["transform"](self.x, self.y)
+        
+        # Randomly decide whether to ask for the x‑ or y‑coordinate of the image
+        self.ask_for = rnd.choice(['x', 'y'])
+        if self.ask_for == 'x':
+            self.answer = self.x_prime
+        else:
+            self.answer = self.y_prime
+        
+        self.description = (f"What is the {self.ask_for}-coordinate of the image of point A "
+                            f"after a reflection in {self.line['desc']}?")
+        
         self.topic = "Transformations and vectors"
         self.subtopic = "Transformations"
-        self.source = "Adapted from \"Symmetry and Transformations\" conceptual questions in Cambridge IGCSE / O Level Mathematics"
+        self.source = "Adapted from Cambridge IGCSE Mathematics (0580) Past Papers"
         self.curriculum = "IGCSE"
-        self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{The vertices of the square are defined as:}} \\\\"
-            f"A &= ({self.s}, {self.s}) \\\\"
-            f"B &= ({self.s}, {-self.s}) \\\\"
-            f"C &= ({-self.s}, {-self.s}) \\\\"
-            f"D &= ({-self.s}, {self.s}) \\\\"
-            f"\\text{{For a reflection across the main diagonal }} y = x, \\text{{ the transformation is }} (x, y) \\to (y, x). \\\\"
-            f"\\text{{Applying the reflection to each vertex:}} \\\\"
-            f"A' &= ({self.s}, {self.s}) = A \\quad (\\text{{Invariant}}) \\\\"
-            f"B' &= ({-self.s}, {self.s}) = D \\neq B \\\\"
-            f"C' &= ({-self.s}, {-self.s}) = C \\quad (\\text{{Invariant}}) \\\\"
-            f"D' &= ({self.s}, {-self.s}) = B \\neq D \\\\"
-            f"\\text{{Counting the invariant vertices (A and C):}} \\\\"
-            f"\\text{{Total}} &= {self.answer}"
-            "\\end{aligned}\\]"
-        )
+        self.reasoning = self._build_reasoning()
+    
+    def _build_reasoning(self):
+        """Construct the step‑by‑step reasoning in LaTeX."""
+        t = self.line["type"]
+        if t == "x-axis":
+            rule = "(x, y) \\to (x, -y)"
+        elif t == "y-axis":
+            rule = "(x, y) \\to (-x, y)"
+        elif t == "y=x":
+            rule = "(x, y) \\to (y, x)"
+        elif t == "y=-x":
+            rule = "(x, y) \\to (-y, -x)"
+        elif t == "vertical":
+            a = self.line["value"]
+            rule = f"(x, y) \\to (2 \\times {a} - x, y)"
+        elif t == "horizontal":
+            b = self.line["value"]
+            rule = f"(x, y) \\to (x, 2 \\times {b} - y)"
         
+        reasoning = r"\[ \begin{aligned}"
+        reasoning += f"\\text{{Original point }} A &= ({self.x}, {self.y})\\\\"
+        reasoning += f"\\text{{Reflection in {self.line['desc']} follows the rule: }} & {rule}\\\\"
+        reasoning += f"\\text{{Image point }} A' &= ({self.x_prime}, {self.y_prime})\\\\"
+        reasoning += f"\\text{{The {self.ask_for}-coordinate of }} A' \\text{{ is }} {self.answer}."
+        reasoning += r" \end{aligned} \]"
+        return reasoning
+    
     def generate(self, num):
-        # Setup the Plot
-        fig, ax = plt.subplots(figsize=(8, 8))
+        """Create and save the diagram for this question."""
+        fig, ax = plt.subplots(figsize=(6, 6))
         
-        # Set plot limits with some padding
-        limit = self.s + 2
-        ax.set_xlim(-limit, limit)
-        ax.set_ylim(-limit, limit)
+        # Collect all points to determine plot limits
+        all_x = [self.x, self.x_prime]
+        all_y = [self.y, self.y_prime]
         
-        # Draw axes
-        ax.axhline(0, color='black', linewidth=1)
-        ax.axvline(0, color='black', linewidth=1)
-        ax.grid(True, linestyle=':', alpha=0.6)
+        # Include the reflection line in the limits
+        t = self.line["type"]
+        if t == "vertical":
+            all_x.append(self.line["value"])
+        elif t == "horizontal":
+            all_y.append(self.line["value"])
         
-        # Plot the Reflection Line (y = x)
-        # Generate points for the line
-        line_range = np.linspace(-limit, limit, 100)
-        ax.plot(line_range, line_range, color='green', linestyle='--', linewidth=2, label='Reflection Line (y=x)')
+        margin = 2
+        min_x = min(all_x) - margin
+        max_x = max(all_x) + margin
+        min_y = min(all_y) - margin
+        max_y = max(all_y) + margin
         
-        # Plot the Square
-        # Extract coordinates for plotting shapes (append first point at end to close the square)
-        pts = [self.vertices['A'], self.vertices['B'], self.vertices['C'], self.vertices['D'], self.vertices['A']]
-        xs, ys = zip(*pts)
+        ax.set_xlim(min_x, max_x)
+        ax.set_ylim(min_y, max_y)
+        ax.set_aspect('equal')
+        ax.grid(True, linestyle='--', alpha=0.6)
+        ax.axhline(0, color='black', linewidth=0.5)
+        ax.axvline(0, color='black', linewidth=0.5)
         
-        # Fill the square
-        ax.fill(xs, ys, color='skyblue', alpha=0.3, label='Original Square')
-        # Draw edges
-        ax.plot(xs, ys, color='blue', linewidth=2)
+        # Draw the reflection line
+        if t == "x-axis":
+            ax.axhline(0, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "y-axis":
+            ax.axvline(0, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "y=x":
+            x_vals = np.linspace(min_x, max_x, 100)
+            ax.plot(x_vals, x_vals, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "y=-x":
+            x_vals = np.linspace(min_x, max_x, 100)
+            ax.plot(x_vals, -x_vals, color='green', linestyle='-', linewidth=2, label='Reflection line')
+        elif t == "vertical":
+            a = self.line["value"]
+            ax.axvline(a, color='green', linestyle='-', linewidth=2, label=f'Reflection line x={a}')
+        elif t == "horizontal":
+            b = self.line["value"]
+            ax.axhline(b, color='green', linestyle='-', linewidth=2, label=f'Reflection line y={b}')
         
-        # Calculate and Plot Vertices (and Reflections)
-        invariant_count = 0
+        # Plot original point A
+        ax.scatter(self.x, self.y, color='blue', s=100, zorder=5)
+        ax.text(self.x + 0.2, self.y + 0.2, f'A({self.x},{self.y})', 
+                fontsize=12, color='blue')
         
-        for label, (x, y) in self.vertices.items():
-            # Reflection across y=x simply swaps coordinates: (x, y) -> (y, x)
-            x_new, y_new = y, x
+        # Plot image point A' with a placeholder for the unknown coordinate
+        if self.ask_for == 'y':
+            label = f"A'({self.x_prime}, ?)"
+        else:
+            label = f"A'(?, {self.y_prime})"
+        ax.scatter(self.x_prime, self.y_prime, color='red', s=100, zorder=5)
+        ax.text(self.x_prime + 0.2, self.y_prime + 0.2, label,
+                fontsize=12, color='red')
         
-            # Plot non-invariant points in Blue
-            ax.scatter(x, y, color='blue', s=80, zorder=5)
-            ax.text(x + 0.1, y + 0.1, f"{label}({x},{y})", fontsize=10, color='blue')
-            
-            # Optional: Show where they reflect to with an arrow
-            ax.annotate("", xy=(x_new, y_new), xytext=(x, y),
-                        arrowprops=dict(arrowstyle="->", color='gray', linestyle='dashed'))
-
-        # Final Formatting
-        ax.set_xlabel("x")
-        ax.set_ylabel("y")
-        ax.legend(loc='upper left')
-        ax.set_aspect('equal') # Essential for geometry figures
+        # Dashed line connecting A and A' (perpendicular to the mirror)
+        ax.plot([self.x, self.x_prime], [self.y, self.y_prime], 'k--', alpha=0.5)
         
+        ax.legend(loc='upper right')
         plt.tight_layout()
-
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
@@ -4750,12 +4946,12 @@ class Mat094:
     
     def __init__(self):
         # Base vectors (keep u horizontal and v vertical as per description)
-        self.u_mag = rnd.randint(1, 3)  # Magnitude of u (e.g., 1, 2, or 3)
-        self.v_mag = rnd.randint(1, 3)  # Magnitude of v
+        self.u_mag = rnd.randint(1, 5)  # Magnitude of u
+        self.v_mag = rnd.randint(1, 5)  # Magnitude of v
         
         # Scalars (coefficients)
-        self.a = rnd.randint(2, 4)      # Scalar for u
-        self.b = rnd.randint(2, 4)      # Scalar for v
+        self.a = rnd.randint(2, 5)      # Scalar for u
+        self.b = rnd.randint(2, 5)      # Scalar for v
         
         # Define vectors
         self.u_vec = np.array([self.u_mag, 0])
@@ -4850,22 +5046,22 @@ class Mat094:
 class Mat095:
     
     def __init__(self):
-        # Define Vector p (keep components small for readability)
-        self.px = rnd.randint(1, 3)
-        self.py = rnd.randint(1, 4)
+        # Define Vector p with small positive integer components for grid readability.
+        self.px = rnd.randint(1, 5)
+        self.py = rnd.randint(1, 5)
         
-        # Define Scalar Multiplier (m)
-        # This determines how much larger q is compared to p
-        self.scalar = rnd.randint(2, 4) 
+        # Scalar
+        self.scalar = rnd.randint(2, 5)
         
-        # Define Vector q based on scalar
+        # q = scalar * p; k = py * scalar is the hidden value
         self.qx = self.px * self.scalar
-        self.real_k = self.py * self.scalar  # This is the hidden value 'k'
+        self.real_k = self.py * self.scalar
 
         self.answer = self.real_k
 
         self.description = (
-            f"Vector $\\mathbf{{p}} = \\binom{{{self.px}}}{{{self.py}}}$ and Vector $\\mathbf{{q}} = \\binom{{{self.qx}}}{{k}}$. If vectors $\\mathbf{{p}}$ and $\\mathbf{{q}}$ are parallel, what is the value of $k$?"
+            "In the diagram, vectors $\\mathbf{p}$ and $\\mathbf{q}$ are shown on a grid. "
+            "If $\\mathbf{p}$ and $\\mathbf{q}$ are parallel, find the value of $k$."
         )
 
         self.topic = "Transformations and vectors"
@@ -4874,10 +5070,12 @@ class Mat095:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Since vectors }} \\mathbf{{p}} \\text{{ and }} \\mathbf{{q}} \\text{{ are parallel, their components must be proportional:}} &\\\\"
+            f"\\text{{Read from the diagram: }} \\mathbf{{p}} = \\binom{{{self.px}}}{{{self.py}}},\\; "
+            f"\\mathbf{{q}} = \\binom{{{self.qx}}}{{k}}\\\\"
+            f"\\text{{Since }} \\mathbf{{p}} \\parallel \\mathbf{{q}} \\text{{, their components are proportional:}} &\\\\"
             f"\\frac{{p_x}}{{q_x}} &= \\frac{{p_y}}{{q_y}}\\\\"
             f"\\frac{{{self.px}}}{{{self.qx}}} &= \\frac{{{self.py}}}{{k}}\\\\"
-            f"\\text{{Cross-multiplying to solve for }} k: &\\\\"
+            f"\\text{{Cross-multiplying:}} &\\\\"
             f"{self.px} \\cdot k &= {self.py} \\cdot {self.qx}\\\\"
             f"{self.px}k &= {self.py * self.qx}\\\\"
             f"k &= \\frac{{{self.py * self.qx}}}{{{self.px}}}\\\\"
@@ -4886,42 +5084,83 @@ class Mat095:
         )
         
     def generate(self, num):
-        # Generate Figure
-        fig, ax = plt.subplots(figsize=(6, 6))
+        """Draw both vectors on a labelled integer grid.
         
-        # Coordinates:
-        # Vector p starts at origin (0,0)
-        start_p = np.array([0, 0])
-        vec_p = np.array([self.px, self.py])
-        
-        # Vector q starts offset so they look parallel but don't overlap
-        # Offset x by 1 and y by -2 (visual preference)
-        start_q = np.array([1, -1]) 
-        vec_q = np.array([self.qx, self.real_k])
-        
-        # Plot Vectors using quiver
-        # angles='xy', scale_units='xy', scale=1 ensures accurate grid representation
-        ax.quiver(start_p[0], start_p[1], vec_p[0], vec_p[1], 
-                angles='xy', scale_units='xy', scale=1, color='blue', label=r'$\mathbf{p}$')
-        
-        ax.quiver(start_q[0], start_q[1], vec_q[0], vec_q[1], 
-                angles='xy', scale_units='xy', scale=1, color='red', label=r'$\mathbf{q}$')
-        
-        # Add labels near the vectors
-        ax.text(start_p[0] + vec_p[0]/2, start_p[1] + vec_p[1]/2 + 0.5, 
-                r'$\mathbf{p}$', color='blue', fontsize=14, fontweight='bold')
-        ax.text(start_q[0] + vec_q[0]/2, start_q[1] + vec_q[1]/2 + 0.5, 
-                r'$\mathbf{q}$', color='red', fontsize=14, fontweight='bold')
-        
-        # Configure Grid and Aspect Ratio
-        # Calculate limits dynamically to ensure vectors fit
-        max_coord = max(self.qx + start_q[0], self.real_k + start_q[1]) + 2
-        
-        ax.set_xlim(-1, max_coord)
-        ax.set_ylim(-2, max_coord)
-        ax.grid(True, linestyle='--', alpha=0.6)
-        ax.set_aspect('equal')
+        p is drawn from the origin; its x- and y-components are readable from
+        the grid.  q is drawn from an offset starting point; its x-component
+        is readable from the grid, while the y-component is labelled '?' so that
+        k cannot be read directly – students must use proportionality.
+        """
+        fig, ax = plt.subplots(figsize=(8, 8))
 
+        # Starting points
+        start_p = np.array([0, 0])
+        # Offset q so the two vectors are clearly separate
+        offset_x = self.qx + 2
+        start_q = np.array([offset_x, 0])
+
+        vec_p = np.array([self.px, self.py])
+        vec_q = np.array([self.qx, self.real_k])
+
+        # ── Grid and axes ──────────────────────────────────────────────────────
+        x_min = -1
+        x_max = int(start_q[0] + self.qx) + 2
+        y_min = -1
+        y_max = int(max(self.py, self.real_k)) + 2
+
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
+        ax.set_xticks(range(x_min, x_max + 1))
+        ax.set_yticks(range(y_min, y_max + 1))
+        ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.7)
+        ax.set_aspect('equal')
+        ax.axhline(0, color='black', linewidth=0.8)
+        ax.axvline(0, color='black', linewidth=0.8)
+        ax.set_xlabel('x', fontsize=12)
+        ax.set_ylabel('y', fontsize=12)
+
+        # ── Helper: draw dashed component lines ───────────────────────────────
+        def draw_components(start, vec, color):
+            # Horizontal leg
+            ax.plot([start[0], start[0] + vec[0]], [start[1], start[1]],
+                    color=color, linestyle=':', linewidth=1.2, alpha=0.6)
+            # Vertical leg
+            ax.plot([start[0] + vec[0], start[0] + vec[0]], [start[1], start[1] + vec[1]],
+                    color=color, linestyle=':', linewidth=1.2, alpha=0.6)
+
+        # ── Vector p (blue) ──────────────────────────────────────────────────
+        draw_components(start_p, vec_p, 'blue')
+        ax.quiver(start_p[0], start_p[1], vec_p[0], vec_p[1],
+                  angles='xy', scale_units='xy', scale=1,
+                  color='blue', width=0.012, headwidth=4, label=r'$\mathbf{p}$')
+        # Label p's x-component on the horizontal leg
+        ax.text(start_p[0] + vec_p[0] / 2, start_p[1] - 0.4,
+                str(self.px), color='blue', ha='center', fontsize=11, fontweight='bold')
+        # Label p's y-component on the vertical leg
+        ax.text(start_p[0] + vec_p[0] + 0.25, start_p[1] + vec_p[1] / 2,
+                str(self.py), color='blue', va='center', fontsize=11, fontweight='bold')
+        # Label the vector itself
+        ax.text(start_p[0] + vec_p[0] / 2 - 0.4, start_p[1] + vec_p[1] / 2,
+                r'$\mathbf{p}$', color='blue', fontsize=14, fontweight='bold')
+
+        # ── Vector q (red) ──────────────────────────────────────────────────
+        draw_components(start_q, vec_q, 'red')
+        ax.quiver(start_q[0], start_q[1], vec_q[0], vec_q[1],
+                  angles='xy', scale_units='xy', scale=1,
+                  color='red', width=0.012, headwidth=4, label=r'$\mathbf{q}$')
+        # Label q's x-component (readable)
+        ax.text(start_q[0] + vec_q[0] / 2, start_q[1] - 0.4,
+                str(self.qx), color='red', ha='center', fontsize=11, fontweight='bold')
+        # Label q's y-component as '?' (the unknown to find)
+        ax.text(start_q[0] + vec_q[0] + 0.25, start_q[1] + vec_q[1] / 2,
+                '?', color='red', va='center', fontsize=13, fontweight='bold')
+        # Label the vector itself
+        ax.text(start_q[0] + vec_q[0] / 2 - 0.4, start_q[1] + vec_q[1] / 2,
+                r'$\mathbf{q}$', color='red', fontsize=14, fontweight='bold')
+
+        ax.legend(loc='upper left', fontsize=11)
+        ax.set_title('Find the value of $k$ (the $y$-component of $\\mathbf{q}$)',
+                     fontsize=12, pad=10)
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -5022,7 +5261,7 @@ class Mat097:
         # Create a random Direction Vector (dx, dy, dz)
         # We avoid (0,0,0) to ensure a line exists
         direction = np.random.randint(-5, 6, size=3)
-        while np.all(direction == 0):
+        while np.all(direction[1:] == 0): # Ensure at least one of y or z is non-zero
             direction = np.random.randint(-5, 6, size=3)
 
         # Generate scalars (multipliers) for A and C
@@ -5153,10 +5392,9 @@ class Mat098:
         self.answer = round(k_solution, 3)
 
         self.description = (
-            f"Trapezium $OABC$ where $OA$ is parallel to $CB$. "
-            f"$OA = {self.c1}\\mathbf{{a}}$ and $OB = {self.c2}\\mathbf{{b}}$. "
-            f"Point $P$ is on $AB$ such that $AP:PB = {self.m}:{self.n}$. "
-            f"If vector $OP = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})$, find $k$. "
+            "In the diagram, $OABC$ is a trapezium where $OA$ is parallel to $CB$. "
+            "Point $P$ lies on the line segment $AB$. "
+            f"Find the value of $k$ given that $\\vec{{OP}} = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})$. "
             "Give your answer correct to 3 decimal places."
         )
 
@@ -5251,8 +5489,11 @@ class Mat099:
     def __init__(self):
         # We pick the answer first to ensure the graph looks nice, 
         # but we hide 'k' in the final output.
-        self.val_x = rnd.randint(3, 8)       # The known i component
-        self.val_k = rnd.randint(3, 10)      # The unknown j component (the answer)
+        self.val_x = rnd.randint(1, 20)       # The known i component
+        self.val_k = rnd.randint(1, 20)      # The unknown j component (the answer)
+        while self.val_x**2 + self.val_k**2 < 20: # Avoid overly small vectors
+             self.val_x = rnd.randint(1, 20)
+             self.val_k = rnd.randint(1, 20)
 
         # Calculate Magnitude symbolically to get the exact sqrt string (e.g., 3sqrt(17))
         self.magnitude_sym = sympy.sqrt(self.val_x**2 + self.val_k**2)
@@ -5261,8 +5502,7 @@ class Mat099:
         self.answer = self.val_k
 
         self.description = (
-            f"Find positive $k$ given $\\vec{{v}} = {self.val_x}\\mathbf{{i}} + k\\mathbf{{j}}$ "
-            f"and $|\\vec{{v}}| = {self.magnitude_latex}$"
+            "Use the information in the vector diagram to find the value of the positive scalar $k$."
         )
 
         self.topic = "Transformations and vectors"
@@ -5358,8 +5598,8 @@ class Mat100:
         self.B = np.array([rnd.uniform(4, 7), rnd.uniform(1, 3)])
         
         # Randomize the ratio AP:PB = m:n
-        self.m = rnd.randint(1, 5)
-        self.n = rnd.randint(1, 5)
+        self.m = rnd.randint(1, 10)
+        self.n = rnd.randint(1, 10)
         
         # Calculate Point P using the Section Formula
         # P = (n*A + m*B) / (m + n)
@@ -5371,10 +5611,8 @@ class Mat100:
         self.answer = round(k, 3)
 
         self.description = (
-            f"In triangle $OAB$, vector $OA = \\mathbf{{a}}$ and vector $OB = \\mathbf{{b}}$. "
-            f"Point $P$ is on $AB$ such that $AP:PB = {self.m}:{self.n}$. "
-            f"The vector $OP$ can be expressed as $k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$. "
-            "Find the value of $k$. "
+            "In the triangle $OAB$, vector $\\vec{OA} = \\mathbf{a}$ and vector $\\vec{OB} = \\mathbf{b}$. "
+            f"Given that $\\vec{{OP}} = k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$, find the value of $k$. "
             "Give your answer correct to 3 decimal places."
         )
 

@@ -41,9 +41,8 @@ class Mat151:
             f"Variables $x$ and $y$ are related by the equation $y = k e^{{ax}}$, "
             f"where $k$ and $a$ are constants. "
             f"A straight line graph is plotted on axes labeled $x$ (horizontal) "
-            f"and $\\ln y$ (vertical). The line passes through the y-intercept "
-            f"at $(0, {self.intercept_c})$ and a second point at $({self.x2}, {self.y2_log})$. "
-            f"Using the linear graph described above, determine the value of the constant $a$."
+            f"and $\\ln y$ (vertical). Using the points marked on the linear graph in the figure, "
+            f"determine the value of the constant $a$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -134,8 +133,7 @@ class Mat152:
             f"Variables $x$ and $y$ satisfy the relationship $y = Ax^n$. "
             f"The figure shows a straight line plotted on axes labeled $\\lg x$ (horizontal) "
             f"and $\\lg y$ (vertical), where $\\lg$ denotes $\\log_{{10}}$. "
-            f"The line passes through the points $({self.x1}, {self.y1})$ and $({self.x2}, {self.y2})$. "
-            f"Find the value of $n$. "
+            f"Using the points indicated in the figure, find the value of $n$. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -216,9 +214,8 @@ class Mat153:
         self.answer = actual_x
 
         self.description = (
-            f"A rectangle is shown with Length = {self.len_label} and Width = {self.wid_label}. "
-            f"The Area of this rectangle is given as {self.area_label}. "
-            f"Calculate the numerical value of $x$."
+            "A rectangle is shown in the figure with its length, width, and area expressed in terms of $x$. "
+            "Based on the labels provided in the diagram, calculate the numerical value of $x$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -294,10 +291,9 @@ class Mat154:
         self.answer = self.k_target
 
         self.description = (
-            f"The graph shows the function $y = \\log_{{{self.base}}}(x - b)$. "
-            f"The graph has a vertical asymptote indicated by a dashed line at $x = {self.b}$. "
-            f"The curve passes through the point $({self.x_point}, k)$. "
-            f"Determine the value of $k$."
+            f"The figure shows a graph of a logarithmic function. "
+            f"The graph has a vertical asymptote indicated by a dashed line and passes through a marked point. "
+            f"Using the information provided in the figure, determine the value of $k$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -366,10 +362,10 @@ class Mat155:
     
     def __init__(self):
         # Equation: y = e^(kx)
-        self.k = rnd.randint(1, 4)  # Random coefficient k (e.g., 2, 3, 4)
+        self.k = rnd.randint(1, 10)  # Random coefficient k
         
         # Limit: x = ln(a)
-        self.a = rnd.randint(2, 6)  # Random base for the log limit (e.g., ln(3), ln(5))
+        self.a = rnd.randint(2, 12)  # Random base for the log limit
         
         # Calculate the exact limit value for plotting
         self.x_limit = np.log(self.a)
@@ -385,11 +381,10 @@ class Mat155:
         self.answer = round(numerator / denominator, 3)
 
         self.description = (
-            f"The figure displays the curve $y = e^{{{self.k}x}}$. "
-            f"The region $R$ is shaded and is bounded by the curve, the x-axis, "
-            f"the y-axis (where $x=0$), and the vertical line $x = \\ln({self.a})$. "
-            f"Calculate the exact area of the shaded region $R$. "
-            f"Give your answer correct to 3 decimal places."
+            "The figure displays an exponential curve $y = e^{kx}$ and a shaded region $R$. "
+            "The region is bounded by the curve, the axes, and a vertical line marked in the figure. "
+            "Calculate the exact area of the shaded region $R$. "
+            "Give your answer correct to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -444,8 +439,8 @@ class Mat156:
     
     def __init__(self):
         # Equation form: y = a * x * sin(b * x)
-        self.a = rnd.randint(1, 5)      # Coefficient for x (e.g., 2x, 3x)
-        self.b = rnd.randint(1, 3)      # Coefficient inside sin (e.g., sin(2x))
+        self.a = rnd.randint(1, 10)      # Coefficient for x
+        self.b = rnd.randint(1, 5)       # Coefficient inside sin
         
         # Randomize Upper Limit (limit) to be a "nice" fraction of Pi
         # Options: pi/6, pi/4, pi/3, pi/2
@@ -468,9 +463,10 @@ class Mat156:
         self.answer = round(area, 3)
 
         self.description = (
-            f"The figure shows the curve $y = {self.a}x \\sin({self.b}x)$ for $0 \\leq x \\leq {self.limit_str}$. "
-            f"The shaded region represents the area between the curve and the x-axis from the origin to $x = {self.limit_str}$. "
-            f"Find the area of the shaded region. Give your answer as a decimal rounded to three decimal places."
+            "The figure shows a curve and a shaded region under it. "
+            "The shaded area lies between the curve and the x-axis, from the origin to a marked upper limit. "
+            "Using the information in the figure, find the area of the shaded region. "
+            "Give your answer as a decimal rounded to three decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -583,11 +579,10 @@ class Mat157:
         self.answer = round(abs(np.log(k_fraction)), 3)
 
         self.description = (
-            f"The figure depicts the graph of the function "
-            f"$f(x) = \\frac{{{self.NUM}}}{{(x+{self.a})(x+{self.b})}}$. "
-            f"The area of interest is bounded by the curve, the x-axis, and the vertical lines $x={self.x1}$ and $x={self.x2}$. "
-            f"Calculate the definite integral $\\int_{{{self.x1}}}^{{{self.x2}}} f(x) \\, dx$. "
-            f"Round your answer to three decimal places."
+            "The figure depicts the graph of a rational function $f(x)$. "
+            "The area of interest is shaded and bounded by the curve, the x-axis, and two vertical lines. "
+            "Based on the visual information in the figure, calculate the definite integral of $f(x)$ over the shaded interval. "
+            "Round your answer to three decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -687,8 +682,9 @@ class Mat158:
         self.answer = round(abs(val_A * np.log(numerator_arg / denominator_arg)), 3)
 
         self.description = (
-            f"The figure shows the curve $y = {self.func_latex}$ in the first quadrant. A shaded region is defined between $x={self.lower_limit}$ and $x={self.upper_limit}$. "
-            f"Determine the area of the shaded region. Round to 3 decimal places."
+            "The figure shows a curve in the first quadrant and a shaded region bounded by the curve, the x-axis, and a vertical limit. "
+            "Using the information provided in the figure, determine the area of the shaded region. "
+            "Round your answer to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -746,13 +742,12 @@ class Mat158:
 class Mat159:
     
     def __init__(self):
-        # a: Determine the denominator (x^2 + a^2). Using integers 2-6.
-        self.a = rnd.randint(2, 6)
+        # a: Determine the denominator (x^2 + a^2). Using integers 2-12.
+        self.a = rnd.randint(2, 12)
         self.a_sq = self.a**2
 
         # numerator: Make it a multiple of 'a' to keep the coefficient simple.
-        # Corresponds to '12' in the original example (where a=3, so 12 is 4*a).
-        self.multiplier = rnd.randint(1, 6)
+        self.multiplier = rnd.randint(1, 10)
         self.numerator = self.multiplier * self.a
 
         # x_limit: The integration limit.
@@ -771,11 +766,10 @@ class Mat159:
         self.answer = round(numerical_answer, 3)
 
         self.description = (
-            f"The figure illustrates the bell-shaped curve of the "
-            f"function $y = \\frac{{{self.numerator}}}{{x^2+{self.a_sq}}}$. The region extends "
-            f"from the y-axis ($x=0$) to the vertical line $x={self.x_limit}$. "
-            f"Calculate the area of this region. "
-            f"Round your answer to 3 decimal places."
+            "The figure illustrates a bell-shaped curve and a shaded region under it "
+            "extending from the y-axis to a marked vertical line. "
+            "Based on the function and the limit shown in the diagram, calculate the area of this region. "
+            "Round your answer to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -880,9 +874,9 @@ class Mat160:
         self.answer = round(area_val, 3)
 
         self.description = (
-            f"The figure shows the graph of $y = {self.func_latex}$ "
-            f"over the interval $[0, {self.limit_text}]$. The area under the curve is shaded. "
-            f"Find the area of the shaded region. Round to 3 decimal places."
+            f"The figure shows the graph of a trigonometric function $y = f(x)$ "
+            f"over a shaded interval. Find the area of the shaded region under the curve. "
+            f"Round your answer to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -975,12 +969,11 @@ class Mat161:
         self.answer = round(x3, 3)
 
         self.description = (
-            f"The diagram shows the graphs of $y = x$ and $y = \frac{{{self.A}}}{{x + {self.B}}}$ for $x > 0$. "
-            f"A 'cobweb' sequence is drawn to illustrate the convergence of the iteration "
-            f"$x_{{n+1}} = \frac{{{self.A}}}{{x_n + {self.B}}}$, starting from an initial value $x_1 = {self.x1}$, "
-            f"which is marked on the x-axis. "
-            f"Using the iterative formula suggested by the figure, calculate the value of the third iteration, $x_3$. "
-            f"Round to 3 decimal places."
+            "The diagram shows the graphs of $y = x$ and $y = f(x)$ for $x > 0$. "
+            "A 'cobweb' sequence illustrates the convergence of an iterative process "
+            "$x_{n+1} = f(x_n)$ starting from an initial value $x_1$ marked on the axis. "
+            "Using the iterative formula and initial value shown in the figure, "
+            "calculate the value of the third iteration, $x_3$, rounding to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1017,6 +1010,7 @@ class Mat161:
         # Plot Curve y = A / (x + B)
         y_vals = self.A / (x_vals + self.B)
         ax.plot(x_vals, y_vals, 'b-', label=f'$y = \\frac{{{self.A}}}{{x + {self.B}}}$')
+        ax.text(max_val*0.6, self.A/(max_val*0.6 + self.B) + 0.5, f'$y = \\frac{{{self.A}}}{{x + {self.B}}}$', fontsize=12, color='blue')
 
         # Plot Cobweb path
         # Path coordinates: (x1,0) -> (x1, y1) -> (y1, y1) -> (y1, y2) -> ...
@@ -1033,6 +1027,7 @@ class Mat161:
             curr = val
 
         ax.plot(px, py, 'r.-', alpha=0.6, linewidth=1.5, label='Cobweb sequence')
+        ax.text(self.x1, -max_val*0.05, f'$x_1={self.x1}$', ha='center', color='red', fontsize=12, fontweight='bold')
 
         # Formatting
         ax.set_title("Cobweb Diagram Iteration")
@@ -1054,9 +1049,9 @@ class Mat162:
         # with a root that isn't ambiguous (i.e., not too close to an integer line).
         while True:
             # Equation form: y = a*ln(x) - x + b
-            # Randomize coefficients (using integers for cleaner problem text)
-            self.a = rnd.randint(2, 5) 
-            self.b = rnd.randint(1, 6)
+            # Randomize coefficients
+            self.a = rnd.randint(2, 10) 
+            self.b = rnd.randint(1, 15)
             
             # Define the function
             # Note: function is valid for x > 0
@@ -1093,12 +1088,12 @@ class Mat162:
         self.answer = n
 
         self.description = (
-            f"The Figure shows a sketch of the curve $y = {self.a}\\ln(x) - x + {self.b}$. "
-            f"The curve intersects the $x$-axis at two points. The larger root, $\\alpha$, "
-            f"is shown to lie between two consecutive integers on the $x$-axis grid, "
-            f"which is marked with unit intervals. "
-            f"Based on the visual location of the larger root $\\alpha$ in the figure, "
-            f"identify the integer $n$ such that $n < \\alpha < n+1$."
+            "The Figure shows a sketch of the curve $y = a\\ln(x) - x + b$. "
+            "The curve intersects the $x$-axis at two points. The larger root, $\\alpha$, "
+            "is shown to lie between two consecutive integers on the $x$-axis grid, "
+            "which is marked with unit intervals. "
+            "Based on the visual location of the larger root in the figure, "
+            "identify the integer $n$ such that $n < \\alpha < n+1$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1199,18 +1194,16 @@ class Mat163:
             # If we got here, we found valid numbers
             break
 
-        vec_a_str = self.format_vec_str(self.ax, self.ay, self.az)
-        vec_b_str = self.format_vec_str(self.p, self.by, self.bz, unknown_axis='i')
+        self.vec_a_str = self.format_vec_str(self.ax, self.ay, self.az)
+        self.vec_b_str = self.format_vec_str(self.p, self.by, self.bz, unknown_axis='i')
 
         self.answer = self.p
 
         self.description = (
-            f"The figure displays two vectors originating from a common point $O$ in 3D space. "
-            f"Vector $\\mathbf{{a}}$ is defined as ${vec_a_str}$. "
-            f"Vector $\\mathbf{{b}}$ is defined as ${vec_b_str}$. "
-            f"A right-angle symbol indicates that the two vectors are perpendicular to each other. "
-            f"Given that the vectors $\\mathbf{{a}}$ and $\\mathbf{{b}}$ are perpendicular, "
-            f"calculate the value of the constant $p$."
+            "The figure displays two vectors originating from a common point $O$ in 3D space. "
+            "Vector $\\mathbf{a}$ and vector $\\mathbf{b}$ are as labeled in the diagram. "
+            "The vectors are indicated to be perpendicular by a right-angle symbol. "
+            "Using the information in the figure, calculate the value of the constant $p$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1303,15 +1296,19 @@ class Mat163:
         ax_plot.set_ylim([-limit, limit])
         ax_plot.set_zlim([-limit, limit])
 
-        # Labels and Title
-        ax_plot.set_xlabel('x')
-        ax_plot.set_ylabel('y')
-        ax_plot.set_zlabel('z')
-        ax_plot.legend()
+        # Adding labels for vectors
+        ax_plot.text(self.ax, self.ay, self.az, f'$\\mathbf{{a}} = {self.vec_a_str}$', color='red', fontsize=10)
+        ax_plot.text(self.p, self.by, self.bz, f'$\\mathbf{{b}} = {self.vec_b_str}$', color='blue', fontsize=10)
 
-        # Visual helper for origin
-        ax_plot.scatter(0,0,0, color='k', s=50)
-        ax_plot.text(0, 0, -limit*0.1, "$O$", fontsize=12)
+        # Right-angle symbol attempt at origin
+        size = limit * 0.1
+        v1 = np.array([self.ax, self.ay, self.az])
+        v1 = v1 / np.linalg.norm(v1) * size
+        v2 = np.array([self.p, self.by, self.bz])
+        v2 = v2 / np.linalg.norm(v2) * size
+        v3 = v1 + v2
+        ax_plot.plot([v1[0], v3[0]], [v1[1], v3[1]], [v1[2], v3[2]], color='black', alpha=0.8)
+        ax_plot.plot([v2[0], v3[0]], [v2[1], v3[1]], [v2[2], v3[2]], color='black', alpha=0.8)
 
         plt.tight_layout()
 
@@ -1351,19 +1348,17 @@ class Mat164:
         # The "hidden" variable m is the z-component of B
         m_answer = self.B[2]
 
-        d1_str = f"{self.d1[0]}i + {self.d1[1]}j + {self.d1[2]}k".replace("+-", "- ").replace("+ -", "- ")
-        d2_str = f"{self.d2[0]}i + {self.d2[1]}j + {self.d2[2]}k".replace("+-", "- ").replace("+ -", "- ")
+        self.d1_str = f"{self.d1[0]}i + {self.d1[1]}j + {self.d1[2]}k".replace("+-", "- ").replace("+ -", "- ")
+        self.d2_str = f"{self.d2[0]}i + {self.d2[1]}j + {self.d2[2]}k".replace("+-", "- ").replace("+ -", "- ")
 
         self.answer = int(m_answer)
 
         self.description = (
-            f"A diagram shows two straight lines, $L_1$ and $L_2$, "
-            f"intersecting at a single point $X$ in three-dimensional space.\n\n"
-            f"**Line $L_1$** passes through point $A({self.A[0]}, {self.A[1]}, {self.A[2]})$ and is parallel "
-            f"to the vector $\\mathbf{{d_1}} = {d1_str}$.\n\n"
-            f"**Line $L_2$** passes through point $B({self.B[0]}, {self.B[1]}, m)$ and is parallel "
-            f"to the vector $\\mathbf{{d_2}} = {d2_str}$.\n\n"
-            f"By solving for the intersection of these two lines, determine the numerical value of the constant $m$."
+            "A diagram shows two straight lines $L_1$ and $L_2$ intersecting at point $X$ in 3D space. "
+            "Line $L_1$ passes through point $A$ and is parallel to vector $\\mathbf{d_1}$. "
+            "Line $L_2$ passes through point $B$ and is parallel to vector $\\mathbf{d_2}$. "
+            "Using the coordinates and components labeled in the diagram, solve for the intersection "
+            "of these lines to determine the numerical value of the constant $m$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1432,6 +1427,12 @@ class Mat164:
         ax.set_ylim(center[1] - radius, center[1] + radius)
         ax.set_zlim(center[2] - radius, center[2] + radius)
 
+        # Labels for points and direction vectors
+        ax.text(self.A[0], self.A[1], self.A[2], f' $A({self.A[0]}, {self.A[1]}, {self.A[2]})$', color='blue')
+        ax.text(self.B[0], self.B[1], self.B[2], f' $B({self.B[0]}, {self.B[1]}, m)$', color='red')
+        ax.text(self.A[0]+self.d1[0]*0.5, self.A[1]+self.d1[1]*0.5, self.A[2]+self.d1[2]*0.5, f' $\\mathbf{{d_1}}= {self.d1_str}$', color='blue', fontsize=8)
+        ax.text(self.B[0]+self.d2[0]*0.5, self.B[1]+self.d2[1]*0.5, self.B[2]+self.d2[2]*0.5, f' $\\mathbf{{d_2}}= {self.d2_str}$', color='red', fontsize=8)
+
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1464,12 +1465,11 @@ class Mat165:
         self.answer = magnitude_squared
 
         self.description = (
-            f"A triangular pyramid $OABC$ is shown with the origin at $O(0,0,0)$.\n"
-            f"The vertices are located at position vectors $\\mathbf{{a}} = {self.a_val}\\mathbf{{i}}$, "
-            f"$\\mathbf{{b}} = {self.b_val}\\mathbf{{j}}$, and $\\mathbf{{c}} = {self.c_val}\\mathbf{{k}}$.\n"
-            f"A point $M$ is marked as the exact midpoint of the edge $AB$.\n"
-            f"A vector $\vec{{MC}}$ connects $M$ to the top vertex $C$.\n\n"
-            f"Calculate the squared magnitude of the vector $\vec{{MC}}$ (i.e., calculate $|\vec{{MC}}|^2$)."
+            "A triangular pyramid $OABC$ is shown with the origin at $O(0,0,0)$. "
+            "The position vectors of the vertices $A, B,$ and $C$ are as shown in the diagram. "
+            "Point $M$ is the exact midpoint of the edge $AB$. "
+            "A vector $\\vec{MC}$ connects $M$ to vertex $C$. "
+            "Calculate the squared magnitude of the vector $\\vec{MC}$ (i.e., calculate $|\\vec{MC}|^2$)."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1503,7 +1503,15 @@ class Mat165:
         vertices = {'O': self.origin, 'A': self.A, 'B': self.B, 'C': self.C}
         for name, point in vertices.items():
             ax.scatter(*point, color='black', s=50)
-            ax.text(point[0], point[1], point[2]+0.2, f" {name}", fontsize=12, fontweight='bold')
+            if name == 'A':
+                label = f" {name}({self.a_val},0,0)"
+            elif name == 'B':
+                label = f" {name}(0,{self.b_val},0)"
+            elif name == 'C':
+                label = f" {name}(0,0,{self.c_val})"
+            else:
+                label = f" {name}(0,0,0)"
+            ax.text(point[0], point[1], point[2]+0.2, label, fontsize=10, fontweight='bold')
 
         # Plot Edges of the Pyramid
         # Base: OA, OB, AB
@@ -1561,14 +1569,11 @@ class Mat166:
         self.answer = int(self.answer_sum)
 
         self.description = (
-            f"A parallelogram $ABCD$ is plotted in a 3D coordinate system. "
-            f"The coordinates for three of the vertices are provided:\n"
-            f"$A = ({self.a[0]}, {self.a[1]}, {self.a[2]})$\n"
-            f"$B = ({self.b[0]}, {self.b[1]}, {self.b[2]})$\n"
-            f"$C = ({self.c[0]}, {self.c[1]}, {self.c[2]})$\n"
-            f"The fourth vertex $D$ is labeled with unknown coordinates $(x, y, z)$. "
-            f"Using vector addition/subtraction properties for a parallelogram "
-            f"find the sum of the coordinates of vertex $D$ (i.e., calculate $x + y + z$)."
+            "A parallelogram $ABCD$ is plotted in a 3D coordinate system. "
+            "The coordinates for three of the vertices $A, B,$ and $C$ are labeled in the diagram. "
+            "The fourth vertex $D$ is labeled with unknown coordinates $(x, y, z)$. "
+            "Using vector addition/subtraction properties for a parallelogram, "
+            "find the sum of the coordinates of vertex $D$ (i.e., calculate $x + y + z$)."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1654,11 +1659,11 @@ class Mat167:
         self.answer = int(self.z_r.imag)
 
         self.description = (
-            f"The figure shows a square in the Argand diagram with vertices "
-            f"labeled $O$, $P$, $Q$, and $R$ in counter-clockwise order. $O$ is the origin $(0,0)$. "
-            f"The vertex $P$ represents the complex number $z_1 = {self.z1_str}$.\n\n"
-            f"If the vertices form a square $OPQR$, determine the imaginary part of "
-            f"the complex number represented by vertex $R$."
+            "The figure shows a square in the Argand diagram with vertices "
+            "labeled $O$, $P$, $Q$, and $R$ in counter-clockwise order. $O$ is the origin. "
+            "The vertex $P$ represents the complex number $z_1$, as specified in the label.\n\n"
+            "If the vertices form a square $OPQR$, determine the imaginary part of "
+            "the complex number represented by vertex $R$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1699,7 +1704,10 @@ class Mat167:
         labels = ['O', 'P', 'Q', 'R']
         for i, txt in enumerate(labels):
             # Add a small offset to text so it doesn't overlap the dot
-            ax.text(X[i] + 0.5, Y[i] + 0.5, txt, fontsize=12, fontweight='bold', color='darkred')
+            label_text = txt
+            if txt == 'P':
+                label_text = f'$P(z_1={self.z1_str})$'
+            ax.text(X[i] + 0.5, Y[i] + 0.5, label_text, fontsize=10, fontweight='bold', color='darkred')
 
         # Formatting the Graph
         ax.axhline(0, color='black', linewidth=1)
@@ -1742,11 +1750,11 @@ class Mat168:
         self.answer = self.k
 
         self.description = (
-            f"The figure displays an Argand diagram with a circle and a vertical line.\n"
-            f"The circle represents the locus defined by $|z - ({self.center_str})| = {self.r}$.\n"
-            f"The line represents the locus of points where the real part of $z$ is $k$.\n"
-            f"The line is tangent to the circle on the right-hand side.\n\n"
-            f"Determine the value of the real number $k$ represented by the vertical line."
+            "The figure displays an Argand diagram with a circle and a vertical line. "
+            "The circle represents the locus defined by $|z - c| = r$. "
+            "The line represents the locus of points where $\\text{Re}(z) = k$. "
+            "The line is tangent to the circle on its right-hand side. "
+            "Based on the labels in the diagram, determine the value of $k$."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1779,6 +1787,7 @@ class Mat168:
         # Create circle patch
         circle = plt.Circle((self.cx, self.cy), self.r, color='blue', fill=False, linewidth=2, label=f'$|z - ({self.center_str})| = {self.r}$');
         ax.add_patch(circle)
+        ax.text(self.cx, self.cy + self.r + 0.5, f'$|z - ({self.center_str})| = {self.r}$', ha='center', color='blue')
         # Plot center point
         ax.plot(self.cx, self.cy, 'bo', markersize=5)
 
@@ -1811,8 +1820,8 @@ class Mat168:
 class Mat169:
     
     def __init__(self):
-        self.real_part = rnd.randint(2, 8)  # a
-        self.imag_part = rnd.randint(2, 8)  # b
+        self.real_part = rnd.randint(2, 15)  # a
+        self.imag_part = rnd.randint(2, 15)  # b
         
         # Define points
         # Origin
@@ -1834,11 +1843,10 @@ class Mat169:
         self.answer = int(self.area)
 
         self.description = (
-            f"The figure shows an Argand diagram with three points plotted: the origin $O$, "
-            f"a point $A$ representing the complex number $z = {self.z_str}$, "
-            f"and a point $B$ representing the complex conjugate $\\bar{{z}}$.\n"
-            f"A shaded triangle connects these three points ($O$, $A$, and $B$).\n\n"
-            f"Calculate the area of the shaded triangle $OAB$."
+            "The figure shows an Argand diagram with three points: the origin $O$, "
+            "point $A$ representing complex number $z$, and point $B$ representing "
+            "its conjugate $\\bar{z}$. A shaded triangle connects these points. "
+            "Using the value of $z$ labeled in the figure, calculate the area of the shaded triangle."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1868,7 +1876,7 @@ class Mat169:
         
         # Label the points
         ax.text(self.O[0] - 0.5, self.O[1], '$O$', fontsize=12, ha='right')
-        ax.text(self.A[0] + 0.3, self.A[1], '$A (z)$', fontsize=12)
+        ax.text(self.A[0] + 0.3, self.A[1], f'$A (z = {self.z_str})$', fontsize=12)
         ax.text(self.B[0] + 0.3, self.B[1], '$B (\\bar{z})$', fontsize=12)
         
         # Draw the Triangle and Shade it
@@ -1906,8 +1914,7 @@ class Mat170:
     
     def __init__(self):
         # Randomize the starting point A on the imaginary axis (0, y_start)
-        # We pick an integer between 2 and 8 to keep the scale reasonable.
-        self.y_start = rnd.randint(2, 8)
+        self.y_start = rnd.randint(2, 20)
         
         # Randomize the angle (argument). 
         # We choose standard angles so the math is "cleaner" for students, 
@@ -1915,7 +1922,10 @@ class Mat170:
         angle_options = [
             (30, r"-\frac{\pi}{6}", np.pi/6),
             (45, r"-\frac{\pi}{4}", np.pi/4),
-            (60, r"-\frac{\pi}{3}", np.pi/3)
+            (60, r"-\frac{\pi}{3}", np.pi/3),
+            (20, r"-\frac{\pi}{9}", np.pi/9),
+            (15, r"-\frac{\pi}{12}", np.pi/12),
+            (75, r"-\frac{5\pi}{12}", 5*np.pi/12)
         ]
         self.deg_val, self.latex_angle, self.rad_val = rnd.choice(angle_options)
         
@@ -1932,13 +1942,11 @@ class Mat170:
         self.answer = round(self.x_intercept, 3)
 
         self.description = (
-            f"The figure shows a ray (half-line) originating from "
-            f"the point $A$ at coordinates $(0, {self.y_start})$ on the imaginary axis. "
-            f"The ray extends downwards and to the right, representing the locus "
-            f"$\\arg(z - {self.y_start}i) = {self.latex_angle}$.\n\n"
-            f"Find the value of the $x$-intercept where this locus, "
-            f"if extended as a full line, would cross the real axis. "
-            f"Round to 3 decimal places."
+            "The figure shows a ray (half-line) representing a locus in the complex plane. "
+            "The ray originates from point $A$ on the imaginary axis and has a specific "
+            "argument angle, as shown in the diagram. "
+            "Find the value of the $x$-intercept where this locus crosses the real axis. "
+            "Round to 3 decimal places."
         )
 
         self.topic = "Pure Mathematics 3"
@@ -1977,7 +1985,8 @@ class Mat170:
         # We plot from x=0 to x=limit_x to show the ray extending past the axis
         x_vals = np.linspace(0, limit_x, 100)
         y_vals = self.m * x_vals + self.y_start
-        ax.plot(x_vals, y_vals, color='blue', linewidth=2, label=f'$arg(z - {self.y_start}i) = {self.latex_angle}$')
+        ax.plot(x_vals, y_vals, color='blue', linewidth=2, label=f'$\\arg(z - {self.y_start}i) = {self.latex_angle}$')
+        ax.text(limit_x*0.5, (self.m*limit_x*0.5 + self.y_start) + 0.5, f'$\\arg(z - {self.y_start}i) = {self.latex_angle}$', rotation=self.deg_val, color='blue')
         
         # Plot Point A
         ax.plot(0, self.y_start, 'ro', zorder=5) # Red dot
@@ -2002,7 +2011,7 @@ class Mat170:
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path)
         plt.close()
-        
+
 class Mat171:
     def __init__(self):
         # Varying forces using randrange_float with step 0.01
@@ -3002,7 +3011,7 @@ class Mat179:
 class Mat180:
     def __init__(self):
         # Configuration: total chairs (n) and the pair of twins
-        self.total_students = rnd.randint(5, 15)
+        self.total_students = rnd.randint(5, 25)
         
         # Calculate permutations: Total - Together
         # Total permutations = n!
@@ -3249,7 +3258,7 @@ class Mat182:
 class Mat183:
     def __init__(self):
         # Range set to provide problem variations as per instructions
-        self.num_members = rnd.randint(8, 15)
+        self.num_members = rnd.randint(6, 25)
         
         # Logic for linear permutation with 2 specific members together:
         # 1. Treat the 2 specific members as 1 block.

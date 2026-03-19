@@ -323,26 +323,26 @@ class Bio006:
         self.snake_energy = round((rnd.randint(8, 12) / 100) * self.lizard_energy, 2)
         self.trophics_energy = [self.maize_energy, self.locust_energy, self.lizard_energy, self.snake_energy]
 
-        indexA = rnd.randint(0, 2)
-        indexB = rnd.randint(indexA + 1, 3)
+        self.indexA = rnd.randint(0, 2)
+        self.indexB = rnd.randint(self.indexA + 1, 3)
 
-        self.trophicA = self.trophics_energy[indexA]
-        self.trophicB = self.trophics_energy[indexB]
+        self.trophicA = self.trophics_energy[self.indexA]
+        self.trophicB = self.trophics_energy[self.indexB]
         self.energy_transfer = (self.trophicB / self.trophicA)
         self.answer = round(self.energy_transfer * 100, 2)
 
-        self.description = f"This diagram shows a food chain. What is the efficiency of energy transfer between {self.trophics_names[indexA] and {self.trophics_names[indexB]}}?"
+        self.description = f"This diagram shows a food chain. What is the efficiency of energy transfer between {self.trophics_names[self.indexA] and {self.trophics_names[self.indexB]}}?"
         self.topic = "Organisms and their environment"
         self.subtopic = "Food chains and food webs"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Energy at }} {self.trophics_names[indexA]} &= {self.trophics_energy[indexA]}\\,\\text{{kJ}}\\\\"
-            f"\\text{{Energy at }} {self.trophics_names[indexB]} &= {self.trophics_energy[indexB]}\\,\\text{{kJ}}\\\\"
+            f"\\text{{Energy at }} {self.trophics_names[self.indexA]} &= {self.trophics_energy[self.indexA]}\\,\\text{{kJ}}\\\\"
+            f"\\text{{Energy at }} {self.trophics_names[self.indexB]} &= {self.trophics_energy[self.indexB]}\\,\\text{{kJ}}\\\\"
             f"\\text{{Efficiency of energy transfer is given by:}} &\\\\"
             f"\\text{{Efficiency}} &= \\left( \\frac{{\\text{{Energy at higher trophic level}}}}{{\\text{{Energy at lower trophic level}}}} \\right) \\times 100\\\\"
-            f"&= \\left( \\frac{{{self.trophics_energy[indexB]}}}{{{self.trophics_energy[indexA]}}} \\right) \\times 100\\\\"
+            f"&= \\left( \\frac{{{self.trophics_energy[self.indexB]}}}{{{self.trophics_energy[self.indexA]}}} \\right) \\times 100\\\\"
             f"&= {round(self.energy_transfer, 10)} \\times 100\\\\"
             f"&= {self.answer}\\%"
             "\\end{aligned}\\]"
@@ -959,7 +959,7 @@ class Bio016:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total observed individuals (n)}} &= {self.total_frequency}\\\\"
-            f"\\text{{Dihybrid cross ratio (Expected)}} &= 9:3:3:1\\\\"
+            f"\\text{{Dihybrid cross ratio}} &= 9:3:3:1\\\\"
             f"\\text{{Total Punnett square boxes}} &= {self.total_count}\\\\"
             f"\\text{{Expected frequency (E) calculation:}} &\\\\"
             f"E_{{{self.dominant_shape_pheno}\\ {self.dominant_color_pheno}}} &= \\frac{{{self.smooth_yellow_count}}}{{{self.total_count}}} \\times {self.total_frequency} = {round(self.expected_smooth_yellow_frequency, 10)}\\\\"
@@ -1408,7 +1408,7 @@ class Bio023:
         self.cells_per_cm3 = self.cells_per_mm3 * 1000
         self.answer = round(self.cells_per_cm3)
 
-        self.description = f"A haemocytometer is used to estimate the population of live yeast in a sample of undiluted cider. The stain methylene blue is added to the sample. Only live yeast cells will take up this stain. This image shows the haemocytometer chamber containing the cider sample when viewed under a light microscope. The depth of the haemocytometer chamber is {self.depth_mm} mm. Calculate the number of live yeast cells in 1 cm³ of the cider sample. Assume that there are no boundary rules, and round the answer to a whole number."
+        self.description = f"A haemocytometer is used to estimate the population of live yeast in a sample of undiluted cider. The stain methylene blue is added to the sample. Only live yeast cells will take up this stain. This image shows the haemocytometer chamber containing the cider sample when viewed under a light microscope. The grid measures {self.grid_length_mm} mm x {self.grid_width_mm} mm and has a depth of {self.depth_mm} mm. Calculate the number of live yeast cells in 1 cm³ of the cider sample. Assume that there are no boundary rules, and round the answer to a whole number."
         self.topic = "Cell structure"
         self.subtopic = "The microscope in cell studies"
         self.source = "OCR H422/03 2016"
@@ -1452,11 +1452,11 @@ class Bio023:
 class Bio024:
 
     def __init__(self):
-        self.total_cells = 100
-        self.interphase = rnd.randint(22, 25)
-        self.prophase = rnd.randint(19, 22)
-        self.metaphase = rnd.randint(22, 25)
-        self.anaphase = rnd.randint(18, 20)
+        self.total_cells = 50
+        self.interphase = rnd.randint(16, 18)
+        self.prophase = rnd.randint(9, 11)
+        self.metaphase = rnd.randint(7, 9)
+        self.anaphase = rnd.randint(7, 9)
         self.telophase = self.total_cells - self.interphase - self.prophase - self.metaphase - self.anaphase
         self.mitosis_cells = self.prophase + self.metaphase + self.anaphase + self.telophase
         self.mitotic_index = self.mitosis_cells / self.total_cells
@@ -1496,8 +1496,8 @@ class Bio024:
             "telophase":  (1488,350, 1825,  731),
         }
 
-        rows, cols = 10, 10
-        cell_w, cell_h = 150, 150
+        rows, cols = 5, 10
+        cell_w, cell_h = 500, 500
 
         sprites = {}
         for phase, bbox in bboxes.items():
