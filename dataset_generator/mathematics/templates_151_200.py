@@ -4361,7 +4361,7 @@ class Mat196:
         self.curriculum = "AS & A Level"
         
         self.reasoning = (
-            "\\[\\begin{aligned}",
+            "\\[\\begin{aligned}"
             f"\\text{{Confidence Level (CL)}} &= {round(self.conf_level_pct, 10)}\\% = {round(self.conf_level, 10)}\\\\"
             f"\\alpha &= 1 - CL = 1 - {round(self.conf_level, 10)} = {round(1 - self.conf_level, 10)}\\\\"
             f"\\text{{Tail Area }} \\left(\\frac{{\\alpha}}{{2}}\\right) &= \\frac{{{round(1 - self.conf_level, 10)}}}{{2}} = {round((1 - self.conf_level) / 2, 10)}\\\\"

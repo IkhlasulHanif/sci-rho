@@ -2976,7 +2976,7 @@ class Mat077:
         self.description = "The diagram shows a right-angled triangle. Calculate the value of $x$."
         self.topic = "Trigonometry"
         self.subtopic = "Right-angled triangles"
-        self.curriculum = "IGCSE", 
+        self.curriculum = "IGCSE"
         self.source = "Adapted from IGCSE June 2025"
 
         # Dynamic Reasoning
