@@ -959,7 +959,7 @@ class Bio016:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total observed individuals (n)}} &= {self.total_frequency}\\\\"
-            f"\\text{{Dihybrid cross ratio (Expected)}} &= 9:3:3:1\\\\"
+            f"\\text{{Dihybrid cross ratio}} &= 9:3:3:1\\\\"
             f"\\text{{Total Punnett square boxes}} &= {self.total_count}\\\\"
             f"\\text{{Expected frequency (E) calculation:}} &\\\\"
             f"E_{{{self.dominant_shape_pheno}\\ {self.dominant_color_pheno}}} &= \\frac{{{self.smooth_yellow_count}}}{{{self.total_count}}} \\times {self.total_frequency} = {round(self.expected_smooth_yellow_frequency, 10)}\\\\"
@@ -1408,7 +1408,7 @@ class Bio023:
         self.cells_per_cm3 = self.cells_per_mm3 * 1000
         self.answer = round(self.cells_per_cm3)
 
-        self.description = f"A haemocytometer is used to estimate the population of live yeast in a sample of undiluted cider. The stain methylene blue is added to the sample. Only live yeast cells will take up this stain. This image shows the haemocytometer chamber containing the cider sample when viewed under a light microscope. The depth of the haemocytometer chamber is {self.depth_mm} mm. Calculate the number of live yeast cells in 1 cm³ of the cider sample. Assume that there are no boundary rules, and round the answer to a whole number."
+        self.description = f"A haemocytometer is used to estimate the population of live yeast in a sample of undiluted cider. The stain methylene blue is added to the sample. Only live yeast cells will take up this stain. This image shows the haemocytometer chamber containing the cider sample when viewed under a light microscope. The grid measures {self.grid_length_mm} mm x {self.grid_width_mm} mm and has a depth of {self.depth_mm} mm. Calculate the number of live yeast cells in 1 cm³ of the cider sample. Assume that there are no boundary rules, and round the answer to a whole number."
         self.topic = "Cell structure"
         self.subtopic = "The microscope in cell studies"
         self.source = "OCR H422/03 2016"
@@ -1452,11 +1452,11 @@ class Bio023:
 class Bio024:
 
     def __init__(self):
-        self.total_cells = 100
-        self.interphase = rnd.randint(22, 25)
-        self.prophase = rnd.randint(19, 22)
-        self.metaphase = rnd.randint(22, 25)
-        self.anaphase = rnd.randint(18, 20)
+        self.total_cells = 50
+        self.interphase = rnd.randint(16, 18)
+        self.prophase = rnd.randint(9, 11)
+        self.metaphase = rnd.randint(7, 9)
+        self.anaphase = rnd.randint(7, 9)
         self.telophase = self.total_cells - self.interphase - self.prophase - self.metaphase - self.anaphase
         self.mitosis_cells = self.prophase + self.metaphase + self.anaphase + self.telophase
         self.mitotic_index = self.mitosis_cells / self.total_cells
@@ -1496,8 +1496,8 @@ class Bio024:
             "telophase":  (1488,350, 1825,  731),
         }
 
-        rows, cols = 10, 10
-        cell_w, cell_h = 150, 150
+        rows, cols = 5, 10
+        cell_w, cell_h = 500, 500
 
         sprites = {}
         for phase, bbox in bboxes.items():
