@@ -1044,11 +1044,11 @@ class Mat012:
 
         # Equations for reasoning
         graph_eq_y = f"y = x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c, '')}"
-        target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c - self.d, '')} = 0"
+        self.target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c - self.d, '')} = 0"
         
         self.description = (
             f"The graph of a quadratic function is shown on the grid. "
-            f"By first determining the equation of the graph, use it to solve ${target_eq}$."
+            f"By first determining the equation of the graph, use it to solve ${self.target_eq}$."
         )
         
         self.topic = "Algebra and Graphs"
