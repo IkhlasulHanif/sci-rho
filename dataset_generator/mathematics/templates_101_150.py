@@ -106,17 +106,17 @@ class Mat102:
         self.faces = [1, 2, 3, 4, 5, 6]
         
         # Select a target face for the question (e.g., face 6)
-        target_face = 6
-        target_freq = self.frequencies[target_face - 1]
+        self.target_face = 6
+        target_freq = self.frequencies[self.target_face - 1]
         
         # Calculate the solution for the question
-        total_rolls_scenario = rnd.randint(2, 10) * 100
-        expected_freq = (target_freq / 100) * total_rolls_scenario
+        self.total_rolls_scenario = rnd.randint(2, 10) * 100
+        expected_freq = (target_freq / 100) * self.total_rolls_scenario
 
         self.answer = int(round(expected_freq, 0))
 
         self.description = (
-            f"Using the relative frequency from the chart, calculate the expected frequency of rolling a {target_face} if the die is rolled {total_rolls_scenario} times."
+            f"Using the relative frequency from the chart, calculate the expected frequency of rolling a {self.target_face} if the die is rolled {self.total_rolls_scenario} times."
         )
 
         self.topic = "Probability"
@@ -125,13 +125,13 @@ class Mat102:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Frequency of rolling a {target_face}}} &= {target_freq}\\\\"
+            f"\\text{{Frequency of rolling a {self.target_face}}} &= {target_freq}\\\\"
             f"\\text{{Total initial rolls}} &= 100\\\\"
             f"\\text{{Relative frequency}} &= \\frac{{\\text{{Frequency}}}}{{\\text{{Total initial rolls}}}}\\\\"
             f"&= \\frac{{{target_freq}}}{{100}}\\\\"
             f"&= {round(target_freq / 100, 10)}\\\\"
             f"\\text{{Expected frequency}} &= \\text{{Relative frequency}} \\times \\text{{Target rolls}}\\\\"
-            f"&= {round(target_freq / 100, 10)} \\times {total_rolls_scenario}\\\\"
+            f"&= {round(target_freq / 100, 10)} \\times {self.total_rolls_scenario}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
