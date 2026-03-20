@@ -2711,7 +2711,7 @@ class Mat028:
         self.answer = round(y_base + height, 2)
         
         # Calculated area will be used in the description
-        area = round(0.5 * base * (self.answer - y_base), 2)
+        self.area = round(0.5 * base * (self.answer - y_base), 2)
         
         # Peak point C(x_peak, k)
         x_peak = rnd.randint(x1, x2)
@@ -2725,7 +2725,7 @@ class Mat028:
         # Implicit description relying on k in the figure
         self.description = (
             f"The diagram shows triangle $ABC$ plotted on a coordinate grid. "
-            f"The area of the triangle is ${area}$ square units. "
+            f"The area of the triangle is ${self.area}$ square units. "
             f"Based on the figure, find the value of $k$."
         )
         
