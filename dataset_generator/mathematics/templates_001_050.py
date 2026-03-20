@@ -4508,10 +4508,10 @@ class Mat045:
         
         name_map = {3: "triangle", 4: "quadrilateral", 5: "pentagon", 
                     6: "hexagon", 7: "heptagon", 8: "octagon", 9: "nonagon"}
-        shape_name = name_map[self.n]
+        self.shape_name = name_map[self.n]
         
         self.description = (
-            f"The diagram shows the interior angles of a {shape_name}, written in terms of $x$. "
+            f"The diagram shows the interior angles of a {self.shape_name}, written in terms of $x$. "
             f"Find the value of $x$."
         )
         self.topic = "Geometry"
@@ -4522,7 +4522,7 @@ class Mat045:
             r"\[\begin{aligned}"
             fr"\text{{The sum of the interior angles of an }} n\text{{-sided polygon is given by:}} \\"
             fr"S &= (n - 2) \times 180^\circ \\"
-            fr"\text{{For a {shape_name} where }} n = {self.n}\text{{:}} \\"
+            fr"\text{{For a {self.shape_name} where }} n = {self.n}\text{{:}} \\"
             fr"S &= ({self.n} - 2) \times 180^\circ \\"
             fr"&= {round((self.n - 2) * 180, 10)}^\circ \\"
             fr"\text{{The sum of the given interior angles in terms of }} x \text{{ is:}} \\"
