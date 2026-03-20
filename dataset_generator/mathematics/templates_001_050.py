@@ -1170,11 +1170,11 @@ class Mat013:
 
         # LaTeX strings for equations
         graph_eq_str = f"y = {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')}"
-        target_eq_str = f"{fmt_poly(T_A, 'x^3', True)}{fmt_poly(T_B, 'x^2')}{fmt_poly(T_C, 'x')}{fmt_poly(T_D, '')} = 0"
+        self.target_eq_str = f"{fmt_poly(T_A, 'x^3', True)}{fmt_poly(T_B, 'x^2')}{fmt_poly(T_C, 'x')}{fmt_poly(T_D, '')} = 0"
         
         self.answer = " or ".join([f"x = {r}" for r in self.target_roots])
         
-        self.description = f"By drawing a suitable straight line on the grid, solve the equation ${target_eq_str}$."
+        self.description = f"By drawing a suitable straight line on the grid, solve the equation ${self.target_eq_str}$."
         self.topic = "Algebra and Graphs"
         self.subtopic = "Graphs of functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 41"
