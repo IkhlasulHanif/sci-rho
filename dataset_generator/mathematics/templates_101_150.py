@@ -1077,8 +1077,8 @@ class Mat114:
         
         # Randomize the query point (x_query)
         # Pick a value somewhere between x1 and x2
-        x_query = rnd.randint(self.x1 + 2, self.x2 - 2)
-        y_query = self.m * x_query + self.c
+        self.x_query = rnd.randint(self.x1 + 2, self.x2 - 2)
+        y_query = self.m * self.x_query + self.c
 
         # Generate "Scatter" data around this line
         # We create random x values and calculate y based on the line + random noise
@@ -1096,7 +1096,7 @@ class Mat114:
 
         self.description = (
             f"Using the line of best fit shown in the figure, calculate the "
-            f"predicted height (in cm) of a plant when {x_query} grams of fertilizer are used. "
+            f"predicted height (in cm) of a plant when {self.x_query} grams of fertilizer are used. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -1121,9 +1121,9 @@ class Mat114:
             f"&= {round(self.c, 10)}\\\\"
             f"\\text{{Equation of the line:}} &\\\\"
             f"y &= {round(self.m, 10)}x + {round(self.c, 10)}\\\\"
-            f"\\text{{Calculate height for }} x = {x_query}\\,\\text{{g:}} &\\\\"
-            f"y &= {round(self.m, 10)}({x_query}) + {round(self.c, 10)}\\\\"
-            f"&= {round(self.m * x_query, 10)} + {round(self.c, 10)}\\\\"
+            f"\\text{{Calculate height for }} x = {self.x_query}\\,\\text{{g:}} &\\\\"
+            f"y &= {round(self.m, 10)}({self.x_query}) + {round(self.c, 10)}\\\\"
+            f"&= {round(self.m * self.x_query, 10)} + {round(self.c, 10)}\\\\"
             f"&= {self.answer}\\,\\text{{cm}}"
             "\\end{aligned}\\]"
         )
@@ -1909,10 +1909,10 @@ class Mat123:
 
         sign_a = '-' if self.a > 0 else '+'
         sign_b = '+' if self.b > 0 else '-'
-        label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
+        self.label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
 
         self.description = (
-            f"The figure illustrates the graph of a quadratic function $y = f(x)$ which has a minimum turning point at the coordinate $({self.h}, {self.k})$. The figure also indicates a second dashed curve representing a transformation {label_g}. "
+            f"The figure illustrates the graph of a quadratic function $y = f(x)$ which has a minimum turning point at the coordinate $({self.h}, {self.k})$. The figure also indicates a second dashed curve representing a transformation {self.label_g}. "
             f"Calculate the $y$-coordinate of the minimum point of the transformed graph $g(x)$."
         )
 
@@ -1960,9 +1960,8 @@ class Mat123:
         # Determine sign for label: f(x - 3) vs f(x + 3)
         sign_a = '-' if self.a > 0 else '+'
         sign_b = '+' if self.b > 0 else '-'
-        label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
         
-        ax.plot(x, g_x, label=label_g, linestyle='--', color='red', linewidth=2)
+        ax.plot(x, g_x, label=self.label_g, linestyle='--', color='red', linewidth=2)
         
         # Formatting
         ax.set_xlabel("$x$", fontsize=12)
@@ -2280,11 +2279,11 @@ class Mat127:
         self.answer = round(answer_ab_squared, 3)
         
         # Format the equation strings for display
-        line_eq = f"y = {self.m}x + {self.c}" if self.c >= 0 else f"y = {self.m}x - {abs(self.c)}"
-        circle_eq = f"x^2 + y^2 = {self.r**2}"
+        self.line_eq = f"y = {self.m}x + {self.c}" if self.c >= 0 else f"y = {self.m}x - {abs(self.c)}"
+        self.circle_eq = f"x^2 + y^2 = {self.r**2}"
 
         self.description = (
-            f"The straight line ${line_eq}$ intersects the circle ${circle_eq}$ "
+            f"The straight line ${self.line_eq}$ intersects the circle ${self.circle_eq}$ "
             f"at two distinct points, $A$ and $B$. "
             f"Calculate the squared length of the chord $AB$ (i.e., find $AB^2$). "
             f"Give your answer correct to 3 decimal places."
@@ -2481,7 +2480,7 @@ class Mat129:
         self.y_c = rnd.randint(self.r + 2, self.r + 20)
         
         # Calculate values for the equation (x - k)^2 + (y - b)^2 = r^2
-        r_squared = self.r**2
+        self.r_squared = self.r**2
         
         # The logic: If a circle in the 1st quadrant touches the y-axis, 
         # the x-coordinate of the center (k) must equal the radius (r).
@@ -2490,7 +2489,7 @@ class Mat129:
         self.answer = self.k_hidden
 
         self.description = (
-            f"A circle with the equation $(x-k)^2 + (y-{self.y_c})^2 = {r_squared}$ "
+            f"A circle with the equation $(x-k)^2 + (y-{self.y_c})^2 = {self.r_squared}$ "
             f"lies entirely in the first quadrant and touches the y-axis at exactly one point. "
             f"Find the value of $k$."
         )
@@ -4231,12 +4230,12 @@ class Mat146:
         
         # Calculate the ratio for the ln(ratio) part of the area
         # Area = (k/a) * [ln(a*k + b) - ln(b)] = (k/a) * ln((ak + b)/b)
-        ratio = round((self.a * self.k_val + self.b) / self.b, 4)
+        self.ratio = round((self.a * self.k_val + self.b) / self.b, 4)
         
         self.description = (
             f"The figure shows the curve $y = f(x)$. The region $R$ is bounded by the curve, "
             f"the $x$-axis, and the lines $x=0$ and $x=k$. If the area of region $R$ is "
-            f"exactly $\\frac{{{self.k}}}{{{self.a}}} \\ln({ratio})$, determine the value of $k$."
+            f"exactly $\\frac{{{self.k}}}{{{self.a}}} \\ln({self.ratio})$, determine the value of $k$."
         )
         
         self.topic = "Pure Mathematics 2"
@@ -4254,9 +4253,9 @@ class Mat146:
             f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln({self.a}k + {self.b}) - \\frac{{{self.k}}}{{{self.a}}} \\ln({self.b}) \\\\"
             f"\\text{{Apply the property of logarithms }} \\ln(A) - \\ln(B) = \\ln\\left(\\frac{{A}}{{B}}\\right): &\\\\"
             f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) \\\\"
-            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({ratio}\\right). \\text{{ Equating the two:}} &\\\\"
-            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({ratio}\\right) \\\\"
-            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {ratio} \\\\"
+            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({self.ratio}\\right). \\text{{ Equating the two:}} &\\\\"
+            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({self.ratio}\\right) \\\\"
+            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {self.ratio} \\\\"
             f"{self.a}k + {self.b} &= {round(self.a * self.k_val + self.b, 10)} \\\\"
             f"{self.a}k &= {round(self.a * self.k_val, 10)} \\\\"
             f"k &= {self.answer}"
