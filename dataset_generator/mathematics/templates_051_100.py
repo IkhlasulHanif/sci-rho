@@ -1097,7 +1097,7 @@ class Mat060:
         else:
             dim_text = f"radius = {self.radius}{self.unit}"
         
-        pi_instruction = {
+        self.pi_instruction = {
             'symbol': "Give your answer in terms of π.",
             '22/7': "Use π = 22/7.",
             '3.14': "Use π = 3.14."
@@ -1107,7 +1107,7 @@ class Mat060:
         
         self.description = (
             f"Calculate the length of the arc of the shaded sector. "
-            f"{pi_instruction} Give your answer correct to 2 decimal places."
+            f"{self.pi_instruction} Give your answer correct to 2 decimal places."
         )
         
         self.topic = "Mensuration"
