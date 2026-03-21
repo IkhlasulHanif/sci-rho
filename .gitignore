@@ -188,3 +188,5 @@ dataset/
 envlinux/
 envlinux2/
 tes.ipynb
+dataset_generator/**/extractor.ipynb
+prompt_template/
