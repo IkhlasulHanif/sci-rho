@@ -78,9 +78,9 @@ def parse_args():
                         help=f"Subjects to include (comma-separated). Options: {available_subjects} or 'all'")
     parser.add_argument("--seed", type=int, default=rnd.randint(0,1000000),
                         help="Random seed (default: random)")
-    parser.add_argument("--debug", type=bool, default=False,
+    parser.add_argument("--debug", action="store_true",
                         help="Activate debug mode (default: False)")
-    parser.add_argument("--exp", type=bool, default=False,
+    parser.add_argument("--exp", action="store_true",
                         help="Generate 10 instances of dataset for experiment (default: False)")
     parser.add_argument("--max_trials", type=int, default=100,
                         help="Maximum attempts to find a unique instance before skipping (default: 100)")
