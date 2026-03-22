@@ -147,20 +147,15 @@ class Phy102:
 
         if self.target == "Q":
             self.answer = sig_figs(self.Q, 3)
-            self.description = (
-                "The graph shows current against time for a conductor.\n"
-                "All relevant values are shown in the diagram.\n"
-                "Determine the charge transferred.\n"
-                "Q = (_) C"
-            )
         else:
             self.answer = sig_figs(self.I, 3)
-            self.description = (
-                "The graph shows current against time for a conductor.\n"
-                "All relevant values are shown in the diagram.\n"
-                "Determine the current.\n"
-                "I = (_) A"
-            )
+
+        self.description = (
+            "The graph shows current against time for a conductor.\n"
+            "All relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Electricity"
         self.subtopic = "Electric current"
@@ -1269,20 +1264,15 @@ class Phy113:
 
         if self.target == "r":
             self.answer = sig_figs(self.r, 3)
-            self.description = (
-                "A variable resistor (VR) is adjusted to change the current in a circuit containing a cell.\n"
-                "For two settings of VR, the current I and the terminal potential difference V are shown in the diagram.\n"
-                "Determine the internal resistance r of the cell.\n"
-                "r = (_) Ω"
-            )
         else:
             self.answer = sig_figs(self.E, 3)
-            self.description = (
-                "A variable resistor (VR) is adjusted to change the current in a circuit containing a cell.\n"
-                "For two settings of VR, the current I and the terminal potential difference V are shown in the diagram.\n"
-                "Determine the emf E of the cell.\n"
-                "E = (_) V"
-            )
+
+        self.description = (
+            "A variable resistor (VR) is adjusted to change the current in a circuit containing a cell.\n"
+            "For two settings of VR, the current I and the terminal potential difference V are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "D.C. circuits"
         self.subtopic = "Practical circuits"
@@ -2246,28 +2236,17 @@ class Phy121:
 
         if self.target == "v":
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "A particle moves with uniform circular motion in a horizontal circle.\n"
-                "The radius r and the period T are shown in the diagram.\n"
-                "Determine the speed of the marker.\n"
-                "v = (_) m s⁻¹"
-            )
         elif self.target == "T":
             self.answer = sig_figs(self.T, 3)
-            self.description = (
-                "A particle moves with uniform circular motion in a horizontal circle.\n"
-                "The radius r and the speed v are shown in the diagram.\n"
-                "Determine the period of the motion.\n"
-                "T = (_) s"
-            )
         else:
             self.answer = sig_figs(self.r, 3)
-            self.description = (
-                "A particle moves with uniform circular motion in a horizontal circle.\n"
-                "The speed v and the period T are shown in the diagram.\n"
-                "Determine the radius of the circle.\n"
-                "r = (_) m"
-            )
+
+        self.description = (
+            "A particle moves with uniform circular motion in a horizontal circle.\n"
+            "The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Motion in a circle"
         self.subtopic = "Kinematics of uniform circular motion"
@@ -2373,28 +2352,17 @@ class Phy122:
 
         if self.target == "omega":
             self.answer = sig_figs(self.omega, 3)
-            self.description = (
-                "A particle moves with uniform circular motion.\n"
-                "It moves from position A to position B in a time interval Δt, as shown.\n"
-                "Determine the angular speed.\n"
-                "ω = (_) rad s⁻¹"
-            )
         elif self.target == "v":
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "A particle moves with uniform circular motion.\n"
-                "It moves from position A to position B in a time interval Δt, as shown.\n"
-                "Determine the speed of the particle.\n"
-                "v = (_) m s⁻¹"
-            )
         else:
             self.answer = sig_figs(self.s, 3)
-            self.description = (
-                "A particle moves with uniform circular motion.\n"
-                "It moves from position A to position B in a time interval Δt, as shown.\n"
-                "Determine the arc length travelled from A to B.\n"
-                "s = (_) m"
-            )
+
+        self.description = (
+            "A particle moves with uniform circular motion.\n"
+            "It moves from position A to position B in a time interval Δt, as shown.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Motion in a circle"
         self.subtopic = "Kinematics of uniform circular motion"
@@ -2520,28 +2488,17 @@ class Phy123:
 
         if self.target == "omega":
             self.answer = sig_figs(self.omega, 3)
-            self.description = (
-                "A turntable rotates at a constant rate.\n"
-                "A point P is at a distance r from the centre, as shown in the diagram.\n"
-                "Determine the angular speed of the turntable.\n"
-                "ω = (_) rad s⁻¹"
-            )
         elif self.target == "v":
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "A turntable rotates at a constant rate.\n"
-                "A point P is at a distance r from the centre, as shown in the diagram.\n"
-                "Determine the speed of point P.\n"
-                "v = (_) m s⁻¹"
-            )
         else:
             self.answer = sig_figs(self.T, 3)
-            self.description = (
-                "A turntable rotates at a constant rate.\n"
-                "Values are shown in the diagram.\n"
-                "Determine the period of rotation.\n"
-                "T = (_) s"
-            )
+
+        self.description = (
+            "A turntable rotates at a constant rate.\n"
+            "The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Motion in a circle"
         self.subtopic = "Kinematics of uniform circular motion"
@@ -2644,28 +2601,17 @@ class Phy124:
 
         if self.target == "a":
             self.answer = sig_figs(self.a, 3)
-            self.description = (
-                "A particle moves at constant speed in a horizontal circle.\n"
-                "The radius r and speed v are shown in the diagram.\n"
-                "Determine the centripetal acceleration.\n"
-                "a = (_) m s⁻²"
-            )
         elif self.target == "v":
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "A particle moves at constant speed in a horizontal circle.\n"
-                "The radius r and centripetal acceleration a are shown in the diagram.\n"
-                "Determine the speed v.\n"
-                "v = (_) m s⁻¹"
-            )
         else:
             self.answer = sig_figs(self.r, 3)
-            self.description = (
-                "A particle moves at constant speed in a horizontal circle.\n"
-                "The speed v and centripetal acceleration a are shown in the diagram.\n"
-                "Determine the radius r.\n"
-                "r = (_) m"
-            )
+
+        self.description = (
+            "A particle moves at constant speed in a horizontal circle.\n"
+            "The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Motion in a circle"
         self.subtopic = "Centripetal acceleration"
@@ -2763,28 +2709,17 @@ class Phy125:
 
         if self.target == "a":
             self.answer = sig_figs(self.a, 3)
-            self.description = (
-                "A particle moves with uniform circular motion.\n"
-                "The radius r and period T are shown in the diagram.\n"
-                "Determine the centripetal acceleration.\n"
-                "a = (_) m s⁻²"
-            )
         elif self.target == "T":
             self.answer = sig_figs(self.T, 3)
-            self.description = (
-                "A particle moves with uniform circular motion.\n"
-                "The radius r and centripetal acceleration a are shown in the diagram.\n"
-                "Determine the period.\n"
-                "T = (_) s"
-            )
         else:
             self.answer = sig_figs(self.r, 3)
-            self.description = (
-                "A particle moves with uniform circular motion.\n"
-                "The period T and centripetal acceleration a are shown in the diagram.\n"
-                "Determine the radius.\n"
-                "r = (_) m"
-            )
+
+        self.description = (
+            "A particle moves with uniform circular motion.\n"
+            "The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Motion in a circle"
         self.subtopic = "Centripetal acceleration"
