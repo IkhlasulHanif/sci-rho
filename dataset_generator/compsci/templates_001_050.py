@@ -1098,24 +1098,33 @@ class Com017:
     def __init__(self):
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
-        self.answer = int(not(not self.input_1 and not self.input_2))
+        self.input_3 = rnd.choice([0, 1])
+        self.input_4 = rnd.choice([0, 1])
+        self.answer = int((self.input_1 and self.input_2 and self.input_3) or (not self.input_1 and self.input_2 and not self.input_3) or (not self.input_4))
         
-        self.description = f"Given this image of a logic circuit, determine the output of OUT1 if IN1 is {self.input_1} and IN2 is {self.input_2}."
+        self.description = f"Given this image of a logic circuit, determine the output of O if A is {self.input_1}, B is {self.input_2}, C is {self.input_3}, and D is {self.input_4}."
         self.topic = "Boolean logic"
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Input 1 (IN1)}} &= {self.input_1}\\\\"
-            f"\\text{{Input 2 (IN2)}} &= {self.input_2}\\\\"
-            f"\\text{{1. Process through first layer (NOT gates):}} &\\\\"
-            f"A &= \\neg \\text{{IN1}} = {int(not self.input_1)}\\\\"
-            f"B &= \\neg \\text{{IN2}} = {int(not self.input_2)}\\\\"
-            f"\\text{{2. Process through second layer (AND gate):}} &\\\\"
-            f"C &= A \\wedge B = {int(not self.input_1)} \\wedge {int(not self.input_2)} = {int(not self.input_1 and not self.input_2)}\\\\"
-            f"\\text{{3. Process through final layer (NOT gate):}} &\\\\"
-            f"\\text{{OUT1}} &= \\neg C = \\neg({int(not self.input_1 and not self.input_2)})\\\\"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"O &= (A \\land B \\land C) \\lor (\\neg A \\land B \\land \\neg C) \\lor (\\neg D)\\\\"
+            f"&= ({self.input_1} \\land {self.input_2} \\land {self.input_3}) \\lor (\\neg {self.input_1} \\land {self.input_2} \\land \\neg {self.input_3}) \\lor (\\neg {self.input_4})\\\\"
+            f"\\text{{First, evaluate the NOT operations:}}\\\\"
+            f"\\neg A &= \\neg {self.input_1} = {round(int(not self.input_1), 10)}\\\\"
+            f"\\neg C &= \\neg {self.input_3} = {round(int(not self.input_3), 10)}\\\\"
+            f"\\neg D &= \\neg {self.input_4} = {round(int(not self.input_4), 10)}\\\\"
+            f"\\text{{Next, evaluate each AND term:}}\\\\"
+            f"A \\land B \\land C &= {self.input_1} \\land {self.input_2} \\land {self.input_3} = {round(int(self.input_1 and self.input_2 and self.input_3), 10)}\\\\"
+            f"\\neg A \\land B \\land \\neg C &= {round(int(not self.input_1), 10)} \\land {self.input_2} \\land {round(int(not self.input_3), 10)} = {round(int((not self.input_1) and self.input_2 and (not self.input_3)), 10)}\\\\"
+            f"\\text{{Now substitute into the OR expression:}}\\\\"
+            f"O &= {round(int(self.input_1 and self.input_2 and self.input_3), 10)} \\lor {round(int((not self.input_1) and self.input_2 and (not self.input_3)), 10)} \\lor {round(int(not self.input_4), 10)}\\\\"
+            f"&= {int((self.input_1 and self.input_2 and self.input_3) or ((not self.input_1) and self.input_2 and (not self.input_3)) or (not self.input_4))}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -1135,27 +1144,35 @@ class Com018:
     def __init__(self):
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
-        self.answer = int(not((not(self.input_1 or self.input_1)) or (not(self.input_2 or self.input_2))))
+        self.input_3 = rnd.choice([0, 1])
+        self.input_4 = rnd.choice([0, 1])
+        self.answer = int((self.input_1 or not self.input_3 or not self.input_4) and (self.input_2 or not self.input_4) and (not self.input_1 or self.input_3 or not self.input_4))
         
-        self.description = f"Given this image of a logic circuit, determine the output of Z if Input A is {self.input_1} and B is {self.input_2}."
+        self.description = f"Given this image of a logic circuit, determine the output of O if Input A is {self.input_1}, B is {self.input_2}, C is {self.input_3}, and D is {self.input_4}."
         self.topic = "Boolean logic"
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Input A}} &= {self.input_1}\\\\"
-            f"\\text{{Input B}} &= {self.input_2}\\\\"
-            f"\\text{{1. Analyze the first stage (NOR gates acting as NOT gates):}} &\\\\"
-            f"\\text{{NOT A}} &= \\neg(A \\lor A) = \\neg({self.input_1} \\lor {self.input_1}) = {int(not self.input_1)}\\\\"
-            f"\\text{{NOT B}} &= \\neg(B \\lor B) = \\neg({self.input_2} \\lor {self.input_2}) = {int(not self.input_2)}\\\\"
-            f"\\text{{2. Analyze the second stage (NOR gate):}} &\\\\"
-            f"\\text{{Output Z}} &= \\neg(\\text{{NOT A}} \\lor \\text{{NOT B}})\\\\"
-            f"&= \\neg({int(not self.input_1)} \\lor {int(not self.input_2)})\\\\"
-            f"&= \\neg({int(not self.input_1 or not self.input_2)})\\\\"
-            f"&= {int(self.answer)}\\\\"
-            f"\\text{{Note: By De Morgan's Law, }} \\neg(\\neg A \\lor \\neg B) \\iff A \\land B &\\\\"
-            f"\\text{{Final result Z}} &= {int(self.answer)}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"O &= (A \\lor \\neg C \\lor \\neg D) \\land (B \\lor \\neg D) \\land (\\neg A \\lor C \\lor \\neg D)\\\\"
+            f"&= ({self.input_1} \\lor \\neg {self.input_3} \\lor \\neg {self.input_4}) \\land ({self.input_2} \\lor \\neg {self.input_4}) \\land (\\neg {self.input_1} \\lor {self.input_3} \\lor \\neg {self.input_4})\\\\"
+            f"\\text{{First, evaluate the NOT operations:}}\\\\"
+            f"\\neg A &= \\neg {self.input_1} = {round(int(not self.input_1), 10)}\\\\"
+            f"\\neg C &= \\neg {self.input_3} = {round(int(not self.input_3), 10)}\\\\"
+            f"\\neg D &= \\neg {self.input_4} = {round(int(not self.input_4), 10)}\\\\"
+            f"\\text{{Next, evaluate each OR term:}}\\\\"
+            f"A \\lor \\neg C \\lor \\neg D &= {self.input_1} \\lor {round(int(not self.input_3), 10)} \\lor {round(int(not self.input_4), 10)} = {round(int(self.input_1 or (not self.input_3) or (not self.input_4)), 10)}\\\\"
+            f"B \\lor \\neg D &= {self.input_2} \\lor {round(int(not self.input_4), 10)} = {round(int(self.input_2 or (not self.input_4)), 10)}\\\\"
+            f"\\neg A \\lor C \\lor \\neg D &= {round(int(not self.input_1), 10)} \\lor {self.input_3} \\lor {round(int(not self.input_4), 10)} = {round(int((not self.input_1) or self.input_3 or (not self.input_4)), 10)}\\\\"
+            f"\\text{{Finally, evaluate the AND of all terms:}}\\\\"
+            f"O &= {round(int(self.input_1 or (not self.input_3) or (not self.input_4)), 10)} \\land {round(int(self.input_2 or (not self.input_4)), 10)} \\land {round(int((not self.input_1) or self.input_3 or (not self.input_4)), 10)}\\\\"
+            f"&= {int((self.input_1 or (not self.input_3) or (not self.input_4)) and (self.input_2 or (not self.input_4)) and ((not self.input_1) or self.input_3 or (not self.input_4)))}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
         
@@ -1174,29 +1191,47 @@ class Com019:
     def __init__(self):
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
-        self.answer = int(not((not(self.input_1 or self.input_2)) or (not(self.input_1 or self.input_2))))
+        self.input_3 = rnd.choice([0, 1])
+        self.input_4 = rnd.choice([0, 1])
+        self.answer = int(not(not(not(not(self.input_1 or self.input_1) or not(self.input_4 or self.input_4)) or not(not(self.input_2 or self.input_2) or not(self.input_4 or self.input_4)) or not(not(self.input_3 or self.input_3) or not(self.input_4 or self.input_4))) or not(not(not(self.input_1 or self.input_1) or not(self.input_4 or self.input_4)) or not(not(self.input_2 or self.input_2) or not(self.input_4 or self.input_4)) or not(not(self.input_3 or self.input_3) or not(self.input_4 or self.input_4)))))
         
-        self.description = f"Given this image of a logic circuit, what is the output of Z if Input X is {self.input_1} and Y is {self.input_2}?"
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, C is {self.input_3}, and D is {self.input_4}?"
         self.topic = "Boolean logic"
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Input X}} &= {self.input_1}\\\\"
-            f"\\text{{Input Y}} &= {self.input_2}\\\\"
-            f"\\text{{1. Analyze the first stage (NOR gate):}} &\\\\"
-            f"\\text{{Intermediate Output (A)}} &= \\neg(X \\lor Y)\\\\"
-            f"&= \\neg({self.input_1} \\lor {self.input_2})\\\\"
-            f"&= {int(not(self.input_1 or self.input_2))}\\\\"
-            f"\\text{{2. Analyze the second stage (NOR gate acting as a NOT gate):}} &\\\\"
-            f"\\text{{Output Z}} &= \\neg(A \\lor A)\\\\"
-            f"&= \\neg({int(not(self.input_1 or self.input_2))} \\lor {int(not(self.input_1 or self.input_2))})\\\\"
-            f"&= {self.answer}\\\\"
-            f"\\text{{Summary: The circuit simplifies to (X OR Y) using two NOR gates.}} &\\\\"
-            f"\\text{{Final Result Z}} &= {self.answer}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"\\text{{From the circuit, each leftmost gate is a NOR gate with both inputs tied together, so:}}\\\\"
+            f"\\overline{{A + A}} &= \\overline{{A}} = {round(int(not (self.input_1 or self.input_1)), 10)}\\\\"
+            f"\\overline{{B + B}} &= \\overline{{B}} = {round(int(not (self.input_2 or self.input_2)), 10)}\\\\"
+            f"\\overline{{C + C}} &= \\overline{{C}} = {round(int(not (self.input_3 or self.input_3)), 10)}\\\\"
+            f"\\overline{{D + D}} &= \\overline{{D}} = {round(int(not (self.input_4 or self.input_4)), 10)}\\\\"
+            f"\\text{{The next three gates are NOR gates combining }} \\overline{{A}},\\,\\overline{{B}},\\,\\overline{{C}} \\text{{ with }} \\overline{{D}}\\text{{:}}\\\\"
+            f"X_1 &= \\overline{{\\overline{{A}} + \\overline{{D}}}}\\\\"
+            f"&= \\overline{{{round(int(not (self.input_1 or self.input_1)), 10)} + {round(int(not (self.input_4 or self.input_4)), 10)}}}\\\\"
+            f"&= {round(int(not ((not (self.input_1 or self.input_1)) or (not (self.input_4 or self.input_4)))), 10)}\\\\"
+            f"X_2 &= \\overline{{\\overline{{B}} + \\overline{{D}}}}\\\\"
+            f"&= \\overline{{{round(int(not (self.input_2 or self.input_2)), 10)} + {round(int(not (self.input_4 or self.input_4)), 10)}}}\\\\"
+            f"&= {round(int(not ((not (self.input_2 or self.input_2)) or (not (self.input_4 or self.input_4)))), 10)}\\\\"
+            f"X_3 &= \\overline{{\\overline{{C}} + \\overline{{D}}}}\\\\"
+            f"&= \\overline{{{round(int(not (self.input_3 or self.input_3)), 10)} + {round(int(not (self.input_4 or self.input_4)), 10)}}}\\\\"
+            f"&= {round(int(not ((not (self.input_3 or self.input_3)) or (not (self.input_4 or self.input_4)))), 10)}\\\\"
+            f"\\text{{These three outputs then enter a 3-input NOR gate:}}\\\\"
+            f"Y &= \\overline{{X_1 + X_2 + X_3}}\\\\"
+            f"&= \\overline{{{round(int(not ((not (self.input_1 or self.input_1)) or (not (self.input_4 or self.input_4)))), 10)} + {round(int(not ((not (self.input_2 or self.input_2)) or (not (self.input_4 or self.input_4)))), 10)} + {round(int(not ((not (self.input_3 or self.input_3)) or (not (self.input_4 or self.input_4)))), 10)}}}\\\\"
+            f"&= {round(int(not (not ((not (self.input_1 or self.input_1)) or (not (self.input_4 or self.input_4))) or not ((not (self.input_2 or self.input_2)) or (not (self.input_4 or self.input_4))) or not ((not (self.input_3 or self.input_3)) or (not (self.input_4 or self.input_4))))), 10)}\\\\"
+            f"\\text{{The final gate is again a NOR gate with both inputs tied together, so it inverts }} Y\\text{{:}}\\\\"
+            f"F &= \\overline{{Y + Y}}\\\\"
+            f"&= \\overline{{Y}}\\\\"
+            f"&= \\overline{{{round(int(not (not ((not (self.input_1 or self.input_1)) or (not (self.input_4 or self.input_4))) or not ((not (self.input_2 or self.input_2)) or (not (self.input_4 or self.input_4))) or not ((not (self.input_3 or self.input_3)) or (not (self.input_4 or self.input_4))))), 10)}}}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
-        )
+)
         
     def generate(self, num):
         img = Image.open('compsci/temp_image/Com019temp.png')
@@ -1214,33 +1249,35 @@ class Com020:
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
         self.input_3 = rnd.choice([0, 1])
-        self.answer = int(((self.input_1 or self.input_2) and self.input_3) or (self.input_1 and self.input_2))
+        self.input_4 = rnd.choice([0, 1])
+        self.answer = int((not self.input_2 and not self.input_4) or (not self.input_2 and not self.input_3) or (self.input_1 and self.input_3 and not self.input_4))
         
-        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, and C is {self.input_3}?"
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, C is {self.input_3}, and D is {self.input_4}?"
         self.topic = "Boolean logic"
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
-            f"\\text{{1. Analyze the first OR gate (A OR B):}} & \\\\"
-            f"G_1 &= A \\lor B \\\\"
-            f"&= {self.input_1} \\lor {self.input_2} \\\\"
-            f"&= {int(self.input_1 or self.input_2)} \\\\"
-            f"\\text{{2. Analyze the first AND gate (G1 AND C):}} & \\\\"
-            f"G_2 &= G_1 \\land C \\\\"
-            f"&= {int(self.input_1 or self.input_2)} \\land {self.input_3} \\\\"
-            f"&= {int((self.input_1 or self.input_2) and self.input_3)} \\\\"
-            f"\\text{{3. Analyze the second AND gate (A AND B):}} & \\\\"
-            f"G_3 &= A \\land B \\\\"
-            f"&= {self.input_1} \\land {self.input_2} \\\\"
-            f"&= {int(self.input_1 and self.input_2)} \\\\"
-            f"\\text{{4. Analyze the final OR gate (G2 OR G3):}} & \\\\"
-            f"F &= G_2 \\lor G_3 \\\\"
-            f"&= {int((self.input_1 or self.input_2) and self.input_3)} \\lor {int(self.input_1 and self.input_2)} \\\\"
-            f"&= {self.answer} \\\\"
-            f"\\text{{Final Output F}} &= {self.answer}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"\\text{{From the circuit, the output is the OR of three AND branches:}}\\\\"
+            f"F &= (\\neg B \\land \\neg D) \\lor (\\neg B \\land \\neg C) \\lor (A \\land C \\land \\neg D)\\\\"
+            f"&= (\\neg {self.input_2} \\land \\neg {self.input_4}) \\lor (\\neg {self.input_2} \\land \\neg {self.input_3}) \\lor ({self.input_1} \\land {self.input_3} \\land \\neg {self.input_4})\\\\"
+            f"\\text{{First, evaluate the NOT operations:}}\\\\"
+            f"\\neg B &= \\neg {self.input_2} = {round(int(not self.input_2), 10)}\\\\"
+            f"\\neg C &= \\neg {self.input_3} = {round(int(not self.input_3), 10)}\\\\"
+            f"\\neg D &= \\neg {self.input_4} = {round(int(not self.input_4), 10)}\\\\"
+            f"\\text{{Next, evaluate each AND branch:}}\\\\"
+            f"\\neg B \\land \\neg D &= {round(int(not self.input_2), 10)} \\land {round(int(not self.input_4), 10)} = {round(int((not self.input_2) and (not self.input_4)), 10)}\\\\"
+            f"\\neg B \\land \\neg C &= {round(int(not self.input_2), 10)} \\land {round(int(not self.input_3), 10)} = {round(int((not self.input_2) and (not self.input_3)), 10)}\\\\"
+            f"A \\land C \\land \\neg D &= {self.input_1} \\land {self.input_3} \\land {round(int(not self.input_4), 10)} = {round(int(self.input_1 and self.input_3 and (not self.input_4)), 10)}\\\\"
+            f"\\text{{Finally, evaluate the OR of these three results:}}\\\\"
+            f"F &= {round(int((not self.input_2) and (not self.input_4)), 10)} \\lor {round(int((not self.input_2) and (not self.input_3)), 10)} \\lor {round(int(self.input_1 and self.input_3 and (not self.input_4)), 10)}\\\\"
+            f"&= {int(((not self.input_2) and (not self.input_4)) or ((not self.input_2) and (not self.input_3)) or (self.input_1 and self.input_3 and (not self.input_4)))}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
         
@@ -1260,34 +1297,35 @@ class Com021:
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
         self.input_3 = rnd.choice([0, 1])
-        self.answer = int((not((not self.input_1) and self.input_2)) or ((not self.input_2) and self.input_3))
+        self.input_4 = rnd.choice([0, 1])
+        self.answer = int((self.input_1 and self.input_2) or (not self.input_1 and not self.input_2 and not self.input_3) or (not self.input_4 and not self.input_4))
         
-        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, and C is {self.input_3}?"
+        self.description = f"Given this image of a logic circuit, what is the output of F if Input A is {self.input_1}, B is {self.input_2}, C is {self.input_3}, and D is {self.input_4}?"
         self.topic = "Boolean logic"
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
-            f"\\text{{1. Analyze the first branch:}} & \\\\"
-            f"\\text{{Let }} G_1 &= \\neg A \\land B \\\\"
-            f"&= \\neg({self.input_1}) \\land {self.input_2} \\\\"
-            f"&= {int(not self.input_1)} \\land {self.input_2} \\\\"
-            f"&= {int((not self.input_1) and self.input_2)} \\\\"
-            f"G_2 &= \\neg G_1 \\\\"
-            f"&= \\neg({int((not self.input_1) and self.input_2)}) \\\\"
-            f"&= {int(not((not self.input_1) and self.input_2))} \\\\"
-            f"\\text{{2. Analyze the second branch (Lower logic):}} & \\\\"
-            f"G_3 &= \\neg B \\land C \\\\"
-            f"&= \\neg({self.input_2}) \\land {self.input_3} \\\\"
-            f"&= {int(not self.input_2)} \\land {self.input_3} \\\\"
-            f"&= {int((not self.input_2) and self.input_3)} \\\\"
-            f"\\text{{3. Final Output (OR operation):}} & \\\\"
-            f"F &= G_2 \\lor G_3 \\\\"
-            f"&= {int(not((not self.input_1) and self.input_2))} \\lor {int((not self.input_2) and self.input_3)} \\\\"
-            f"&= {self.answer} \\\\"
-            f"\\text{{Final Result }} F &= {self.answer}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"F &= (A \\land B) \\lor (\\neg A \\land \\neg B \\land \\neg C) \\lor (\\neg D \\land \\neg D)\\\\"
+            f"&= ({self.input_1} \\land {self.input_2}) \\lor (\\neg {self.input_1} \\land \\neg {self.input_2} \\land \\neg {self.input_3}) \\lor (\\neg {self.input_4} \\land \\neg {self.input_4})\\\\"
+            f"\\text{{First, evaluate the NOT operations:}}\\\\"
+            f"\\neg A &= \\neg {self.input_1} = {round(int(not self.input_1), 10)}\\\\"
+            f"\\neg B &= \\neg {self.input_2} = {round(int(not self.input_2), 10)}\\\\"
+            f"\\neg C &= \\neg {self.input_3} = {round(int(not self.input_3), 10)}\\\\"
+            f"\\neg D &= \\neg {self.input_4} = {round(int(not self.input_4), 10)}\\\\"
+            f"\\text{{Next, evaluate each AND branch:}}\\\\"
+            f"A \\land B &= {self.input_1} \\land {self.input_2} = {round(int(self.input_1 and self.input_2), 10)}\\\\"
+            f"\\neg A \\land \\neg B \\land \\neg C &= {round(int(not self.input_1), 10)} \\land {round(int(not self.input_2), 10)} \\land {round(int(not self.input_3), 10)} = {round(int((not self.input_1) and (not self.input_2) and (not self.input_3)), 10)}\\\\"
+            f"\\neg D \\land \\neg D &= {round(int(not self.input_4), 10)} \\land {round(int(not self.input_4), 10)} = {round(int((not self.input_4) and (not self.input_4)), 10)}\\\\"
+            f"\\text{{Finally, evaluate the OR of the three branch outputs:}}\\\\"
+            f"F &= {round(int(self.input_1 and self.input_2), 10)} \\lor {round(int((not self.input_1) and (not self.input_2) and (not self.input_3)), 10)} \\lor {round(int((not self.input_4) and (not self.input_4)), 10)}\\\\"
+            f"&= {int((self.input_1 and self.input_2) or ((not self.input_1) and (not self.input_2) and (not self.input_3)) or ((not self.input_4) and (not self.input_4)))}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1426,26 +1464,40 @@ class Com024:
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
         self.input_3 = rnd.choice([0, 1])
-        self.answer = (not(self.input_1 or self.input_2)) ^ self.input_3
+        self.input_4 = rnd.choice([0, 1])
+        self.answer = int(((self.input_1 and self.input_2) or (not self.input_3 and not self.input_4)) or ((self.input_1 or self.input_2) or (not self.input_3 or not self.input_4)))
         
-        self.description = f"A computer scientist has created the following logic circuit shown in this image. What is the output of P if Input A is given {self.input_1}, B is given {self.input_2}, and C is given {self.input_3}?"
+        self.description = f"A computer scientist has created the following logic circuit shown in this image. What is the output of F if Input A is given {self.input_1}, B is given {self.input_2}, C is given {self.input_3}, and D is given {self.input_4}?"
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
-        self.source = "Adapted from OCR H446/01 12 June 2023"
+        self.source = "Original"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Inputs: }} A &= {self.input_1}, B = {self.input_2}, C = {self.input_3} \\\\"
-            "\\text{{1. Analyze the first stage (NOR gate):}} & \\\\"
-            "Q &= \\neg(A \\lor B) \\\\"
-            f"&= \\neg({self.input_1} \\lor {self.input_2}) \\\\"
-            f"&= \\neg({int(self.input_1 or self.input_2)}) \\\\"
-            f"&= {int(not(self.input_1 or self.input_2))} \\\\"
-            "\\text{{2. Analyze the final stage (XOR gate):}} & \\\\"
-            "P &= Q \\oplus C \\\\"
-            f"&= {int(not(self.input_1 or self.input_2))} \\oplus {self.input_3} \\\\"
-            f"&= {int(self.answer)} \\\\"
-            f"\\text{{Final Result P}} &= {int(self.answer)}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"F &= \\bigl((A \\land B) \\lor (\\neg C \\land \\neg D)\\bigr) \\lor \\bigl((A \\lor B) \\lor (\\neg C \\lor \\neg D)\\bigr)\\\\"
+            f"&= \\bigl(({self.input_1} \\land {self.input_2}) \\lor (\\neg {self.input_3} \\land \\neg {self.input_4})\\bigr) \\lor \\bigl(({self.input_1} \\lor {self.input_2}) \\lor (\\neg {self.input_3} \\lor \\neg {self.input_4})\\bigr)\\\\"
+            f"\\text{{First, evaluate the NOT operations:}}\\\\"
+            f"\\neg C &= \\neg {self.input_3} = {round(int(not self.input_3), 10)}\\\\"
+            f"\\neg D &= \\neg {self.input_4} = {round(int(not self.input_4), 10)}\\\\"
+            f"\\text{{Next, evaluate the AND terms:}}\\\\"
+            f"A \\land B &= {self.input_1} \\land {self.input_2} = {round(int(self.input_1 and self.input_2), 10)}\\\\"
+            f"\\neg C \\land \\neg D &= {round(int(not self.input_3), 10)} \\land {round(int(not self.input_4), 10)} = {round(int((not self.input_3) and (not self.input_4)), 10)}\\\\"
+            f"\\text{{Now evaluate the first OR block:}}\\\\"
+            f"(A \\land B) \\lor (\\neg C \\land \\neg D) &= {round(int(self.input_1 and self.input_2), 10)} \\lor {round(int((not self.input_3) and (not self.input_4)), 10)}\\\\"
+            f"&= {round(int((self.input_1 and self.input_2) or ((not self.input_3) and (not self.input_4))), 10)}\\\\"
+            f"\\text{{Next, evaluate the remaining OR terms:}}\\\\"
+            f"A \\lor B &= {self.input_1} \\lor {self.input_2} = {round(int(self.input_1 or self.input_2), 10)}\\\\"
+            f"\\neg C \\lor \\neg D &= {round(int(not self.input_3), 10)} \\lor {round(int(not self.input_4), 10)} = {round(int((not self.input_3) or (not self.input_4)), 10)}\\\\"
+            f"\\text{{Now evaluate the second OR block:}}\\\\"
+            f"(A \\lor B) \\lor (\\neg C \\lor \\neg D) &= {round(int(self.input_1 or self.input_2), 10)} \\lor {round(int((not self.input_3) or (not self.input_4)), 10)}\\\\"
+            f"&= {round(int((self.input_1 or self.input_2) or ((not self.input_3) or (not self.input_4))), 10)}\\\\"
+            f"\\text{{Finally, evaluate the overall OR:}}\\\\"
+            f"F &= {round(int((self.input_1 and self.input_2) or ((not self.input_3) and (not self.input_4))), 10)} \\lor {round(int((self.input_1 or self.input_2) or ((not self.input_3) or (not self.input_4))), 10)}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1464,36 +1516,35 @@ class Com025:
     def __init__(self):
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
-        self.S = self.input_1 ^ self.input_2
-        self.C = self.input_1 and self.input_2
-        self.concatenated = str(self.S) + str(self.C)
-        self.answer = int(self.concatenated, 2)
+        self.input_3 = rnd.choice([0, 1])
+        self.input_4 = rnd.choice([0, 1])
+        self.input_5 = rnd.choice([0, 1])
+        self.answer = int(not((self.input_1 ^ self.input_2 ^ self.input_3) and self.input_4) ^ self.input_5)
         
-        self.description = f"The diagram shows a logic circuit where D0 will be given the input {self.input_1} and D1 will be given the input {self.input_2}. The circuit produces outputs S and C, which are concatenated to form a two-bit binary number with S as the most significant bit. Convert this two-bit binary number into its decimal value and state this as the final answer."
+        self.description = f"Look at the following logic circuit shown in this image. What will be the output of Z if Input A is given {self.input_1}, B is given {self.input_2}, C is given {self.input_3}, D is given {self.input_4}, and E is given {self.input_5}?"
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Original"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Input }} D_0 &= {self.input_1} \\\\"
-            f"\\text{{Input }} D_1 &= {self.input_2} \\\\"
-            "\\text{{1. Calculate S (Sum) using XOR logic:}} & \\\\"
-            "S &= D_0 \\oplus D_1 \\\\"
-            f"&= {self.input_1} \\oplus {self.input_2} \\\\"
-            f"&= {self.S} \\\\"
-            "\\text{{2. Calculate C (Carry) using AND logic:}} & \\\\"
-            "C &= D_0 \\wedge D_1 \\\\"
-            f"&= {self.input_1} \\wedge {self.input_2} \\\\"
-            f"&= {int(self.C)} \\\\"
-            "\\text{{3. Form the two-bit binary number (S as MSB):}} & \\\\"
-            f"\\text{{Binary}} &= (S, C)_2 \\\\"
-            f"&= ({self.S}{int(self.C)})_2 \\\\"
-            "\\text{{4. Convert binary to decimal:}} & \\\\"
-            f"\\text{{Value}} &= (S \\times 2^1) + (C \\times 2^0) \\\\"
-            f"&= ({self.S} \\times 2) + ({int(self.C)} \\times 1) \\\\"
-            f"&= {self.answer} \\\\"
-            f"\\text{{Final Result}} &= {self.answer}"
+            f"A &= {self.input_1}\\\\"
+            f"B &= {self.input_2}\\\\"
+            f"C &= {self.input_3}\\\\"
+            f"D &= {self.input_4}\\\\"
+            f"E &= {self.input_5}\\\\"
+            f"Z &= \\neg\\bigl((A \\oplus B \\oplus C) \\land D\\bigr) \\oplus E\\\\"
+            f"&= \\neg\\bigl(({self.input_1} \\oplus {self.input_2} \\oplus {self.input_3}) \\land {self.input_4}\\bigr) \\oplus {self.input_5}\\\\"
+            f"\\text{{First, evaluate the XOR chain from the first two gates:}}\\\\"
+            f"A \\oplus B &= {self.input_1} \\oplus {self.input_2} = {round(self.input_1 ^ self.input_2, 10)}\\\\"
+            f"(A \\oplus B) \\oplus C &= {round(self.input_1 ^ self.input_2, 10)} \\oplus {self.input_3} = {round(self.input_1 ^ self.input_2 ^ self.input_3, 10)}\\\\"
+            f"\\text{{Next, evaluate the AND with }} D\\text{{:}}\\\\"
+            f"(A \\oplus B \\oplus C) \\land D &= {round(self.input_1 ^ self.input_2 ^ self.input_3, 10)} \\land {self.input_4} = {round(int((self.input_1 ^ self.input_2 ^ self.input_3) and self.input_4), 10)}\\\\"
+            f"\\text{{Now apply the NOT gate:}}\\\\"
+            f"\\neg\\bigl((A \\oplus B \\oplus C) \\land D\\bigr) &= \\neg {round(int((self.input_1 ^ self.input_2 ^ self.input_3) and self.input_4), 10)} = {round(int(not ((self.input_1 ^ self.input_2 ^ self.input_3) and self.input_4)), 10)}\\\\"
+            f"\\text{{Finally, XOR this result with }} E\\text{{:}}\\\\"
+            f"Z &= {round(int(not ((self.input_1 ^ self.input_2 ^ self.input_3) and self.input_4)), 10)} \\oplus {self.input_5}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1513,38 +1564,54 @@ class Com026:
         self.input_1 = rnd.choice([0, 1])
         self.input_2 = rnd.choice([0, 1])
         self.input_3 = rnd.choice([0, 1])
-        self.S = (self.input_1 ^ self.input_2) ^ self.input_3
-        self.C = ((self.input_1 ^ self.input_2) and self.input_3) or (self.input_1 and self.input_2)
-        self.concatenated = str(self.S) + str(self.C)
+        self.input_4 = rnd.choice([0, 1])
+        self.D2 = int((not self.input_1 and not self.input_3 and not self.input_4) or self.input_2)
+        self.D1 = int(not self.input_4)
+        self.D0 = int((not self.input_1 and self.input_4) or (self.input_1 and not self.input_2))
+        self.Y = int((self.input_2 and self.input_3) or (self.input_1 and self.input_3))
+        self.concatenated = str(self.D2) + str(self.D1) + str(self.D0) + str(self.Y)
         self.answer = int(self.concatenated, 2)
         
-        self.description = f"The diagram shows a logic circuit where X is given the input {self.input_1}, Y is given the input {self.input_2} and Z is given the input {self.input_3}. The circuit produces outputs S and C, which are concatenated to form a two-bit binary number with S as the most significant bit. Convert this two-bit binary number into its decimal value and state this as the final answer."
+        self.description = f"The diagram shows a logic circuit where Y2 is given the input {self.input_1}, Y1 is given the input {self.input_2}, Y0 is given the input {self.input_3}, and X is given the input {self.input_4}. The circuit produces outputs D2, D1, D0, and Y, which are concatenated to form a two-bit binary number with D2 as the most significant bit. Convert this two-bit binary number into its decimal value and state this as the final answer."
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Original"
         self.curriculum = "AS & A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Inputs: }} X &= {self.input_1}, Y = {self.input_2}, Z = {self.input_3} \\\\"
-            "\\text{{1. Calculate S (Sum) using XOR logic:}} & \\\\"
-            "S &= (X \\oplus Y) \\oplus Z \\\\"
-            f"&= ({self.input_1} \\oplus {self.input_2}) \\oplus {self.input_3} \\\\"
-            f"&= {int(self.input_1 ^ self.input_2)} \\oplus {self.input_3} \\\\"
-            f"&= {self.S} \\\\"
-            "\\text{{2. Calculate C (Carry) using logic:}} & \\\\"
-            "C &= ((X \\oplus Y) \\land Z) \\lor (X \\land Y) \\\\"
-            f"&= (({self.input_1} \\oplus {self.input_2}) \\land {self.input_3}) \\lor ({self.input_1} \\land {self.input_2}) \\\\"
-            f"&= ({int(self.input_1 ^ self.input_2)} \\land {self.input_3}) \\lor {int(self.input_1 and self.input_2)} \\\\"
-            f"&= {int((self.input_1 ^ self.input_2) and self.input_3)} \\lor {int(self.input_1 and self.input_2)} \\\\"
-            f"&= {int(self.C)} \\\\"
-            "\\text{{3. Form the two-bit binary number (S as MSB):}} & \\\\"
-            "\\text{{Binary}} &= (S, C)_2 \\\\"
-            f"&= ({self.S}{int(self.C)})_2 \\\\"
-            "\\text{{4. Convert binary to decimal:}} & \\\\"
-            "\\text{{Value}} &= (S \\times 2^1) + (C \\times 2^0) \\\\"
-            f"&= ({self.S} \\times 2) + ({int(self.C)} \\times 1) \\\\"
-            f"&= {int(str(self.S) + str(int(self.C)), 2)} \\\\"
-            f"\\text{{Final Result}} &= {self.answer}"
+            f"Y_2 &= {self.input_1}\\\\"
+            f"Y_1 &= {self.input_2}\\\\"
+            f"Y_0 &= {self.input_3}\\\\"
+            f"X &= {self.input_4}\\\\"
+            f"\\text{{From the circuit, the four output bits are:}}\\\\"
+            f"D_2 &= (\\neg Y_2 \\land \\neg Y_0 \\land \\neg X) \\lor Y_1\\\\"
+            f"D_1 &= \\neg X\\\\"
+            f"D_0 &= (\\neg Y_2 \\land X) \\lor (Y_2 \\land \\neg Y_1)\\\\"
+            f"Y &= (Y_1 \\land Y_0) \\lor (Y_2 \\land Y_0)\\\\"
+            f"\\text{{First, evaluate the NOT operations:}}\\\\"
+            f"\\neg Y_2 &= \\neg {self.input_1} = {round(int(not self.input_1), 10)}\\\\"
+            f"\\neg Y_1 &= \\neg {self.input_2} = {round(int(not self.input_2), 10)}\\\\"
+            f"\\neg Y_0 &= \\neg {self.input_3} = {round(int(not self.input_3), 10)}\\\\"
+            f"\\neg X &= \\neg {self.input_4} = {round(int(not self.input_4), 10)}\\\\"
+            f"\\text{{Now compute }} D_2\\text{{:}}\\\\"
+            f"(\\neg Y_2 \\land \\neg Y_0 \\land \\neg X) &= {round(int(not self.input_1), 10)} \\land {round(int(not self.input_3), 10)} \\land {round(int(not self.input_4), 10)} = {round(int((not self.input_1) and (not self.input_3) and (not self.input_4)), 10)}\\\\"
+            f"D_2 &= {round(int((not self.input_1) and (not self.input_3) and (not self.input_4)), 10)} \\lor {self.input_2} = {round(self.D2, 10)}\\\\"
+            f"\\text{{Now compute }} D_1\\text{{:}}\\\\"
+            f"D_1 &= \\neg X = {round(self.D1, 10)}\\\\"
+            f"\\text{{Now compute }} D_0\\text{{:}}\\\\"
+            f"(\\neg Y_2 \\land X) &= {round(int(not self.input_1), 10)} \\land {self.input_4} = {round(int((not self.input_1) and self.input_4), 10)}\\\\"
+            f"(Y_2 \\land \\neg Y_1) &= {self.input_1} \\land {round(int(not self.input_2), 10)} = {round(int(self.input_1 and (not self.input_2)), 10)}\\\\"
+            f"D_0 &= {round(int((not self.input_1) and self.input_4), 10)} \\lor {round(int(self.input_1 and (not self.input_2)), 10)} = {round(self.D0, 10)}\\\\"
+            f"\\text{{Now compute }} Y\\text{{:}}\\\\"
+            f"(Y_1 \\land Y_0) &= {self.input_2} \\land {self.input_3} = {round(int(self.input_2 and self.input_3), 10)}\\\\"
+            f"(Y_2 \\land Y_0) &= {self.input_1} \\land {self.input_3} = {round(int(self.input_1 and self.input_3), 10)}\\\\"
+            f"Y &= {round(int(self.input_2 and self.input_3), 10)} \\lor {round(int(self.input_1 and self.input_3), 10)} = {round(self.Y, 10)}\\\\"
+            f"\\text{{So the concatenated binary number is:}}\\\\"
+            f"D_2D_1D_0Y &= {self.D2}{self.D1}{self.D0}{self.Y}\\\\"
+            f"\\text{{Convert this binary number to decimal:}}\\\\"
+            f"{self.D2}{self.D1}{self.D0}{self.Y}_2 &= {self.D2} \\cdot 2^3 + {self.D1} \\cdot 2^2 + {self.D0} \\cdot 2^1 + {self.Y} \\cdot 2^0\\\\"
+            f"&= {round(self.D2 * 2**3, 10)} + {round(self.D1 * 2**2, 10)} + {round(self.D0 * 2**1, 10)} + {round(self.Y * 2**0, 10)}\\\\"
+            f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
 
