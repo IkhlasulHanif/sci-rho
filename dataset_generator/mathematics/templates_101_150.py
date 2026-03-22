@@ -168,24 +168,24 @@ class Mat103:
     
     def __init__(self):
         # M: First catch (marked and released)
-        M = rnd.randint(10, 40)
+        self.M = rnd.randint(10, 40)
         
         # n: Second catch (total fish in the net)
         self.n = rnd.randint(20, 50)
         
         # m: Recaptured (marked fish found in the second catch)
         # Ensure m is reasonable (less than n and less than M)
-        self.m = rnd.randint(3, min(15, M-1, self.n-1))
+        self.m = rnd.randint(3, min(15, self.M-1, self.n-1))
         
         # Calculate uncaptured in the second catch
         n_uncaptured = self.n - self.m
 
-        approx = (M * self.n) / self.m
+        approx = (self.M * self.n) / self.m
 
         self.answer = int(round(approx, 0))
 
         self.description = (
-            f"A ranger catches {M} fish from the lake, marks them with a tag, and releases them. "
+            f"A ranger catches {self.M} fish from the lake, marks them with a tag, and releases them. "
             f"Later, the ranger catches a new sample (shown in the figure above). "
             f"Using the relative frequency of marked fish in the second catch, "
             "estimate the total expected number of fish in the lake."
@@ -197,15 +197,15 @@ class Mat103:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Marked fish in first catch }} (M) &= {M}\\\\"
+            f"\\text{{Marked fish in first catch }} (M) &= {self.M}\\\\"
             f"\\text{{Total fish in second catch }} (n) &= {self.n}\\\\"
             f"\\text{{Recaptured marked fish }} (m) &= {self.m}\\\\"
             f"\\text{{Using the capture-recapture formula:}} &\\\\"
             f"\\frac{{m}}{{n}} &= \\frac{{M}}{{N}}\\\\"
             f"N &= \\frac{{M \\times n}}{{m}}\\\\"
-            f"&= \\frac{{{M} \\times {self.n}}}{{{self.m}}}\\\\"
-            f"&= \\frac{{{M * self.n}}}{{{self.m}}}\\\\"
-            f"&= {round((M * self.n) / self.m, 10)}\\\\"
+            f"&= \\frac{{{self.M} \\times {self.n}}}{{{self.m}}}\\\\"
+            f"&= \\frac{{{self.M * self.n}}}{{{self.m}}}\\\\"
+            f"&= {round((self.M * self.n) / self.m, 10)}\\\\"
             f"N &\\approx {self.answer}"
             "\\end{aligned}\\]"
         )
