@@ -39,31 +39,61 @@ def get_file_hash(filepath: str):
         print(f"  [ERROR] Could not hash image {filepath}: {e}")
         return None
 
-def get_template_classes(subject: str):
+def get_template_classes(subject: str, multi: bool = False):
     """
-    Dynamically import all <subject>/templates_*.py and return all template classes
-    where the class name ends with 3 digits.
+    Dynamically import template classes based on the mode.
+    If multi=False, loads from templates_*.py and looks for classes ending in 3 digits.
+    If multi=True, loads from <subject>_problems.py and looks for classes ending in _multi.
     """
     subject_path = os.path.join(subject)
     template_classes = []
+    
+    # Temporarily add the subject path to sys.path so inner imports like 
+    # 'from templates_001_050 import *' work correctly inside the target file.
+    original_sys_path = sys.path.copy()
+    sys.path.insert(0, os.path.abspath(subject_path))
 
-    # Loop through files (e.g., templates_001_050.py)
-    for filename in os.listdir(subject_path):
-        if filename.startswith("templates_") and filename.endswith(".py"):
+    try:
+        if multi:
+            # MULTILINGUAL MODE: Target the combined problems file
+            filename = f"{subject}_problems.py"
             filepath = os.path.join(subject_path, filename)
-            module_name = f"{subject}.{filename[:-3]}"  # (e.g., subject.templates_001_050)
             
+            if not os.path.exists(filepath):
+                print(f"  [WARNING] Multilingual file '{filepath}' not found. Skipping subject.")
+                return []
+                
+            module_name = f"{subject}.{subject}_problems"
             spec = importlib.util.spec_from_file_location(module_name, filepath)
-            if spec is None:
-                continue  # Skip bad files
-            
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+            if spec is not None:
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
 
-            # Collect classes with last 3 characters as digits
-            for name, obj in inspect.getmembers(module, inspect.isclass):
-                if re.match(r".*\d{3}$", name):  # Ends with exactly 3 digits
-                    template_classes.append(obj)
+                # Collect classes with names ending in '_multi'
+                for name, obj in inspect.getmembers(module, inspect.isclass):
+                    if re.match(r".*\d{3}_multi$", name):
+                        template_classes.append(obj)
+        else:
+            # STANDARD MODE: Loop through standard templates files
+            for filename in os.listdir(subject_path):
+                if filename.startswith("templates_") and filename.endswith(".py"):
+                    filepath = os.path.join(subject_path, filename)
+                    module_name = f"{subject}.{filename[:-3]}"  # (e.g., subject.templates_001_050)
+                    
+                    spec = importlib.util.spec_from_file_location(module_name, filepath)
+                    if spec is None:
+                        continue  # Skip bad files
+                    
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+
+                    # Collect classes with last 3 characters as digits
+                    for name, obj in inspect.getmembers(module, inspect.isclass):
+                        if re.match(r".*\d{3}$", name):  # Ends with exactly 3 digits
+                            template_classes.append(obj)
+    finally:
+        # Restore original path
+        sys.path = original_sys_path
 
     return template_classes
 
@@ -82,6 +112,8 @@ def parse_args():
                         help="Activate debug mode (default: False)")
     parser.add_argument("--exp", action="store_true",
                         help="Generate 10 instances of dataset for experiment (default: False)")
+    parser.add_argument("--multi", action="store_true",
+                        help="Generate multilingual dataset using <subject>_problems.py (default: False)")
     parser.add_argument("--max_trials", type=int, default=100,
                         help="Maximum attempts to find a unique instance before skipping (default: 100)")
     
@@ -98,17 +130,20 @@ def parse_args():
                 print(f"Error: subject '{s}' is not valid. Choose from {available_subjects} or 'all'.")
                 sys.exit(1)
 
-    return subjects, args.seed, args.debug, args.exp, args.max_trials
+    return subjects, args.seed, args.debug, args.exp, args.multi, args.max_trials
 
 if __name__ == "__main__":
     start_time = time.perf_counter()
 
-    subjects, seed, debug, exp, max_trials = parse_args()
+    subjects, seed, debug, exp, multi, max_trials = parse_args()
 
     print("Dataset generation started")
     print(f"Master Seed: {seed}")
+    
+    if multi:
+        print("RUNNING IN MULTILINGUAL MODE (--multi)")
     if debug:
-        print("RUNNING ON DEBUG MODE")
+        print("RUNNING ON DEBUG MODE (--debug)")
     
     SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
     PROJECT_ROOT = SCRIPT_DIR.parent
@@ -135,7 +170,12 @@ if __name__ == "__main__":
         staging_folder = PROJECT_ROOT / "dataset" / subject
         staging_folder.mkdir(parents=True, exist_ok=True)
         
-        all_classes = get_template_classes(subject)
+        # Pass the multi flag to dynamically load the correct classes
+        all_classes = get_template_classes(subject, multi)
+        
+        if not all_classes:
+            continue # Skip to next subject if no classes were found
+            
         count = 1
         
         # --- NEW: Lists to track both types of failures ---
@@ -221,8 +261,8 @@ if __name__ == "__main__":
                     if staging_img_path.exists():
                         shutil.copy2(staging_img_path, target_img_path)
 
-                # Store JSON data in memory
-                datasets_data[index][f"{count}"] = {
+                # Store baseline JSON data in memory
+                temp_data = {
                     "description": instance.description,
                     "topic": instance.topic,
                     "subtopic": instance.subtopic,
@@ -232,6 +272,14 @@ if __name__ == "__main__":
                     "reasoning": instance.reasoning,
                     "image": os.path.join("image", f"image{count}.png")
                 }
+                
+                # --- NEW: Dynamically inject multilingual translations if available ---
+                if multi:
+                    for attr_name in dir(instance):
+                        if attr_name.startswith("description_") and not attr_name.startswith("__"):
+                            temp_data[attr_name] = getattr(instance, attr_name)
+
+                datasets_data[index][f"{count}"] = temp_data
 
                 if debug:
                     debug_file_path = debug_folder_path / f"{count}.txt"
@@ -260,7 +308,7 @@ if __name__ == "__main__":
             
             # Write JSON
             with open(json_path, 'w', encoding="utf-8") as file:
-                json.dump(datasets_data[index], file, indent=4)
+                json.dump(datasets_data[index], file, indent=4, ensure_ascii=False)
                 
             # Write Seed
             with open(seed_path, "w", encoding="utf-8") as file:
