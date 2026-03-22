@@ -2352,7 +2352,7 @@ class Mat174:
         acceleration = resultant_down / self.mass
         
         # Ensure acceleration is positive for downward motion from rest
-        if acceleration <= 0:
+        while acceleration <= 0:
             self.mass += 10.0
             normal = self.mass * g * math.cos(rad)
             friction = self.mu * normal
