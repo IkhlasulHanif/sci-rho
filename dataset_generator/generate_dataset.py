@@ -11,6 +11,7 @@ import time
 import hashlib
 import pathlib
 import traceback
+import pandas as pd
 
 from biology.helper import *
 from chemistry.helper import *
@@ -313,6 +314,27 @@ if __name__ == "__main__":
             # Write Seed
             with open(seed_path, "w", encoding="utf-8") as file:
                 file.write(str(seed + index))
+
+        # --- NEW: Write all instances into a single .xlsx file ---
+        if exp:
+            excel_path = PROJECT_ROOT / "experiment" / "sample" / f"{subject}_dataset.xlsx"
+        else:
+            excel_path = staging_folder / "dataset.xlsx"
+            
+        try:
+            with pd.ExcelWriter(excel_path) as writer:
+                for index in range(num_of_loop):
+                    # Convert the dictionary to a pandas DataFrame
+                    df = pd.DataFrame.from_dict(datasets_data[index], orient='index')
+                    df.index.name = 'No'
+                    df.reset_index(inplace=True)
+                    
+                    # Write to a specific sheet (e.g., Instance_00, Instance_01)
+                    sheet_name = f"Instance_{index:02d}"
+                    df.to_excel(writer, sheet_name=sheet_name, index=False)
+            print(f"  [INFO] Saved Excel dataset to {excel_path}")
+        except Exception as e:
+            print(f"  [ERROR] Could not save Excel file: {e}")
 
         # --- NEW: Write the log files if any errors were captured ---
         if exceeded_trials_log:
