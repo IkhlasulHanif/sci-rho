@@ -1812,23 +1812,13 @@ class Phy069:
         else:
             self.answer = f"{sig_figs(abs(self.vA), 3)} m s⁻¹ to the right"
 
-        # Description changes depending on target
-        if self.target == "B":
-            self.description = (
-                f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
-                "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
-                f"Fragment A moves to the right (its speed and masses for both fragments are shown in the image).\n"
-                "Determine the speed and direction of fragment B.\n"
-                "Speed of B = (_) m s⁻¹, direction = (_). Answer format: (_) m s⁻¹ to the (left/right)"
-            )
-        else:
-            self.description = (
-                f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
-                "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
-                f"Fragment B moves to the left (its speed and masses for both fragments are shown in the image).\n"
-                f"Determine the speed and direction of fragment A.\n"
-                "Speed of A = (_) m s⁻¹, direction = (_). Answer format: (_) m s⁻¹ to the (left/right)"
-            )
+        self.description = (
+            f"An object of total mass {self.m_total} kg is initially at rest on a smooth horizontal surface. "
+            "It explodes into two fragments A and B which move in opposite directions (see diagram).\n"
+            "The fragment masses and the known speed are shown in the diagram.\n"
+            "Determine the speed and direction of the other fragment.\n"
+            "Answer format: (_) m s⁻¹ to the (left/right)"
+        )
 
         self.topic = "Dynamics"
         self.subtopic = "Linear momentum and its conservation"
@@ -2160,28 +2150,19 @@ class Phy072:
 
         if self.target == "tau":
             self.answer = float(f"{self.tau:.3g}")
-            self.description = (
-                "Two equal and opposite forces form a couple as shown. The force magnitude and separation are shown in the diagram.\n"
-                "Determine the torque of the couple.\n"
-                "Torque = (_) N m"
-            )
             self.unknown_label = "τ = ?"
         elif self.target == "F":
             self.answer = float(f"{self.F:.3g}")
-            self.description = (
-                "Two equal and opposite forces form a couple as shown. The torque and separation are shown in the diagram.\n"
-                "Determine the magnitude of each force.\n"
-                "Force magnitude = (_) N"
-            )
             self.unknown_label = "F = ?"
         else:
             self.answer = float(f"{self.d:.3g}")
-            self.description = (
-                "Two equal and opposite forces form a couple as shown. The torque and force magnitude are shown in the diagram.\n"
-                "Determine the perpendicular separation between the forces.\n"
-                "Separation = (_) m"
-            )
             self.unknown_label = "d = ?"
+
+        self.description = (
+            "Two equal and opposite forces form a couple as shown. All required values are shown in the diagram.\n"
+            "Determine the missing quantity indicated by ?.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Forces, density and pressure"
         self.subtopic = "Turning effects of forces"
@@ -2300,18 +2281,14 @@ class Phy073:
         self.target = rnd.choice(["T1", "T2"])
         if self.target == "T1":
             self.answer = float(f"{self.T1:.3g}")
-            self.description = (
-                "A small ring is in equilibrium under three coplanar forces as shown. The mass and angles are shown in the diagram.\n"
-                "Take g = 9.81 m s⁻². Determine the tension T₁ in the left string.\n"
-                "T₁ = (_) N"
-            )
         else:
             self.answer = float(f"{self.T2:.3g}")
-            self.description = (
-                "A small ring is in equilibrium under three coplanar forces as shown. The mass and angles are shown in the diagram.\n"
-                "Take g = 9.81 m s⁻². Determine the tension T₂ in the right string.\n"
-                "T₂ = (_) N"
-            )
+
+        self.description = (
+            "A small ring is in equilibrium under three coplanar forces as shown. The mass and angles are shown in the diagram.\n"
+            "Take g = 9.81 m s⁻². Determine the missing tension.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Forces, density and pressure"
         self.subtopic = "Equilibrium of forces"
@@ -2419,18 +2396,14 @@ class Phy074:
         self.target = rnd.choice(["RA", "RB"])
         if self.target == "RA":
             self.answer = float(f"{self.RA:.3g}")
-            self.description = (
-                "A uniform beam is in equilibrium supported at A and B. The loads and distances are shown in the diagram.\n"
-                "Determine the vertical reaction at support A.\n"
-                "R_A = (_) N"
-            )
         else:
             self.answer = float(f"{self.RB:.3g}")
-            self.description = (
-                "A uniform beam is in equilibrium supported at A and B. The loads and distances are shown in the diagram.\n"
-                "Determine the vertical reaction at support B.\n"
-                "R_B = (_) N"
-            )
+
+        self.description = (
+            "A uniform beam is in equilibrium supported at A and B. The loads and distances are shown in the diagram.\n"
+            "Determine the missing vertical reaction.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Forces, density and pressure"
         self.subtopic = "Equilibrium of forces"
@@ -2545,18 +2518,14 @@ class Phy075:
 
         if self.target == "dp":
             self.answer = float(f"{(self.dp/1000):.3g}")  # kPa
-            self.description = (
-                "Two points A and B are at different depths in a liquid. The density and vertical separation are shown in the diagram.\n"
-                "Take g = 9.81 m s⁻². Determine the pressure difference p_B − p_A.\n"
-                "p_B − p_A = (_) kPa"
-            )
         else:
             self.answer = float(f"{self.dh:.3g}")  # m
-            self.description = (
-                "Two points A and B are in a liquid. The density of the liquid and the pressure difference p_B − p_A are shown in the diagram.\n"
-                "Take g = 9.81 m s⁻². Determine the vertical separation Δh between A and B.\n"
-                "Δh = (_) m"
-            )
+
+        self.description = (
+            "Two points A and B are in a liquid. All required values are shown in the diagram.\n"
+            "Take g = 9.81 m s⁻². Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Forces, density and pressure"
         self.subtopic = "Density and pressure"
@@ -2669,18 +2638,14 @@ class Phy076:
 
         if self.target == "T":
             self.answer = float(f"{self.T:.3g}")
-            self.description = (
-                "A cube is fully submerged in a liquid and held at rest by a light string as shown. The cube dimensions, mass and liquid density are shown in the diagram.\n"
-                "Take g = 9.81 m s⁻². Determine the tension in the string.\n"
-                "T = (_) N"
-            )
         else:
             self.answer = float(f"{self.U:.3g}")
-            self.description = (
-                "A cube is fully submerged in a liquid as shown. The cube dimensions and liquid density are shown in the diagram.\n"
-                "Take g = 9.81 m s⁻². Determine the upthrust acting on the cube.\n"
-                "Upthrust = (_) N"
-            )
+
+        self.description = (
+            "A cube is fully submerged in a liquid and held at rest by a light string as shown. The relevant values are shown in the diagram.\n"
+            "Take g = 9.81 m s⁻². Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Forces, density and pressure"
         self.subtopic = "Density and pressure"
@@ -2943,28 +2908,16 @@ class Phy078:
 
         if self.target == "eta":
             self.answer = sig_figs(self.eta * 100, 3)  # %
-            self.description = (
-                "A motor lifts a load vertically at constant speed. The load mass (m), lifting height (h), input power (P) and time (t) "
-                "are shown in the diagram.\n"
-                "Determine the efficiency of the motor.\n"
-                "η = (_) %"
-            )
         elif self.target == "t":
             self.answer = sig_figs(self.t, 3)  # s
-            self.description = (
-                "A motor lifts a load vertically at constant speed. The load mass (m), lifting height (h), input power (P) and efficiency (η) "
-                "are shown in the diagram.\n"
-                "Determine the time taken for the lift.\n"
-                "t = (_) s"
-            )
         else:
             self.answer = sig_figs(self.P, 3)  # W
-            self.description = (
-                "A motor lifts a load vertically at constant speed. The load mass (m), lifting height (h), time (t) and efficiency (η) "
-                "are shown in the diagram.\n"
-                "Determine the input power of the motor.\n"
-                "P = (_) W"
-            )
+
+        self.description = (
+            "A motor lifts a load vertically at constant speed. The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Work, energy and power"
         self.subtopic = "Energy conservation"
@@ -3098,28 +3051,16 @@ class Phy079:
 
         if self.target == "F":
             self.answer = sig_figs(self.F, 3)
-            self.description = (
-                "A car moves on a level road and is brought to rest by a constant braking force. The mass, initial speed "
-                "and stopping distance are shown in the diagram.\n"
-                "Determine the magnitude of the braking force.\n"
-                "F = (_) N"
-            )
         elif self.target == "s":
             self.answer = sig_figs(self.s, 3)
-            self.description = (
-                "A car moves on a level road and is brought to rest by a constant braking force. The mass, initial speed "
-                "and braking force are shown in the diagram.\n"
-                "Determine the stopping distance.\n"
-                "s = (_) m"
-            )
         else:
             self.answer = sig_figs(self.u, 3)
-            self.description = (
-                "A car moves on a level road and is brought to rest by a constant braking force. The mass, braking force "
-                "and stopping distance are shown in the diagram.\n"
-                "Determine the initial speed of the car.\n"
-                "u = (_) m s⁻¹"
-            )
+
+        self.description = (
+            "A car moves on a level road and is brought to rest by a constant braking force. The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Work, energy and power"
         self.subtopic = "Energy conservation"
@@ -3242,18 +3183,14 @@ class Phy080:
 
         if self.target == "h":
             self.answer = sig_figs(self.h, 3)
-            self.description = (
-                "A small ball is projected vertically upwards. The launch speed and mass are shown in the diagram.\n"
-                "Neglect air resistance. Determine the maximum vertical height gained above the launch point.\n"
-                "h = (_) m"
-            )
         else:
             self.answer = sig_figs(self.u, 3)
-            self.description = (
-                "A small ball is projected vertically upwards. The maximum vertical height gained and mass are shown in the diagram.\n"
-                "Neglect air resistance. Determine the launch speed.\n"
-                "u = (_) m s⁻¹"
-            )
+
+        self.description = (
+            "A small ball is projected vertically upwards. The relevant values are shown in the diagram.\n"
+            "Neglect air resistance. Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Work, energy and power"
         self.subtopic = "Gravitational potential energy and kinetic energy"
@@ -3561,20 +3498,15 @@ class Phy082:
 
         if self.target == "W":
             self.answer = sig_figs(self.W, 3)
-            self.description = (
-                "The graph shows how the resultant force varies with displacement x from 0 to s. "
-                "All required values are shown in the diagram.\n"
-                "Determine the work done by the force from x = 0 to x = s.\n"
-                "W = (_) J"
-            )
         else:
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "The graph shows how the resultant force varies with displacement x from 0 to s. A trolley of mass m starts from rest "
-                "on a smooth horizontal surface. All required values are shown in the diagram.\n"
-                "Determine the speed of the trolley after moving through displacement s.\n"
-                "v = (_) m s⁻¹"
-            )
+
+        self.description = (
+            "The graph shows how the resultant force varies with displacement x from 0 to s. "
+            "A trolley of mass m starts from rest on a smooth horizontal surface, and all required values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Work, energy and power"
         self.subtopic = "Energy conservation"
@@ -3701,18 +3633,14 @@ class Phy083:
 
         if self.target == "stress":
             self.answer = sig_figs(self.sigma_MPa, 3)
-            self.description = (
-                "A wire is in tension. The tensile force and wire diameter are shown in the diagram.\n"
-                "Determine the tensile stress in the wire.\n"
-                "σ = (_) MPa"
-            )
         else:
             self.answer = sig_figs(self.F, 3)
-            self.description = (
-                "A wire is in tension. The tensile stress and wire diameter are shown in the diagram.\n"
-                "Determine the tension (tensile force) in the wire.\n"
-                f"{self.force_symbol} = (_) N"
-            )
+
+        self.description = (
+            "A wire is in tension. All required values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Deformation of solids"
         self.subtopic = "Stress and strain"
@@ -4174,25 +4102,16 @@ class Phy088:
 
         if self.target == "v":
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
-                "Determine the wave speed.\n"
-                "v = (_) m s⁻¹"
-            )
         elif self.target == "f":
             self.answer = sig_figs(self.f, 3)
-            self.description = (
-                "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
-                "Determine the frequency.\n"
-                "f = (_) Hz"
-            )
         else:
             self.answer = sig_figs(self.lam, 3)
-            self.description = (
-                "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
-                "Determine the wavelength.\n"
-                "λ = (_) m"
-            )
+
+        self.description = (
+            "A progressive wave is shown. Two of the quantities f, λ and v are given in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Waves"
         self.subtopic = "Progressive waves"
@@ -4299,18 +4218,14 @@ class Phy089:
 
         if self.target == "phi":
             self.answer = sig_figs(self.phi, 3)
-            self.description = (
-                "A snapshot of a progressive wave is shown. The wavelength and separation of points A and B are shown in the diagram.\n"
-                "Determine the phase difference between A and B.\n"
-                "phase difference = (_) rad"
-            )
         else:
             self.answer = sig_figs(self.dx, 3)
-            self.description = (
-                "A snapshot of a progressive wave is shown. The wavelength and the phase difference between points A and B are shown in the diagram.\n"
-                "Determine the separation Δx between A and B.\n"
-                "Δx = (_) m"
-            )
+
+        self.description = (
+            "A snapshot of a progressive wave is shown. The relevant values for points A and B are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Waves"
         self.subtopic = "Progressive waves"
@@ -4538,20 +4453,15 @@ class Phy091:
 
         if self.target == "f_obs":
             self.answer = self.f_obs
-            self.description = (
-                "A sound source is stationary and an observer moves as shown.\n"
-                "All required values are shown in the diagram.\n"
-                "Determine the frequency heard by the observer.\n"
-                "f = (_) Hz"
-            )
         else:
             self.answer = sig_figs(self.vo, 3)
-            self.description = (
-                "A sound source is stationary and an observer moves as shown.\n"
-                "All required values are shown in the diagram.\n"
-                "Determine the speed of the observer.\n"
-                "vₒ = (_) m s⁻¹"
-            )
+
+        self.description = (
+            "A sound source is stationary and an observer moves as shown.\n"
+            "All required values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Waves"
         self.subtopic = "Doppler effect for sound waves"
@@ -4675,22 +4585,17 @@ class Phy092:
 
         if self.target == "f_obs":
             self.answer = self.f_obs
-            self.description = (
-                "A sound source and an observer move towards each other as shown.\n"
-                "All required values are shown in the diagram.\n"
-                "Determine the frequency heard by the observer.\n"
-                "f = (_) Hz"
-            )
         else:
             # For consistency with what is shown, compute v_s from displayed values
             self.vs = self.v_sound - (self.f0 * (self.v_sound + self.vo) / self.f_obs)
             self.answer = sig_figs(self.vs, 3)
-            self.description = (
-                "A sound source and an observer move towards each other as shown.\n"
-                "All required values are shown in the diagram.\n"
-                "Determine the speed of the source.\n"
-                "vₛ = (_) m s⁻¹"
-            )
+
+        self.description = (
+            "A sound source and an observer move towards each other as shown.\n"
+            "All required values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Waves"
         self.subtopic = "Doppler effect for sound waves"
@@ -4810,18 +4715,14 @@ class Phy093:
 
         if self.target == "I":
             self.answer = sig_figs(self.I_disp, 3)
-            self.description = (
-                "Unpolarised light passes through two polaroids. The intensity and the angle between the polaroid axes are shown in the diagram.\n"
-                "Determine the transmitted intensity after the second polaroid.\n"
-                "I = (_) W m⁻²"
-            )
         else:
             self.answer = self.theta  # chosen from neat set
-            self.description = (
-                "Unpolarised light passes through two polaroids. The incident intensity and the transmitted intensity are shown in the diagram.\n"
-                "Determine the angle θ between the transmission axes.\n"
-                "θ = (_)°"
-            )
+
+        self.description = (
+            "Unpolarised light passes through two polaroids. All required values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Waves"
         self.subtopic = "Polarisation"
@@ -4946,25 +4847,16 @@ class Phy094:
 
         if self.target == "f":
             self.answer = sig_figs(self.f, 3)
-            self.description = (
-                "A stationary wave is set up on a stretched string fixed at both ends. The pattern and values are shown in the diagram.\n"
-                "Determine the frequency of the wave.\n"
-                "f = (_) Hz"
-            )
         elif self.target == "lam":
             self.answer = sig_figs(self.lam, 3)
-            self.description = (
-                "A stationary wave is set up on a stretched string fixed at both ends. The pattern and values are shown in the diagram.\n"
-                "Determine the wavelength of the progressive waves forming the stationary wave.\n"
-                "λ = (_) m"
-            )
         else:
             self.answer = self.n
-            self.description = (
-                "A stationary wave is set up on a stretched string fixed at both ends. Values are shown in the diagram.\n"
-                "Determine the harmonic number n (number of half-wavelengths along the string).\n"
-                "n = (_)"
-            )
+
+        self.description = (
+            "A stationary wave is set up on a stretched string fixed at both ends. The pattern and values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Superposition"
         self.subtopic = "Stationary waves"
@@ -5071,11 +4963,6 @@ class Phy095:
                 if 80 <= self.f <= 1500:
                     break
             self.answer = sig_figs(self.f, 3)
-            self.description = (
-                "A tube is closed at one end and open at the other. The stationary-wave pattern and values are shown in the diagram.\n"
-                "Determine the resonant frequency.\n"
-                "f = (_) Hz"
-            )
         else:
             # Choose f, m then calculate L (keeps values tidy)
             while True:
@@ -5085,11 +4972,12 @@ class Phy095:
                 if 0.20 <= self.L <= 1.50:
                     break
             self.answer = sig_figs(self.L, 3)
-            self.description = (
-                "A tube is closed at one end and open at the other. The stationary-wave pattern and values are shown in the diagram.\n"
-                "Determine the length of the air column.\n"
-                "L = (_) m"
-            )
+
+        self.description = (
+            "A tube is closed at one end and open at the other. The stationary-wave pattern and values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Superposition"
         self.subtopic = "Stationary waves"
@@ -5207,18 +5095,14 @@ class Phy096:
 
         if self.target == "T":
             self.answer = sig_figs(self.T, 3)
-            self.description = (
-                "A stationary wave is produced on a string fixed at both ends. The pattern and values are shown in the diagram.\n"
-                "Determine the tension in the string.\n"
-                "T = (_) N"
-            )
         else:
             self.answer = sig_figs(self.mu, 3)
-            self.description = (
-                "A stationary wave is produced on a string fixed at both ends. The pattern and values are shown in the diagram.\n"
-                "Determine the mass per unit length of the string.\n"
-                "μ = (_) kg m⁻¹"
-            )
+
+        self.description = (
+            "A stationary wave is produced on a string fixed at both ends. The pattern and values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Superposition"
         self.subtopic = "Stationary waves"
@@ -5327,28 +5211,17 @@ class Phy097:
 
         if self.target == "w":
             self.answer = sig_figs(self.w_mm, 3)
-            self.description = (
-                "Light passes through a double slit and forms an interference pattern on a screen.\n"
-                "The slit separation s and screen distance D are shown, and the fringe spacing w is measured on the screen.\n"
-                "Determine the fringe spacing.\n"
-                "w = (_) mm"
-            )
         elif self.target == "lam":
             self.answer = sig_figs(self.lam_nm, 3)
-            self.description = (
-                "Light passes through a double slit and forms an interference pattern on a screen.\n"
-                "The slit separation s, screen distance D and fringe spacing w are shown in the diagram.\n"
-                "Determine the wavelength of the light.\n"
-                "λ = (_) nm"
-            )
         else:
             self.answer = sig_figs(self.s_mm, 3)
-            self.description = (
-                "Light passes through a double slit and forms an interference pattern on a screen.\n"
-                "The screen distance D, wavelength λ and fringe spacing w are shown in the diagram.\n"
-                "Determine the slit separation.\n"
-                "s = (_) mm"
-            )
+
+        self.description = (
+            "Light passes through a double slit and forms an interference pattern on a screen.\n"
+            "The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Superposition"
         self.subtopic = "Interference"
@@ -5492,20 +5365,15 @@ class Phy098:
 
         if self.target == "lam":
             self.answer = sig_figs(self.lam, 3)
-            self.description = (
-                "Two coherent sources S1 and S2 emit waves in phase. Point P is a point of maximum (constructive) interference.\n"
-                "The distances from S1 and S2 to P are shown in the diagram.\n"
-                "Determine the wavelength.\n"
-                "λ = (_) m"
-            )
         else:
             self.answer = self.m
-            self.description = (
-                "Two coherent sources S1 and S2 emit waves in phase. Point P is a point of maximum (constructive) interference.\n"
-                "The distances from S1 and S2 to P and the wavelength are shown in the diagram.\n"
-                "Determine the order number m of the maximum at P.\n"
-                "m = (_)"
-            )
+
+        self.description = (
+            "Two coherent sources S1 and S2 emit waves in phase. Point P is a point of maximum (constructive) interference.\n"
+            "The relevant values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Superposition"
         self.subtopic = "Interference"
@@ -5612,18 +5480,14 @@ class Phy099:
 
         if self.target == "theta":
             self.answer = sig_figs(self.theta, 3)
-            self.description = (
-                "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
-                "Determine the angle θ of the nth-order maximum.\n"
-                "θ = (_)°"
-            )
         else:
             self.answer = sig_figs(self.lam_nm, 3)
-            self.description = (
-                "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
-                "Determine the wavelength of the light.\n"
-                "λ = (_) nm"
-            )
+
+        self.description = (
+            "Monochromatic light is incident on a diffraction grating. Values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
 
         self.topic = "Superposition"
         self.subtopic = "The diffraction grating"
