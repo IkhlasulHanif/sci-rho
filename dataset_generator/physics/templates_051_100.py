@@ -853,7 +853,7 @@ class Phy059:
         self.source = "Original"
         self.curriculum = "A-Level"
         self.description = (
-            f"An ammeter shows a current (A) flowing for some time (t) (values are shown in the image). "
+            "An ammeter shows a current (A) flowing for some time (t) (values are shown in the image). "
             "Calculate the charge transferred. Give your answer in coulombs (C).\n"
             "Charge transferred = (_) C"
         )
@@ -1294,7 +1294,7 @@ class Phy064:
         self.answer = sig_figs(self.v, 3)
 
         self.description = (
-            f"A ball is dropped from rest from a height of h as shown in the image. "
+            "A ball is dropped from rest from a height of h as shown in the image. "
             "Neglect air resistance. Take g = 9.81 m s⁻². "
             "Calculate the speed just before it hits the ground. (_) m s⁻¹"
         )
@@ -1464,9 +1464,9 @@ class Phy066:
         self.answer = round(self.T, 2)
 
         self.description = (
-            f"Two blocks are connected by a light inextensible string on a smooth horizontal surface."
+            "Two blocks are connected by a light inextensible string on a smooth horizontal surface."
             "A horizontal force is applied to the right-hand block as shown.\n"
-            f"The applied force and both block masses are shown in the image.\n"
+            "The applied force and both block masses are shown in the image.\n"
             "Determine the tension in the string. (_) N"
         )
 
@@ -1575,16 +1575,16 @@ class Phy067:
 
         if self.direction == "up":
             self.N = self.m * (self.g + self.a)
-            dir_text = "upwards"
+            self.dir_text = "upwards"
         else:
             self.N = self.m * (self.g - self.a)
-            dir_text = "downwards"
+            self.dir_text = "downwards"
 
         self.answer = sig_figs(self.N, 3)
 
         self.description = (
             f"A person stands on a scale in a lift. "
-            f"The lift accelerates {dir_text} (both m and a are shown in the image). "
+            f"The lift accelerates {self.dir_text} (both m and a are shown in the image). "
             "Take g = 9.81 m s⁻².\n"
             "Determine the reading of the scale (the normal reaction). (_) N"
         )
@@ -3309,12 +3309,6 @@ class Phy081:
                             break
 
             self.answer = sig_figs(self.v, 3)
-            self.description = (
-                "A cart moves from A to B on a smooth track as shown. The mass, g, the speed at A and the vertical height change "
-                "between A and B are shown in the diagram.\n"
-                "Determine the speed of the cart at B.\n"
-                "v = (_) m s⁻¹"
-            )
 
         else:
             # Given u and v; find Δh
@@ -3333,16 +3327,16 @@ class Phy081:
                         break
 
             self.answer = sig_figs(self.dh, 3)
-            self.description = (
-                "A cart moves from A to B on a smooth track as shown. The mass, g, and the speeds at A and B are shown in the diagram.\n"
-                "Determine the vertical height change between A and B.\n"
-                "Δh = (_) m"
-            )
 
         self.topic = "Work, energy and power"
         self.subtopic = "Gravitational potential energy and kinetic energy"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.description = (
+            "A cart moves from A to B on a smooth track as shown. The mass, g, and all required values are shown in the diagram.\n"
+            "Determine the missing quantity.\n"
+            "Give your answer in the appropriate form."
+        )
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m}\\,\\text{{kg}}\\\\"
