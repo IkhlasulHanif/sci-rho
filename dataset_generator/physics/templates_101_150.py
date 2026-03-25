@@ -28,19 +28,19 @@ class Phy101:
 
         if self.target == "I":
             self.answer = sig_figs(self.I, 3)
-            blank = "I = (_) A"
+            self.blank = "I = (_) A"
         elif self.target == "Q":
             self.answer = sig_figs(self.Q, 3)
-            blank = "Q = (_) C"
+            self.blank = "Q = (_) C"
         else:
             self.answer = self.t
-            blank = "t = (_) s"
+            self.blank = "t = (_) s"
 
         self.description = (
             "A steady current flows in a straight wire. Point P is a marked point on the wire.\n"
             "The values shown in the diagram relate to the charge that passes point P.\n"
             "Determine the required quantity.\n"
-            f"{blank}"
+            f"{self.blank}"
         )
 
         self.topic = "Electricity"
@@ -242,18 +242,18 @@ class Phy103:
 
         if self.target == "P":
             self.answer = sig_figs(self.P, 3)
-            blank = "P = (_) W"
+            self.blank = "P = (_) W"
         elif self.target == "I":
             self.answer = sig_figs(self.I, 3)
-            blank = "I = (_) A"
+            self.blank = "I = (_) A"
         else:
             self.answer = sig_figs(self.V, 3)
-            blank = "V = (_) V"
+            self.blank = "V = (_) V"
 
         self.description = (
             "A device is connected in a circuit. The current through the device and the potential difference across it are shown in the diagram.\n"
             "Determine the required quantity.\n"
-            f"{blank}"
+            f"{self.blank}"
         )
 
         self.topic = "Electricity"
@@ -361,18 +361,18 @@ class Phy104:
 
         if self.target == "W":
             self.answer = sig_figs(self.W, 3)
-            blank = "W = (_) J"
+            self.blank = "W = (_) J"
         elif self.target == "Q":
             self.answer = sig_figs(self.Q, 3)
-            blank = "Q = (_) C"
+            self.blank = "Q = (_) C"
         else:
             self.answer = sig_figs(self.V, 3)
-            blank = "V = (_) V"
+            self.blank = "V = (_) V"
 
         self.description = (
             "A charge moves through a potential difference. Values are shown in the diagram.\n"
             "Determine the required quantity.\n"
-            f"{blank}"
+            f"{self.blank}"
         )
 
         self.topic = "Electricity"
