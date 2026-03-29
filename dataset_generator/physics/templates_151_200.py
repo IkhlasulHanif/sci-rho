@@ -28,13 +28,13 @@ class Phy151:
 
         self.field = self.voltage / self.distance
 
-        self.answer = f"{self.field:.3E}"
+        self.answer = f"{self.field:.3e}"
 
         self.description = (
             "The diagram shows two parallel metal plates connected to a d.c. power supply. "
             "A uniform electric field is produced between the plates. "
             "Calculate the electric field strength between the plates. "
-            "(Example Format: 3.54E+10)."
+            "(Example Format: 3.546e+10)."
         )
 
         self.topic = "Electric fields"
@@ -206,14 +206,14 @@ class Phy152:
             if self.force > 0:
                 break
 
-        self.answer = f"{self.force:.3E}"
+        self.answer = f"{self.force:.3e}"
 
         self.description = (
             "The diagram shows a small charged polystyrene ball suspended "
             "between two parallel metal plates connected to a d.c. power supply. "
             "A uniform electric field exists between the plates. "
             "Calculate the magnitude of the electric force acting on the charge. "
-            "(Example Format: 3.54E-05). "
+            "(Example Format: 3.546e-05). "
         )
 
         self.topic = "Electric fields"
@@ -580,16 +580,13 @@ class Phy155:
         )
 
         self.rB_cm = self.rB * 100
-        
-        if abs(self.rB_cm) >= 1e21 or (0 < abs(self.rB_cm) < 1e-5):
-            self.answer = "{:.2E}".format(self.rB_cm)
-        else:
-            self.answer = "{:.4g}".format(self.rB_cm)
+    
+        self.answer = "{:.3e}".format(self.rB_cm)
 
         self.description = (
             "The image shows two charged conducting spheres, A and B, with their respective surface electric field strengths. "
             f"If the charge stored on the surface of sphere B is {self.QB_microC:.1f} μC, its radius is ... cm "
-             "(Example Format: 35.54)"
+             "(Example Format:  3.544E-05)"
         )
 
         self.topic = "Electric fields"
@@ -772,7 +769,7 @@ class Phy157:
             "The image shows an α-particle approaching a stationary gold nucleus. "
             "At the distance shown, the α-particle momentarily comes to rest. "
             "Calculate the electric potential energy (U) of the system at this instant in Joules. "
-            "(Example Format: 3.54E-10)"
+            "(Example Format: 3.543E-10)"
         )
 
         self.topic = "Electric Fields"
@@ -1002,7 +999,7 @@ class Phy160:
 
         self.description = (
             "Two capacitors, X and Y, are connected in parallel to a battery. "
-            "Using the values shown in the diagram, calculate the charge on capacitor X. (_) C. (Example format: 1.23E-4)"
+            "Using the values shown in the diagram, calculate the charge on capacitor X. (_) C. (Example format: 1.234e-4)"
         )
 
         self.topic = "Capacitance"
@@ -1087,12 +1084,12 @@ class Phy161:
         self.Ca = self.Ca_val * 1e-6
         self.Cb = self.Cb_val * 1e-6
         self.energy_a = 0.5 * self.Ca * (self.V**2)
-        self.answer = f"{self.energy_a}"
+        self.answer = f"{self.energy_a:.3f}"
 
         self.description = (
             "Two capacitors, A and B, are connected in parallel to a DC supply. "
             "Using the values shown in the diagram, calculate the energy stored in capacitor A. "
-            "(_) J (Example format: 0.1234)"
+            "(_) J (Example format: 0.123)"
         )
 
         self.topic = "Capacitance"
@@ -1165,7 +1162,7 @@ class Phy162:
 
         self.description = (
             "Two capacitors and a resistor are connected as shown. "
-            "Determine the total energy stored in the two capacitors. (_) J. (Example format: 1.23e-4) "
+            "Determine the total energy stored in the two capacitors. (_) J. (Example format: 1.234e-4) "
         )
         self.topic = "Capacitance"
         self.subtopic = "Energy Stored in a Capacitor"
@@ -1634,7 +1631,7 @@ class Phy167:
         self.I = rnd.uniform(0.5, 3.0)
 
         self.force = self.B * self.I * self.L
-        self.answer = f"{self.force}"
+        self.answer = f"{self.force:5f}"
 
         self.description = (
             "A current-carrying conductor is placed at right angles to a uniform magnetic field. "
@@ -1718,12 +1715,12 @@ class Phy168:
         self.theta = rnd.choice([15, 30, 45, 60])
 
         self.force = self.B * self.I * self.L * math.sin(math.radians(self.theta))
-        self.answer = f"{self.force}"
+        self.answer = f"{self.force:.5f}"
 
         self.description = (
             "A current-carrying conductor is placed in a uniform magnetic field as shown. "
             "Based on the values provided in the diagram, calculate the magnetic force acting on the conductor. "
-            "(_) N (Example Format: 0.0789098)"
+            "(_) N (Example Format: 0.07890)"
         )
 
         self.topic = "Magnetic Fields"
@@ -1802,7 +1799,7 @@ class Phy169:
         self.length = self.length_cm / 100
 
         self.force = self.B * self.I * self.length
-        self.answer = f"{self.force}"
+        self.answer = f"{self.force:.4f}"
 
         self.description = (
             "A rectangular wire loop ABCD is placed in a uniform magnetic field as shown. "
@@ -1896,12 +1893,12 @@ class Phy170:
         self.B = self.B_base * 1e-3
 
         self.r = (self.m * self.v) / (self.B * self.q)
-        self.answer = f"{self.r}"
+        self.answer = f"{self.r:.5f}"
 
         self.description = (
             "An electron enters a uniform magnetic field as shown. "
             "Based on the values provided in the diagram, calculate the radius of the circular path of the electron. "
-            "(_) m (Example format: 0.001234)"
+            "(_) m (Example format: 0.00123)"
         )
 
         self.topic = "Magnetic Fields"
@@ -1969,12 +1966,12 @@ class Phy171:
         self.r_cm = rnd.randint(5, 25)
         self.r = self.r_cm / 100
         self.E = (self.k * self.q) / (self.r**2)
-        self.answer = f"{self.E}"
+        self.answer = f"{self.E:.4f}"
 
         self.description = (
             "A point charge is placed in a vacuum as shown. "
             "Based on the values provided in the diagram, calculate the electric field strength E at point P. "
-            "(_) V m^-1 (Example Format: 1234.23456)"
+            "(_) V m^-1 (Example Format: 1234.2345)"
         )
         self.topic = "Electricity"
         self.subtopic = "Electric fields"
@@ -2029,7 +2026,7 @@ class Phy172:
         self.dist = rnd.uniform(0.06, 0.20)
         self.E_single = (self.k * self.q) / ((self.dist/2)**2)
         self.E_total = 2 * self.E_single
-        self.answer = f"{self.E_total}"
+        self.answer = f"{self.E_total:.4f}"
 
         self.description = (
             "Two point charges, one +Q and one -Q, are separated by a distance as shown. "
@@ -2038,6 +2035,7 @@ class Phy172:
         )
         self.topic, self.subtopic = "Electricity", "Electric fields"
         self.curriculum, self.source = "A-Level", "Original"
+
 class Phy172:
     def __init__(self):
         self.k = 8.99e9
@@ -2078,17 +2076,17 @@ class Phy172:
 
         ax.add_patch(plt.Circle((2, 2), 0.25, color='#e74c3c', ec='black', zorder=3))
         ax.add_patch(plt.Circle((2.1, 2.1), 0.1, color='white', alpha=0.3, zorder=4))
-        ax.text(2, 2.5, "$Q = +5.0$ nC", ha='center', fontweight='bold')
+        ax.text(2, 2.5, "$Q = {self.q}", ha='center', fontweight='bold')
         
         ax.add_patch(plt.Circle((8, 2), 0.25, color='#3498db', ec='black', zorder=3))
         ax.add_patch(plt.Circle((8.1, 2.1), 0.1, color='white', alpha=0.3, zorder=4))
-        ax.text(8, 2.5, "$Q = -5.0$ nC", ha='center', fontweight='bold')
+        ax.text(8, 2.5, "$Q = {self.q}", ha='center', fontweight='bold')
 
         ax.scatter(5, 2, marker='|', color='black', s=200, zorder=2)
         ax.text(5, 1.6, "Midpoint", ha='center', style='italic', fontsize=10)
 
         ax.annotate('', xy=(8, 1.2), xytext=(2, 1.2), arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1.5))
-        ax.text(5, 0.8, "$d = 10$ cm", ha='center', fontweight='bold')
+        ax.text(5, 0.8, "$d = {self.dist}", ha='center', fontweight='bold')
 
         plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
@@ -2108,7 +2106,7 @@ class Phy173:
         self.theta = rnd.choice([30, 45, 60, 90])
 
         self.F = self.q * self.v * self.B * math.sin(math.radians(self.theta))
-        self.answer = f"{self.F}"
+        self.answer = f"{self.F:.2E}"
 
         self.description = (
             "A particle with charge q enters a uniform magnetic field B with a velocity v as shown. "
@@ -2192,7 +2190,7 @@ class Phy174:
         self.v = rnd.randint(5,25)
 
         self.emf = self.B * self.L * self.v
-        self.answer = f"{self.emf}"
+        self.answer = f"{self.emf:.3f}"
 
         self.description = (
             "A conductor of length moves with speed"
@@ -2270,7 +2268,7 @@ class Phy175:
         self.dt = round(rnd.uniform(0.01, 0.05), 3)
 
         self.emf = self.N * (self.dPhi / self.dt)
-        self.answer = f"{self.emf}"
+        self.answer = f"{self.emf:.3f}"
 
         self.description = (
             "A coil of N turns is placed in a changing magnetic field as shown. "
@@ -2333,7 +2331,7 @@ class Phy176:
 
         self.omega = 2 * math.pi * self.f
         self.emf_peak = self.N * self.B * self.A * self.omega
-        self.answer = f"{self.emf_peak}"
+        self.answer = f"{self.emf_peak:.2e}"
 
         self.description = (
             "A rectangular coil rotates in a uniform magnetic field as shown. "
@@ -2477,7 +2475,7 @@ class Phy178:
     def __init__(self):
         self.I_rms = rnd.randint(2, 20)
         self.I_peak = self.I_rms * math.sqrt(2)
-        self.answer = f"{self.I_peak}"
+        self.answer = f"{self.I_peak:.2f}"
 
         self.description = (
             f"An alternating current has an RMS value of {self.I_rms} A. "
@@ -2544,7 +2542,7 @@ class Phy179:
         self.C = self.C_micro * 1e-6
 
         self.V_ripple = self.I / (self.f * self.C)
-        self.answer = f"{self.V_ripple}"
+        self.answer = f"{self.V_ripple:.2f}"
 
         self.description = (
             "A smoothing capacitor is connected to the output of a bridge rectifier as shown. "
@@ -2655,11 +2653,11 @@ class Phy179:
 class Phy180:
     def __init__(self):
         self.h = 6.63e-34
-        self.f_base = rnd.randint(4, 9)
+        self.f_base = rnd.uniform(4, 9)
         self.f = self.f_base * 1e14
 
         self.E = self.h * self.f
-        self.answer = f"{self.E}"
+        self.answer = f"{self.E:.3e}"
 
         self.description = (
             "Calculate the energy of the photon shown in the diagram. "
@@ -2728,7 +2726,7 @@ class Phy181:
         self.lambda_m = self.lambda_base * 1e-9
 
         self.p = self.h / self.lambda_m
-        self.answer = f"{self.p}"
+        self.answer = f"{self.p:2e}"
 
         self.description = (
             "Calculate the momentum of the photon with the wavelength indicated in the diagram. "
@@ -2783,7 +2781,7 @@ class Phy182:
         self.phi_base = rnd.randint(2, 5)
         self.phi = self.phi_base * 1e-19
         self.Ek = self.h * self.f - self.phi
-        self.answer = f"{self.Ek}"
+        self.answer = f"{self.Ek:.3e}"
 
         self.description = (
             "Light shines on a metal surface as shown in the diagram. "
@@ -2835,10 +2833,10 @@ class Phy182:
 class Phy183:
     def __init__(self):
         self.e = 1.60e-19
-        self.Ek_base = rnd.randint(2, 9)
+        self.Ek_base = rnd.uniform(1, 9)
         self.Ek = self.Ek_base * 1e-19
         self.Vs = self.Ek / self.e
-        self.answer = f"{self.Vs}"
+        self.answer = f"{self.Vs:.2f}"
 
         self.description = (
             "Based on the experimental data provided in the diagrams, determine the "
@@ -2981,7 +2979,7 @@ class Phy184:
         
         ax.annotate('', xy=(8.5, 0), xytext=(6.5, 0),
                     arrowprops=dict(arrowstyle='-|>', color='#2980b9', lw=3, mutation_scale=20))
-        ax.text(7.5, -0.4, f"$v = {self.v_base} \\times 10^6$ m/s", color='#2980b9', fontweight='bold', ha='center', fontsize=11)
+        ax.text(7.5, -0.8, f"$v = {self.v_base} \\times 10^6$ m/s", color='#2980b9', fontweight='bold', ha='center', fontsize=11)
 
         props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
         info_text = (
@@ -3082,7 +3080,7 @@ class Phy186:
         self.description = (
             "An electron transition in a hydrogen atom releases energy as shown in the diagram. "
             "Calculate the wavelength $\\lambda$ of the emitted spectral line. "
-            "(_) m (Example format: 4.56e-07)"
+            "(_) m (Example format: 4.567e-07)"
         )
         self.topic = "Quantum physics"
         self.subtopic = "Line spectra"
@@ -3161,7 +3159,7 @@ class Phy187:
         self.mass_nucleus = self.mass_nucleons - rnd.uniform(2e-29, 6e-29)
 
         self.mass_defect = self.mass_nucleons - self.mass_nucleus
-        self.answer = f"{self.mass_defect}"
+        self.answer = f"{self.mass_defect:.2e}"
 
         self.description = (
             "Based on the data provided in the diagram, calculate the mass defect of the nucleus. "
@@ -3239,7 +3237,7 @@ class Phy188:
         self.dm = self.dm_base * 1e-29
 
         self.E = self.dm * (self.c**2)
-        self.answer = self.E
+        self.answer = f"{self.E:.2e}"
 
         self.description = (
             "Based on the mass defect and constants shown in the diagram, calculate the nuclear binding energy. "
@@ -3259,7 +3257,7 @@ class Phy188:
             "\\text{{Step 3: Calculate total energy}} &\\\\"
             f"E &= {self.E:.4e}\\,\\text{{J}} \\\\"
             "\\text{{Final Answer: }} &\\\\"
-            f"E &= {self.answer:.4e}\\,\\text{{J}}"
+            f"E &= {self.answer}\\,\\text{{J}}"
             "\\end{aligned}\\]"
         )
 
@@ -3304,12 +3302,12 @@ class Phy189:
         self.time = self.n_half_lives * self.half_life
 
         self.N = self.N0 * (0.5)**(self.n_half_lives)
-        self.answer = f"{self.N}"
+        self.answer = f"{self.N:.2f}"
 
         self.description = (
             "A radioactive sample decays over time. Based on the data provided in the graph, "
             "calculate the exact number of nuclei remaining at the target time indicated. "
-            "(_) nuclei (Example format: 125.0)"
+            "(_) nuclei (Example format: 125.00)"
         )
         self.topic, self.subtopic = "Nuclear physics", "Radioactive decay"
         self.curriculum, self.source = "A-Level", "Original"
@@ -3363,11 +3361,11 @@ class Phy190:
         self.N = rnd.randint(1, 9) * 1e12
         
         self.A = self.decay_constant * self.N
-        self.answer = f"{self.A}"
+        self.answer = f"{self.A:.2e}"
 
         self.description = (
             "Based on the experimental setup data shown in the diagram, calculate the activity "
-            "of the radioactive sample in Becquerels (Bq). (_) Bq (Example format: 69314718055.99452)"
+            "of the radioactive sample in Becquerels (Bq). (_) Bq (Example format: 5.99e+10)"
         )
         
         self.topic, self.subtopic = "Nuclear physics", "Radioactive decay"
@@ -3422,7 +3420,7 @@ class Phy191:
         self.v = 1540
         self.time = round(rnd.uniform(0.0002, 0.002), 6)
         self.distance = (self.v * self.time) / 2
-        self.answer = f"{self.distance}"
+        self.answer = f"{self.distance:5f}"
 
         self.description = (
             "An ultrasound pulse is emitted into soft tissue. Based on the echo time and speed of sound "
@@ -3480,11 +3478,11 @@ class Phy192:
         self.f_mhz = rnd.randint(2, 12)
         self.f = self.f_mhz * 1e6
         self.lambda_val = self.v / self.f
-        self.answer = f"{self.lambda_val}"
+        self.answer = f"{self.lambda_val:.5f}"
 
         self.description = (
             "Based on the transducer frequency and speed of ultrasound in the diagram, "
-            "calculate the wavelength $\\lambda$ of the waves in the tissue. (_) m (Example format: 0.000385)"
+            "calculate the wavelength $\\lambda$ of the waves in the tissue. (_) m (Example format: 0.00385)"
         )
         self.topic = "Medical physics"
         self.subtopic = "Production and use of ultrasound"
@@ -3551,7 +3549,7 @@ class Phy193:
         self.f_base = rnd.randint(5, 20)
         self.f = self.f_base * 1e18
         self.E = self.h * self.f
-        self.answer = f"{self.E}"
+        self.answer = f"{self.E:.2e}"
 
         self.description = (
             "Calculate the energy of the X-ray photon emitted in the diagram. "
@@ -3630,7 +3628,7 @@ class Phy194:
         self.h, self.c, self.e = 6.63e-34, 3.00e8, 1.60e-19
         self.V = rnd.randint(30, 100) * 1000
         self.lambda_min = (self.h * self.c) / (self.e * self.V)
-        self.answer = f"{self.lambda_min}"
+        self.answer = f"{self.lambda_min:.2e}"
 
         self.description = (
             "Based on the accelerating potential provided in the X-ray spectrum diagram, "
@@ -3698,7 +3696,7 @@ class Phy195:
         self.I_base = rnd.randint(1, 9)
         self.I = self.I_base * 1e-10
         self.d = math.sqrt(self.L / (4 * math.pi * self.I))
-        self.answer = f"{self.d}"
+        self.answer = f"{self.d:.2e}"
 
         self.description = (
             "Based on the astronomical data provided in the diagram, calculate the distance $d$ to the star. "
@@ -3757,11 +3755,11 @@ class Phy196:
         self.L = self.L_base * 1e26
         self.T = rnd.randint(3000, 8000)
         self.R = math.sqrt(self.L / (4 * math.pi * self.sigma * self.T**4))
-        self.answer = f"{self.R}"
+        self.answer = f"{self.R:.2e}"
 
         self.description = (
             "Using the star's luminosity and surface temperature provided in the diagram, determine its radius $R$. "
-            "(_) m (Example format: 503371324.81918126)"
+            "(_) m (Example format: 4.81e+10)"
         )
         self.topic, self.subtopic = "Astronomy and cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"
@@ -3827,12 +3825,12 @@ class Phy197:
         self.b = 2.898e-3
         self.T = rnd.randint(3000, 10000)
         self.lambda_max = self.b / self.T
-        self.answer = f"{self.lambda_max}"
+        self.answer = f"{self.lambda_max:.2e}"
 
         self.description = (
             "Using Wien's displacement law and the surface temperature provided in the stellar "
             "emission spectrum, calculate the peak wavelength $\\lambda_{max}$. "
-            "(_) m (Example format:5.899837133550489e-07)"
+            "(_) m (Example format:5.89e-07)"
         )
         self.topic, self.subtopic = "Astronomy and Cosmology", "Wien's displacement law"
         self.curriculum, self.source = "A-Level", "Original"
@@ -3912,11 +3910,11 @@ class Phy198:
         self.c = 3.00e8
         self.z = round(rnd.uniform(0.001, 0.02), 4)
         self.v = self.z * self.c
-        self.answer = f"{self.v}"
+        self.answer = f"{self.v:.2f}"
 
         self.description = (
             "A distant galaxy's spectrum is redshifted. Using the redshift value in the diagram, "
-            "calculate the recessional velocity $v$ of this galaxy. (_) m s^-1 (Example format: 5820000.0)"
+            "calculate the recessional velocity $v$ of this galaxy. (_) m s^-1 (Example format: 5820000.00)"
         )
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Past Papers"
@@ -3971,11 +3969,11 @@ class Phy199:
         self.v_base = rnd.randint(1, 15)
         self.v = self.v_base * 1e6
         self.d = self.v / self.H
-        self.answer = f"{self.d}"
+        self.answer = f"{self.d:.2e}"
 
         self.description = (
             "Based on the recessional velocity and Hubble constant provided in the diagram, "
-            "calculate the distance $d$ to the galaxy. (_) m (Example format: 4.849428571428571e+24)"
+            "calculate the distance $d$ to the galaxy. (_) m (Example format: 4.84e+24)"
         )
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Original"
@@ -4045,11 +4043,11 @@ class Phy200:
         self.R = self.R_val * 1e8
         self.T = rnd.randint(3000, 12000)
         self.L = 4 * math.pi * self.R**2 * self.sigma * self.T**4
-        self.answer = f"{self.L}"
+        self.answer = f"{self.L:.2e}"
 
         self.description = (
             "Calculate the total luminosity $L$ of the star using the parameters provided in the diagram. "
-            "(_) W (Example format: 1.352085382994754e+27)"
+            "(_) W (Example format: 1.35e+27)"
         )
         self.topic, self.subtopic = "Astronomy & cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"

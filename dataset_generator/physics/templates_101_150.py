@@ -192,7 +192,7 @@ class Phy128:
         self.m = self.mass_sat
         mass_earth_val = (self.F * (self.r_total**2)) / (self.G * self.m)
 
-        self.answer = f"{mass_earth_val}"
+        self.answer = f"{mass_earth_val:.2E}"
         self.topic = "Gravitational Fields"
         self.subtopic = "Newton's Law of Gravitation"
         self.source = "Original"
@@ -356,7 +356,7 @@ class Phy130:
         self.r_total_m = (self.planet_radius_km + self.height_km) * 1e3
 
         self.potential = - (self.G * self.planet_mass) / self.r_total_m
-        self.answer = f"{self.potential}"
+        self.answer = f"{self.potential:.2E}"
 
         self.topic = "Gravitational fields"
         self.subtopic = "Gravitational field of a point mass"
@@ -458,7 +458,7 @@ class Phy131:
         self.description = (
             "A rock is located at a specific height above a planet's surface as shown. "
             "Based on the data provided in the diagram, calculate the gravitational potential at the rock's position. "
-            "(_) J kg^-1 (Example format: -1.2345e+07)"
+            "(_) J kg^-1 (Example format: -7577106.41087628)"
         )
 
         self.reasoning = (
@@ -638,7 +638,7 @@ class Phy133:
         self.temperature_k = self.temperature_c + 273.15
         
         self.c_rms = math.sqrt((3 * self.k_B * self.temperature_k) / self.m_atom_he)
-        self.answer = f"{self.c_rms}"
+        self.answer = f"{self.c_rms:.3f}"
 
         self.topic = "Ideal Gases"
         self.subtopic = "Kinetic Theory of Gases"
@@ -1132,7 +1132,7 @@ class Phy139:
         self.description = (
             "A monatomic gas is contained within a flexible balloon. "
             "Based on the thermodynamic values provided in the diagram, calculate the magnitude of the work done. "
-            "(_) kJ (Example format: 25.0)"
+            "(_) kJ (Example format: -25.08634304946299)"
         )
 
         du_val = f"{self.delta_U_kJ}"
@@ -1218,7 +1218,7 @@ class Phy140:
         self.description = (
             "An ideal gas is held in a cylinder and expands at a constant pressure. "
             "Using the thermodynamic values shown in the diagram, calculate the magnitude of the change in volume of the gas. "
-            "(_) m^3 (Example format: 0.150)"
+            "(_) m^3 (Example format: 0.150464677)"
         )
 
         self.reasoning = (
@@ -1497,7 +1497,7 @@ class Phy143:
             "A simple pendulum is observed undergoing small-angle oscillations. "
             "A student uses a stopwatch to measure the time taken for a specific number of complete oscillations. "
             "Using the measurement data from the diagram, determine the frequency of the oscillation. "
-            "(_) Hz (Example format: 598669.7194876492)"
+            "(_) Hz (Example format: 9.7194876492)"
         )
 
         self.reasoning = (
