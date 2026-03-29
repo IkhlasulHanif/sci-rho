@@ -42,21 +42,23 @@ class Chem051:
         rnd.shuffle(options)
         self.answer = labels[options.index(str(correct_val))]
 
+        self._options = options
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self._options))
+
         self.description = (
             f"The bar chart shows the relative reactivity of four Group 2 elements with water. "
             f"The elements are arranged in order of atomic number (position 1 to 4). "
-            f"What is the reactivity value shown for the element at position {self.position}?"
+            f"What is the reactivity value shown for the element at position {self.position}?\n\n"
+            f"{self.options_text}"
         )
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Group 2 elements and reactivity values:}} &\\\\"
-            f"\\text{{Mg = 3, Ca = 5, Sr = 7, Ba = 9}} &\\\\"
+            f"\\text{{Mg = {self.values[0]}, Ca = {self.values[1]}, Sr = {self.values[2]}, Ba = {self.values[3]}}} &\\\\"
             f"\\therefore \\text{{{self.element} = {correct_val}}}"
             "\\end{aligned}\\]"
         )
-        self._options = options
-
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self._options))
+        
         self.topic = "Group 2"
         self.subtopic = "Trends in Group 2"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -73,7 +75,6 @@ class Chem051:
                       xlabel='Position (increasing atomic number)',
                       ylabel='Relative Reactivity with Water',
                       title='Reactivity of Group 2 Elements with Water')
-
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -180,16 +181,15 @@ class Chem052:
         labels = ["A", "B", "C", "D"]
         self.answer = labels[self.choices.index(correct_text)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, self.choices)}
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
         self.description = (
-            f"Using the definition 'a transition element forms one or more stable ions with incomplete d orbitals', "
-            f"which of the following is/are transition element(s)? "
-            f"The electron configurations of {e1} and {e2} are shown in the diagram."
+            "Based on the definition and electron configurations provided in the diagram, "
+            "which of the following is/are transition element(s)?\n\n"
+            f"{self.options_text}"
         )
-
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
         self.topic = "Chemistry of transition elements"
-        self.subtopic = "28.1 General physical and chemical properties"
+        self.subtopic = "General physical and chemical properties"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -288,14 +288,13 @@ class Chem053:
         self.choices = options
         self.answer = labels[options.index(correct_ox)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
         self.description = (
-            f"The diagram shows test tubes containing {self.metal} compounds at different oxidation states. "
-            f"The test tubes are shown without colour labels. "
-            f"What is the oxidation state of {self.metal} in the highlighted test tube?"
+            "The diagram shows test tubes containing compounds of a transition metal at different oxidation states. "
+            "What is the oxidation state of the metal in the highlighted test tube?\n\n"
+            f"{self.options_text}"
         )
-
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
         self.topic = "Chemistry of transition elements"
         self.subtopic = "General properties"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -561,15 +560,16 @@ class Chem055:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows a ligand exchange reaction. "
-            f"The starting complex and the ligand being added are shown. "
-            f"What is the formula of the final complex ion?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows a ligand exchange reaction. "
+            "The starting complex and the ligand being added are shown. "
+            "What is the formula of the final complex ion?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Chemistry of transition elements"
-        self.subtopic = "28.2 Characteristic chemical properties"
+        self.subtopic = "Characteristic chemical properties"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -648,13 +648,14 @@ class Chem056:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows a ligand substitution reaction where {self.ligand} is added "
-            f"to a complex ion. The starting solution colour is shown in the left test tube. "
-            f"What colour will the resulting solution be?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows a ligand substitution reaction. "
+            "The starting complex and the added ligand are shown in the diagram. "
+            "What colour will the resulting solution be?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Ligand substitution"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -723,14 +724,13 @@ class Chem057:
         self.answer = self.wavelength
 
         self.description = (
-            f"The d-orbital splitting diagram shows a transition metal complex. "
-            f"The value of \u0394E is annotated on the diagram. "
-            f"Calculate the wavelength (in nm) of light absorbed by this complex. "
+            "Based on the d-orbital splitting diagram provided, calculate the wavelength (in nm) "
+            "of light absorbed by this complex.\n\n"
             f"(Given: h = 6.626\u00d710\u207b\u00b3\u2074 J\u00b7s, c = 3.00\u00d710\u2078 m/s, N\u2090 = 6.022\u00d710\u00b2\u00b3 mol\u207b\u00b9)"
         )
 
         self.topic = "Chemistry of transition elements"
-        self.subtopic = "28.3 Colour of complexes"
+        self.subtopic = "Colour of complexes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -824,12 +824,13 @@ class Chem058:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows a catalytic cycle involving a {self.element} compound. "
-            f"Between which two oxidation states does the catalyst cycle?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows a catalytic cycle involving a transition metal. "
+            "Between which two oxidation states does the catalyst cycle?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Redox and catalysis"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -837,9 +838,9 @@ class Chem058:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Oxidation:}} &\\quad {self.species1} \\rightarrow {self.species2}\\\\"
-            f"\\text{{Reduction:}} &\\quad {self.species2} \\rightarrow {self.species1}\\\\"
-            f"\\text{{Oxidation states: {self.ox1} \\rightleftharpoons {self.ox2}}}"
+            f"\\text{{Oxidation:}} &\\quad \\text{{{self.species1}}} \\rightarrow \\text{{{self.species2}}}\\\\"
+            f"\\text{{Reduction:}} &\\quad \\text{{{self.species2}}} \\rightarrow \\text{{{self.species1}}}\\\\"
+            f"\\text{{Oxidation states: }} {self.ox1} \\rightleftharpoons {self.ox2}"
             "\\end{aligned}\\]"
         )
 
@@ -971,14 +972,15 @@ class Chem059:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows two complex ions and their stability constants (Kstab). "
-            f"Is the ligand exchange shown feasible when {self.exchange['ligand']} is added?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows two complex ions and their stability constants (Kstab). "
+            "Is the ligand exchange shown in the diagram feasible?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Chemistry of transition elements"
-        self.subtopic = "28.5 Stability constants"
+        self.subtopic = "Stability constants"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -1058,11 +1060,12 @@ class Chem060:
         self.answer = labels[options.index(self.name)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"Name the alkane shown in the structural formula using IUPAC nomenclature."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "Name the alkane shown in the structural formula using IUPAC nomenclature.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Introduction to A Level organic chemistry"
         self.subtopic = "Nomenclature"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -1129,8 +1132,8 @@ class Chem061:
         self.answer = self.num_isomers
 
         self.description = (
-            f"The diagram shows structural isomers with the molecular formula {self.formula}. "
-            f"How many structural isomers does {self.formula} have?"
+            "The diagram shows structural isomers for a specific molecular formula. "
+            "How many structural isomers does the molecular formula shown in the diagram have?"
         )
 
         self.topic = "Introduction to A Level organic chemistry"
@@ -1140,7 +1143,7 @@ class Chem061:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{The structural isomers of {self.formula} are:}} &\\\\"
+            f"\\text{{The structural isomers are:}} &\\\\"
             + "\\\\".join([f"\\text{{{i+1}. {name}}}" for i, name in enumerate(self.isomer_names)]) + "\\\\"
             + f"\\text{{Total}} &= {self.answer}"
             + "\\end{aligned}\\]"
@@ -1152,13 +1155,7 @@ class Chem061:
         ax.set_ylim(0, 8)
         ax.axis('off')
 
-        add_title_box(ax, 5, 7.5, f"Structural Isomers of {self.formula}", fontsize=16)
-
-        y_pos = 6.5
-        for i, name in enumerate(self.isomer_names):
-            add_formula_label(ax, 5, y_pos, f"{i+1}. {name}", fontsize=13,
-                            bbox_style=dict(boxstyle='round', facecolor='lightblue', pad=0.4))
-            y_pos -= 1.2
+        add_title_box(ax, 5, 7.5, f"{self.formula}", fontsize=16)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1201,7 +1198,7 @@ class Chem062:
         self.answer = self.shown_isomer
 
         self.description = (
-            f"Identify whether the isomer of {self.base_name} shown in the diagram is the E or Z isomer."
+            f"Identify whether the isomer shown in the diagram is the E or Z isomer."
         )
 
         self.topic = "Introduction to A Level organic chemistry"
@@ -1253,8 +1250,6 @@ class Chem062:
                    bbox=dict(boxstyle='round', facecolor='lightblue', pad=0.3))
             ax.text(7.5, 3.0, "Low\npriority", fontsize=12, ha='center', va='center',
                    bbox=dict(boxstyle='round', facecolor='lightblue', pad=0.3))
-
-        ax.text(5, 1.5, "Is this the E or Z isomer?", fontsize=14, ha='center', fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1343,13 +1338,13 @@ class Chem063:
         self.answer = self.molecule['chiral_position']
 
         self.description = (
-            f"The diagram shows the two enantiomers of {self.molecule['name']}. "
+            "The diagram shows the two enantiomers of an organic compound. "
             f"One enantiomer rotates plane-polarized light by {self.rotation}{self.rotation_value}\u00b0. "
-            f"At which carbon number is the chiral centre located?"
+            "Based on the groups shown in the diagram, at which carbon number in the main chain is the chiral centre located?"
         )
 
         self.topic = "Introduction to A Level organic chemistry"
-        self.subtopic = "29.4 Isomerism: optical"
+        self.subtopic = "Isomerism: optical"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -1522,15 +1517,16 @@ class Chem064:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows a benzene electrophilic aromatic substitution mechanism. "
-            f"The reagents and conditions are shown on the diagram. "
-            f"What is the electrophile in this reaction?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows a benzene electrophilic aromatic substitution mechanism. "
+            "The reagents and conditions are shown on the diagram. "
+            "What is the electrophile in this reaction?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydrocarbons"
-        self.subtopic = "30.1 Arenes"
+        self.subtopic = "Arenes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -1629,13 +1625,14 @@ class Chem065:
         self.answer = labels[options.index(self.product)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows a propagation step of free radical substitution. "
-            f"The reactants are shown in the diagram. "
-            f"What is the organic product formed in this step?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows a propagation step of free radical substitution. "
+            "The reactants are shown in the diagram. "
+            "What is the organic product formed in this step?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydrocarbons"
         self.subtopic = "Alkane reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -1769,15 +1766,16 @@ class Chem066:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows a numbered benzene ring with a substituent group. "
-            f"When this compound undergoes further electrophilic substitution, "
-            f"which position(s) will the new substituent preferentially occupy?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows a numbered benzene ring with a substituent group. "
+            "When this compound undergoes further electrophilic substitution, "
+            "which position(s) will the new substituent preferentially occupy?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydrocarbons"
-        self.subtopic = "30.1 Arenes"
+        self.subtopic = "Arenes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -1940,14 +1938,15 @@ class Chem067:
         self.answer = labels[options.index(self.comp['order'])]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The table shows three compounds. "
-            f"Arrange them in order of increasing acidity (weakest acid first)."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The table shows three compounds. "
+            "Arrange them in order of increasing acidity (weakest acid first).\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydroxy compounds"
-        self.subtopic = "32.2 Phenol"
+        self.subtopic = "Phenol"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -2088,14 +2087,15 @@ class Chem068:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"Phenol reacts with {self.rxn['reagent']} under the conditions shown. "
-            f"What is the organic product formed?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "Phenol reacts with the reagent under the conditions shown in the diagram. "
+            "What is the organic product formed?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydroxy compounds"
-        self.subtopic = "32.2 Phenol"
+        self.subtopic = "Phenol"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -2180,12 +2180,13 @@ class Chem069:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"{self.alcohol_name} ({self.alcohol_formula}) is oxidized with acidified potassium dichromate (K\u2082Cr\u2082O\u2087/H\u207a). "
-            f"What is the organic product formed?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows an alcohol undergoing an oxidation reaction. "
+            "Based on the starting alcohol and the reagents shown in the image, what is the organic product formed?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydroxy compounds"
         self.subtopic = "Alcohol reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -2266,12 +2267,12 @@ class Chem070:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"When {self.alcohol_name} undergoes dehydration with concentrated H\u2082SO\u2084 at 170\u00b0C, "
-            f"what is the main alkene product formed?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "Based on the reaction shown in the diagram, what is the main alkene product formed?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydroxy compounds"
         self.subtopic = "Alcohol dehydration"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -2426,14 +2427,15 @@ class Chem071:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"{self.rxn['acyl_name']} reacts with {self.rxn['nuc_name']} at room temperature. "
-            f"What are the products of this reaction?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "An acyl chloride reacts with a nucleophile at room temperature, as shown in the diagram. "
+            "What are the products of this reaction?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Carboxylic acids and derivatives"
-        self.subtopic = "33.3 Acyl chlorides"
+        self.subtopic = "Acyl chlorides"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -2519,7 +2521,7 @@ class Chem072:
             f"{self.highlighted_type}?"
         )
         self.topic = "Carboxylic acids and derivatives"
-        self.subtopic = "33.3 Acyl chlorides"
+        self.subtopic = "Acyl chlorides"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -2598,13 +2600,13 @@ class Chem073:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows an acyl chloride (RCOCl) reacting with a reagent "
-            f"whose formula is shown in the diagram. "
-            f"What is the organic product formed?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows an acyl chloride (RCOCl) reacting with a reagent whose formula is shown in the diagram. "
+            "What is the organic product formed?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Carboxylic acids and derivatives"
         self.subtopic = "Acyl chloride reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -2770,14 +2772,15 @@ class Chem074:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows the structure of {self.aa['name']} at three different pH values. "
-            f"Which structure (A, B, or C) represents the zwitterion?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows the structure of an amino acid at three different pH values. "
+            "Which structure (A, B, or C) represents the zwitterion?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Nitrogen compounds"
-        self.subtopic = "34.4 Amino acids"
+        self.subtopic = "Amino acids"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -2794,8 +2797,6 @@ class Chem074:
         ax.set_xlim(0, 14)
         ax.set_ylim(0, 7)
         ax.axis('off')
-
-        add_title_box(ax, 7, 6.5, f"{self.aa['name'].capitalize()} at Different pH Values", fontsize=16)
 
         x_positions = [0.5, 5.0, 9.5]
         for i, (label, ph_label, formula, color, charge) in enumerate(self.structures):
@@ -2915,15 +2916,15 @@ class Chem075:
         self.answer = labels[options.index(correct)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
-        self.description = (
-            f"The diagram shows an electrophoresis strip for an amino acid "
-            f"at a given pH and isoelectric point (pI). Both values are shown in the diagram. "
-            f"In which direction will the amino acid migrate when voltage is applied?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.choices))
+        self.description = (
+            "The diagram shows an electrophoresis strip for an amino acid. "
+            "Based on the pH and isoelectric point (pI) shown in the diagram, in which direction will the amino acid migrate when voltage is applied?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Nitrogen compounds"
-        self.subtopic = "34.4 Amino acids"
+        self.subtopic = "Amino acids"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -3057,13 +3058,13 @@ class Chem076:
         self.options = options
         self.answer = chr(65 + options.index(self.method_name))
 
-        self.description = (
-            f"The diagram shows a reaction scheme for amide formation. "
-            f"The conditions are shown on the reaction arrow. "
-            f"Which reagents are used in this method?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows a reaction scheme for amide formation. "
+            "Based on the conditions shown on the reaction arrow, which reagents are used in this method?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Nitrogen compounds"
         self.subtopic = "Amide formation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -3205,15 +3206,15 @@ class Chem077:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"The diagram shows two monomers reacting to form a polyamide. "
-            f"The monomer structures are shown in the diagram. "
-            f"Which of the following is the repeat unit of this polymer?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows two monomers reacting to form a polyamide. "
+            "Based on the monomer structures shown in the diagram, which of the following is the repeat unit of this polymer?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Polymerisation"
-        self.subtopic = "35.1 Condensation polymerisation"
+        self.subtopic = "Condensation polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -3362,15 +3363,15 @@ class Chem078:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"The diagram shows two monomers reacting to form a polyester. "
-            f"The monomer structures are shown in the diagram. "
-            f"Which of the following is the repeat unit of this polymer?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows two monomers reacting to form a polyester. "
+            "Based on the monomer structures shown in the diagram, which of the following is the repeat unit of this polymer?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Polymerisation"
-        self.subtopic = "35.1 Condensation polymerisation"
+        self.subtopic = "Condensation polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -3453,12 +3454,13 @@ class Chem079:
         self.options = options
         self.answer = chr(65 + options.index(self.monomer_formula))
 
-        self.description = (
-            f"The repeating unit of {self.polymer_name} is shown. "
-            f"What is the monomer used to make this polymer?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The repeating unit of an addition polymer is shown in the diagram. "
+            "What is the monomer used to make this polymer?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Polymerisation"
         self.subtopic = "Addition polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -3612,14 +3614,15 @@ class Chem080:
         self.answer = self.scenario['answer_key']
         self.options = self.scenario['options']
 
-        self.description = (
-            f"The table compares three types of polymers: poly(ethene), polyester, and polyamide. "
-            f"{self.scenario['question']}"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The table provides information about the chemical linkages and degradation mechanisms of three polymers. "
+            f"{self.scenario['question']}\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Polymerisation"
-        self.subtopic = "35.3 Degradable polymers"
+        self.subtopic = "Degradable polymers"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -3731,13 +3734,13 @@ class Chem081:
         self.answer = chr(65 + options.index(correct))
         self.options = options
 
-        self.description = (
-            f"The diagram shows monomers used in condensation polymerization. "
-            f"The functional groups are shown in the diagram. "
-            f"What type of polymer is formed?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows monomers used in condensation polymerization. "
+            "Based on the functional groups shown in the diagram, what type of polymer is formed?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Polymerisation"
         self.subtopic = "Condensation polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -3889,14 +3892,15 @@ class Chem082:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"The diagram shows a two-step synthesis from {self.route['start']} to {self.route['end']}. "
-            f"The intermediate compound is hidden. What is the intermediate?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows a two-step organic synthesis with the starting material and final product labelled. "
+            "Based on the reaction pathway and conditions shown, what is the hidden intermediate compound?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Organic synthesis"
-        self.subtopic = "36.1 Organic synthesis"
+        self.subtopic = "Organic synthesis"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -4021,13 +4025,13 @@ class Chem083:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"The diagram shows a multi-step synthesis route with a hidden intermediate. "
-            f"The starting material and final product are shown in the diagram. "
-            f"Identify the intermediate compound."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows a multi-step synthesis route with a hidden intermediate. "
+            "Based on the starting material and final product shown in the diagram, identify the intermediate compound.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Organic synthesis"
         self.subtopic = "Synthesis routes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -4114,13 +4118,13 @@ class Chem084:
                 other_mzs.add(candidate)
         self.other_peaks = list(other_mzs)
 
-        self.description = (
-            f"The mass spectrum shows several peaks. The annotated peak is indicated "
-            f"with an arrow showing its m/z value. "
-            f"Identify the fragment ion responsible for this labelled peak."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The mass spectrum shows several peaks. Based on the m/z value indicated by the arrow in the diagram, "
+            "identify the fragment ion responsible for this peak.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Analytical techniques"
         self.subtopic = "Mass spectrometry"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -4203,7 +4207,7 @@ class Chem085:
         )
 
         self.topic = "Analytical techniques"
-        self.subtopic = "37.1 Thin-layer chromatography"
+        self.subtopic = "Thin-layer chromatography"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -4254,11 +4258,6 @@ class Chem085:
                                          f"{spot_data['height']} cm",
                                          color='red', fontsize=11)
 
-        calc_text = f"Calculate Rf for {self.questioned_spot['name']}"
-        ax.text(5, 0.5, calc_text, fontsize=12, ha='center', fontweight='bold',
-                bbox=dict(boxstyle='round', facecolor='lightyellow',
-                          edgecolor='black', linewidth=2))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4303,7 +4302,7 @@ class Chem086:
         )
 
         self.topic = "Analytical techniques"
-        self.subtopic = "37.2 Gas-liquid chromatography"
+        self.subtopic = "Gas-liquid chromatography"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -4388,7 +4387,7 @@ class Chem087:
         self.group = self.absorption[0]
         self.wavenumber_min = self.absorption[1]
         self.wavenumber_max = self.absorption[2]
-        self.description_text = self.absorption[3]
+        self.desc_text = self.absorption[3]
 
         self.peak_position = rnd.randint(self.wavenumber_min, self.wavenumber_max)
 
@@ -4397,13 +4396,13 @@ class Chem087:
         self.options = options
         self.answer = chr(65 + options.index(self.group))
 
-        self.description = (
-            f"The IR spectrum shows a characteristic absorption. "
-            f"The wavenumber is annotated on the diagram. "
-            f"Which functional group is responsible for the labelled absorption?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The IR spectrum shows a characteristic absorption with the wavenumber annotated on the diagram. "
+            "Which functional group is responsible for the labelled absorption?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Analytical techniques"
         self.subtopic = "IR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -4412,7 +4411,7 @@ class Chem087:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Absorption: {self.peak_position} cm}}^{{-1}} &\\\\"
-            f"\\text{{Shape: {self.description_text}}} &\\\\"
+            f"\\text{{Shape: {self.desc_text}}} &\\\\"
             f"\\text{{Characteristic of: {self.group}}} &\\\\"
             f"\\therefore \\text{{Answer: {self.answer}}}"
             "\\end{aligned}\\]"
@@ -4424,8 +4423,8 @@ class Chem087:
         wavenumbers = np.linspace(4000, 400, 500)
         transmittance = np.ones_like(wavenumbers) * 80
 
-        peak_width = 50 if "sharp" in self.description_text else 150
-        if "broad" in self.description_text:
+        peak_width = 50 if "sharp" in self.desc_text else 150
+        if "broad" in self.desc_text:
             peak_width = 250
 
         for i in range(len(wavenumbers)):
@@ -4444,7 +4443,7 @@ class Chem087:
 
         ax.set_xlabel('Wavenumber (cm\u207b\u00b9)', fontsize=14, fontweight='bold')
         ax.set_ylabel('Transmittance (%)', fontsize=14, fontweight='bold')
-        ax.set_title(f'IR Spectrum ({self.description_text} absorption at '
+        ax.set_title(f'IR Spectrum ({self.desc_text} absorption at '
                      f'{self.peak_position} cm\u207b\u00b9)',
                      fontsize=13, fontweight='bold')
         ax.set_xlim(4000, 400)
@@ -4498,14 +4497,14 @@ class Chem088:
         self.options = options
         self.answer = chr(65 + options.index(self.peak_assignment))
 
-        self.description = (
-            f"The \u00b9H NMR spectrum of {self.compound_name} is shown. "
-            f"One peak is highlighted with its chemical shift (\u03b4) and integration "
-            f"annotated on the diagram. "
-            f"Which hydrogen environment does the labelled peak represent?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The ¹H NMR spectrum of an organic compound is shown. "
+            "One peak is highlighted with its chemical shift (δ) and integration annotated on the diagram. "
+            "Which hydrogen environment does the labelled peak represent?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Analytical techniques"
         self.subtopic = "\u00b9H NMR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -4635,14 +4634,12 @@ class Chem089:
         self.answer = str(self.molecule['num_peaks'])
 
         self.description = (
-            f"The \u00b9\u00b3C NMR spectrum of {self.molecule['name']} ({self.molecule['formula']}) "
-            f"is shown below. "
-            f"How many peaks appear in the spectrum? "
-            f"(Give a numerical answer.)"
+            "The ¹³C NMR spectrum of an organic compound is shown below. "
+            "How many peaks appear in the spectrum? (Give a numerical answer.)"
         )
 
         self.topic = "Analytical techniques"
-        self.subtopic = "37.3 Carbon-13 NMR spectroscopy"
+        self.subtopic = "Carbon-13 NMR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -4811,17 +4808,15 @@ class Chem090:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"The \u00b9H NMR spectrum of {self.mol['name']} shows a peak at "
-            f"\u03b4 = {self.mol['shift']} ppm "
-            f"with integration of {self.mol['integration']}H. "
-            f"This peak corresponds to the {self.mol['key_group']} group. "
-            f"What is the splitting pattern? (Use the n+1 rule.)"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The image shows a peak from a ¹H NMR spectrum, along with its chemical shift (δ) and integration. "
+            "Based on the pattern displayed in the diagram, what is the splitting pattern of this peak?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Analytical techniques"
-        self.subtopic = "37.4 Proton (\u00b9H) NMR spectroscopy"
+        self.subtopic = "Proton (\u00b9H) NMR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
@@ -4965,11 +4960,13 @@ class Chem091:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"Using the combined spectroscopic data shown in the diagram, identify the compound."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "An unknown organic compound was analyzed using Mass Spectrometry, IR Spectroscopy, and ¹H NMR. "
+            "Based on the combined data provided in the table, identify the compound.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Analytical techniques"
         self.subtopic = "Combined spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -5165,12 +5162,13 @@ class Chem092:
         self.options = options
         self.answer = chr(65 + options.index(correct))
 
-        self.description = (
-            f"The diagram shows a Born-Haber cycle for {self.compound}. "
-            f"What enthalpy change does step {self.asked_step} represent?"
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram shows a Born-Haber energy cycle for an ionic compound. "
+            f"Based on the chemical species and the direction of the arrow in the image, what enthalpy change does step {self.asked_step} represent?\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Chemical energetics"
         self.subtopic = "Born-Haber cycles and lattice enthalpy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
@@ -5310,16 +5308,15 @@ class Chem093:
         self.anode = self.hc1["electrode"]
         self.cathode = self.hc2["electrode"]
 
-        self.question_type = "emf"  # fixed
-        if self.question_type == "emf":
-            self.answer = round(self.emf, 2)
-            self.options = []
-            self.description = (
-                f"The diagram shows an electrochemical cell. "
-                f"The standard electrode potentials (E\u00b0) for each half-cell "
-                f"are shown in the diagram. "
-                f"Calculate the standard cell EMF (E\u00b0cell) in V."
-            )
+        self.question_type = "emf" 
+        self.answer = round(self.emf, 2)
+        self.options = []
+
+        self.description = (
+            "An electrochemical cell is constructed using the two half-cells shown in the diagram. "
+            "Using the standard electrode potentials (E\u00b0) provided in the image, "
+            "calculate the standard cell EMF (E\u00b0cell) in V."
+        )
 
         self.topic = "Electrode potentials and electrochemical cells"
         self.subtopic = "Standard electrode potentials"
@@ -5500,19 +5497,12 @@ class Chem094:
         q_types = ["equivalence_vol", "equivalence_ph"]
         self.q_type = rnd.choice(q_types)
 
-        if self.q_type == "equivalence_vol":
-            self.answer = round(self.t['eq_vol'], 1)
-            self.description = (
-                f"The graph shows the pH curve when {self.t['base']} is added to "
-                f"{self.t['acid']} solution ({self.t['type']}). "
-                f"What volume of {self.t['base']} is required to reach the equivalence point?"
-            )
-        else:
-            self.answer = self.t['eq_ph']
-            self.description = (
-                f"The graph shows a {self.t['type']} titration curve. "
-                f"What is the pH at the equivalence point?"
-            )
+        self.answer = round(self.t['eq_vol'], 1) if self.q_type == "equivalence_vol" else self.t['eq_ph']
+
+        self.description = (
+            "The image displays a titration curve. Based on the graph provided, "
+            f"{'what volume of titrant is required to reach the equivalence point?' if self.q_type == 'equivalence_vol' else 'what is the pH at the equivalence point?'}"
+        )
 
         self.topic = "Equilibria"
         self.subtopic = "pH curves and buffer solutions"
@@ -5560,13 +5550,21 @@ class Chem094:
         ph = self._ph_curve(v, self.t)
 
         ax.plot(v, ph, "royalblue", linewidth=3)
+        
+        # --- Add dotted guidelines for points of interest ---
+        for v_poi in [self.t['eq_vol'] / 2, self.t['eq_vol']]:
+            ph_poi = self._ph_curve(np.array([v_poi]), self.t)[0]
+            # Draw vertical line to x-axis and horizontal line to y-axis in one call
+            ax.plot([v_poi, v_poi, 0], [0, ph_poi, ph_poi], color='gray', linestyle=':', linewidth=1)
+        # ----------------------------------------------------
+
         ax.set_xlim(0, max_v)
         ax.set_ylim(0, 14)
         ax.set_xlabel(f"Volume of {self.t['base']} added / cm\u00b3",
                       fontsize=13, fontweight="bold")
         ax.set_ylabel("pH", fontsize=13, fontweight="bold")
-        ax.set_title(f"pH Curve: {self.t['acid']} vs {self.t['base']}\n({self.t['type']})",
-                     fontsize=14, fontweight="bold")
+        ax.set_title(f"pH Curve Analysis\n({self.t['type']})",
+                      fontsize=14, fontweight="bold")
         ax.grid(True, alpha=0.3, linestyle="--")
         ax.set_yticks(range(0, 15, 2))
 
@@ -5774,13 +5772,13 @@ class Chem096:
         rnd.shuffle(options)
         self.options = options
         self.answer = chr(65 + options.index(correct))
-        self.description = (
-            f"An unknown alcohol is treated with acidified K\u2082Cr\u2082O\u2087. "
-            f"The formula and colour change after heating are shown in the diagram. "
-            f"Identify the alcohol."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "An unknown alcohol undergoes the chemical test shown in the diagram. "
+            "Based on the observations and the molecular formula provided in the image, identify the alcohol.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Hydroxy compounds"
         self.subtopic = "Oxidation of alcohols"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
@@ -5820,11 +5818,6 @@ class Chem096:
                        solution_height=2.5,
                        solution_color=self.alcohol["color_after"])
         ax.text(6.9, 5.3, "After heating", fontsize=11, ha="center", fontweight="bold")
-        draw_labeled_box(ax, 8.5, 3.5, 2.3, 1.5,
-                         f"{self.alcohol['formula']}",
-                         facecolor="lightyellow", linewidth=1.5, label_fontsize=12)
-        ax.text(9.65, 5.2, self.alcohol["name"], fontsize=10,
-                ha="center", fontweight="bold")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -5937,18 +5930,18 @@ class Chem097:
 
         self.compound = rnd.choice(compounds)
         self.q_type = "identify_type"  # fixed
-        if self.q_type == "identify_type":
-            correct = self.compound["type"]
-            options = ["aldehyde", "ketone", "carboxylic acid", "ester"]
-            rnd.shuffle(options)
-            self.options = options
-            self.answer = chr(65 + options.index(correct))
-            self.description = (
-                f"The diagram shows three test tube results after chemical tests "
-                f"on an unknown carbonyl compound. "
-                f"Is the compound an aldehyde or a ketone?"
-            )
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        correct = self.compound["type"]
+        options = ["aldehyde", "ketone", "carboxylic acid", "ester"]
+        rnd.shuffle(options)
+        self.options = options
+        self.answer = chr(65 + options.index(correct))
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
+
+        self.description = (
+            "An unknown organic compound is subjected to the three chemical tests shown in the diagram. "
+            "Based on the visual observations of the test tubes, identify the type of compound.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Carbonyl compounds"
         self.subtopic = "Distinguishing aldehydes and ketones"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
@@ -5970,9 +5963,7 @@ class Chem097:
         ax.set_ylim(0, 8)
         ax.axis("off")
 
-        add_title_box(ax, 6.5, 7.5,
-                      f"Carbonyl Tests: {self.compound['name']} ({self.compound['formula']})",
-                      fontsize=14)
+        add_title_box(ax, 6.5, 7.5, "Chemical Analysis of Unknown Carbonyl Compound", fontsize=14)
 
         tests = [
             {
@@ -5998,9 +5989,6 @@ class Chem097:
                     ha="center", va="center", fontweight="bold",
                     bbox=dict(boxstyle="round", facecolor="lightblue",
                               edgecolor="black", linewidth=1))
-
-        ax.text(6.5, 1.2, f"Based on the test results, select the correct answer:",
-                fontsize=10, ha='center', color='navy', fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -6168,12 +6156,14 @@ class Chem098:
         rnd.shuffle(options)
         self.options = options
         self.answer = chr(65 + options.index(correct))
-        self.description = (
-            f"The mechanism diagram shows electrophilic addition to {self.rxn['alkene']}. "
-            f"Identify the electrophile that initiates the reaction."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "The diagram illustrates the curly arrow mechanism for an electrophilic addition reaction. "
+            "Based on the chemical species and the movement of electrons shown in the image, "
+            "identify the electrophile that initiates the reaction.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Introduction to organic chemistry"
         self.subtopic = "Electrophilic addition mechanisms"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
@@ -6197,9 +6187,7 @@ class Chem098:
         ax.set_ylim(0, 8)
         ax.axis("off")
 
-        add_title_box(ax, 7, 7.5,
-                      f"Electrophilic Addition: {self.rxn['alkene']} + {self.rxn['reagent']}",
-                      fontsize=14)
+        add_title_box(ax, 7, 7.5, "Reaction Mechanism Analysis", fontsize=14)
 
         c1x, c1y = 1.8, 4.5
         c2x, c2y = 3.2, 4.5
@@ -6332,13 +6320,13 @@ class Chem099:
         rnd.shuffle(options)
         self.answer = chr(65 + options.index(correct))
         self.options = options
-        self.description = (
-            "The diagram shows silver nitrate / ammonia tests on an unknown halide. "
-            "The precipitate colour and ammonia solubility results are shown. "
-            "Identify the halide ion present."
-        )
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
+        self.description = (
+            "An unknown halide is subjected to the silver nitrate and ammonia tests shown in the diagram. "
+            "Identify the halide ion present by comparing the test tube observations with the reference data provided.\n\n"
+            f"{self.options_text}"
+        )
         self.topic = "Group 17 (Halogens)"
         self.subtopic = "Halide ion tests"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
@@ -6471,12 +6459,14 @@ class Chem100:
         rnd.shuffle(options)
         self.options = options
         self.answer = chr(65 + options.index(correct))
+        self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
+
         self.description = (
-            f"The graph shows pV vs p for {self.gas['name']} (real gas) compared to an ideal gas. "
-            f"The high-pressure region of the graph is highlighted. "
-            f"Which statement best describes the real gas behaviour in the highlighted region?"
+            "The graph displays the relationship between $pV$ and $p$ for a real gas compared to an ideal gas. "
+            "Based on the behavior shown in the highlighted region of the diagram, "
+            "which statement best explains the observed deviation from ideal behavior?\n\n"
+            f"{self.options_text}"
         )
-        self.description += "\n\n" + "\n".join(f"{chr(65+_j)}. {_o}" for _j, _o in enumerate(self.options))
         self.topic = "States of matter"
         self.subtopic = "Ideal and real gas behaviour"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
@@ -6511,6 +6501,13 @@ class Chem100:
 
         ax.set_xlim(0, 1000)
         ax.set_ylim(nRT * 0.7, nRT * 1.5)
+
+        # Add a visual highlight for the high-pressure region
+        ax.axvspan(600, 1000, color='yellow', alpha=0.15, label='Region of Interest')
+
+        # Make the title more generic so they have to read the legend
+        ax.set_title("Gas Behavior Analysis: Real vs. Ideal", fontsize=14, fontweight="bold")
+
         ax.set_xlabel("Pressure / atm", fontsize=13, fontweight="bold")
         ax.set_ylabel("pV / L atm mol\u207b\u00b9", fontsize=13, fontweight="bold")
         ax.set_title(f"pV vs p: Real Gas ({self.gas['name']}) vs Ideal Gas",
