@@ -2022,37 +2022,21 @@ class Phy171:
 class Phy172:
     def __init__(self):
         self.k = 8.99e9
-        self.q = rnd.uniform(2e-9, 9e-9)
-        self.dist = rnd.uniform(0.06, 0.20)
-        self.E_single = (self.k * self.q) / ((self.dist/2)**2)
-        self.E_total = 2 * self.E_single
-        self.answer = f"{self.E_total:.4f}"
-
-        self.description = (
-            "Two point charges, one +Q and one -Q, are separated by a distance as shown. "
-            "Based on the values provided in the diagram, calculate the magnitude of the net electric field strength at the midpoint between the charges. "
-            "(_) V m^-1 (Example format: 12345.2345)"
-        )
-        self.topic, self.subtopic = "Electricity", "Electric fields"
-        self.curriculum, self.source = "A-Level", "Original"
-
-class Phy172:
-    def __init__(self):
-        self.k = 8.99e9
-        self.q = rnd.uniform(2e-9, 9e-9)
-        self.dist = rnd.uniform(0.06, 0.20)
+        self.q = round(rnd.uniform(2.0, 9.0), 2) * 1e-9
+        self.dist = round(rnd.uniform(0.06, 0.20), 3)
 
         r = self.dist / 2
 
         self.E_single = (self.k * self.q) / (r**2)
         self.E_total = 2 * self.E_single
 
-        self.answer = f"{self.E_total:.4f}"
+        self.answer = f"{self.E_total:.1f}"
 
         self.description = (
             "Two point charges, one +Q and one -Q, are separated by a distance as shown. "
             "Based on the values provided in the diagram, calculate the magnitude of the net electric field strength at the midpoint between the charges. "
-            "(_) V m^-1 (Example format: 12345.2345)"
+            "Assume Coulomb's constant is 8.99 × 10^9 N m^2 C^-2. "
+            "(_) V m^-1 (Example format: 12345.2)"
         )
 
         self.topic, self.subtopic = "Electricity", "Electric fields"
@@ -2066,7 +2050,7 @@ class Phy172:
             f"&E = \\frac{{8.99\\times10^9 \\times {self.q:.2e}}}{{({r:.3f})^2}} \\\\[6pt]"
             "&\\mathbf{Step\ 3:\ Net\ field} \\\\"
             "&E_{net} = 2E \\\\[6pt]"
-            f"&E_{{net}} = {self.E_total:.4f}\\,\\text{{V m}}^{{-1}}"
+            f"&E_{{net}} = {self.E_total:.1f}\\,\\text{{V m}}^{{-1}}"
             "\\end{aligned}\\]"
         )
 
@@ -2076,17 +2060,17 @@ class Phy172:
 
         ax.add_patch(plt.Circle((2, 2), 0.25, color='#e74c3c', ec='black', zorder=3))
         ax.add_patch(plt.Circle((2.1, 2.1), 0.1, color='white', alpha=0.3, zorder=4))
-        ax.text(2, 2.5, "$Q = {self.q}", ha='center', fontweight='bold')
+        ax.text(2, 2.5, f"$+Q = {self.q:.2e}$ C", ha='center', fontweight='bold')
         
         ax.add_patch(plt.Circle((8, 2), 0.25, color='#3498db', ec='black', zorder=3))
         ax.add_patch(plt.Circle((8.1, 2.1), 0.1, color='white', alpha=0.3, zorder=4))
-        ax.text(8, 2.5, "$Q = {self.q}", ha='center', fontweight='bold')
+        ax.text(8, 2.5, f"$-Q = {self.q:.2e}$ C", ha='center', fontweight='bold')
 
         ax.scatter(5, 2, marker='|', color='black', s=200, zorder=2)
         ax.text(5, 1.6, "Midpoint", ha='center', style='italic', fontsize=10)
 
         ax.annotate('', xy=(8, 1.2), xytext=(2, 1.2), arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=1.5))
-        ax.text(5, 0.8, "$d = {self.dist}", ha='center', fontweight='bold')
+        ax.text(5, 0.8, f"$d = {self.dist:.3f}$ m", ha='center', fontweight='bold')
 
         plt.tight_layout()
         plt.savefig(os.path.join(DESTINATION_FOLDER, f"image{num}.png"), dpi=300, bbox_inches="tight")
@@ -2193,9 +2177,9 @@ class Phy174:
         self.answer = f"{self.emf:.3f}"
 
         self.description = (
-            "A conductor of length moves with speed"
-            "perpendicular to a magnetic field of B"
-            "Calculate the induced emf. (_) V"
+            "A conductor of length moves with speed "
+            "perpendicular to a magnetic field of B. "
+            "Calculate the induced emf. (_) V "
             "(Example format: 11.234)"
         )
 
@@ -2331,12 +2315,12 @@ class Phy176:
 
         self.omega = 2 * math.pi * self.f
         self.emf_peak = self.N * self.B * self.A * self.omega
-        self.answer = f"{self.emf_peak:.2e}"
+        self.answer = f"{self.emf_peak:.2f}"
 
         self.description = (
             "A rectangular coil rotates in a uniform magnetic field as shown. "
             "Based on the values provided in the diagram, calculate the peak induced e.m.f. "
-            "(_) V (Example format: 120.34)"
+            "(_) V"
         )
 
         self.topic = "Magnetic Fields"
@@ -2450,7 +2434,6 @@ class Phy177:
         ax.text(0.1, 1.05, f"$V_{{peak}} = {self.V_peak}$ V", color='red', fontsize=10)
         
         ax.axhline(y=rms_val, color='green', linestyle=':', linewidth=1.5)
-        ax.text(0.1, rms_val - 0.15, f"$V_{{rms}} \\approx {self.answer}$ V", color='green', fontsize=10)
         
         ax.axhline(0, color='black', linewidth=0.8) 
         ax.set_xlim(0, 2 * np.pi)
@@ -2510,7 +2493,6 @@ class Phy178:
         ax.plot(x, y, color='darkorange', linewidth=2.5, label='AC Current')
         
         ax.axhline(y=1, color='red', linestyle='--', linewidth=1.2)
-        ax.text(0.1, 1.05, f"$I_{{peak}} = {self.answer}$ A", color='red', fontsize=10, fontweight='bold')
         
         ax.axhline(y=rms_val, color='teal', linestyle=':', linewidth=1.8)
         ax.text(0.1, rms_val - 0.15, f"$I_{{rms}} = {self.I_rms}$ A", color='teal', fontsize=10, fontweight='bold')

@@ -2899,7 +2899,7 @@ class Phy127:
         self.description = (
             "Based on the masses and gravitational force of attraction provided in the diagram, "
             "calculate the distance between the centres of the planet and the sun. "
-            "(_) m (Example format: 150000000000.0)"
+            "(_) m"
         )
 
         self.reasoning = (
@@ -4185,7 +4185,7 @@ class Phy142:
         self.curriculum = "A Level"
 
         l_str = f"{self.length:.2f}"
-        g_str = f"{self.g:.2f}"
+        self.g_str = f"{self.g:.2f}"
         ang_str = f"{self.theta_degrees}"
         om_str = f"{self.omega:.3f}"
         arc_str = f"{self.length * self.theta_rad:.4f}"
@@ -4194,15 +4194,15 @@ class Phy142:
             "A simple pendulum consists of a small bob attached to a string. "
             "The pendulum is released from rest from the position shown in the diagram. "
             "Assuming the motion is simple harmonic, calculate the maximum speed of the bob "
-            f"during its oscillation. (Use g = {g_str} m s\u207b\u00b2). (_) m s^-1 (Example format: 0.126778903)"
+            f"during its oscillation. (Use g = {self.g_str} m s\u207b\u00b2). (_) m s^-1 (Example format: 0.126778903)"
         )
 
         self.reasoning = (
             "\\[\\begin{aligned}"
             "&\\mathbf{Step\ 1:\ Identify\ Given\ Information} \\\\"
-            f"&L = {l_str}\\,\\text{{m}}, \\quad g = {g_str}\\,\\text{{m s}}^{{-2}}, \\quad \\theta_{{max}} = {ang_str}^\\circ \\\\[8pt]"
+            f"&L = {l_str}\\,\\text{{m}}, \\quad g = {self.g_str}\\,\\text{{m s}}^{{-2}}, \\quad \\theta_{{max}} = {ang_str}^\\circ \\\\[8pt]"
             "&\\mathbf{Step\ 2:\ Calculate\ Angular\ Frequency\ (} \\omega \\mathbf{)} \\\\"
-            f"&\\omega = \\sqrt{{\\frac{{g}}{{L}}}} = \\sqrt{{\\frac{{{g_str}}}{{{l_str}}}}} = {om_str}\\,\\text{{rad s}}^{{-1}} \\\\[8pt]"
+            f"&\\omega = \\sqrt{{\\frac{{g}}{{L}}}} = \\sqrt{{\\frac{{{self.g_str}}}{{{l_str}}}}} = {om_str}\\,\\text{{rad s}}^{{-1}} \\\\[8pt]"
             "&\\mathbf{Step\ 3:\ Determine\ Amplitude\ of\ Displacement\ (} x_0 \\mathbf{)} \\\\"
             "&\\text{{For small angles, }} x_0 = L \\theta_{{rad}} \\\\"
             f"&\\theta_{{rad}} = {ang_str} \\times \\frac{{\\pi}}{{180}} \\approx {(self.theta_rad):.4f}\\,\\text{{rad}} \\\\"
