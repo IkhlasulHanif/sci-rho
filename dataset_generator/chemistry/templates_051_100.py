@@ -53,9 +53,11 @@ class Chem051:
         )
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Group 2 elements and reactivity values:}} &\\\\"
-            f"\\text{{Mg = {self.values[0]}, Ca = {self.values[1]}, Sr = {self.values[2]}, Ba = {self.values[3]}}} &\\\\"
-            f"\\therefore \\text{{{self.element} = {correct_val}}}"
+            "&\\text{1. The graph shows Group 2 elements in order of increasing atomic number.} \\\\"
+            "&\\text{2. These correspond to Mg (1), Ca (2), Sr (3), and Ba (4).} \\\\"
+            f"&\\text{{3. The question asks for the reactivity value at position {self.position} ({self.element}).}} \\\\"
+            f"&\\text{{4. Reading the height of the bar at position {self.position} on the y-axis gives {correct_val}.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
         
@@ -153,25 +155,28 @@ class Chem052:
         ]
 
         self.comp = rnd.choice(comparisons)
-        e1, e2 = self.comp['element1'], self.comp['element2']
+        
+        # Obscure element identities as X and Y
+        e1, e2 = "Element X", "Element Y"
         t1, t2 = self.comp['transition1'], self.comp['transition2']
+        
+        # Extract the unicode charges (e.g., '²⁺') and configurations (e.g., '[Ar] 3d⁹')
+        self.charge1 = self.comp['ion1'].split(':')[0].replace(self.comp['element1'], '')
+        self.charge2 = self.comp['ion2'].split(':')[0].replace(self.comp['element2'], '')
+        self.ion_config1 = self.comp['ion1'].split(': ')[1]
+        self.ion_config2 = self.comp['ion2'].split(': ')[1]
 
-        # Build MCQ options
+        # Build MCQ options using X and Y
         options_map = {
             (True, False):  (f"{e1} only",),
             (False, True):  (f"{e2} only",),
-            (True, True):   (f"Both {e1} and {e2}",),
+            (True, True):   (f"Both X and Y",),
             (False, False): ("Neither",),
         }
         correct_text = options_map[(t1, t2)][0]
 
         # Build 4 options
-        all_opts = [
-            f"{e1} only",
-            f"{e2} only",
-            f"Both {e1} and {e2}",
-            "Neither"
-        ]
+        all_opts = [f"{e1} only", f"{e2} only", f"Both X and Y", "Neither"]
         rnd.shuffle(all_opts)
         self.choices = all_opts[:4]
         if correct_text not in self.choices:
@@ -180,7 +185,6 @@ class Chem052:
 
         labels = ["A", "B", "C", "D"]
         self.answer = labels[self.choices.index(correct_text)]
-        self.choices_display = {lbl: opt for lbl, opt in zip(labels, self.choices)}
         self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
         self.description = (
@@ -193,11 +197,18 @@ class Chem052:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Determine explanation text for the reasoning block
+        exp1 = "an incomplete d subshell, so it IS" if t1 else "a full or empty d subshell, so it is NOT"
+        exp2 = "an incomplete d subshell, so it IS" if t2 else "a full or empty d subshell, so it is NOT"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{{e1}: {self.comp['ion1']} - incomplete d: {t1}}} &\\\\"
-            f"\\text{{{e2}: {self.comp['ion2']} - incomplete d: {t2}}} &\\\\"
-            f"\\text{{Answer: {correct_text}}}"
+            "&\\text{1. The definition requires forming a stable ion with an incomplete d subshell.} \\\\"
+            f"&\\text{{2. Element X forms the ion X{self.charge1} with configuration {self.ion_config1}.}} \\\\"
+            f"&\\quad \\text{{It has {exp1} a transition element.}} \\\\"
+            f"&\\text{{3. Element Y forms the ion Y{self.charge2} with configuration {self.ion_config2}.}} \\\\"
+            f"&\\quad \\text{{It has {exp2} a transition element.}} \\\\"
+            f"&\\text{{4. Therefore, the correct option is: {correct_text}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -207,32 +218,25 @@ class Chem052:
         ax.set_ylim(0, 8)
         ax.axis('off')
 
-        add_title_box(ax, 6, 7.5, "Transition Element Definition", fontsize=16)
-
         y_pos = 5.5
-        add_formula_label(ax, 2, y_pos, f"{self.comp['element1']} atom:", fontsize=14, ha='right')
+        add_formula_label(ax, 2, y_pos, "Element X atom:", fontsize=14, ha='right')
         add_formula_label(ax, 5, y_pos, self.comp['config1'], fontsize=13,
                          bbox_style=dict(boxstyle='round', facecolor='lightblue', pad=0.5))
 
-        add_formula_label(ax, 2, y_pos - 0.8, f"{self.comp['ion1'].split(':')[0]}:",
+        add_formula_label(ax, 2, y_pos - 0.8, f"X{self.charge1}:",
                          fontsize=14, ha='right')
-        add_formula_label(ax, 5, y_pos - 0.8, self.comp['ion1'].split(': ')[1],
+        add_formula_label(ax, 5, y_pos - 0.8, self.ion_config1,
                          fontsize=13, bbox_style=dict(boxstyle='round', facecolor='lightyellow', pad=0.5))
 
         y_pos = 3.5
-        add_formula_label(ax, 2, y_pos, f"{self.comp['element2']} atom:", fontsize=14, ha='right')
+        add_formula_label(ax, 2, y_pos, "Element Y atom:", fontsize=14, ha='right')
         add_formula_label(ax, 5, y_pos, self.comp['config2'], fontsize=13,
                          bbox_style=dict(boxstyle='round', facecolor='lightblue', pad=0.5))
 
-        add_formula_label(ax, 2, y_pos - 0.8, f"{self.comp['ion2'].split(':')[0]}:",
+        add_formula_label(ax, 2, y_pos - 0.8, f"Y{self.charge2}:",
                          fontsize=14, ha='right')
-        add_formula_label(ax, 5, y_pos - 0.8, self.comp['ion2'].split(': ')[1],
+        add_formula_label(ax, 5, y_pos - 0.8, self.ion_config2,
                          fontsize=13, bbox_style=dict(boxstyle='round', facecolor='lightyellow', pad=0.5))
-
-        definition = "Transition element:\nForms one or more stable ions\nwith incomplete d orbitals"
-        ax.text(9, 4, definition, fontsize=12, ha='center', va='center',
-               bbox=dict(boxstyle='round', facecolor='lightgreen',
-                        edgecolor='black', linewidth=2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -302,7 +306,11 @@ class Chem053:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{The {self.shown_color} compound contains {self.metal} in oxidation state {correct_ox}}} &"
+            f"&\\text{{1. The title indicates these are compounds of {self.metal}.}} \\\\"
+            f"&\\text{{2. The highlighted test tube contains a {self.shown_color} solution.}} \\\\"
+            f"&\\text{{3. Aqueous {self.metal} ions exhibit a characteristic {self.shown_color} color}} \\\\"
+            f"&\\quad \\text{{when in the {correct_ox} oxidation state.}} \\\\"
+            f"&\\text{{4. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -380,8 +388,8 @@ class Chem054:
         self.answer = self.coordination_number
 
         self.description = (
-            f"The diagram shows the structure of a transition metal complex ion. "
-            f"What is the coordination number of the central metal ion?"
+            "The diagram shows the general spatial arrangement of ligands around a central transition metal ion. "
+            "What is the coordination number of the central metal ion?"
         )
 
         self.topic = "Chemistry of transition elements"
@@ -391,9 +399,10 @@ class Chem054:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Coordination number}} &= \\text{{number of ligands bonded to central metal}}\\\\"
-            f"&= {self.coordination_number}\\\\"
-            f"\\text{{Shape: {self.shape}}}"
+            "&\\text{1. The coordination number is defined as the total number of coordinate bonds} \\\\"
+            "&\\quad \\text{formed between the ligands and the central metal ion.} \\\\"
+            "&\\text{2. By counting the ligands (L) bonded to the central metal (M) in the diagram:} \\\\"
+            f"&\\quad \\text{{Coordination number}} = {self.coordination_number}"
             "\\end{aligned}\\]"
         )
 
@@ -550,7 +559,8 @@ class Chem055:
 
         # Build MCQ with formula as option
         correct = self.reaction['final_complex']
-        all_formulas = [r['final_complex'] for r in complexes]
+        # Use set to avoid any duplicate distractors if lists overlap
+        all_formulas = list(set([r['final_complex'] for r in complexes])) 
         wrong_opts = [f for f in all_formulas if f != correct]
         options = rnd.sample(wrong_opts, 3) + [correct]
         rnd.shuffle(options)
@@ -563,8 +573,7 @@ class Chem055:
         self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
 
         self.description = (
-            "The diagram shows a ligand exchange reaction. "
-            "The starting complex and the ligand being added are shown. "
+            "The diagram shows a ligand exchange reaction starting from an aqueous metal ion solution. "
             "What is the formula of the final complex ion?\n\n"
             f"{self.options_text}"
         )
@@ -573,12 +582,28 @@ class Chem055:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Safely convert Unicode subscripts/superscripts to LaTeX for math mode
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-', '²': '^2', '³': '^3', '⁴': '^4'
+        })
+        
+        initial_tex = self.reaction['initial_complex'].translate(tex_map)
+        final_tex = self.reaction['final_complex'].translate(tex_map)
+        ligand_tex = self.reaction['ligand'].translate(tex_map)
+        metal_tex = self.reaction['metal'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Ligand exchange reaction:}} &\\\\"
-            f"\\text{{{self.reaction['initial_complex']} + excess {self.reaction['ligand']}}} "
-            f"&\\rightarrow \\text{{{correct}}}\\\\"
-            f"\\text{{Color changes: {self.reaction['initial_color']} to {self.reaction['final_color']}}}"
+            f"&\\text{{1. The starting solution contains aqueous }} \\mathrm{{{metal_tex}}} \\text{{ ions, which exist as}} \\\\"
+            f"&\\quad \\text{{the {self.reaction['initial_color']} hexaaqua complex: }} \\mathrm{{{initial_tex}}}. \\\\"
+            f"&\\text{{2. Adding {self.reaction['ligand_name']} (}}\\mathrm{{{ligand_tex}}}\\text{{) initiates a ligand exchange reaction.}} \\\\"
+            f"&\\text{{3. The stronger or more concentrated ligand replaces the water molecules in}} \\\\"
+            "&\\quad \\text{the coordination sphere to form a new, stable complex.} \\\\"
+            f"&\\text{{4. For {self.reaction['metal']} with {self.reaction['ligand_name']}, the final product is the}} \\\\"
+            f"&\\quad \\text{{{self.reaction['final_color']} complex: }} \\mathrm{{{final_tex}}}. \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -592,15 +617,16 @@ class Chem055:
 
         draw_test_tube(ax, 1.5, 1.5, width=1.5, height=3.5, solution_height=2.5,
                       solution_color=self.reaction['initial_color_hex'])
-        add_formula_label(ax, 2.25, 0.8, self.reaction['initial_complex'], fontsize=11)
-        add_formula_label(ax, 2.25, 0.3, self.reaction['initial_color'], fontsize=10, color='blue')
+        
+        # Changed to obscure the starting complex formula
+        add_formula_label(ax, 2.25, 0.8, f"Aqueous {self.reaction['metal']}", fontsize=13)
 
         draw_arrow(ax, 3.5, 3.5, 5.5, 3.5, label=f"+ excess {self.reaction['ligand']}",
                   label_position='above', color='black', linewidth=3)
 
-        draw_test_tube(ax, 9, 1.5, width=1.5, height=3.5, solution_height=2.5,
+        draw_test_tube(ax, 7, 1.5, width=1.5, height=3.5, solution_height=2.5,
                       solution_color='lightgray')
-        add_formula_label(ax, 9.75, 0.8, "?", fontsize=20, weight='bold', color='red')
+        add_formula_label(ax, 7.75, 0.8, "?", fontsize=20, weight='bold', color='red')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -619,21 +645,21 @@ class Chem056:
 
     def __init__(self):
         reactions = [
-            ("[Cu(H\u2082O)\u2086]\u00b2\u207a", "#ADD8E6", "blue", "[Cu(NH\u2083)\u2084(H\u2082O)\u2082]\u00b2\u207a", "deep blue", "excess NH\u2083(aq)"),
-            ("[Fe(H\u2082O)\u2086]\u00b3\u207a", "#DAA520", "yellow-brown", "[Fe(SCN)(H\u2082O)\u2085]\u00b2\u207a", "blood red", "SCN\u207b(aq)"),
-            ("[Co(H\u2082O)\u2086]\u00b2\u207a", "#FFC0CB", "pink", "[CoCl\u2084]\u00b2\u207b", "blue", "excess Cl\u207b(aq)"),
-            ("[Ni(H\u2082O)\u2086]\u00b2\u207a", "#90EE90", "pale green", "[Ni(NH\u2083)\u2086]\u00b2\u207a", "violet", "excess NH\u2083(aq)"),
-            ("[Cr(H\u2082O)\u2086]\u00b3\u207a", "#EE82EE", "violet", "[Cr(NH\u2083)\u2086]\u00b3\u207a", "yellow", "excess NH\u2083(aq)"),
-            ("[Cu(H\u2082O)\u2086]\u00b2\u207a", "#ADD8E6", "pale blue", "[CuCl\u2084]\u00b2\u207b", "yellow-green", "excess Cl\u207b(aq)"),
-            ("[Fe(H\u2082O)\u2086]\u00b2\u207a", "#90EE90", "pale green", "[Fe(CN)\u2086]\u2074\u207b", "yellow", "CN\u207b(aq)"),
-            ("[Mn(H\u2082O)\u2086]\u00b2\u207a", "#FFB6C1", "pale pink", "[Mn(EDTA)]\u00b2\u207b", "pale pink", "EDTA\u2074\u207b"),
-            ("[Co(H\u2082O)\u2086]\u00b2\u207a", "#FFC0CB", "pink", "[Co(NH\u2083)\u2086]\u00b3\u207a", "yellow", "excess NH\u2083(aq)"),
-            ("[Cu(NH\u2083)\u2084(H\u2082O)\u2082]\u00b2\u207a", "#00008B", "deep blue", "[Cu(EDTA)]\u00b2\u207b", "blue", "EDTA\u2074\u207b"),
+            ("[Cu(H\u2082O)\u2086]\u00b2\u207a", "#ADD8E6", "pale blue", "[Cu(NH\u2083)\u2084(H\u2082O)\u2082]\u00b2\u207a", "deep blue", "excess NH\u2083(aq)", "Aqueous Cu\u00b2\u207a"),
+            ("[Fe(H\u2082O)\u2086]\u00b3\u207a", "#DAA520", "yellow-brown", "[Fe(SCN)(H\u2082O)\u2085]\u00b2\u207a", "blood red", "SCN\u207b(aq)", "Aqueous Fe\u00b3\u207a"),
+            ("[Co(H\u2082O)\u2086]\u00b2\u207a", "#FFC0CB", "pink", "[CoCl\u2084]\u00b2\u207b", "blue", "excess Cl\u207b(aq)", "Aqueous Co\u00b2\u207a"),
+            ("[Ni(H\u2082O)\u2086]\u00b2\u207a", "#90EE90", "pale green", "[Ni(NH\u2083)\u2086]\u00b2\u207a", "violet", "excess NH\u2083(aq)", "Aqueous Ni\u00b2\u207a"),
+            ("[Cr(H\u2082O)\u2086]\u00b3\u207a", "#EE82EE", "violet", "[Cr(NH\u2083)\u2086]\u00b3\u207a", "yellow", "excess NH\u2083(aq)", "Aqueous Cr\u00b3\u207a"),
+            ("[Cu(H\u2082O)\u2086]\u00b2\u207a", "#ADD8E6", "pale blue", "[CuCl\u2084]\u00b2\u207b", "yellow-green", "excess Cl\u207b(aq)", "Aqueous Cu\u00b2\u207a"),
+            ("[Fe(H\u2082O)\u2086]\u00b2\u207a", "#90EE90", "pale green", "[Fe(CN)\u2086]\u2074\u207b", "yellow", "CN\u207b(aq)", "Aqueous Fe\u00b2\u207a"),
+            ("[Mn(H\u2082O)\u2086]\u00b2\u207a", "#FFB6C1", "pale pink", "[Mn(EDTA)]\u00b2\u207b", "pale pink", "EDTA\u2074\u207b", "Aqueous Mn\u00b2\u207a"),
+            ("[Co(H\u2082O)\u2086]\u00b2\u207a", "#FFC0CB", "pink", "[Co(NH\u2083)\u2086]\u00b3\u207a", "yellow", "excess NH\u2083(aq)", "Aqueous Co\u00b2\u207a"),
+            ("[Cu(NH\u2083)\u2084(H\u2082O)\u2082]\u00b2\u207a", "#00008B", "deep blue", "[Cu(EDTA)]\u00b2\u207b", "blue", "EDTA\u2074\u207b", "Cu\u00b2\u207a/NH\u2083 complex"),
         ]
 
         self.reaction = rnd.choice(reactions)
         (self.reactant, self.color1_hex, self.color1, self.product,
-         self.color2, self.ligand) = self.reaction
+         self.color2, self.ligand, self.display_name) = self.reaction
 
         # MCQ based on color
         all_colors = ["deep blue", "blood red", "blue", "violet", "yellow",
@@ -661,11 +687,27 @@ class Chem056:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Safely convert Unicode subscripts/superscripts to LaTeX for math mode
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-', '²': '^2', '³': '^3', '⁴': '^4', '⁵': '^5'
+        })
+        
+        reactant_tex = self.reactant.translate(tex_map)
+        product_tex = self.product.translate(tex_map)
+        ligand_tex = self.ligand.translate(tex_map)
+        display_name_tex = self.display_name.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Ligand substitution:}} &\\\\"
-            f"\\text{{{self.reactant}}} &\\rightarrow \\text{{{self.product}}}\\\\"
-            f"\\text{{Color: {self.color1}}} &\\rightarrow \\text{{{self.color2}}}"
+            f"&\\text{{1. The starting solution is }} \\mathrm{{{display_name_tex}}} \\text{{, which exists as the {self.color1}}} \\\\"
+            f"&\\quad \\text{{complex }} \\mathrm{{{reactant_tex}}}. \\\\"
+            f"&\\text{{2. Adding {self.ligand} (}}\\mathrm{{{ligand_tex}}}\\text{{) results in a ligand substitution reaction.}} \\\\"
+            f"&\\text{{3. The ligands in the coordination sphere are replaced to form: }} \\mathrm{{{product_tex}}}. \\\\"
+            f"&\\text{{4. This specific complex is defined by its}} \\\\"
+            f"&\\quad \\text{{characteristic {self.color2} color.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -686,7 +728,7 @@ class Chem056:
 
         draw_test_tube(ax, 2, 1, width=1.2, height=3.5, solution_height=2.5,
                       solution_color=self.color1_hex)
-        add_formula_label(ax, 2.6, 0.3, self.reactant, fontsize=10)
+        add_formula_label(ax, 2.6, 0.3, self.display_name, fontsize=12)
 
         draw_arrow(ax, 4, 3, 8, 3, label=f"+ {self.ligand}", label_position='above',
                   color='black', linewidth=2.5)
@@ -770,10 +812,6 @@ class Chem057:
 
         ax.text(0.5, 3.5, 'Energy', fontsize=14, fontweight='bold', rotation=90, ha='center')
 
-        calc_text = f"\u03bb = hc\u00d7N\u2090/\u0394E\n\u03bb = ? nm"
-        ax.text(5, 1, calc_text, fontsize=12, ha='center',
-               bbox=dict(boxstyle='round', facecolor='lightyellow', edgecolor='black', linewidth=2))
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -836,11 +874,27 @@ class Chem058:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Safely convert Unicode subscripts/superscripts to LaTeX for math mode
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-', '²': '^2', '³': '^3', '⁴': '^4', '⁵': '^5', '⁶': '^6', '⁷': '^7'
+        })
+        
+        species1_tex = self.species1.translate(tex_map)
+        species2_tex = self.species2.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Oxidation:}} &\\quad \\text{{{self.species1}}} \\rightarrow \\text{{{self.species2}}}\\\\"
-            f"\\text{{Reduction:}} &\\quad \\text{{{self.species2}}} \\rightarrow \\text{{{self.species1}}}\\\\"
-            f"\\text{{Oxidation states: }} {self.ox1} \\rightleftharpoons {self.ox2}"
+            "&\\text{1. A transition metal catalyst works by providing an alternative pathway} \\\\"
+            "&\\quad \\text{with a lower activation energy, often by changing its oxidation state.} \\\\"
+            f"&\\text{{2. The catalytic cycle shown involves the species }} \\mathrm{{{species1_tex}}} \\text{{ and }} \\mathrm{{{species2_tex}}}. \\\\"
+            "&\\text{3. For simple monoatomic ions, the oxidation state corresponds directly} \\\\"
+            "&\\quad \\text{to the charge on the ion:} \\\\"
+            f"&\\quad \\bullet \\, \\mathrm{{{species1_tex}}} \\text{{ represents the {self.ox1} oxidation state.}} \\\\"
+            f"&\\quad \\bullet \\, \\mathrm{{{species2_tex}}} \\text{{ represents the {self.ox2} oxidation state.}} \\\\"
+            f"&\\text{{4. Therefore, the catalyst cycles between the {self.ox1} and {self.ox2} states.}} \\\\"
+            f"&\\text{{5. Consequently, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -984,12 +1038,18 @@ class Chem059:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        comparison_word = "greater" if self.exchange['feasible'] else "less"
+        conclusion = "feasible (Yes)" if self.exchange['feasible'] else "not feasible (No)"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"K_{{stab}}\\text{{(initial)}} &= {self.exchange['Kstab_initial']}\\\\"
-            f"K_{{stab}}\\text{{(final)}} &= {self.exchange['Kstab_final']}\\\\"
-            f"\\text{{Feasible if }} K_{{stab}}\\text{{(final)}} > K_{{stab}}\\text{{(initial)}}\\\\"
-            f"\\text{{Answer: {correct}}}"
+            "&\\text{1. A ligand exchange is thermodynamically feasible if the new complex} \\\\"
+            "&\\quad \\text{is more stable (has a higher } K_{stab} \\text{) than the initial complex.} \\\\"
+            f"&\\text{{2. Initial }} K_{{stab}} = \\text{{{self.exchange['Kstab_initial']}}} \\\\"
+            f"&\\text{{3. Final }} K_{{stab}} = \\text{{{self.exchange['Kstab_final']}}} \\\\"
+            f"&\\text{{4. Because the final value is {comparison_word} than the initial value,}} \\\\"
+            f"&\\quad \\text{{the exchange is {conclusion}.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1073,10 +1133,14 @@ class Chem060:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Following IUPAC rules:}} &\\\\"
-            f"\\text{{1. Find longest carbon chain}} &\\\\"
-            f"\\text{{2. Number to give substituents lowest numbers}} &\\\\"
-            f"\\text{{3. Name: {self.name}}}"
+            "&\\text{1. Identify the longest continuous carbon chain to find the parent alkane.} \\\\"
+            "&\\text{2. Identify the alkyl substituent groups branching off this main chain.} \\\\"
+            "&\\text{3. Number the parent chain starting from the end that assigns the lowest} \\\\"
+            "&\\quad \\text{possible sequence of numbers (locants) to these substituents.} \\\\"
+            "&\\text{4. Assemble the name: use commas between numbers, hyphens between} \\\\"
+            "&\\quad \\text{numbers and letters, and list substituents alphabetically.} \\\\"
+            f"&\\text{{5. Applying these IUPAC rules to the formula yields: {self.name}.}} \\\\"
+            f"&\\text{{6. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1090,8 +1154,6 @@ class Chem060:
 
         add_formula_label(ax, 5, 3, self.formula, fontsize=18, weight='bold',
                          bbox_style=dict(boxstyle='round', facecolor='lightyellow', pad=1))
-
-        add_formula_label(ax, 5, 1, "Name this compound using IUPAC nomenclature", fontsize=13)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1141,21 +1203,42 @@ class Chem061:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+        })
+        formula_tex = self.formula.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{The structural isomers are:}} &\\\\"
-            + "\\\\".join([f"\\text{{{i+1}. {name}}}" for i, name in enumerate(self.isomer_names)]) + "\\\\"
-            + f"\\text{{Total}} &= {self.answer}"
-            + "\\end{aligned}\\]"
+            "&\\text{1. Structural isomers are compounds with the same molecular formula} \\\\"
+            "&\\quad \\text{but different structural arrangements (chain, position, or functional group).} \\\\"
+            f"&\\text{{2. For the formula }}\\mathrm{{{formula_tex}}}\\text{{, the unique structural isomers are:}} \\\\"
+        )
+        
+        for name in self.isomer_names:
+            # Fixing the C3H8O typo if it appears in the text
+            display_name = "methoxyethane" if name == "methoxymethane" and "3" in self.formula else name
+            self.reasoning += f"&\\quad \\bullet \\, \\text{{{display_name}}} \\\\"
+            
+        self.reasoning += (
+            f"&\\text{{3. Summing these up, we find a total of {self.answer} structural isomers.}} \\\\"
+            f"&\\text{{Note: Stereoisomers (like cis-trans) are not counted as structural isomers.}} \\\\"
+            "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(10, 8))
-        ax.set_xlim(0, 10)
-        ax.set_ylim(0, 8)
+        # Shrink the canvas from (10,8) to a neat (6,3) card size
+        fig, ax = plt.subplots(figsize=(6, 3))
+        ax.set_xlim(0, 6)
+        ax.set_ylim(0, 3)
         ax.axis('off')
 
-        add_title_box(ax, 5, 7.5, f"{self.formula}", fontsize=16)
+        # Center the formula prominently in the middle of the smaller canvas
+        add_formula_label(ax, 3, 1.5, f"Molecular Formula:\n{self.formula}", 
+                          fontsize=20, weight='bold', ha='center',
+                          bbox_style=dict(boxstyle='round,pad=1', facecolor='lightyellow', edgecolor='black'))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1206,11 +1289,32 @@ class Chem062:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Determine the positional description based on the chosen isomer
+        if self.shown_isomer == "E":
+            position = "opposite sides"
+            specific_desc = self.compound[1]
+        else:
+            position = "the same side"
+            specific_desc = self.compound[2]
+
+        # Define the map to turn Unicode subscripts into LaTeX inline math
+        tex_map = str.maketrans({
+            '₀': '$_0$', '₁': '$_1$', '₂': '$_2$', '₃': '$_3$', '₄': '$_4$', 
+            '₅': '$_5$', '₆': '$_6$', '₇': '$_7$', '₈': '$_8$', '₉': '$_9$'
+        })
+        
+        # Apply the map to the variables that actually contain formulas
+        base_name_tex = self.base_name.translate(tex_map)
+        specific_desc_tex = specific_desc.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{The isomer shown is the {self.shown_isomer}-isomer}} &\\\\"
-            f"\\text{{E: higher priority groups on opposite sides of C=C}} &\\\\"
-            f"\\text{{Z: higher priority groups on same side of C=C}} &"
+            "&\\text{1. Using Cahn-Ingold-Prelog (CIP) rules, assign priorities to the two} \\\\"
+            "&\\quad \\text{groups attached to each carbon atom of the C=C double bond.} \\\\"
+            f"&\\text{{2. In the given diagram, the high-priority groups are on {position}.}} \\\\"
+            f"&\\text{{3. Specifically for {base_name_tex}, this means the {specific_desc_tex}.}} \\\\"
+            "&\\text{4. 'E' (entgegen) indicates opposite sides, while 'Z' (zusammen) indicates the same side.} \\\\"
+            f"&\\text{{5. Therefore, the diagram represents the {self.answer} isomer.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1348,13 +1452,23 @@ class Chem063:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Define the map to turn Unicode subscripts into LaTeX inline math
+        tex_map = str.maketrans({
+            '₀': '$_0$', '₁': '$_1$', '₂': '$_2$', '₃': '$_3$', '₄': '$_4$', 
+            '₅': '$_5$', '₆': '$_6$', '₇': '$_7$', '₈': '$_8$', '₉': '$_9$'
+        })
+        
+        # Translate each group in the list to handle chemical subscripts
+        groups_tex = [g.translate(tex_map) for g in self.molecule['groups']]
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Molecule: {self.molecule['name']}}}&\\\\"
-            f"\\text{{Chiral centre: carbon bonded to 4 different groups}}&\\\\"
-            f"\\text{{Groups: {', '.join(self.molecule['groups'])}}}&\\\\"
-            f"\\text{{Chiral carbon at position: C{self.molecule['chiral_position']}}}&\\\\"
-            f"\\text{{Optical rotation: {self.rotation}{self.rotation_value}\u00b0}}&"
+            "&\\text{1. A chiral centre is a carbon atom bonded to four different groups.} \\\\"
+            f"&\\text{{2. The diagram shows a central carbon bonded to: {', '.join(groups_tex)}.}} \\\\"
+            f"&\\text{{3. Assembling these groups forms the molecule {self.molecule['name']}.}} \\\\"
+            "&\\text{4. Numbering the longest carbon chain according to IUPAC rules,} \\\\"
+            f"&\\quad \\text{{this specific carbon atom is at position {self.answer}.}} \\\\"
+            f"&\\text{{5. Therefore, the chiral centre is at C{self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1363,8 +1477,6 @@ class Chem063:
         ax.set_xlim(0, 12)
         ax.set_ylim(0, 8)
         ax.axis('off')
-
-        add_title_box(ax, 6, 7.5, f"Optical Isomerism: {self.molecule['name']}", fontsize=15)
 
         center_x, center_y = 3, 4
         draw_circle_atom(ax, center_x, center_y, 'C*', radius=0.4,
@@ -1384,7 +1496,7 @@ class Chem063:
                    bbox=dict(boxstyle='round', facecolor='lightblue', pad=0.3))
 
         center_x2 = 9
-        draw_circle_atom(ax, center_x2, center_y, 'C*', radius=0.4,
+        draw_circle_atom(ax, center_x2, center_y, 'C', radius=0.4,
                         color='yellow', text_color='black', fontsize=16)
 
         groups_mirrored = [self.molecule['groups'][0], self.molecule['groups'][3],
@@ -1410,9 +1522,6 @@ class Chem063:
                fontsize=12, ha='center', fontweight='bold')
         ax.text(9, 1.5, f"Rotation: {'-' if self.rotation == '+' else '+'}{self.rotation_value}\u00b0",
                fontsize=12, ha='center', fontweight='bold')
-
-        ax.text(6, 0.5, "* = carbon bonded to 4 different groups",
-               fontsize=11, ha='center', style='italic')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1530,11 +1639,23 @@ class Chem064:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts/superscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-', '⁴': '^4', '⁵': '^5', '⁶': '^6', '⁷': '^7'
+        })
+        
+        reagents_tex = self.reaction['reagents'].translate(tex_map)
+        electrophile_tex = self.reaction['electrophile'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Reaction: {self.reaction['reaction_name']}}}&\\\\"
-            f"\\text{{Electrophile: {self.reaction['electrophile']}}}&\\\\"
-            f"\\text{{Reagents: {self.reaction['reagents']}}}&"
+            "&\\text{1. Identify the reagents provided in the diagram:} \\\\"
+            f"&\\quad \\mathrm{{{reagents_tex}}} \\\\"
+            f"&\\text{{2. These reagents are used for {self.reaction['reaction_name'].lower()}.}} \\\\"
+            f"&\\text{{3. They react together to generate the active electrophile: }} \\mathrm{{{electrophile_tex}}} \\\\"
+            f"&\\text{{4. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1544,7 +1665,7 @@ class Chem064:
         ax.set_ylim(0, 8)
         ax.axis('off')
 
-        add_title_box(ax, 7, 7.5, f"Benzene {self.reaction['reaction_name']} Mechanism", fontsize=14)
+        add_title_box(ax, 7, 7.5, "Electrophilic Aromatic Substitution", fontsize=14)
 
         x1, y1 = 2, 4
         hexagon1 = patches.RegularPolygon((x1, y1), 6, radius=0.8,
@@ -1574,7 +1695,7 @@ class Chem064:
         ax.add_patch(hexagon3)
         circle3 = Circle((x3, y3), 0.5, fill=False, edgecolor='blue', linewidth=2, linestyle='--')
         ax.add_patch(circle3)
-        ax.text(x3, y3 - 1.5, self.reaction['product'], fontsize=11, ha='center', fontweight='bold')
+        ax.text(x3, y3 - 1.5, "Substituted Benzene", fontsize=11, ha='center', fontweight='bold')
 
         conditions = f"Reagents: {self.reaction['reagents']}\nTemp: {self.reaction['temperature']}"
         ax.text(7, 1, conditions, fontsize=10, ha='center',
@@ -1638,11 +1759,24 @@ class Chem065:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+        })
+        
+        alkane_tex = self.alkane.translate(tex_map)
+        product_tex = self.product.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Propagation step:}} &\\\\"
-            f"\\text{{{self.alkane} + {self.radical}}} &\\rightarrow \\text{{{self.product} + H\u2022}}\\\\"
-            f"\\text{{Product: {self.product} ({self.product_name})}}"
+            "&\\text{1. In free radical substitution, a halogen radical reacts with an alkane} \\\\"
+            "&\\quad \\text{by abstracting a hydrogen atom, forming an intermediate alkyl radical.} \\\\"
+            "&\\text{2. This alkyl radical then reacts with a halogen molecule to yield the} \\\\"
+            "&\\quad \\text{final haloalkane product and regenerate the halogen radical.} \\\\"
+            f"&\\text{{3. The net result replaces one hydrogen atom on }} \\mathrm{{{alkane_tex}}} \\text{{ with the halogen.}} \\\\"
+            f"&\\text{{4. The organic product formed is therefore }} \\mathrm{{{product_tex}}} \\text{{ ({self.product_name}).}} \\\\"
+            f"&\\text{{5. This matches option {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1779,11 +1913,21 @@ class Chem066:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+        })
+        subst_tex = self.subst['substituent'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Substituent: {self.subst['substituent']}}}&\\\\"
-            f"\\text{{Effect: {self.subst['type']}}}&\\\\"
-            f"\\text{{Preferred positions: {correct}}}&"
+            f"&\\text{{1. The diagram shows the molecule {self.subst['compound']}.}} \\\\"
+            f"&\\text{{2. The substituent group attached to position 1 is }} \\mathrm{{{subst_tex}}}. \\\\"
+            f"&\\text{{3. The }} \\mathrm{{{subst_tex}}} \\text{{ group is known to be {self.subst['type']}.}} \\\\"
+            f"&\\text{{4. Therefore, an incoming electrophile will preferentially substitute}} \\\\"
+            f"&\\quad \\text{{at positions {correct}.}} \\\\"
+            f"&\\text{{5. This makes option {self.answer} the correct choice.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1847,8 +1991,8 @@ class Chem067:
                 'compounds': ['water', 'ethanol', 'phenol'],
                 'formulas': ['H\u2082O', 'C\u2082H\u2085OH', 'C\u2086H\u2085OH'],
                 'pKa': [15.7, 15.9, 9.9],
-                'order': 'water < ethanol < phenol',
-                'correct': 'water < ethanol < phenol (phenol most acidic)',
+                'order': 'ethanol < water < phenol',
+                'correct': 'ethanol < water < phenol (phenol most acidic)',
             },
             {
                 'compounds': ['ethanol', 'phenol', '2-nitrophenol'],
@@ -1876,66 +2020,70 @@ class Chem067:
                 'formulas': ['C\u2086H\u2085OH', '2-ClC\u2086H\u2084OH', '2,4-Cl\u2082C\u2086H\u2083OH'],
                 'pKa': [9.9, 8.5, 7.9],
                 'order': 'phenol < 2-chlorophenol < 2,4-dichlorophenol',
-                'correct': 'phenol < 2-chlorophenol < 2,4-dichlorophenol',
+                'correct': 'phenol < 2-chlorophenol < 2,4-dichlorophenol (2,4-dichlorophenol most acidic)',
             },
             {
                 'compounds': ['ethanol', 'water', 'ethanoic acid'],
                 'formulas': ['C\u2082H\u2085OH', 'H\u2082O', 'CH\u2083COOH'],
                 'pKa': [15.9, 15.7, 4.8],
-                'order': 'ethanoic acid < water < ethanol',
-                'correct': 'ethanoic acid < water < ethanol (ethanoic acid most acidic)',
+                'order': 'ethanol < water < ethanoic acid',
+                'correct': 'ethanol < water < ethanoic acid (ethanoic acid most acidic)',
             },
             {
                 'compounds': ['phenol', '4-methylphenol', '4-nitrophenol'],
                 'formulas': ['C\u2086H\u2085OH', '4-CH\u2083C\u2086H\u2084OH', '4-NO\u2082C\u2086H\u2084OH'],
                 'pKa': [9.9, 10.2, 7.1],
-                'order': '4-nitrophenol < phenol < 4-methylphenol',
-                'correct': '4-nitrophenol < phenol < 4-methylphenol (4-nitrophenol most acidic)',
+                'order': '4-methylphenol < phenol < 4-nitrophenol',
+                'correct': '4-methylphenol < phenol < 4-nitrophenol (4-nitrophenol most acidic)',
             },
             {
                 'compounds': ['methanol', 'phenol', 'carbonic acid'],
                 'formulas': ['CH\u2083OH', 'C\u2086H\u2085OH', 'H\u2082CO\u2083'],
                 'pKa': [15.5, 9.9, 6.4],
-                'order': 'carbonic acid < phenol < methanol',
-                'correct': 'carbonic acid < phenol < methanol (carbonic acid most acidic)',
+                'order': 'methanol < phenol < carbonic acid',
+                'correct': 'methanol < phenol < carbonic acid (carbonic acid most acidic)',
             },
             {
                 'compounds': ['propanol', 'phenol', 'methanoic acid'],
                 'formulas': ['C\u2083H\u2087OH', 'C\u2086H\u2085OH', 'HCOOH'],
                 'pKa': [16.1, 9.9, 3.7],
-                'order': 'methanoic acid < phenol < propanol',
-                'correct': 'methanoic acid < phenol < propanol (methanoic acid most acidic)',
+                'order': 'propanol < phenol < methanoic acid',
+                'correct': 'propanol < phenol < methanoic acid (methanoic acid most acidic)',
             },
             {
                 'compounds': ['phenol', 'benzoic acid', 'nitric acid'],
                 'formulas': ['C\u2086H\u2085OH', 'C\u2086H\u2085COOH', 'HNO\u2083'],
                 'pKa': [9.9, 4.2, -1.4],
-                'order': 'nitric acid < benzoic acid < phenol',
-                'correct': 'nitric acid < benzoic acid < phenol (nitric acid most acidic)',
+                'order': 'phenol < benzoic acid < nitric acid',
+                'correct': 'phenol < benzoic acid < nitric acid (nitric acid most acidic)',
             },
         ]
 
         self.comp = rnd.choice(comparisons)
+        self.labels_abc = ['A', 'B', 'C']
+
+        # Sort compounds by pKa (highest to lowest = weakest to strongest acid)
+        sorted_indices = sorted(range(3), key=lambda i: self.comp['pKa'][i], reverse=True)
+        correct_order_str = ' < '.join([self.labels_abc[i] for i in sorted_indices])
 
         # Build MCQ - shuffle order of compounds
-        names = self.comp['compounds']
         from itertools import permutations
-        perms = list(permutations(names))
+        perms = list(permutations(self.labels_abc))
         rnd.shuffle(perms)
         wrong_opts = []
         for p in perms:
             opt = ' < '.join(p)
-            if opt != self.comp['order'] and opt not in wrong_opts:
+            if opt != correct_order_str and opt not in wrong_opts:
                 wrong_opts.append(opt)
             if len(wrong_opts) >= 3:
                 break
 
-        options = wrong_opts[:3] + [self.comp['order']]
+        options = wrong_opts[:3] + [correct_order_str]
         rnd.shuffle(options)
 
         labels = ["A", "B", "C", "D"]
         self.choices = options
-        self.answer = labels[options.index(self.comp['order'])]
+        self.answer = labels[options.index(correct_order_str)]
         self.choices_display = {lbl: opt for lbl, opt in zip(labels, options)}
 
         self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.choices))
@@ -1952,10 +2100,24 @@ class Chem067:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Lower pKa = stronger acid}&\\\\"
-            + "\\\\".join([f"\\text{{{compound}: pKa = {pKa}}}"
-                          for compound, pKa in zip(self.comp['compounds'], self.comp['pKa'])]) + "\\\\"
-            f"\\text{{Order: {self.comp['order']}}}&"
+            "&\\text{Acidity correlates with } pK_a \\text{: a lower } pK_a \\text{ indicates a stronger acid.} \\\\"
+            "&\\text{Based on their relative stabilities (due to electron-donating or} \\\\"
+            "&\\quad \\text{withdrawing groups), the approximate } pK_a \\text{ values are:} \\\\"
+        )
+        
+        for i in sorted_indices:
+            name = self.comp['compounds'][i]
+            lbl = self.labels_abc[i]
+            pka = self.comp['pKa'][i]
+            self.reasoning += f"&\\quad \\bullet \\, \\text{{Compound {lbl} ({name}): }} pK_a \\approx {pka} \\\\"
+            
+        # Safely construct the order string so < stays in math mode while letters are in text mode
+        safe_order_tex = " < ".join([f"\\text{{{self.labels_abc[i]}}}" for i in sorted_indices])
+        
+        self.reasoning += (
+            "&\\text{Arranging them from highest } pK_a \\text{ to lowest } pK_a \\text{ (weakest to strongest) gives:} \\\\"
+            f"&\\quad {safe_order_tex} \\\\"
+            f"&\\textbf{{Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -1967,21 +2129,21 @@ class Chem067:
 
         add_title_box(ax, 6, 6.5, "Acidity Comparison", fontsize=16)
 
-        headers = ['Compound', 'Formula']
-        col_width = 3
+        headers = ['Label', 'Compound', 'Formula']
+        x_cols = [2, 6, 10]
         for i, header in enumerate(headers):
-            x = 1.5 + i * col_width
-            y = 5.5
-            ax.text(x, y, header, fontsize=13, ha='center', fontweight='bold',
+            ax.text(x_cols[i], 5.5, header, fontsize=13, ha='center', fontweight='bold',
                    bbox=dict(boxstyle='round', facecolor='lightgray',
                             edgecolor='black', linewidth=2))
 
         row_height = 0.8
         for row_idx in range(3):
             y = 5.5 - (row_idx + 1) * row_height
-            ax.text(1.5, y, self.comp['compounds'][row_idx], fontsize=12, ha='center',
+            ax.text(x_cols[0], y, self.labels_abc[row_idx], fontsize=12, ha='center', fontweight='bold',
+                   bbox=dict(boxstyle='round', facecolor='lightgreen', pad=0.3))
+            ax.text(x_cols[1], y, self.comp['compounds'][row_idx], fontsize=12, ha='center',
                    bbox=dict(boxstyle='round', facecolor='lightblue', pad=0.3))
-            ax.text(4.5, y, self.comp['formulas'][row_idx], fontsize=12, ha='center',
+            ax.text(x_cols[2], y, self.comp['formulas'][row_idx], fontsize=12, ha='center',
                    bbox=dict(boxstyle='round', facecolor='lightyellow', pad=0.3))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -2099,11 +2261,22 @@ class Chem068:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-'
+        })
+        reagent_tex = self.rxn['reagent'].translate(tex_map)
+        product_tex = self.rxn['product'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Reaction: {self.rxn['name']}}}&\\\\"
-            f"\\text{{Product: {self.rxn['product']}}}&\\\\"
-            f"\\text{{Observation: {self.rxn['observation']}}}&"
+            f"&\\text{{1. The diagram shows phenol reacting with }} \\mathrm{{{reagent_tex}}} \\text{{ under {self.rxn['conditions']}.}} \\\\"
+            f"&\\text{{2. This specific combination of reagents and conditions causes {self.rxn['name'].lower()}.}} \\\\"
+            f"&\\text{{3. The organic product formed in this reaction is }} \\mathrm{{{product_tex}}}. \\\\"
+            f"&\\text{{4. As a supplementary note, the expected observation is: {self.rxn['observation']}.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2113,7 +2286,7 @@ class Chem068:
         ax.set_ylim(0, 7)
         ax.axis('off')
 
-        add_title_box(ax, 7, 6.5, f"Phenol {self.rxn['name']}", fontsize=16)
+        add_title_box(ax, 7, 6.5, "Reaction of Phenol", fontsize=16)
 
         x1, y1 = 2.5, 3.5
         hexagon1 = patches.RegularPolygon((x1, y1), 6, radius=0.8,
@@ -2192,11 +2365,33 @@ class Chem069:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts and arrows to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-', '→': '\\rightarrow', '\u2192': '\\rightarrow'
+        })
+        
+        formula_tex = self.alcohol_formula.translate(tex_map)
+        product_tex = self.product_formula.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{{self.classification} alcohol: {self.alcohol_name}}} &\\\\"
-            f"\\text{{Product: {self.product_desc}}} &\\\\"
-            f"\\text{{Note: {self.note}}}"
+            f"&\\text{{1. The starting material, {self.alcohol_name} (}}\\mathrm{{{formula_tex}}}\\text{{), is a {self.classification} alcohol.}} \\\\"
+            f"&\\text{{2. When treated with an oxidizing agent like acidified }} \\mathrm{{K_2Cr_2O_7}} \\text{{:}} \\\\"
+        )
+        
+        if self.classification == "primary":
+            self.reasoning += "&\\quad \\text{- Primary alcohols oxidize to aldehydes, and further to carboxylic acids.} \\\\"
+        elif self.classification == "secondary":
+            self.reasoning += "&\\quad \\text{- Secondary alcohols oxidize to ketones and resist further oxidation.} \\\\"
+        else:
+            self.reasoning += "&\\quad \\text{- Tertiary alcohols resist oxidation under these conditions.} \\\\"
+
+        self.reasoning += (
+            f"&\\text{{3. The resulting product is: }} \\mathrm{{{product_tex}}} \\\\"
+            f"&\\text{{4. {self.note.capitalize()}.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2206,7 +2401,7 @@ class Chem069:
         ax.set_ylim(0, 7)
         ax.axis('off')
 
-        add_title_box(ax, 6, 6.5, f"{self.classification.capitalize()} Alcohol Oxidation", fontsize=16)
+        add_title_box(ax, 6, 6.5, f"Oxidation of an Alcohol", fontsize=16)
 
         draw_labeled_box(ax, 0.5, 3, 3.5, 1.5, f"{self.alcohol_formula}\n({self.alcohol_name})",
                         facecolor='lightblue')
@@ -2278,12 +2473,23 @@ class Chem070:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+        })
+        
+        alc_tex = self.alcohol_formula.translate(tex_map)
+        alk_tex = self.alkene_formula.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Dehydration of {self.alcohol_name}:}} &\\\\"
-            f"\\text{{{self.alcohol_formula}}} &\\xrightarrow{{\\text{{H}}_2\\text{{SO}}_4, \\Delta}} "
-            f"\\text{{{self.alkene_formula}}} + \\text{{H}}_2\\text{{O}}\\\\"
-            f"\\text{{Product: {self.alkene_name}}}"
+            f"&\\text{{1. The starting material is {self.alcohol_name} (}}\\mathrm{{{alc_tex}}}\\text{{).}} \\\\"
+            "&\\text{2. Heating an alcohol with concentrated } \\mathrm{H_2SO_4} \\text{ causes an elimination} \\\\"
+            "&\\quad \\text{reaction (dehydration), removing an -OH and an adjacent -H.} \\\\"
+            "&\\text{3. This elimination forms a C=C double bond.} \\\\"
+            f"&\\text{{4. The resulting major organic product is }} \\mathrm{{{alk_tex}}} \\text{{ ({self.alkene_name}).}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2302,7 +2508,7 @@ class Chem070:
         add_formula_label(ax, 10, 3, "?", fontsize=24, weight='bold', color='red')
         add_formula_label(ax, 10, 2.2, "+ H\u2082O", fontsize=13)
 
-        add_title_box(ax, 6, 5.5, "Alcohol Dehydration", fontsize=16)
+        add_title_box(ax, 6, 5.5, "Reaction of an Alcohol", fontsize=16)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2439,11 +2645,26 @@ class Chem071:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+        })
+        
+        acyl_tex = self.rxn['acyl_chloride'].translate(tex_map)
+        nuc_tex = self.rxn['nucleophile'].translate(tex_map)
+        prod_tex = self.rxn['product'].translate(tex_map)
+        byprod_tex = self.rxn['by_product'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{{self.rxn['acyl_chloride']} + {self.rxn['nucleophile']}}} "
-            f"&\\rightarrow \\text{{{self.rxn['product']} + {self.rxn['by_product']}}}\\\\"
-            f"\\text{{Product: {self.rxn['product_name']}}}"
+            f"&\\text{{1. The reactants are {self.rxn['acyl_name']} (}}\\mathrm{{{acyl_tex}}}\\text{{) and {self.rxn['nuc_name']} (}}\\mathrm{{{nuc_tex}}}\\text{{).}} \\\\"
+            "&\\text{2. Acyl chlorides undergo nucleophilic addition-elimination reactions.} \\\\"
+            "&\\text{3. The nucleophile attacks the carbonyl carbon, and the chloride group is eliminated,} \\\\"
+            "&\\quad \\text{combining with a proton to release } \\mathrm{HCl} \\text{ as a by-product.} \\\\"
+            f"&\\text{{4. The resulting organic product is {self.rxn['product_name']} (}}\\mathrm{{{prod_tex}}}\\text{{).}} \\\\"
+            f"&\\text{{5. The overall equation is: }} \\mathrm{{{acyl_tex} + {nuc_tex} \\rightarrow {prod_tex} + {byprod_tex}}} \\\\"
+            f"&\\text{{6. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2452,8 +2673,6 @@ class Chem071:
         ax.set_xlim(0, 14)
         ax.set_ylim(0, 8)
         ax.axis('off')
-
-        add_title_box(ax, 7, 7.5, "Addition-Elimination Mechanism", fontsize=16)
 
         y_level = 4.5
         ax.text(2, y_level, self.rxn['acyl_chloride'], fontsize=13, ha='center', fontweight='bold',
@@ -2550,7 +2769,8 @@ class Chem072:
             ax.text(x, self.display_rates[i] + 1, compound,
                    fontsize=11, ha='center', fontweight='bold')
 
-        ax.set_ylim(0, 115)
+        y_ceiling = max(self.display_rates) * 1.1 # Adds a 10% head-room ceiling
+        ax.set_ylim(0, y_ceiling)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -2612,10 +2832,24 @@ class Chem073:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-'
+        })
+        
+        reagent_tex = self.reagent_formula.translate(tex_map)
+        product_tex = self.products.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{RCOCl}} + \\text{{{self.reagent_formula}}} &\\rightarrow \\text{{{self.products}}} + \\text{{HCl}}\\\\"
-            f"\\text{{Organic product: {self.product_name}}}"
+            f"&\\text{{1. The diagram shows an acyl chloride (}}\\mathrm{{RCOCl}}\\text{{) reacting with {self.reagent_name} (}}\\mathrm{{{reagent_tex}}}\\text{{).}} \\\\"
+            "&\\text{2. Acyl chlorides undergo nucleophilic addition-elimination reactions} \\\\"
+            "&\\quad \\text{where the nucleophile replaces the chlorine atom.} \\\\"
+            f"&\\text{{3. The organic product formed has the general structure }} \\mathrm{{{product_tex}}}. \\\\"
+            f"&\\text{{4. This corresponds to the {self.product_name} family/type.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2784,11 +3018,25 @@ class Chem074:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts and superscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9',
+            '⁺': '^+', '⁻': '^-'
+        })
+        zwit_tex = self.aa['zwitterion'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Zwitterion has both NH\u2083\u207a and COO\u207b groups}}&\\\\"
-            f"\\text{{Overall charge = 0 at isoelectric point (pH = {self.aa['pI']})}}&\\\\"
-            f"\\text{{Answer: {correct}}}"
+            "&\\text{1. A zwitterion is an ion that contains both positive and negative} \\\\"
+            "&\\quad \\text{charge centers, making it overall electrically neutral.} \\\\"
+            "&\\text{2. In amino acids, this occurs at the isoelectric point where the} \\\\"
+            "&\\quad \\text{amino group is protonated (} \\mathrm{-NH_3^+} \\text{) and the carboxyl group} \\\\"
+            "&\\quad \\text{is deprotonated (} \\mathrm{-COO^-} \\text{).} \\\\"
+            "&\\text{3. Inspecting the diagram, the structure with both of these charged} \\\\"
+            f"&\\quad \\text{{groups is }} \\mathrm{{{zwit_tex}}}. \\\\"
+            f"&\\text{{4. This corresponds to Structure {correct}.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2802,12 +3050,12 @@ class Chem074:
         for i, (label, ph_label, formula, color, charge) in enumerate(self.structures):
             x = x_positions[i]
             ax.text(x + 2, 5.8, f"Structure {label}", fontsize=13, ha='center',
-                   fontweight='bold',
-                   bbox=dict(boxstyle='round', facecolor='lightgray', pad=0.3))
-            draw_labeled_box(ax, x, 3.0, 3.8, 1.8, formula, ph_label,
-                            facecolor=color, edgecolor='black', linewidth=2)
-            ax.text(x + 1.9, 2.5, f"Charge: {charge}", fontsize=11, ha='center', fontweight='bold')
-
+                    fontweight='bold',
+                    bbox=dict(boxstyle='round', facecolor='lightgray', pad=0.3))
+            
+            draw_labeled_box(ax, x, 3.0, 3.8, 1.8, formula, "",
+                             facecolor=color, edgecolor='black', linewidth=2)
+            
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -2928,14 +3176,47 @@ class Chem075:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Determine the general type of amino acid to teach the logic
+        if self.scenario['pI'] > 7:
+            aa_type = "a basic"
+        elif self.scenario['pI'] < 5:
+            aa_type = "an acidic"
+        else:
+            aa_type = "a neutral"
+
+        # Determine the relative pH vs pI comparison
+        if self.scenario['pH'] > self.scenario['pI']:
+            comparison = "greater than"
+        elif self.scenario['pH'] < self.scenario['pI']:
+            comparison = "less than"
+        else:
+            comparison = "equal to"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{pH of buffer: {self.scenario['pH']}}}&\\\\"
-            f"\\text{{Isoelectric point (pI): {self.scenario['pI']}}}&\\\\"
-            f"\\text{{If pH > pI: amino acid is negative, migrates to anode}}&\\\\"
-            f"\\text{{If pH < pI: amino acid is positive, migrates to cathode}}&\\\\"
-            f"\\text{{If pH = pI: no net charge, no migration}}&\\\\"
-            f"\\text{{Answer: {correct}}}"
+            f"&\\text{{1. The diagram specifies {self.scenario['amino_acid'].capitalize()}, which is {aa_type} amino acid.}} \\\\"
+            f"&\\quad \\text{{This means its isoelectric point (pI) is approximately {self.scenario['pI']}.}} \\\\"
+            f"&\\text{{2. The buffer pH ({self.scenario['pH']}) is {comparison} the pI of the amino acid.}} \\\\"
+        )
+
+        if comparison == "equal to":
+            self.reasoning += (
+                "&\\text{3. When pH = pI, the amino acid exists as a neutral zwitterion} \\\\"
+                "&\\quad \\text{and will not migrate in an electric field.} \\\\"
+            )
+        elif comparison == "greater than":
+            self.reasoning += (
+                "&\\text{3. When pH } > \\text{ pI, the amino acid deprotonates and becomes} \\\\"
+                "&\\quad \\text{negatively charged, so it migrates toward the positive Anode.} \\\\"
+            )
+        else:
+            self.reasoning += (
+                "&\\text{3. When pH } < \\text{ pI, the amino acid protonates and becomes} \\\\"
+                "&\\quad \\text{positively charged, so it migrates toward the negative Cathode.} \\\\"
+            )
+
+        self.reasoning += (
+            f"&\\text{{4. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -2945,13 +3226,12 @@ class Chem075:
         ax.set_ylim(0, 8)
         ax.axis('off')
 
-        add_title_box(ax, 7, 7.5, f"Electrophoresis at pH {self.scenario['pH']}", fontsize=16)
+        add_title_box(ax, 7, 7.5, "Amino Acid Electrophoresis", fontsize=16)
 
-        draw_labeled_box(ax, 12, 3, 1.5, 2, '+', 'Anode\n(positive)',
-                        facecolor='lightcoral', edgecolor='red', linewidth=3)
-
-        draw_labeled_box(ax, 0.5, 3, 1.5, 2, '\u2212', 'Cathode\n(negative)',
-                        facecolor='lightblue', edgecolor='blue', linewidth=3)
+        draw_labeled_box(ax, 12, 3, 1.5, 2, 'Anode', '',
+                         facecolor='lightcoral', edgecolor='red', linewidth=3)
+        draw_labeled_box(ax, 0.5, 3, 1.5, 2, 'Cathode', '',
+                         facecolor='lightblue', edgecolor='blue', linewidth=3)
 
         paper = patches.Rectangle((2.5, 3.5), 9, 1, facecolor='wheat',
                                   edgecolor='black', linewidth=2)
@@ -2960,12 +3240,12 @@ class Chem075:
         ax.plot(7, 4, 'ko', markersize=15)
         ax.text(7, 4.8, 'Start position', fontsize=11, ha='center', fontweight='bold')
 
-        info = (f"Amino acid: {self.scenario['amino_acid']}\n"
-               f"pI = {self.scenario['pI']}\n"
-               f"Buffer pH = {self.scenario['pH']}")
-        ax.text(7, 1.5, info, fontsize=12, ha='center',
-               bbox=dict(boxstyle='round', facecolor='lightyellow',
-                        edgecolor='black', linewidth=2))
+        info = (f"Amino acid: {self.scenario['amino_acid'].capitalize()}\n"
+                f"Buffer pH = {self.scenario['pH']}")
+        
+        ax.text(7, 1.5, info, fontsize=14, ha='center',
+                bbox=dict(boxstyle='round', facecolor='lightyellow',
+                          edgecolor='black', linewidth=2))
 
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -3070,13 +3350,26 @@ class Chem076:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Safely convert Unicode subscripts to inline math for rendering inside \text{}
+        tex_map = str.maketrans({
+            '₀': '$_0$', '₁': '$_1$', '₂': '$_2$', '₃': '$_3$', '₄': '$_4$', 
+            '₅': '$_5$', '₆': '$_6$', '₇': '$_7$', '₈': '$_8$', '₉': '$_9$',
+            '⁺': '$^+$', '⁻': '$^-$', 'Δ': '$\\Delta$'
+        })
+        
+        name_tex = self.method_name.translate(tex_map)
+        cond_tex = self.method['conditions'].translate(tex_map)
+        reagents_tex = self.method['reagents'].translate(tex_map)
+        product_tex = self.method['product'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Method: {self.method_name}}} &\\\\"
-            f"\\text{{Reagents: {self.method['reagents']}}} &\\\\"
-            f"\\text{{Product: {self.method['product']}}} &\\\\"
-            f"\\text{{Conditions: {self.method['conditions']}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            f"&\\text{{1. The diagram indicates an amide synthesis under these conditions:}} \\\\"
+            f"&\\quad \\text{{{cond_tex}.}} \\\\"
+            f"&\\text{{2. These specific conditions map directly to the method: {name_tex}.}} \\\\"
+            f"&\\text{{3. The required reagents are {reagents_tex}.}} \\\\"
+            f"&\\text{{4. The resulting product profile is {product_tex}.}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -3218,42 +3511,48 @@ class Chem077:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Safely convert Unicode subscripts to inline math for rendering inside \text{}
+        tex_map = str.maketrans({
+            '₀': '$_0$', '₁': '$_1$', '₂': '$_2$', '₃': '$_3$', '₄': '$_4$', 
+            '₅': '$_5$', '₆': '$_6$', '₇': '$_7$', '₈': '$_8$', '₉': '$_9$',
+            '⁺': '$^+$', '⁻': '$^-$', '→': '$\\rightarrow$', '\u2192': '$\\rightarrow$'
+        })
+        
+        repeat_tex = self.mono['repeat_unit'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Diamine: {self.mono['diamine_formula']}}}&\\\\"
-            f"\\text{{Diacid: {self.mono['diacid_formula']}}}&\\\\"
-            "\\text{Condensation: -NH\u2082 + -COOH \u2192 -CONH- + H\u2082O}&\\\\"
-            f"\\text{{Repeat unit: {self.mono['repeat_unit']}}}&\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            f"&\\textbf{{Correct Option: {self.answer}}} \\\\"
+            "&\\text{The initial diamine and diacid parameters follow standard condensation,} \\\\"
+            "&\\text{eliminating water to form structural amide (-CONH-) linkages.} \\\\"
+            "&\\text{Connecting the dehydrated monomer fragments directly yields the repeat unit:} \\\\"
+            f"&\\quad \\mathrm{{{repeat_tex}}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(14, 8))
+        fig, ax = plt.subplots(figsize=(14, 7))
         ax.set_xlim(0, 14)
-        ax.set_ylim(0, 8)
+        ax.set_ylim(0, 7)
         ax.axis('off')
 
-        add_title_box(ax, 7, 7.5, f"Polyamide Formation: {self.mono['polymer_name']}", fontsize=16)
+        add_title_box(ax, 7, 7.5, "Polyamide Formation", fontsize=16)
 
         draw_labeled_box(ax, 1, 5.5, 3, 1,
                          self.mono['diamine_formula'],
-                         self.mono['diamine'], facecolor='lightblue')
+                         "", facecolor='lightblue')
 
         ax.text(4.8, 6.0, '+', fontsize=20, ha='center', fontweight='bold')
 
         draw_labeled_box(ax, 5.5, 5.5, 3, 1,
                          self.mono['diacid_formula'],
-                         self.mono['diacid'], facecolor='lightyellow')
+                         "", facecolor='lightyellow')
 
         draw_arrow(ax, 9, 6.0, 11, 6.0, label="heat\n-H\u2082O",
                    label_position='above', color='black', linewidth=2.5)
 
         draw_labeled_box(ax, 11.5, 5.5, 2, 1, "Polyamide",
                          facecolor='lightgreen')
-
-        ax.text(0.5, 4.5, "Possible repeat units:", fontsize=11,
-                fontweight='bold', color='navy')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -3375,42 +3674,50 @@ class Chem078:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Safely convert Unicode subscripts to inline math for rendering inside \text{}
+        tex_map = str.maketrans({
+            '₀': '$_0$', '₁': '$_1$', '₂': '$_2$', '₃': '$_3$', '₄': '$_4$', 
+            '₅': '$_5$', '₆': '$_6$', '₇': '$_7$', '₈': '$_8$', '₉': '$_9$',
+            '⁺': '$^+$', '⁻': '$^-$', '→': '$\\rightarrow$', '\u2192': '$\\rightarrow$'
+        })
+        
+        diol_tex = self.mono['diol_formula'].translate(tex_map)
+        diacid_tex = self.mono['diacid_formula'].translate(tex_map)
+        repeat_tex = self.mono['repeat_unit'].translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Diol: {self.mono['diol_formula']}}}&\\\\"
-            f"\\text{{Diacid: {self.mono['diacid_formula']}}}&\\\\"
-            "\\text{Condensation: -OH + -COOH \u2192 -COO- + H\u2082O}&\\\\"
-            f"\\text{{Repeat unit: {self.mono['repeat_unit']}}}&\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            f"&\\text{{Diol: {diol_tex}}} \\\\"
+            f"&\\text{{Diacid: {diacid_tex}}} \\\\"
+            "&\\text{Condensation: -OH + -COOH } \\rightarrow \\text{ -COO- + H$_2$O} \\\\"
+            f"&\\text{{Repeat unit: {repeat_tex}}} \\\\"
+            f"&\\therefore \\textbf{{Answer: {self.answer}}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(14, 8))
+        fig, ax = plt.subplots(figsize=(14, 7))
         ax.set_xlim(0, 14)
-        ax.set_ylim(0, 8)
+        ax.set_ylim(0, 7)
         ax.axis('off')
 
         add_title_box(ax, 7, 7.5, "Polyester Formation", fontsize=16)
 
         draw_labeled_box(ax, 1, 5.5, 3, 1,
                          self.mono['diol_formula'],
-                         self.mono['diol'], facecolor='lightblue')
+                         "", facecolor='lightblue')
 
         ax.text(4.8, 6.0, '+', fontsize=20, ha='center', fontweight='bold')
 
         draw_labeled_box(ax, 5.5, 5.5, 3, 1,
                          self.mono['diacid_formula'],
-                         self.mono['diacid'], facecolor='lightyellow')
+                         "", facecolor='lightyellow')
 
         draw_arrow(ax, 9, 6.0, 11, 6.0, label="heat\n-H\u2082O",
                    label_position='above', color='black', linewidth=2.5)
 
         draw_labeled_box(ax, 11.5, 5.5, 2, 1, "Polyester",
                          facecolor='lightgreen')
-
-        ax.text(0.5, 4.5, "Possible repeat units:", fontsize=11,
-                fontweight='bold', color='navy')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -3466,12 +3773,24 @@ class Chem079:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to standard LaTeX math format
+        tex_map = str.maketrans({
+            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
+            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+        })
+        
+        poly_tex = self.polymer_formula.translate(tex_map)
+        mono_tex = self.monomer_formula.translate(tex_map)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Polymer: {self.polymer_formula}}} &\\\\"
-            "\\text{Reverse: restore C=C double bond} &\\\\"
-            f"\\text{{Monomer: {self.monomer_formula}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            f"&\\text{{1. The diagram shows the repeat unit of an addition polymer: }} \\mathrm{{{poly_tex}}} \\\\"
+            "&\\text{2. Addition polymers form when C=C double bonds in the monomers} \\\\"
+            "&\\quad \\text{break open to form continuous single bonds linking the units together.} \\\\"
+            "&\\text{3. To find the monomer, remove the extension bonds crossing the brackets} \\\\"
+            "&\\quad \\text{and restore the original C=C double bond(s) in the carbon backbone.} \\\\"
+            f"&\\text{{4. Applying this reverse process yields the monomer: }} \\mathrm{{{mono_tex}}} \\\\"
+            f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -3628,13 +3947,14 @@ class Chem080:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "\\text{Poly(ethene): Not biodegradable}&\\\\"
-            "\\text{- Only C-C and C-H bonds, chemically inert}&\\\\"
-            "\\text{Polyester: Biodegradable}&\\\\"
-            "\\text{- Ester linkages (-COO-) can be hydrolysed}&\\\\"
-            "\\text{Polyamide: Biodegradable}&\\\\"
-            "\\text{- Amide linkages (-CONH-) can be hydrolysed}&\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Poly(ethene) is an addition polymer with a backbone of only non-polar} \\\\"
+            "&\\quad \\text{C-C and C-H bonds. It is chemically inert and not biodegradable.} \\\\"
+            "&\\text{Polyesters are condensation polymers that contain ester linkages (-COO-).} \\\\"
+            "&\\quad \\text{These polar bonds can be broken down (hydrolysed) by water, acids, bases, or enzymes.} \\\\"
+            "&\\text{Polyamides are condensation polymers containing amide linkages (-CONH-),} \\\\"
+            "&\\quad \\text{which are also susceptible to hydrolysis, making them biodegradable.} \\\\"
+            f"&\\text{{Addressing the specific question: \"{self.scenario['question']}\"}} \\\\"
+            f"&\\text{{The correct option is {self.answer}.}}"
             "\\end{aligned}\\]"
         )
 
@@ -3748,10 +4068,13 @@ class Chem081:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Monomers: {self.monomers}}} &\\\\"
-            f"\\text{{Linkage: {self.linkage}}} &\\\\"
-            f"\\therefore \\text{{Polymer type: {correct}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Identify the reacting monomers from the given structure.}\\\\"
+            f"&\\quad \\text{{Monomers}} = \\text{{{self.monomers}}}\\\\"
+            "&\\text{Step 2: Identify the functional group linkage formed during condensation.}\\\\"
+            f"&\\quad \\text{{Linkage}} = \\text{{{self.linkage}}}\\\\"
+            "&\\text{Step 3: Classify the resulting polymer based on the linkage type.}\\\\"
+            f"&\\quad \\text{{Polymer type}} = \\text{{{correct}}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -3904,12 +4227,25 @@ class Chem082:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to LaTeX math subscripts
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9'}
+        latex_formula = self.route['int_formula']
+        for k, v in subs.items():
+            latex_formula = latex_formula.replace(k, v)
+        
+        # Flatten the step 1 label so it prints cleanly without newlines
+        step1_reagent = self.route['step1_label'].replace('\n', ' ')
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Step 1: {self.route['start']} + ({self.route['step1_label'].split(chr(10))[0]}) \u2192 intermediate}} &\\\\"
-            f"\\text{{Intermediate: {self.route['intermediate']} ({self.route['int_formula']})}} &\\\\"
-            f"\\text{{Step 2: intermediate \u2192 {self.route['end']}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Analyze the first reaction.}\\\\"
+            f"&\\quad \\text{{{self.route['start']} + {step1_reagent} }} \\rightarrow \\text{{ intermediate}}\\\\"
+            "&\\text{Step 2: Identify the intermediate compound.}\\\\"
+            f"&\\quad \\text{{Intermediate is {self.route['intermediate']} (}}\\mathrm{{{latex_formula}}}\\text{{)}}\\\\"
+            "&\\text{Step 3: Confirm the second reaction leads to the final product.}\\\\"
+            f"&\\quad \\text{{intermediate }} \\rightarrow \\text{{ {self.route['end']}}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -3933,10 +4269,10 @@ class Chem082:
                           edgecolor='black', linewidth=2))
         ax.text(6.25, 3.2, "Intermediate", fontsize=10, ha='center', color='gray', style='italic')
 
-        draw_arrow(ax, 7.5, 4.0, 9.5, 4.0, label=self.route['step2_label'],
+        draw_arrow(ax, 7.0, 4.0, 8.5, 4.0, label=self.route['step2_label'],
                    label_position='above', color='black', linewidth=2.5)
 
-        draw_labeled_box(ax, 9.5, 3.5, 2.5, 1, self.route['end'], facecolor='lightgreen')
+        draw_labeled_box(ax, 9.5, 3.5, 3.5, 1, self.route['end'], facecolor='lightgreen')
 
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4039,9 +4375,11 @@ class Chem083:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Route: {self.pathway['route']}}} &\\\\"
-            f"\\text{{Intermediate: {self.pathway['intermediate']}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Identify the starting material and the final product.}\\\\"
+            f"&\\quad \\text{{{self.pathway['start']}}} \\rightarrow \\text{{?}} \\rightarrow \\text{{{self.pathway['end']}}}\\\\"
+            "&\\text{Step 2: Determine the required intermediate compound for this route.}\\\\"
+            f"&\\quad \\text{{Intermediate is {self.pathway['intermediate']}}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -4058,7 +4396,7 @@ class Chem083:
         for i, (step, color) in enumerate(zip(steps, colors)):
             draw_labeled_box(ax, x_pos, 2.5, 2.5, 1.2, step, facecolor=color)
             if step == '?':
-                ax.text(x_pos + 1.25, 3.1, '?', fontsize=28, ha='center',
+                ax.text(x_pos + 1.25, 3.1, '', fontsize=28, ha='center',
                         fontweight='bold', color='gray')
 
             if i < len(steps) - 1:
@@ -4130,12 +4468,24 @@ class Chem084:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts and superscripts to LaTeX math format
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9',
+                '\u207a':'^+', '\u207b':'^-'}
+        
+        latex_ion = self.ion
+        for k, v in subs.items():
+            latex_ion = latex_ion.replace(k, v)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{m/z = {self.mz}}} &\\\\"
-            f"\\text{{Calculate molecular mass of each option:}} &\\\\"
-            f"\\text{{Fragment ion: {self.ion} ({self.name})}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Note the mass-to-charge ratio (m/z) of the targeted peak in the spectrum.}\\\\"
+            f"&\\quad m/z = {self.mz}\\\\"
+            "&\\text{Step 2: Determine which fragment has a molecular mass matching this value.}\\\\"
+            f"&\\quad \\text{{A mass of {self.mz} corresponds to the {self.name}.}}\\\\"
+            "&\\text{Step 3: Identify the correct chemical formula for this fragment ion.}\\\\"
+            f"&\\quad \\text{{Formula}} = \\mathrm{{{latex_ion}}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -4150,7 +4500,7 @@ class Chem084:
 
         ax.set_xlabel('m/z', fontsize=14, fontweight='bold')
         ax.set_ylabel('Relative abundance (%)', fontsize=14, fontweight='bold')
-        ax.set_title(f'Mass Spectrum (identify peak at m/z = {self.mz})',
+        ax.set_title(f'Mass Spectrum',
                      fontsize=14, fontweight='bold')
         ax.set_xlim(0, max([p[0] for p in all_peaks]) + 20)
         ax.set_ylim(0, 120)
@@ -4213,9 +4563,14 @@ class Chem085:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "R_f &= \\frac{\\text{distance traveled by substance}}{\\text{distance traveled by solvent}}\\\\"
-            f"R_f &= \\frac{{{self.questioned_spot['height']}}}{{{self.solvent_front}}}\\\\"
-            f"R_f &= {self.questioned_spot['rf']}"
+            f"&\\text{{Step 1: Find the distance traveled by {self.questioned_spot['name']} from the baseline.}}\\\\"
+            f"&\\quad \\text{{Distance (substance)}} = {self.questioned_spot['height']} \\text{{ cm}}\\\\"
+            "&\\text{Step 2: Find the distance traveled by the solvent front from the baseline.}\\\\"
+            f"&\\quad \\text{{Distance (solvent)}} = {self.solvent_front} \\text{{ cm}}\\\\"
+            "&\\text{Step 3: Apply the retention factor } (R_f) \\text{ formula.}\\\\"
+            "&\\quad R_f = \\frac{\\text{distance traveled by substance}}{\\text{distance traveled by solvent}}\\\\"
+            f"&\\quad R_f = \\frac{{{self.questioned_spot['height']}}}{{{self.solvent_front}}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4309,11 +4664,14 @@ class Chem086:
         total_area_sum = sum(p['area'] for p in self.peaks)
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Peak area for {self.questioned_peak['name']}: {self.questioned_peak['area']}}}&\\\\"
-            f"\\text{{Total peak area: {total_area_sum}}}&\\\\"
-            "\\text{Percentage} &= \\frac{\\text{peak area}}{\\text{total area}} \\times 100\\%\\\\"
-            f"&= \\frac{{{self.questioned_peak['area']}}}{{{total_area_sum}}} \\times 100\\%\\\\"
-            f"&= {self.questioned_peak['percentage']}\\%"
+            f"&\\text{{Step 1: Identify the peak area for {self.questioned_peak['name']}.}}\\\\"
+            f"&\\quad \\text{{Area (target)}} = {self.questioned_peak['area']}\\\\"
+            "&\\text{Step 2: Calculate the total area of all peaks in the chromatogram.}\\\\"
+            f"&\\quad \\text{{Total Area}} = {total_area_sum}\\\\"
+            "&\\text{Step 3: Calculate the percentage composition.}\\\\"
+            "&\\quad \\text{Percentage} = \\frac{\\text{Area (target)}}{\\text{Total Area}} \\times 100\\%\\\\"
+            f"&\\quad \\text{{Percentage}} = \\frac{{{self.questioned_peak['area']}}}{{{total_area_sum}}} \\times 100\\%\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}\\%"
             "\\end{aligned}\\]"
         )
 
@@ -4410,10 +4768,13 @@ class Chem087:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Absorption: {self.peak_position} cm}}^{{-1}} &\\\\"
-            f"\\text{{Shape: {self.desc_text}}} &\\\\"
-            f"\\text{{Characteristic of: {self.group}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Identify the wavenumber of the marked absorption peak.}\\\\"
+            f"&\\quad \\text{{Peak position}} = {self.peak_position} \\text{{ cm}}^{{-1}}\\\\"
+            "&\\text{Step 2: Note the characteristic shape and intensity of the peak.}\\\\"
+            f"&\\quad \\text{{Peak shape}} = \\text{{{self.desc_text}}}\\\\"
+            "&\\text{Step 3: Match these features to the corresponding functional group.}\\\\"
+            f"&\\quad \\text{{These properties are characteristic of the }} \\text{{{self.group}}} \\text{{ absorption.}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -4510,12 +4871,24 @@ class Chem088:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts and special characters to LaTeX math format
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9',
+                '×': '\\times '}
+        
+        latex_assignment = self.peak_assignment
+        for k, v in subs.items():
+            latex_assignment = latex_assignment.replace(k, v)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Chemical shift: }} \\delta = {self.peak_shift}\\text{{ ppm}} &\\\\"
-            f"\\text{{Integration: {self.peak_integration}H}} &\\\\"
-            f"\\text{{Assignment: {self.peak_assignment}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Identify the chemical shift (}\\delta\\text{) of the highlighted peak.}\\\\"
+            f"&\\quad \\delta = {self.peak_shift} \\text{{ ppm}}\\\\"
+            "&\\text{Step 2: Note the integration value, which indicates the number of protons.}\\\\"
+            f"&\\quad \\text{{Integration}} = {self.peak_integration}\\text{{H}}\\\\"
+            "&\\text{Step 3: Match these values to the corresponding proton environment.}\\\\"
+            f"&\\quad \\text{{This corresponds to the }} \\mathrm{{{latex_assignment}}} \\text{{ environment.}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -4645,11 +5018,10 @@ class Chem089:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Compound: {self.molecule['name']}}}&\\\\"
-            f"\\text{{Number of unique C environments: {self.molecule['num_peaks']}}}&\\\\"
-            + "\\\\".join([f"\\text{{Peak {i+1}: {env}}}"
-                           for i, env in enumerate(self.molecule['environments'])]) + "\\\\"
-            "\\text{Each unique C environment = one peak}&"
+            "&\\text{Step 1: Examine the spectrum and count the number of distinct vertical peaks.}\\\\"
+            f"&\\quad \\text{{Total peaks visible}} = {self.molecule['num_peaks']}\\\\"
+            "&\\text{Step 2: Note that each peak corresponds to a unique carbon environment.}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4820,14 +5192,24 @@ class Chem090:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to LaTeX math format for the key group
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9'}
+        
+        latex_group = self.mol['key_group']
+        for k, v in subs.items():
+            latex_group = latex_group.replace(k, v)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Group: {self.mol['key_group']}}}&\\\\"
-            f"\\text{{H on adjacent C: n = {self.mol['neighbors']}}}&\\\\"
-            "\\text{n+1 rule: number of lines} &= n + 1\\\\"
-            f"&= {self.mol['neighbors']} + 1 = {self.mol['neighbors'] + 1}\\\\"
-            f"\\text{{Splitting pattern: {self.mol['splitting']}}}&\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            f"&\\text{{Step 1: Identify the proton environment being analyzed.}}\\\\"
+            f"&\\quad \\text{{Target group}} = \\mathrm{{{latex_group}}}\\\\"
+            "&\\text{Step 2: Determine the number of equivalent protons on adjacent carbon atoms }(n).\\\\"
+            f"&\\quad \\text{{Adjacent protons }} (n) = {self.mol['neighbors']}\\\\"
+            "&\\text{Step 3: Apply the } n+1 \\text{ rule to find the number of lines in the splitting pattern.}\\\\"
+            f"&\\quad \\text{{Number of lines}} = n + 1 = {self.mol['neighbors']} + 1 = {self.mol['neighbors'] + 1}\\\\"
+            f"&\\quad \\text{{A peak with {self.mol['neighbors'] + 1} lines is called a }} \\text{{{self.mol['splitting']}}}.\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -4972,14 +5354,38 @@ class Chem091:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode characters to LaTeX math format, and escape spaces so \mathrm renders them properly
+        subs = {
+            '\u2080': '_0', '\u2081': '_1', '\u2082': '_2', '\u2083': '_3', '\u2084': '_4', 
+            '\u2085': '_5', '\u2086': '_6', '\u2087': '_7', '\u2088': '_8', '\u2089': '_9',
+            '\u207a': '^+', '\u2211': '-', '\u2212': '-', '–': '-',
+            ' ': '\\ ', '~': '\\sim '
+        }
+        
+        latex_formula = self.compound['formula']
+        latex_ir = self.compound['ir']
+        latex_nmr = self.compound['nmr_peaks']
+        latex_ms = self.compound['ms_frag']
+        
+        for k, v in subs.items():
+            latex_formula = latex_formula.replace(k, v)
+            latex_ir = latex_ir.replace(k, v)
+            latex_nmr = latex_nmr.replace(k, v)
+            latex_ms = latex_ms.replace(k, v)
+
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Formula: {self.compound['formula']}, M+ = {self.compound['molar_mass']}}} &\\\\"
-            f"\\text{{IR: {self.compound['ir']}}} &\\\\"
-            f"\\text{{NMR peaks: {self.compound['nmr_peaks']}}} &\\\\"
-            f"\\text{{MS fragments: {self.compound['ms_frag']}}} &\\\\"
-            f"\\therefore \\text{{Compound: {correct}, Answer: {self.answer}}}"
-            "\\end{aligned}\\]"
+            r"\[\begin{aligned}"
+            r"&\text{Step 1: Use the molecular formula and } M^+ \text{ value to determine the mass.}\\"
+            fr"&\quad \mathrm{{Formula:\ {latex_formula}\ (M^+ =\ {self.compound['molar_mass']})}} \\"
+            r"&\text{Step 2: Identify functional groups from the IR spectrum.}\\"
+            fr"&\quad \mathrm{{IR:\ {latex_ir}}} \\"
+            r"&\text{Step 3: Analyze the }^{1}\text{H NMR peaks for proton environments.}\\"
+            fr"&\quad \mathrm{{NMR:\ {latex_nmr}}} \\"
+            r"&\text{Step 4: Confirm structural fragments from the Mass Spectrum.}\\"
+            fr"&\quad \mathrm{{MS:\ {latex_ms}}} \\"
+            fr"&\quad \text{{These features identify the compound as }} \text{{{correct}}}.\\"
+            fr"&\quad \text{{Final Answer}} = \text{{{self.answer}}}"
+            r"\end{aligned}\]"
         )
 
     def generate(self, num):
@@ -5174,16 +5580,25 @@ class Chem092:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        # Convert Unicode subscripts to LaTeX math format for the compound
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9'}
+        
+        latex_compound = self.compound
+        for k, v in subs.items():
+            latex_compound = latex_compound.replace(k, v)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Born-Haber cycle for {self.compound}:}} &\\\\"
-            f"\\text{{Step A: enthalpy of atomisation of metal}} &\\\\"
-            f"\\text{{Step B: ionisation energy of metal}} &\\\\"
-            f"\\text{{Step C: enthalpy of atomisation of non-metal}} &\\\\"
-            f"\\text{{Step D: electron affinity of non-metal}} &\\\\"
-            f"\\text{{Step E: lattice enthalpy of {self.compound}}} &\\\\"
-            f"\\therefore \\text{{Step {self.asked_step} = {correct}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            f"&\\text{{Step 1: Review the standard steps in the Born-Haber cycle for }} \\mathrm{{{latex_compound}}}.\\\\"
+            f"&\\quad \\text{{Step A: {self.data['steps']['A'][1]}}}\\\\"
+            f"&\\quad \\text{{Step B: {self.data['steps']['B'][1]}}}\\\\"
+            f"&\\quad \\text{{Step C: {self.data['steps']['C'][1]}}}\\\\"
+            f"&\\quad \\text{{Step D: {self.data['steps']['D'][1]}}}\\\\"
+            f"&\\quad \\text{{Step E: {self.data['steps']['E'][1]}}}\\\\"
+            f"&\\text{{Step 2: Identify the highlighted enthalpy change.}}\\\\"
+            f"&\\quad \\text{{The diagram highlights Step {self.asked_step}, which corresponds to the {correct}.}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -5324,11 +5739,13 @@ class Chem093:
         self.curriculum = "A Level"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Anode (negative): {self.anode}}} &\\\\"
-            f"\\text{{Cathode (positive): {self.cathode}}} &\\\\"
-            f"E\\degree_{{\\text{{cell}}}} &= E\\degree_{{\\text{{cathode}}}} - E\\degree_{{\\text{{anode}}}} \\\\"
-            f"&= ({self.hc2['E_std']:+.2f}) - ({self.hc1['E_std']:+.2f}) \\\\"
-            f"&= {self.emf:.2f}\\text{{ V}}"
+            "&\\text{Step 1: Compare the standard electrode potentials } (E^{\\circ}) \\text{ to identify the anode and cathode.}\\\\"
+            f"&\\quad \\text{{Anode (oxidation, lower }} E^{{\\circ}}\\text{{): }} \\mathrm{{{self.anode}}} \\; ({self.hc1['E_std']:+.2f} \\text{{ V}})\\\\"
+            f"&\\quad \\text{{Cathode (reduction, higher }} E^{{\\circ}}\\text{{): }} \\mathrm{{{self.cathode}}} \\; ({self.hc2['E_std']:+.2f} \\text{{ V}})\\\\"
+            "&\\text{Step 2: Calculate the standard cell EMF using the formula.}\\\\"
+            "&\\quad E^{\\circ}_{\\text{cell}} = E^{\\circ}_{\\text{cathode}} - E^{\\circ}_{\\text{anode}}\\\\"
+            f"&\\quad E^{{\\circ}}_{{\\text{{cell}}}} = ({self.hc2['E_std']:+.2f}) - ({self.hc1['E_std']:+.2f})\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.emf:.2f} \\text{{ V}}"
             "\\end{aligned}\\]"
         )
 
@@ -5509,13 +5926,26 @@ class Chem094:
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
 
+        if self.q_type == "equivalence_vol":
+            target_question = "volume of titrant at the equivalence point"
+            target_axis = "x-axis"
+            target_val = f"{self.t['eq_vol']:.1f} \\text{{ cm}}^3"
+        else:
+            target_question = "pH at the equivalence point"
+            target_axis = "y-axis"
+            target_val = f"{self.t['eq_ph']:.1f}"
+
+        buffer_step = ""
+        if self.t["has_buffer"]:
+            buffer_step = f"&\\text{{(Note: A buffer region is visible around the half-equivalence volume of {self.t['eq_vol']/2:.1f} cm}}^3\\text{{)}}\\\\"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Titration: {self.t['type']}}} &\\\\"
-            f"\\text{{Equivalence point: {self.t['eq_vol']:.1f} cm}}^3\\text{{ at pH {self.t['eq_ph']:.1f}}} &\\\\"
-            + (f"\\text{{Buffer region: {self.t['buffer_region'][0]}\u2013{self.t['buffer_region'][1]} cm}}^3 &\\\\"
-               if self.t["has_buffer"] else "")
-            + f"\\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Locate the equivalence point, which is the steepest vertical section of the curve.}\\\\"
+            f"&\\text{{Step 2: To find the {target_question}, read the {target_axis} value at this point.}}\\\\"
+            f"&\\quad \\text{{Value from graph}} = {target_val}\\\\"
+            f"{buffer_step}"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}\\\\"
             "\\end{aligned}\\]"
         )
 
@@ -5556,6 +5986,11 @@ class Chem094:
             ph_poi = self._ph_curve(np.array([v_poi]), self.t)[0]
             # Draw vertical line to x-axis and horizontal line to y-axis in one call
             ax.plot([v_poi, v_poi, 0], [0, ph_poi, ph_poi], color='gray', linestyle=':', linewidth=1)
+            
+            # Add exact numerical labels for the axes
+            bbox_props = dict(boxstyle="round,pad=0.2", facecolor="white", edgecolor="gray", alpha=0.9)
+            ax.text(v_poi, 0.2, f"{v_poi:.1f}", color='black', fontsize=10, ha='center', va='bottom', bbox=bbox_props)
+            ax.text(0.2, ph_poi, f"{ph_poi:.1f}", color='black', fontsize=10, ha='left', va='center', bbox=bbox_props)
         # ----------------------------------------------------
 
         ax.set_xlim(0, max_v)
@@ -5611,11 +6046,16 @@ class Chem095:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{gradient}} &= -\\frac{{E_a}}{{R}} \\\\"
-            f"{self.gradient:.0f} &= -\\frac{{E_a}}{{8.314}} \\\\"
-            f"E_a &= {-self.gradient:.0f} \\times 8.314 \\\\"
-            f"E_a &= {self.Ea * 1000:.0f}\\text{{ J mol}}^{{-1}} \\\\"
-            f"E_a &= {self.Ea}\\text{{ kJ mol}}^{{-1}}"
+            "&\\text{Step 1: Identify the gradient of the Arrhenius plot from the given diagram.}\\\\"
+            f"&\\quad \\text{{Gradient}} = {self.gradient:.0f} \\text{{ K}}\\\\"
+            "&\\text{Step 2: Relate the gradient to the activation energy } (E_a) \\text{ using the Arrhenius equation.}\\\\"
+            "&\\quad \\text{Gradient} = -\\frac{E_a}{R}\\\\"
+            f"&\\quad {self.gradient:.0f} = -\\frac{{E_a}}{{8.314}}\\\\"
+            "&\\text{Step 3: Solve for } E_a \\text{ in } \\mathrm{J\\ mol^{-1}}.\\\\"
+            f"&\\quad E_a = {-self.gradient:.0f} \\times 8.314 = {self.Ea * 1000:.0f} \\text{{ J mol}}^{{-1}}\\\\"
+            "&\\text{Step 4: Convert the activation energy from Joules to kilojoules.}\\\\"
+            f"&\\quad E_a = \\frac{{{self.Ea * 1000:.0f}}}{{1000}} = {self.Ea} \\text{{ kJ mol}}^{{-1}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}\\\\"
             "\\end{aligned}\\]"
         )
 
@@ -5775,7 +6215,7 @@ class Chem096:
         self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
         self.description = (
-            "An unknown alcohol undergoes the chemical test shown in the diagram. "
+            "An alcohol undergoes the chemical test shown in the diagram. "
             "Based on the observations and the molecular formula provided in the image, identify the alcohol.\n\n"
             f"{self.options_text}"
         )
@@ -5784,12 +6224,26 @@ class Chem096:
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
         self.curriculum = "AS Level"
 
+        # Convert Unicode subscripts to LaTeX math format
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9'}
+
+        latex_formula = self.alcohol['formula']
+        for k, v in subs.items():
+            latex_formula = latex_formula.replace(k, v)
+
+        # Determine the oxidizability based on class
+        ox_status = "primary or secondary" if self.alcohol['class'] != "tertiary" else "tertiary"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Alcohol: {self.alcohol['name']} ({self.alcohol['class']})}} &\\\\"
-            f"\\text{{Result: {self.alcohol['result_heat']}}} &\\\\"
-            f"\\text{{Product: {self.alcohol['oxidation_product']}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Analyze the test result with acidified } \\mathrm{K_2Cr_2O_7}.\\\\"
+            f"&\\quad \\text{{Observation: {self.alcohol['result_heat']}}} \\implies \\text{{Alcohol is {ox_status}.}}\\\\"
+            "&\\text{Step 2: Use the oxidation product to determine the alcohol's class.}\\\\"
+            f"&\\quad \\text{{Product: {self.alcohol['oxidation_product']}}} \\implies \\text{{Confirmed as a {self.alcohol['class']} alcohol.}}\\\\"
+            "&\\text{Step 3: Identify the specific isomer using the molecular formula.}\\\\"
+            f"&\\quad \\text{{Formula: }} \\mathrm{{{latex_formula}}} \\implies \\text{{The unique structure matching this is {self.alcohol['name']}.}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -5802,6 +6256,10 @@ class Chem096:
         add_title_box(ax, 5.5, 6.5,
                       f"Oxidation Test with Acidified K\u2082Cr\u2082O\u2087",
                       fontsize=15)
+
+        ax.text(5.5, 5.8, f"Alcohol Formula: {self.alcohol['formula']}", 
+                fontsize=13, ha="center", va="center", fontweight="bold", 
+                bbox=dict(boxstyle="round,pad=0.5", facecolor="lightyellow", edgecolor="black", alpha=0.9))
 
         draw_test_tube(ax, 1.0, 1.5, width=1.8, height=3.5,
                        solution_height=2.5,
@@ -5818,6 +6276,11 @@ class Chem096:
                        solution_height=2.5,
                        solution_color=self.alcohol["color_after"])
         ax.text(6.9, 5.3, "After heating", fontsize=11, ha="center", fontweight="bold")
+
+        ax.text(6.9, 1.1, f"Product:\n{self.alcohol['oxidation_product']}", 
+                fontsize=10, ha="center", va="top", fontweight="bold", 
+                color="darkgreen" if self.alcohol["class"] != "tertiary" else "darkorange",
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="black", alpha=0.8))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -5947,13 +6410,25 @@ class Chem097:
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
         self.curriculum = "AS Level"
 
+        # Deduction logic based on the compound type
+        dnp_obs = "an orange precipitate"
+        
+        if self.compound["type"] == "aldehyde":
+            redox_obs = "a silver mirror (Tollens') and a brick-red precipitate (Fehling's)"
+            redox_conclusion = "an aldehyde"
+        else:
+            redox_obs = "no reaction with Tollens' or Fehling's reagents"
+            redox_conclusion = "a ketone"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Compound: {self.compound['name']} ({self.compound['type']})}} &\\\\"
-            f"\\text{{Tollens': {self.compound['tollens']}}} &\\\\"
-            f"\\text{{Fehling's: {self.compound['fehling']}}} &\\\\"
-            f"\\text{{2,4-DNP: {self.compound['dnp']}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Analyze the result of the 2,4-DNP test.}\\\\"
+            f"&\\quad \\text{{Observation: {dnp_obs}}} \\implies \\text{{The compound contains a carbonyl group (C=O).}}\\\\"
+            "&\\text{Step 2: Use the Tollens' and Fehling's tests to distinguish between an aldehyde and a ketone.}\\\\"
+            f"&\\quad \\text{{Observation: {redox_obs}}} \\implies \\text{{The compound is {redox_conclusion}.}}\\\\"
+            "&\\text{Step 3: Combine the observations to select the correct classification.}\\\\"
+            f"&\\quad \\text{{Since it is a {self.compound['type']}, it matches option }} \\text{{{self.answer}}}.\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -6169,15 +6644,30 @@ class Chem098:
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
         self.curriculum = "AS Level"
 
+        # Convert Unicode subscripts and special characters to LaTeX math format
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9',
+                '\u207a':'^+', '\u207b':'^-', ' ': '\\ '}
+        
+        latex_electrophile = self.rxn['electrophile']
+        for k, v in subs.items():
+            latex_electrophile = latex_electrophile.replace(k, v)
+        
+        latex_intermediate = self.rxn['intermediate']
+        for k, v in subs.items():
+            latex_intermediate = latex_intermediate.replace(k, v)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Reaction: {self.rxn['alkene']} + {self.rxn['reagent']}}} &\\\\"
-            f"\\text{{Electrophile: {self.rxn['electrophile']}}} &\\\\"
-            f"\\text{{Step 1: {self.rxn['step1_desc']}}} &\\\\"
-            f"\\text{{Intermediate: {self.rxn['intermediate']}}} &\\\\"
-            f"\\text{{Step 2: {self.rxn['step2_desc']}}} &\\\\"
-            f"\\text{{Product: {self.rxn['product']}}} &\\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Identify the reactants and the nature of the reaction.}\\\\"
+            f"&\\quad \\text{{Reactants: {self.rxn['alkene']} and {self.rxn['reagent']}}}. \\text{{ This is an electrophilic addition reaction.}}\\\\"
+            "&\\text{Step 2: Analyze the electron flow in the first step of the mechanism (curly arrow 1).}\\\\"
+            "&\\quad \\text{The arrow shows the electron pair from the alkene } \\pi \\text{ bond being donated to an electron-deficient species.}\\\\"
+            "&\\text{Step 3: Identify the electrophile that accepts these electrons.}\\\\"
+            f"&\\quad \\text{{The initiating species is the electrophile: }} \\mathrm{{{latex_electrophile}}}.\\\\"
+            "&\\text{Step 4: Confirm the formation of the carbocation intermediate before the final product.}\\\\"
+            f"&\\quad \\text{{Intermediate stage: }} \\mathrm{{{latex_intermediate}}}.\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -6332,13 +6822,23 @@ class Chem099:
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
         self.curriculum = "AS Level"
 
+        # Convert Unicode to LaTeX for the reasoning block
+        subs = {'\u207b': '^-', '\u2083': '_3'}
+        latex_ion = self.halide['ion']
+        for k, v in subs.items():
+            latex_ion = latex_ion.replace(k, v)
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Halide: {self.halide['ion']} ({self.halide['name']})}} &\\\\"
-            f"\\text{{AgNO}}_3\\text{{: {self.halide['agno3_ppt']}}} &\\\\"
-            f"\\text{{Dilute NH}}_3\\text{{: {self.halide['dil_nh3']}}} &\\\\"
-            f"\\text{{Conc. NH}}_3\\text{{: {self.halide['conc_nh3']}}} &\\\\"
-            f"\\therefore \\text{{Precipitate = {self.halide['formula']}, Answer: {self.answer}}}"
+            "&\\text{Step 1: Observe the color of the precipitate formed with } \\mathrm{AgNO_3}.\\\\"
+            f"&\\quad \\text{{Observation: {self.halide['agno3_ppt']}}}.\\\\"
+            "&\\text{Step 2: Test the solubility of the precipitate in dilute ammonia } (\\mathrm{NH_3}).\\\\"
+            f"&\\quad \\text{{Result: {self.halide['dil_nh3']}}}.\\\\"
+            "&\\text{Step 3: Test the solubility in concentrated ammonia } (\\mathrm{NH_3}).\\\\"
+            f"&\\quad \\text{{Result: {self.halide['conc_nh3']}}}.\\\\"
+            "&\\text{Step 4: Use the reference table to match the solubility pattern to the halide ion.}\\\\"
+            f"&\\quad \\text{{The unique pattern of results confirms the ion is }} \\mathrm{{{latex_ion}}} \\text{{ ({self.halide['name']}).}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 
@@ -6474,11 +6974,14 @@ class Chem100:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "pV &= nRT \\text{ (ideal gas equation)} \\\\"
-            "\\text{Ideal gas: } pV &= \\text{constant (horizontal line)} \\\\"
-            "\\text{Real gas at low p:} &\\text{ attractions} \\Rightarrow pV < nRT \\\\"
-            "\\text{Real gas at high p:} &\\text{ molecular volume} \\Rightarrow pV > nRT \\\\"
-            f"\\therefore \\text{{Answer: {self.answer}}}"
+            "&\\text{Step 1: Identify the graph components and the highlighted region in the image.}\\\\"
+            f"&\\quad \\text{{The }} pV \\text{{ vs }} p \\text{{ plot shows the curve for {self.gas['name']} rising above the ideal baseline at high pressure.}}\\\\"
+            "&\\text{Step 2: Analyze the mathematical deviation observed in that region.}\\\\"
+            "&\\quad \\text{Because the curve is above the horizontal baseline, } pV > nRT \\text{ for this real gas.}\\\\"
+            "&\\text{Step 3: Find the solution by determining the physical cause of the deviation.}\\\\"
+            "&\\quad \\text{At high pressures, the actual volume of the gas molecules is no longer negligible.}\\\\"
+            "&\\quad \\text{This 'fixed' molecular volume increases the total } V, \\text{ causing } pV \\text{ to be higher than the ideal prediction.}\\\\"
+            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
             "\\end{aligned}\\]"
         )
 

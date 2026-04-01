@@ -2089,7 +2089,7 @@ class Chem023:
         ax.axhline(y=self.final_B, color='r', linestyle='--', alpha=0.5)
         
         ax.axvline(x=7, color='green', linestyle='--', alpha=0.5, linewidth=2)
-        ax.text(7, 2.5, 'Equilibrium\nReached', fontsize=12, ha='center', 
+        ax.text(7, self.initial_A * 0.8, 'Equilibrium\nReached', fontsize=12, ha='center', 
                fontweight='bold', color='green')
         
         ax.set_xlabel('Time (s)', fontsize=14, fontweight='bold')
@@ -3578,7 +3578,7 @@ class Chem038:
                                    width=0.8, color='steelblue', label_offset=3)
         
         draw_mass_spectrum_peak(ax, self.M_plus, 100, width=0.8,
-                               color='darkblue', label_offset=5)
+                               color='steelblue', label_offset=5)
         
         ax.set_xlabel('m/z (mass-to-charge ratio)', fontsize=14, fontweight='bold')
         ax.set_ylabel('Relative Intensity (%)', fontsize=14, fontweight='bold')
