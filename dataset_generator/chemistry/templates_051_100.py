@@ -6972,17 +6972,25 @@ class Chem100:
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
         self.curriculum = "AS Level"
 
+        # Convert Unicode subscripts to LaTeX math format for the gas name
+        subs = {'\u2080':'_0', '\u2081':'_1', '\u2082':'_2', '\u2083':'_3', '\u2084':'_4', 
+                '\u2085':'_5', '\u2086':'_6', '\u2087':'_7', '\u2088':'_8', '\u2089':'_9'}
+        
+        latex_gas_name = self.gas['name']
+        for k, v in subs.items():
+            latex_gas_name = latex_gas_name.replace(k, v)
+
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            "&\\text{Step 1: Identify the graph components and the highlighted region in the image.}\\\\"
-            f"&\\quad \\text{{The }} pV \\text{{ vs }} p \\text{{ plot shows the curve for {self.gas['name']} rising above the ideal baseline at high pressure.}}\\\\"
-            "&\\text{Step 2: Analyze the mathematical deviation observed in that region.}\\\\"
-            "&\\quad \\text{Because the curve is above the horizontal baseline, } pV > nRT \\text{ for this real gas.}\\\\"
-            "&\\text{Step 3: Find the solution by determining the physical cause of the deviation.}\\\\"
-            "&\\quad \\text{At high pressures, the actual volume of the gas molecules is no longer negligible.}\\\\"
-            "&\\quad \\text{This 'fixed' molecular volume increases the total } V, \\text{ causing } pV \\text{ to be higher than the ideal prediction.}\\\\"
-            f"&\\quad \\text{{Final Answer}} = \\text{{{self.answer}}}"
-            "\\end{aligned}\\]"
+            r"\[\begin{aligned}"
+            r"&\text{Step 1: Identify the graph components and the highlighted region in the image.}\\"
+            fr"&\quad \text{{The }} pV \text{{ vs }} p \text{{ plot shows the curve for }} \mathrm{{{latex_gas_name}}} \text{{ rising above the ideal baseline at high pressure.}}\\"
+            r"&\text{Step 2: Analyze the mathematical deviation observed in that region.}\\"
+            r"&\quad \text{Because the curve is above the horizontal baseline, } pV > nRT \text{ for this real gas.}\\"
+            r"&\text{Step 3: Find the solution by determining the physical cause of the deviation.}\\"
+            r"&\quad \text{At high pressures, the actual volume of the gas molecules is no longer negligible.}\\"
+            r"&\quad \text{This 'fixed' molecular volume increases the total } V, \text{ causing } pV \text{ to be higher than the ideal prediction.}\\"
+            fr"&\quad \text{{Final Answer}} = \text{{{self.answer}}}"
+            r"\end{aligned}\]"
         )
 
     def generate(self, num):
@@ -7004,9 +7012,6 @@ class Chem100:
 
         ax.set_xlim(0, 1000)
         ax.set_ylim(nRT * 0.7, nRT * 1.5)
-
-        # Add a visual highlight for the high-pressure region
-        ax.axvspan(600, 1000, color='yellow', alpha=0.15, label='Region of Interest')
 
         # Make the title more generic so they have to read the legend
         ax.set_title("Gas Behavior Analysis: Real vs. Ideal", fontsize=14, fontweight="bold")

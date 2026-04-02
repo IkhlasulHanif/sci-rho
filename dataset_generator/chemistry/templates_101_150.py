@@ -46,7 +46,7 @@ class Chem101:
             "The graph shows how the temperature of the substance changes with time.\n\n"
             "From A to B the substance is a gas.\n"
             "From C to D the substance is a liquid.\n\n"
-            "Calculate how long it takes for the substance to become completely liquid."
+            "Calculate the duration of the phase change!"
         )
 
         self.topic = "States of matter"
@@ -55,15 +55,16 @@ class Chem101:
         self.curriculum = "GCSE"
 
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Condensation occurs during constant temperature}}\\\\"
-            f"\\text{{Start time of condensation}} &= t_B = {self.t_B}\\,\\text{{minutes}}\\\\"
-            f"\\text{{End time of condensation}} &= t_C = {self.t_C}\\,\\text{{minutes}}\\\\"
-            f"\\text{{Duration of condensation is given by:}}\\\\"
-            f"t_{{\\text{{duration}}}} &= t_C - t_B\\\\"
-            f"&= {self.t_C} - {self.t_B}\\\\"
-            f"&= {self.answer}\\,\\text{{minutes}}"
-            "\\end{aligned}\\]"
+            r"\[\begin{aligned}"
+            r"&\text{Step 1: Identify the region where the phase change (condensation) occurs.}\\"
+            r"&\quad \text{During a phase change, temperature remains constant, forming a plateau between points B and C.}\\"
+            r"&\text{Step 2: Read the start and end times for this plateau from the horizontal axis.}\\"
+            fr"&\quad \text{{Start time (point B)}} = {self.t_B} \text{{ minutes}}\\"
+            fr"&\quad \text{{End time (point C)}} = {self.t_C} \text{{ minutes}}\\"
+            r"&\text{Step 3: Calculate the duration of the condensation process.}\\"
+            fr"&\quad \text{{Duration}} = t_C - t_B = {self.t_C} - {self.t_B}\\"
+            fr"&\quad \text{{Final Answer}} = {self.answer} \text{{ minutes}}"
+            r"\end{aligned}\]"
         )
 
     def generate(self, num):
@@ -118,7 +119,7 @@ class Chem102:
         self.description = (
             "A gas diffuses across a chamber as shown in the diagram. "
             "The gas travels a measured distance over a period of time.\n\n"
-            "Calculate the rate of diffusion of the gas."
+            "Calculate the rate of diffusion of the gas (in cm/s)!"
         )
 
         self.topic = "States of matter"
@@ -128,13 +129,14 @@ class Chem102:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Distance travelled}} &= {self.distance}\\,\\text{{cm}}\\\\"
-            f"\\text{{Time taken}} &= {self.time}\\,\\text{{s}}\\\\"
-            f"\\text{{Diffusion rate is given by:}} &\\\\"
-            f"\\text{{Rate}} &= \\frac{{\\text{{distance}}}}{{\\text{{time}}}}\\\\"
-            f"&= \\frac{{{self.distance}}}{{{self.time}}}\\\\"
-            f"&= {round(self.distance / self.time, 10)}\\\\"
-            f"&= {self.answer}\\,\\text{{cm s}}^{{-1}}"
+            "&\\text{Step 1: Extract the given distance and time values from the diagram.}\\\\"
+            f"&\\quad \\text{{Distance travelled}} = {self.distance} \\text{{ cm}}\\\\"
+            f"&\\quad \\text{{Time taken}} = {self.time} \\text{{ s}}\\\\"
+            "&\\text{Step 2: Recall the formula for the rate of diffusion.}\\\\"
+            "&\\quad \\text{Rate} = \\frac{\\text{Distance}}{\\text{Time}}\\\\"
+            "&\\text{Step 3: Substitute the given values into the formula and calculate.}\\\\"
+            f"&\\quad \\text{{Rate}} = \\frac{{{self.distance}}}{{{self.time}}} = {round(self.distance / self.time, 10)}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer} \\text{{ cm s}}^{{-1}}"
             "\\end{aligned}\\]"
         )
 
@@ -189,9 +191,6 @@ class Chem102:
         ax.set_aspect('equal')
         ax.axis('off')
 
-        ax.set_title("Diffusion of a Gas in a Chamber",
-                    fontsize=16, fontweight='bold')
-
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -224,7 +223,7 @@ class Chem103:
         self.answer = self.electrons_transferred
 
         self.description = (
-            f"The diagram shows electron transfer between {self.metal} and {self.nonmetal} "
+            "The diagram shows electron transfer between a metal atom and a non-metal atom "
             "during ionic bonding.\n\n"
             "Determine the number of electrons transferred."
         )
@@ -236,12 +235,12 @@ class Chem103:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Metal atom:}} &\\quad \\text{{{self.metal}}}\\\\"
-            f"\\text{{Non-metal atom:}} &\\quad \\text{{{self.nonmetal}}}\\\\"
-            "\\text{{Ionic bonding involves the transfer of valence electrons.}} &\\\\"
-            "\\text{{Number of electrons transferred (}} n \\text{{):}} &\\\\"
-            f"n &= {self.electrons_transferred}\\\\"
-            f"\\text{{Result}} &= {self.answer}"
+            "&\\text{Step 1: Identify the process shown in the diagram.}\\\\"
+            "&\\quad \\text{The arrow represents the transfer of valence electrons during ionic bonding.}\\\\"
+            "&\\text{Step 2: Determine the number of electrons transferred.}\\\\"
+            f"&\\quad \\text{{Count the number of electrons (dots) moving from }} \\text{{{self.metal}}} \\text{{ to }} \\text{{{self.nonmetal}}}.\\\\"
+            f"&\\quad \\text{{Electrons transferred}} = {self.electrons_transferred}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -290,12 +289,6 @@ class Chem103:
         ax.set_ylim(2, 8)
         ax.set_aspect('equal')
         ax.axis('off')
-
-        ax.set_title(
-            f"Electron Transfer During Ionic Bonding ({self.metal} and {self.nonmetal})",
-            fontsize=16,
-            fontweight='bold'
-        )
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -737,11 +730,10 @@ class Chem106:
         self.answer = round(self.excess_leftover_moles * self.excess_Ar, 2)
 
         self.description = (
-            f"The graph shows the concentration of two reactants during the reaction "
-            f"{self.reaction['reactant_A']} reacting with {self.reaction['reactant_B']}.\n\n"
-            f"Initial mass {self.reaction['reactant_A']} = {self.mass_A} g\n"
-            f"Initial mass {self.reaction['reactant_B']} = {self.mass_B} g\n\n"
-            "Using stoichiometry and the graph, calculate the mass of the excess reactant remaining."
+            f"The graph tracks the mass of reactants during the reaction between "
+            f"{self.reaction['reactant_A']} and {self.reaction['reactant_B']}.\n\n"
+            "Using stoichiometry and the initial data provided in the graph, "
+            "calculate the exact mass of the excess reactant remaining!"
         )
 
         self.topic = "Stoichiometry"
@@ -751,41 +743,55 @@ class Chem106:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Moles of A}} &= \\frac{{{self.mass_A}}}{{{self.reaction['Ar_A']}}} = {round(self.moles_A,10)}\\\\"
-            f"\\text{{Moles of B}} &= \\frac{{{self.mass_B}}}{{{self.reaction['Ar_B']}}} = {round(self.moles_B,10)}\\\\"
-            f"\\text{{Limiting reagent determined by mole ratio}} &\\\\"
-            f"\\text{{Excess moles remaining}} &= {round(self.excess_leftover_moles,10)}\\\\"
-            f"\\text{{Mass remaining}} &= n \\times A_r\\\\"
-            f"&= {round(self.excess_leftover_moles,10)} \\times {self.excess_Ar}\\\\"
-            f"&= {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the initial masses of the reactants from the graph.}\\\\"
+            f"&\\quad \\text{{Mass of }} \\mathrm{{{self.reaction['reactant_A']}}} = {self.mass_A} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Mass of }} \\mathrm{{{self.reaction['reactant_B']}}} = {self.mass_B} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Convert these initial masses to moles.}\\\\"
+            f"&\\quad \\text{{Moles of }} \\mathrm{{{self.reaction['reactant_A']}}} = \\frac{{{self.mass_A}}}{{{self.reaction['Ar_A']}}} = {round(self.moles_A, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Moles of }} \\mathrm{{{self.reaction['reactant_B']}}} = \\frac{{{self.mass_B}}}{{{self.reaction['Ar_B']}}} = {round(self.moles_B, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Identify the limiting reactant.}\\\\"
+            f"&\\quad \\text{{The graph shows }} \\mathrm{{{self.reaction['reactant_A'] if self.limiting == 'A' else self.reaction['reactant_B']}}} \\text{{ reaching 0 g, so it is the limiting reactant.}}\\\\"
+            "&\\text{Step 4: Use the stoichiometric ratio to find the moles of excess reactant remaining.}\\\\"
+            f"&\\quad \\text{{Excess moles remaining}} = {round(self.excess_leftover_moles, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Convert the remaining moles back to mass to find the value}\\\\"
+            f"&\\quad \\text{{Mass remaining}} = {round(self.excess_leftover_moles, 4)} \\times {self.excess_Ar} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-
         fig, ax = plt.subplots(figsize=(10, 7))
 
         t = np.linspace(0, 10, 200)
+        # Create a decay curve that reaches exactly 0 at t=10
+        decay = ((10 - t) / 10)**2  
 
+        # Map actual masses to the curves
         if self.limiting == "A":
-            conc_A = np.exp(-0.4 * t)
-            conc_B = np.exp(-0.4 * t) + 0.2
+            mass_A_arr = self.mass_A * decay
+            mass_B_arr = (self.mass_B - self.answer) * decay + self.answer
         else:
-            conc_B = np.exp(-0.4 * t)
-            conc_A = np.exp(-0.4 * t) + 0.2
+            mass_B_arr = self.mass_B * decay
+            mass_A_arr = (self.mass_A - self.answer) * decay + self.answer
 
-        ax.plot(t, conc_A, linewidth=3, color="#2E86C1", label=self.reaction["reactant_A"])
-        ax.plot(t, conc_B, linewidth=3, color="#C39A3A", label=self.reaction["reactant_B"])
+        ax.plot(t, mass_A_arr, linewidth=3, color="#2E86C1", label=self.reaction["reactant_A"])
+        ax.plot(t, mass_B_arr, linewidth=3, color="#C39A3A", label=self.reaction["reactant_B"])
+
+        # --- Visual Aids: Annotate exact numbers at points of interest ---
+        # Initial Masses (t=0)
+        ax.text(0.2, self.mass_A, f"{self.mass_A} g", color="#2E86C1", fontweight='bold', va='bottom')
+        ax.text(0.2, self.mass_B, f"{self.mass_B} g", color="#C39A3A", fontweight='bold', va='bottom')
+        # -----------------------------------------------------------------
 
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
-        ax.set_ylabel("Concentration (mol dm$^{-3}$)", fontsize=14, fontweight='bold')
-        ax.set_title("Reactant Concentration vs Time", fontsize=16, fontweight='bold')
+        ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
+        ax.set_title("Reactant Mass vs Time", fontsize=16, fontweight='bold')
 
         ax.legend()
         ax.grid(True, linestyle='--', alpha=0.6)
 
         ax.set_xlim(0, 10)
-        ax.set_ylim(0, max(max(conc_A), max(conc_B)) * 1.2)
+        ax.set_ylim(0, max(self.mass_A, self.mass_B) * 1.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -879,11 +885,11 @@ class Chem107:
         self.answer = round(self.final_moles * self.chain["Ar_final"], 2)
 
         self.description = (
-            f"The graph shows the amount of substances during a multi-stage reaction chain.\n\n"
+            f"The graph tracks the mass of substances during a multi-stage reaction chain.\n\n"
             f"Stage 1: {self.chain['stage1']}\n"
             f"Stage 2: {self.chain['stage2']}\n\n"
-            f"Initial mass of starting compound = {self.start_mass} g\n\n"
-            "Using stoichiometry and the graph, calculate the mass of final product formed."
+            "Using stoichiometry and the initial mass provided in the graph, "
+            "calculate the exact mass of the final product formed!"
         )
 
         self.topic = "Stoichiometry"
@@ -893,39 +899,53 @@ class Chem107:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Moles of starting compound}} &= \\frac{{{self.start_mass}}}{{{self.chain['Ar_start']}}}\\\\"
-            f"&= {round(self.start_moles,10)}\\\\"
-            f"\\text{{Mole ratio through reaction chain is 1:1}} &\\\\"
-            f"\\text{{Moles of final product}} &= {round(self.final_moles,10)}\\\\"
-            f"\\text{{Mass of final product}} &= n \\times A_r\\\\"
-            f"&= {round(self.final_moles,10)} \\times {self.chain['Ar_final']}\\\\"
-            f"&= {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the initial mass of the starting compound from the graph.}\\\\"
+            f"&\\quad \\text{{Initial mass}} = {self.start_mass} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Convert the initial mass to moles.}\\\\"
+            f"&\\quad \\text{{Moles of starting compound}} = \\frac{{{self.start_mass}}}{{{self.chain['Ar_start']}}} = {round(self.start_moles, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Determine the overall mole ratio from the two stages.}\\\\"
+            "&\\quad \\text{The ratio of starting compound to final product is 1:1 through the chain.}\\\\"
+            f"&\\quad \\text{{Moles of final product}} = {round(self.final_moles, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Convert the moles of final product to mass}\\\\"
+            f"&\\quad \\text{{Mass of final product}} = {round(self.final_moles, 4)} \\times {self.chain['Ar_final']} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-
         fig, ax = plt.subplots(figsize=(10, 7))
 
         t = np.linspace(0, 10, 200)
 
-        start_curve = np.exp(-0.35 * t)
-        intermediate_curve = np.exp(-0.35 * (t - 3)**2)
-        product_curve = 1 - np.exp(-0.35 * t)
+        # Create mathematical curves that hit exact start/end points
+        decay = ((10 - t) / 10)**2
+        growth = 1 - decay
+        intermediate_hump = 4 * (t/10) * ((10-t)/10) # Peaks in the middle
+
+        # Scale curves to actual masses
+        start_curve = self.start_mass * decay
+        product_curve = self.answer * growth
+        # Intermediate is given an arbitrary visible hump between the two
+        intermediate_curve = ((self.start_mass + self.answer) / 2) * intermediate_hump
 
         ax.plot(t, start_curve, linewidth=3, color="#2E86C1", label="Starting compound")
         ax.plot(t, intermediate_curve, linewidth=3, color="#F39C12", label="Intermediate")
         ax.plot(t, product_curve, linewidth=3, color="#28B463", label="Final product")
 
+        # --- Visual Aids: Annotate exact numbers at points of interest ---
+        # Initial Mass (t=0)
+        ax.text(0.2, self.start_mass, f"{self.start_mass} g", color="#2E86C1", fontweight='bold', va='bottom')
+        # -----------------------------------------------------------------
+
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
-        ax.set_ylabel("Relative amount", fontsize=14, fontweight='bold')
+        ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
         ax.set_title("Multi-Stage Reaction Chain Progress", fontsize=16, fontweight='bold')
 
         ax.legend()
         ax.grid(True, linestyle='--', alpha=0.6)
 
         ax.set_xlim(0, 10)
-        ax.set_ylim(0, 1.2)
+        ax.set_ylim(0, max(self.start_mass, self.answer) * 1.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1095,12 +1115,10 @@ class Chem108:
         self.answer = round(self.percent_yield_actual, 2)
 
         self.description = (
-            f"The graph shows reactant consumption and product formation for the reaction:\n"
+            f"The graph tracks the masses of reactants and product during the reaction:\n"
             f"{self.r['eq']}\n\n"
-            f"Initial mass {self.r['A']} = {self.mass_A} g\n"
-            f"Initial mass {self.r['B']} = {self.mass_B} g\n\n"
-            f"The actual mass of product obtained = {round(self.actual_mass,2)} g\n\n"
-            "Using stoichiometry and the graph, calculate the percentage yield."
+            "Using stoichiometry and the data provided in the graph, "
+            "calculate the percentage yield of the reaction."
         )
 
         self.topic = "Stoichiometry"
@@ -1110,44 +1128,72 @@ class Chem108:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"n_{{A}} &= \\frac{{{self.mass_A}}}{{{self.r['Ar_A']}}} = {round(self.moles_A,10)}\\\\"
-            f"n_{{B}} &= \\frac{{{self.mass_B}}}{{{self.r['Ar_B']}}} = {round(self.moles_B,10)}\\\\"
-            f"\\text{{Limiting reagent determines theoretical product moles}}\\\\"
-            f"n_{{P,theoretical}} &= {round(self.product_moles_theoretical,10)}\\\\"
-            f"m_{{P,theoretical}} &= n \\times A_r\\\\"
-            f"&= {round(self.product_moles_theoretical,10)} \\times {self.r['Ar_P']}\\\\"
-            f"&= {round(self.theoretical_mass,10)}\\\\"
-            f"\\%\\text{{ yield}} &= \\frac{{m_{{actual}}}}{{m_{{theoretical}}}} \\times 100\\\\"
-            f"&= \\frac{{{round(self.actual_mass,10)}}}{{{round(self.theoretical_mass,10)}}} \\times 100\\\\"
-            f"&= {self.answer}\\,\\%"
+            "&\\text{Step 1: Read initial reactant masses and the actual product mass from the graph.}\\\\"
+            f"&\\quad \\text{{Initial mass of }} \\mathrm{{{self.r['A']}}} = {self.mass_A} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Initial mass of }} \\mathrm{{{self.r['B']}}} = {self.mass_B} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Actual mass of }} \\mathrm{{{self.r['P']}}} = {round(self.actual_mass, 2)} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate initial moles to determine the limiting reactant.}\\\\"
+            f"&\\quad n(\\mathrm{{{self.r['A']}}}) = \\frac{{{self.mass_A}}}{{{self.r['Ar_A']}}} = {round(self.moles_A, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad n(\\mathrm{{{self.r['B']}}}) = \\frac{{{self.mass_B}}}{{{self.r['Ar_B']}}} = {round(self.moles_B, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Based on the mole ratio, the limiting reactant dictates the maximum yield.}}\\\\"
+            "&\\text{Step 3: Calculate the theoretical mass of the product.}\\\\"
+            f"&\\quad \\text{{Theoretical moles of }} \\mathrm{{{self.r['P']}}} = {round(self.product_moles_theoretical, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Theoretical mass}} = {round(self.product_moles_theoretical, 4)} \\times {self.r['Ar_P']} = {round(self.theoretical_mass, 4)} \\text{{ g}}\\\\"
+            "&\\text{Step 4: Calculate the percentage yield.}\\\\"
+            "&\\quad \\% \\text{ yield} = \\left( \\frac{\\text{Actual Mass}}{\\text{Theoretical Mass}} \\right) \\times 100\\\\"
+            f"&\\quad \\% \\text{{ yield}} = \\left( \\frac{{{round(self.actual_mass, 2)}}}{{{round(self.theoretical_mass, 4)}}} \\right) \\times 100 = {self.answer} \\%\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-
         fig, ax = plt.subplots(figsize=(10, 7))
 
         t = np.linspace(0, 10, 200)
+        
+        # Create decay/growth curves
+        decay = ((10 - t) / 10)**2
+        growth = 1 - decay
 
-        limiting_curve = np.exp(-0.45 * t)
-        excess_curve = np.exp(-0.45 * t) + 0.25
-        theoretical_product = 1 - np.exp(-0.45 * t)
-        actual_product = theoretical_product * (self.percent_yield_actual / 100)
+        # Calculate exact ending masses based on stoichiometry
+        used_A = self.limiting_moles_norm * self.r["coeff_A"] * self.r["Ar_A"]
+        used_B = self.limiting_moles_norm * self.r["coeff_B"] * self.r["Ar_B"]
+        m_end_A = self.mass_A - used_A
+        m_end_B = self.mass_B - used_B
 
-        ax.plot(t, limiting_curve, linewidth=3, color="#2E86C1", label=f"{self.r['A']} (or limiting)")
-        ax.plot(t, excess_curve, linewidth=3, color="#C39A3A", label=f"{self.r['B']} (or excess)")
-        ax.plot(t, theoretical_product, linewidth=3, color="#28B463", linestyle="--", label="Theoretical product")
-        ax.plot(t, actual_product, linewidth=3, color="#E74C3C", label="Actual product")
+        # Map actual masses to the curves
+        mass_A_arr = (self.mass_A - m_end_A) * decay + m_end_A
+        mass_B_arr = (self.mass_B - m_end_B) * decay + m_end_B
+        actual_product_arr = self.actual_mass * growth
+
+        ax.plot(t, mass_A_arr, linewidth=3, color="#2E86C1", label=self.r["A"])
+        ax.plot(t, mass_B_arr, linewidth=3, color="#C39A3A", label=self.r["B"])
+        ax.plot(t, actual_product_arr, linewidth=3, color="#E74C3C", label=f"{self.r['P']} (Actual Product)")
+
+        # --- Visual Aids: Annotate exact numbers at points of interest ---
+        # Initial Masses (t=0)
+        ax.text(0.2, self.mass_A, f"{self.mass_A} g", color="#2E86C1", fontweight='bold', va='bottom')
+        ax.text(0.2, self.mass_B, f"{self.mass_B} g", color="#C39A3A", fontweight='bold', va='bottom')
+        
+        # Final Actual Product Mass (t=10)
+        ax.text(9.8, self.actual_mass, f"{round(self.actual_mass, 2)} g", color="#E74C3C", fontweight='bold', ha='right', va='bottom')
+        
+        # Explicitly label the limiting reactant hitting 0g to reinforce learning
+        if self.norm_A < self.norm_B:
+            ax.text(9.8, 0.2, "0 g", color="#2E86C1", fontweight='bold', ha='right', va='bottom')
+        else:
+            ax.text(9.8, 0.2, "0 g", color="#C39A3A", fontweight='bold', ha='right', va='bottom')
+        # -----------------------------------------------------------------
 
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
-        ax.set_ylabel("Relative amount / concentration", fontsize=14, fontweight='bold')
-        ax.set_title("Limiting Reagent and Percentage Yield Reaction Progress", fontsize=16, fontweight='bold')
+        ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
+        ax.set_title("Reaction Mass Progress & Percentage Yield", fontsize=16, fontweight='bold')
 
         ax.legend()
         ax.grid(True, linestyle='--', alpha=0.6)
 
         ax.set_xlim(0, 10)
-        ax.set_ylim(0, 1.3)
+        ax.set_ylim(0, max(self.mass_A, self.mass_B, self.actual_mass) * 1.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1244,8 +1290,8 @@ class Chem109:
         self.description = (
             f"The bar chart shows gas volumes for the reaction:\n"
             f"{self.r['eq']}\n\n"
-            f"Volume of {self.r['gas_A']} reacted = {self.volume_A} dm³\n\n"
-            "Using the 24 dm³ mol⁻¹ rule and stoichiometry, calculate the volume of product gas formed."
+            "Using the 24 dm³ mol⁻¹ rule, the stoichiometry of the equation, and the data from the graph, "
+            "calculate the exact volume of product gas formed!"
         )
 
         self.topic = "Stoichiometry"
@@ -1253,42 +1299,60 @@ class Chem109:
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "GCSE"
 
+        # Convert numbers in gas formulas to LaTeX subscripts
+        latex_gas_A = self.r['gas_A']
+        latex_gas_B = self.r['gas_B']
+        for num in "0123456789":
+            latex_gas_A = latex_gas_A.replace(num, f"_{num}")
+            latex_gas_B = latex_gas_B.replace(num, f"_{num}")
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Moles of gas A}} &= \\frac{{V}}{{24}}\\\\"
-            f"&= \\frac{{{self.volume_A}}}{{24}}\\\\"
-            f"&= {round(self.moles_A,10)}\\\\"
-            f"\\text{{Mole ratio from equation}}\\\\"
-            f"n_{{B}} &= n_{{A}} \\times \\frac{{{self.r['coeff_B']}}}{{{self.r['coeff_A']}}}\\\\"
-            f"&= {round(self.moles_A,10)} \\times \\frac{{{self.r['coeff_B']}}}{{{self.r['coeff_A']}}}\\\\"
-            f"&= {round(self.moles_B,10)}\\\\"
-            f"V_{{B}} &= n_{{B}} \\times 24\\\\"
-            f"&= {round(self.moles_B,10)} \\times 24\\\\"
-            f"&= {self.answer}\\,\\text{{dm}}^3"
+            "&\\text{Step 1: Read the initial volume of reactant gas from the graph.}\\\\"
+            f"&\\quad \\text{{Volume of }} \\mathrm{{{latex_gas_A}}} = {self.volume_A} \\text{{ dm}}^3\\\\"
+            "&\\text{Step 2: Convert this volume to moles using molar gas volume (24 dm}^3\\text{ mol}^{-1}\\text{).}\\\\"
+            f"&\\quad n(\\mathrm{{{latex_gas_A}}}) = \\frac{{{self.volume_A}}}{{24}} = {round(self.moles_A, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the stoichiometric ratio from the equation to find moles of product.}\\\\"
+            f"&\\quad \\text{{Ratio is }} {self.r['coeff_A']} : {self.r['coeff_B']}\\\\"
+            f"&\\quad n(\\mathrm{{{latex_gas_B}}}) = {round(self.moles_A, 4)} \\times \\frac{{{self.r['coeff_B']}}}{{{self.r['coeff_A']}}} = {round(self.moles_B, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Convert moles of product back to volume.}\\\\"
+            f"&\\quad \\text{{Volume of }} \\mathrm{{{latex_gas_B}}} = {round(self.moles_B, 4)} \\times 24 = {self.answer} \\text{{ dm}}^3\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-
         fig, ax = plt.subplots(figsize=(10, 7))
 
         labels = [self.r["gas_A"], self.r["gas_B"]]
-        values = [self.volume_A, self.volume_B]
+        
+        # FIX: Plot 0 for the second bar so it doesn't give away the answer visually!
+        plot_values = [self.volume_A, 0] 
 
         colors = ["#2E86C1", "#E67E22"]
 
-        bars = ax.bar(labels, values, color=colors, width=0.6)
+        bars = ax.bar(labels, plot_values, color=colors, width=0.6)
 
         ax.set_ylabel("Gas Volume (dm³)", fontsize=14, fontweight='bold')
         ax.set_title("Gas Volume Stoichiometry", fontsize=16, fontweight='bold')
 
-        for bar in bars:
-            height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2, height,
-                    f"{round(height,2)}",
-                    ha='center', va='bottom', fontsize=11)
+        # --- Visual Aids: Annotate specific numbers, hide the answer ---
+        # Annotate the known reactant volume
+        ax.text(bars[0].get_x() + bars[0].get_width()/2, self.volume_A,
+                f"{self.volume_A}",
+                ha='center', va='bottom', fontsize=12, fontweight='bold', color="#2E86C1")
+
+        # Place a giant ? where the second bar would be
+        ax.text(bars[1].get_x() + bars[1].get_width()/2, self.volume_A * 0.5,
+                "?",
+                ha='center', va='center', fontsize=35, fontweight='bold', color="#E67E22")
+        # -----------------------------------------------------------------
 
         ax.grid(True, axis='y', linestyle='--', alpha=0.6)
+        
+        # Ensure the y-axis scales comfortably above the highest possible value
+        true_max = max(self.volume_A, self.volume_B)
+        ax.set_ylim(0, true_max * 1.15)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -1301,135 +1365,95 @@ class Chem110:
         systems = [
         {
             "name": "Sulfur Oxide System",
-            "percent_A": 50,
-            "percent_B": 50,
-            "A": "S",
-            "B": "O",
-            "Ar_A": 32,
-            "Ar_B": 16,
+            "percent_A": 66.7, "percent_B": 33.3,
+            "A": "S", "B": "O", "Ar_A": 32, "Ar_B": 16,
             "empirical": "SO",
-            "reaction": "2SO + O2 → 2SO2",
-            "Ar_reactant": 48,
-            "Ar_product": 64
+            "generic_reaction": "2X + O2 → 2(Product)",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 48, "Ar_product": 64
         },
         {
             "name": "Sulfur Oxide System",
-            "percent_A": 40,
-            "percent_B": 60,
-            "A": "S",
-            "B": "O",
-            "Ar_A": 32,
-            "Ar_B": 16,
+            "percent_A": 50.0, "percent_B": 50.0,
+            "A": "S", "B": "O", "Ar_A": 32, "Ar_B": 16,
             "empirical": "SO2",
-            "reaction": "2SO2 + O2 → 2SO3",
-            "Ar_reactant": 64,
-            "Ar_product": 80
+            "generic_reaction": "2X + O2 → 2(Product)",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 64, "Ar_product": 80
         },
         {
             "name": "Sulfur Oxide System",
-            "percent_A": 33.3,
-            "percent_B": 66.7,
-            "A": "S",
-            "B": "O",
-            "Ar_A": 32,
-            "Ar_B": 16,
+            "percent_A": 40.0, "percent_B": 60.0,
+            "A": "S", "B": "O", "Ar_A": 32, "Ar_B": 16,
             "empirical": "SO3",
-            "reaction": "2SO3 → 2SO2 + O2",
-            "Ar_reactant": 80,
-            "Ar_product": 64
+            "generic_reaction": "2X → 2(Product) + O2",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 80, "Ar_product": 64
         },
         {
             "name": "Nitrogen Oxide System",
-            "percent_A": 30.4,
-            "percent_B": 69.6,
-            "A": "N",
-            "B": "O",
-            "Ar_A": 14,
-            "Ar_B": 16,
+            "percent_A": 30.4, "percent_B": 69.6,
+            "A": "N", "B": "O", "Ar_A": 14, "Ar_B": 16,
             "empirical": "NO2",
-            "reaction": "2NO2 + O2 → 2N2O5",
-            "Ar_reactant": 46,
-            "Ar_product": 108
+            "generic_reaction": "4X + O2 → 2(Product)",
+            "coeff_reactant": 4, "coeff_product": 2,
+            "Ar_reactant": 46, "Ar_product": 108
         },
         {
             "name": "Nitrogen Oxide System",
-            "percent_A": 46.7,
-            "percent_B": 53.3,
-            "A": "N",
-            "B": "O",
-            "Ar_A": 14,
-            "Ar_B": 16,
+            "percent_A": 46.7, "percent_B": 53.3,
+            "A": "N", "B": "O", "Ar_A": 14, "Ar_B": 16,
             "empirical": "NO",
-            "reaction": "2NO + O2 → 2NO2",
-            "Ar_reactant": 30,
-            "Ar_product": 46
+            "generic_reaction": "2X + O2 → 2(Product)",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 30, "Ar_product": 46
         },
         {
             "name": "Nitrogen Oxide System",
-            "percent_A": 63.6,
-            "percent_B": 36.4,
-            "A": "N",
-            "B": "O",
-            "Ar_A": 14,
-            "Ar_B": 16,
+            "percent_A": 63.6, "percent_B": 36.4,
+            "A": "N", "B": "O", "Ar_A": 14, "Ar_B": 16,
             "empirical": "N2O",
-            "reaction": "2N2O + O2 → 2N2O2",
-            "Ar_reactant": 44,
-            "Ar_product": 60
+            "generic_reaction": "2X + O2 → 2(Product)",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 44, "Ar_product": 60
         },
         {
             "name": "Carbon Oxide System",
-            "percent_A": 27.3,
-            "percent_B": 72.7,
-            "A": "C",
-            "B": "O",
-            "Ar_A": 12,
-            "Ar_B": 16,
+            "percent_A": 27.3, "percent_B": 72.7,
+            "A": "C", "B": "O", "Ar_A": 12, "Ar_B": 16,
             "empirical": "CO2",
-            "reaction": "CO2 + C → 2CO",
-            "Ar_reactant": 44,
-            "Ar_product": 28
+            "generic_reaction": "X + C → 2(Product)",
+            "coeff_reactant": 1, "coeff_product": 2,
+            "Ar_reactant": 44, "Ar_product": 28
         },
         {
             "name": "Carbon Oxide System",
-            "percent_A": 42.9,
-            "percent_B": 57.1,
-            "A": "C",
-            "B": "O",
-            "Ar_A": 12,
-            "Ar_B": 16,
+            "percent_A": 42.9, "percent_B": 57.1,
+            "A": "C", "B": "O", "Ar_A": 12, "Ar_B": 16,
             "empirical": "CO",
-            "reaction": "2CO + O2 → 2CO2",
-            "Ar_reactant": 28,
-            "Ar_product": 44
+            "generic_reaction": "2X + O2 → 2(Product)",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 28, "Ar_product": 44
         },
         {
             "name": "Phosphorus Oxide System",
-            "percent_A": 43.7,
-            "percent_B": 56.3,
-            "A": "P",
-            "B": "O",
-            "Ar_A": 31,
-            "Ar_B": 16,
+            "percent_A": 56.4, "percent_B": 43.6,
+            "A": "P", "B": "O", "Ar_A": 31, "Ar_B": 16,
             "empirical": "P2O3",
-            "reaction": "2P2O3 + O2 → 2P2O5",
-            "Ar_reactant": 110,
-            "Ar_product": 142
+            "generic_reaction": "2X + O2 → 2(Product)",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 110, "Ar_product": 142
         },
         {
             "name": "Phosphorus Oxide System",
-            "percent_A": 56.3,
-            "percent_B": 43.7,
-            "A": "P",
-            "B": "O",
-            "Ar_A": 31,
-            "Ar_B": 16,
+            "percent_A": 43.7, "percent_B": 56.3,
+            "A": "P", "B": "O", "Ar_A": 31, "Ar_B": 16,
             "empirical": "P2O5",
-            "reaction": "2P2O5 → 2P2O3 + O2",
-            "Ar_reactant": 142,
-            "Ar_product": 110
+            "generic_reaction": "2X → 2(Product) + O2",
+            "coeff_reactant": 2, "coeff_product": 2,
+            "Ar_reactant": 142, "Ar_product": 110
         }
-    ]
+        ]
 
         self.sys = rnd.choice(systems)
 
@@ -1445,22 +1469,19 @@ class Chem110:
         self.ratio_B = self.moles_B / min(self.moles_A, self.moles_B)
 
         self.reactant_mass_given = rnd.randint(20, 80)
-
         self.reactant_moles = self.reactant_mass_given / self.sys["Ar_reactant"]
 
-        self.product_moles = self.reactant_moles
+        molar_ratio = self.sys["coeff_product"] / self.sys["coeff_reactant"]
+        self.product_moles = self.reactant_moles * molar_ratio
 
         self.product_mass = self.product_moles * self.sys["Ar_product"]
-
         self.answer = round(self.product_mass, 2)
 
         self.description = (
             f"A compound contains {self.sys['percent_A']}% {self.sys['A']} and "
             f"{self.sys['percent_B']}% {self.sys['B']}.\n\n"
-            f"Empirical formula determined = {self.sys['empirical']}\n"
-            f"Reaction: {self.sys['reaction']}\n\n"
-            f"{self.reactant_mass_given} g of {self.sys['empirical']} reacts.\n\n"
-            "Calculate the mass of final product formed."
+            "Based on the reaction setup shown in the diagram, "
+            "calculate the exact mass of the final product formed!"
         )
 
         self.topic = "Stoichiometry"
@@ -1470,22 +1491,23 @@ class Chem110:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"m_A &= {round(self.mass_A,10)}\\\\"
-            f"m_B &= {round(self.mass_B,10)}\\\\"
-            f"n_A &= \\frac{{m}}{{A_r}} = {round(self.moles_A,10)}\\\\"
-            f"n_B &= \\frac{{m}}{{A_r}} = {round(self.moles_B,10)}\\\\"
-            f"\\text{{Empirical ratio}} &\\\\"
-            f"&= {round(self.ratio_A,10)} : {round(self.ratio_B,10)}\\\\"
-            f"n_{{reactant}} &= \\frac{{{self.reactant_mass_given}}}{{{self.sys['Ar_reactant']}}}\\\\"
-            f"&= {round(self.reactant_moles,10)}\\\\"
-            f"m_{{product}} &= n \\times A_r\\\\"
-            f"&= {round(self.product_moles,10)} \\times {self.sys['Ar_product']}\\\\"
-            f"&= {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Verify the empirical formula using the given percentages.}\\\\"
+            f"&\\quad \\text{{Assume a {self.sample_mass} g sample: }} m_A = {round(self.mass_A, 2)} \\text{{ g}}, m_B = {round(self.mass_B, 2)} \\text{{ g}}\\\\"
+            f"&\\quad n_A = \\frac{{{round(self.mass_A, 2)}}}{{{self.sys['Ar_A']}}} = {round(self.moles_A, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad n_B = \\frac{{{round(self.mass_B, 2)}}}{{{self.sys['Ar_B']}}} = {round(self.moles_B, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Empirical ratio}} = {round(self.ratio_A, 2)} : {round(self.ratio_B, 2)} \\implies \\mathrm{{{self.sys['empirical']}}}\\\\"
+            "&\\text{Step 2: Read the initial mass and reaction equation from the diagram.}\\\\"
+            f"&\\quad \\text{{Initial mass of }} \\mathrm{{{self.sys['empirical']}}} = {self.reactant_mass_given} \\text{{ g}}\\\\"
+            "&\\text{Step 3: Calculate the moles of reactant and product.}\\\\"
+            f"&\\quad n_{{\\text{{reactant}}}} = \\frac{{{self.reactant_mass_given}}}{{{self.sys['Ar_reactant']}}} = {round(self.reactant_moles, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Based on the setup, ratio is }} {self.sys['coeff_reactant']}:{self.sys['coeff_product']} \\implies n_{{\\text{{product}}}} = {round(self.product_moles, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the final mass of the product.}\\\\"
+            f"&\\quad m_{{\\text{{product}}}} = {round(self.product_moles, 4)} \\times {self.sys['Ar_product']} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-
         fig, ax = plt.subplots(figsize=(8, 10))
 
         beaker = Polygon([
@@ -1506,11 +1528,12 @@ class Chem110:
 
         ax.add_patch(liquid)
 
-        ax.text(4, 6.6, self.sys["empirical"], ha='center', fontsize=18, fontweight='bold')
-
-        ax.text(4, 2.1, f"{self.reactant_mass_given} g sample", ha='center', fontsize=12)
-
         ax.text(4, 8.6, "Beaker Reaction Setup", ha='center', fontsize=14, fontweight='bold')
+        
+        ax.text(4, 5.0, f"Reaction:\n{self.sys['generic_reaction']}", ha='center', fontsize=13, fontweight='bold', 
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="lightyellow", edgecolor="black"))
+        
+        ax.text(4, 2.1, f"Initial Mass: {self.reactant_mass_given} g", ha='center', fontsize=14, fontweight='bold')
 
         ax.set_xlim(0, 8)
         ax.set_ylim(0, 10)
@@ -1539,12 +1562,10 @@ class Chem111:
         self.answer = round(self.mass_cu, 2)
 
         self.description = (
-            "The diagram shows a standard electrolysis setup with an ammeter.\n\n"
-            "Copper(II) ions are reduced at the cathode:\n"
-            "Cu^{2+} + 2e^- → Cu\n\n"
-            f"Current = {self.current} A\n"
-            f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of copper deposited. (round to 2 decimal places)"
+            f"The diagram shows a standard electrolysis cell and a stopwatch.\n\n"
+            f"A constant current of {self.current} A is passed through the solution.\n\n"
+            "Using the data and equations provided, "
+            "calculate the mass of copper deposited at the cathode! (round to 2 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -1554,21 +1575,20 @@ class Chem111:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"I &= {round(self.current,10)}\\,\\text{{A}}\\\\"
-            f"t &= {round(self.time_min,10)}\\,\\text{{min}} = {round(self.time_s,10)}\\,\\text{{s}}\\\\"
-            f"Q &= It\\\\"
-            f"&= {round(self.current,10)} \\times {round(self.time_s,10)}\\\\"
-            f"&= {round(self.charge,10)}\\,\\text{{C}}\\\\"
-            f"n(e^-) &= \\frac{{Q}}{{F}}\\\\"
-            f"&= \\frac{{{round(self.charge,10)}}}{{{round(self.F,10)}}}\\\\"
-            f"&= {round(self.moles_e,10)}\\,\\text{{mol}}\\\\"
-            f"\\text{{From }}\\,\\text{{Cu}}^{{2+}} + 2e^- \\rightarrow \\text{{Cu}}:\\quad n(\\text{{Cu}}) &= \\frac{{n(e^-)}}2\\\\"
-            f"&= \\frac{{{round(self.moles_e,10)}}}{2}\\\\"
-            f"&= {round(self.moles_cu,10)}\\,\\text{{mol}}\\\\"
-            f"m(\\text{{Cu}}) &= n(\\text{{Cu}})\\times A_r(\\text{{Cu}})\\\\"
-            f"&= {round(self.moles_cu,10)} \\times {round(self.Ar_Cu,10)}\\\\"
-            f"&= {round(self.mass_cu,10)}\\,\\text{{g}}\\\\"
-            f"&= {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the current, time, and reduction equation from the diagram.}\\\\"
+            f"&\\quad \\text{{Current }} (I) = {self.current} \\text{{ A (given)}}\\\\"
+            f"&\\quad \\text{{Time }} (t) = {self.time_min} \\text{{ min (from stopwatch)}}\\\\"
+            "&\\quad \\text{Equation: } \\mathrm{Cu^{2+} + 2e^- \\rightarrow Cu} \\implies \\text{2 moles of } \\mathrm{e^-} \\text{ per mole of Cu}\\\\"
+            "&\\text{Step 2: Convert time to seconds and calculate total charge } (Q = It).\\\\"
+            f"&\\quad t = {self.time_min} \\times 60 = {self.time_s} \\text{{ s}}\\\\"
+            f"&\\quad Q = {self.current} \\times {self.time_s} = {self.charge} \\text{{ C}}\\\\"
+            "&\\text{Step 3: Calculate the moles of electrons transferred.}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{self.charge}}}{{96500}} = {round(self.moles_e, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Use the stoichiometric ratio to find moles of copper.}\\\\"
+            f"&\\quad n(\\mathrm{{Cu}}) = \\frac{{{round(self.moles_e, 4)}}}{{2}} = {round(self.moles_cu, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Calculate the final mass of copper.}\\\\"
+            f"&\\quad m(\\mathrm{{Cu}}) = {round(self.moles_cu, 4)} \\times {self.Ar_Cu} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1597,39 +1617,22 @@ class Chem111:
         ax.text(7.4, 8.6, "anode (+)", ha="center", va="bottom", fontsize=10, fontweight="bold")
         ax.text(12.6, 8.6, "cathode (−)", ha="center", va="bottom", fontsize=10, fontweight="bold")
 
-        ax.text(7.4, 2.4, "oxidation", ha="center", va="top", fontsize=9, color="#7D2E2E")
-        ax.text(12.6, 2.4, "reduction", ha="center", va="top", fontsize=9, color="#1B5E20")
-
         ax.text(7.4, 1.6, "2H2O → O2 + 4H+ + 4e−", ha="center", va="top", fontsize=9, color="#7D2E2E")
         ax.text(12.6, 1.6, "Cu2+ + 2e− → Cu", ha="center", va="top", fontsize=9, color="#1B5E20")
 
-        psu = Rectangle((1.2, 6.8), 3.8, 3.0, fill=False, linewidth=2)
-        ax.add_patch(psu)
-        ax.text(3.1, 8.3, "DC supply", ha="center", va="center", fontsize=11, fontweight="bold")
+        # --- Visual Aid: Digital Stopwatch ---
+        timer_center = (16.5, 9.5)
+        timer_box = Rectangle((timer_center[0] - 2.0, timer_center[1] - 0.8), 4.0, 1.6, fill=True, facecolor="black", edgecolor="gray", linewidth=3)
+        ax.add_patch(timer_box)
+        
+        # Format time to look like MM:SS
+        time_str = f"{self.time_min:02d}:00"
+        ax.text(timer_center[0], timer_center[1] + 0.2, time_str, ha="center", va="center", fontsize=20, fontweight="bold", color="lime", fontfamily="monospace")
+        ax.text(timer_center[0], timer_center[1] - 0.45, "MIN : SEC", ha="center", va="center", fontsize=9, color="white")
+        ax.text(timer_center[0], timer_center[1] + 1.2, "Stopwatch", ha="center", va="bottom", fontsize=11, fontweight="bold")
+        # -------------------------------------
 
-        ax.text(1.7, 7.3, "+", fontsize=14, fontweight="bold", color="#B03A2E")
-        ax.text(4.5, 7.3, "−", fontsize=14, fontweight="bold", color="#1F4E79")
-
-        ammeter_center = (4.0, 10.2)
-        ammeter = Circle(ammeter_center, 0.85, fill=False, linewidth=2)
-        ax.add_patch(ammeter)
-        ax.text(ammeter_center[0], ammeter_center[1] + 0.05, "A", ha="center", va="center", fontsize=14, fontweight="bold")
-        ax.text(ammeter_center[0], ammeter_center[1] - 1.3, f"{self.current} A", ha="center", va="center", fontsize=11, fontweight="bold", color="#1F4E79")
-
-        wire_color_pos = "#B03A2E"
-        wire_color_neg = "#1F4E79"
-
-        ax.plot([1.7, 1.7, 7.4, 7.4], [7.3, 10.2, 10.2, 8.2], color=wire_color_pos, linewidth=3)
-        ax.plot([4.85, 12.6, 12.6, 4.5], [10.2, 10.2, 8.2, 7.3], color=wire_color_neg, linewidth=3)
-
-        arrow1 = FancyArrowPatch((2.6, 10.2), (3.2, 10.2), arrowstyle="->", mutation_scale=15, linewidth=2, color=wire_color_pos)
-        arrow2 = FancyArrowPatch((10.8, 10.2), (10.2, 10.2), arrowstyle="->", mutation_scale=15, linewidth=2, color=wire_color_neg)
-        ax.add_patch(arrow1)
-        ax.add_patch(arrow2)
-
-        ax.text(10, 11.3, "current flow in circuit", ha="center", va="center", fontsize=11, fontweight="bold")
-
-        ax.set_title("Electrolysis Apparatus with Ammeter", fontsize=16, fontweight="bold")
+        ax.set_title("Standard Electrolysis Cell", fontsize=16, fontweight="bold")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -1684,13 +1687,9 @@ class Chem112:
         self.answer = round(self.actual_moles_metal * self.sys["Ar_metal"], 2)
 
         self.description = (
-            "The diagrams show ion concentration before and after electrolysis.\n\n"
-            f"Cation: {self.sys['cation']}\n"
-            f"Volume = {self.volume_dm3} dm³\n"
-            f"Concentration = {self.conc} mol dm⁻³\n"
-            f"Current = {self.current} A\n"
-            f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of metal deposited. (round to 2 decimal places)"
+            "The diagrams show an electrolysis setup before and after the reaction.\n\n"
+            "Using the parameters provided in the image (current, time, volume, and initial concentration), "
+            "calculate the mass of metal deposited at the cathode!"
         )
 
         self.topic = "Electrochemistry"
@@ -1698,18 +1697,25 @@ class Chem112:
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "GCSE"
 
+        # Format the cation for LaTeX math mode
+        latex_cation = self.sys['cation'].replace('2+', '^{2+}').replace('+', '^+')
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"n_{{ion,initial}} &= V \\times C\\\\"
-            f"&= {round(self.volume_dm3,10)} \\times {round(self.conc,10)}\\\\"
-            f"&= {round(self.initial_moles_ion,10)}\\\\"
-            f"Q &= It = {round(self.current,10)} \\times {round(self.time_s,10)} = {round(self.charge,10)}\\\\"
-            f"n(e^-) &= \\frac{{Q}}{{F}} = \\frac{{{round(self.charge,10)}}}{{{round(self.F,10)}}} = {round(self.moles_e,10)}\\\\"
-            f"n_{{metal,charge}} &= \\frac{{n(e^-)}}{{{self.sys['electron_ratio']}}} = {round(self.moles_metal_possible_from_charge,10)}\\\\"
-            f"n_{{metal,actual}} &= \\min({round(self.moles_metal_possible_from_charge,10)}, {round(self.moles_metal_possible_from_ion,10)})\\\\"
-            f"&= {round(self.actual_moles_metal,10)}\\\\"
-            f"m &= n \\times A_r = {round(self.actual_moles_metal,10)} \\times {self.sys['Ar_metal']}\\\\"
-            f"&= {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the reaction parameters from the diagram.}\\\\"
+            f"&\\quad \\text{{Cation: }} \\mathrm{{{latex_cation}}}, \\text{{ Volume }} (V) = {self.volume_dm3} \\text{{ dm}}^3, \\text{{ Concentration }} (C) = {self.conc} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\text{{Current }} (I) = {self.current} \\text{{ A}}, \\text{{ Time }} (t) = {self.time_min} \\text{{ min}}\\\\"
+            "&\\text{Step 2: Calculate the total initial moles of metal ions in solution.}\\\\"
+            f"&\\quad n_{{ion}} = V \\times C = {self.volume_dm3} \\times {self.conc} = {round(self.initial_moles_ion, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Calculate the moles of electrons supplied by the circuit.}\\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times ({self.time_min} \\times 60) = {self.charge} \\text{{ C}}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{self.charge}}}{{96500}} = {round(self.moles_e, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Determine the theoretical moles of metal from the charge supplied.}\\\\"
+            f"&\\quad n_{{metal, charge}} = \\frac{{n(\\mathrm{{e^-}})}}{{{self.sys['electron_ratio']}}} = {round(self.moles_metal_possible_from_charge, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Identify the limiting factor and calculate actual mass deposited.}\\\\"
+            f"&\\quad \\text{{Actual moles}} = \\min({round(self.moles_metal_possible_from_charge, 4)}, {round(self.initial_moles_ion, 4)}) = {round(self.actual_moles_metal, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Mass}} = {round(self.actual_moles_metal, 4)} \\times {self.sys['Ar_metal']} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1727,18 +1733,25 @@ class Chem112:
         cathode = Rectangle((x_offset + 4.2, 3), 0.3, 4.5, facecolor="#666666")
         ax.add_patch(anode)
         ax.add_patch(cathode)
+        
+        ax.text(x_offset + 1.65, 7.8, "(+)", ha="center", fontsize=11, fontweight="bold")
+        ax.text(x_offset + 4.35, 7.8, "(−)", ha="center", fontsize=11, fontweight="bold")
 
-        for i in range(int(ion_count_scale * 8)):
-            x = x_offset + rnd.uniform(1.3, 4.7)
-            y = rnd.uniform(2.3, 5.3)
-            ax.add_patch(Circle((x, y), 0.12, color=self.sys["color"]))
-            ax.text(x, y, self.sys["cation"], fontsize=6, ha="center", va="center")
-
-        for _ in range(6):
-            start = (x_offset + rnd.uniform(2, 4), rnd.uniform(4, 6))
-            end = (x_offset + 4.35, rnd.uniform(4, 6))
-            arrow = FancyArrowPatch(start, end, arrowstyle="->", mutation_scale=10, color="#1B5E20")
-            ax.add_patch(arrow)
+        # Use fixed coordinates instead of random ones to prevent overlapping
+        num_ions = int(ion_count_scale * 6)
+        y_positions = [4.8, 3.8, 2.8]
+        x_positions = [x_offset + 2.5, x_offset + 3.4]
+        
+        coords = [(x, y) for x in x_positions for y in y_positions]
+        
+        for i in range(num_ions):
+            if i < len(coords):
+                x, y = coords[i]
+                ax.add_patch(Circle((x, y), 0.25, color=self.sys["color"], alpha=0.9))
+                ax.text(x, y, self.sys["cation"], fontsize=8, ha="center", va="center", fontweight="bold")
+                
+                # Neat, non-overlapping horizontal arrow
+                ax.arrow(x + 0.3, y, 0.3, 0, head_width=0.12, head_length=0.15, fc="#1B5E20", ec="#1B5E20")
 
     def generate(self, num):
 
@@ -1752,9 +1765,15 @@ class Chem112:
         self._draw_beaker(ax, 0, "Before Electrolysis", 1.0)
         self._draw_beaker(ax, 7, "After Electrolysis", 0.3)
 
-        ax.text(7, 9.5, f"Initial concentration = {self.conc} mol dm⁻³", ha="center", fontsize=11)
+        # Neat parameter box so all required variables are easily readable
+        box = Rectangle((3.5, 0), 7.0, 1.5, fill=True, facecolor="#F8F9F9", edgecolor="black", linewidth=1.5)
+        ax.add_patch(box)
+        
+        ax.text(7, 1.1, "Experiment Parameters", ha="center", fontsize=11, fontweight="bold")
+        ax.text(7, 0.7, f"Current = {self.current} A    |    Time = {self.time_min} min", ha="center", fontsize=11)
+        ax.text(7, 0.3, f"Volume = {self.volume_dm3} dm³  |  Init. Conc = {self.conc} mol dm⁻³", ha="center", fontsize=11)
 
-        ax.set_title("Electrolysis with Limiting Ion in Solution", fontsize=16, fontweight="bold")
+        ax.set_title("Electrolysis", fontsize=16, fontweight="bold", y=0.95)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -1780,10 +1799,10 @@ class Chem113:
             self.answer = round(self.volume_H2, 2)
 
         self.description = (
-            "The Hoffman voltameter shows electrolysis of water.\n\n"
+            "The Hoffman voltameter diagram shows the electrolysis of water.\n\n"
             "2H2O → 2H2 + O2\n\n"
-            f"Volume of {self.given_gas} collected = {self.given_volume} cm³\n\n"
-            "Calculate the volume of the other gas produced."
+            "Using the volume of the known gas collected in the diagram, "
+            "calculate the exact volume of the other gas produced!"
         )
 
         self.topic = "Electrochemistry"
@@ -1796,13 +1815,21 @@ class Chem113:
         else:
             calc_ratio = self.ratio_H2 / self.ratio_O2
 
+        # Identify the unknown gas and format for LaTeX
+        unknown_gas = "O2" if self.given_gas == "H2" else "H2"
+        latex_given = self.given_gas.replace("2", "_2")
+        latex_unknown = unknown_gas.replace("2", "_2")
+
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Equation gives volume ratio H2:O2 = 2:1}}\\\\"
-            f"\\text{{Volume ratio used}} &= {round(calc_ratio,10)}\\\\"
-            f"V_{{unknown}} &= V_{{given}} \\times \\text{{ratio}}\\\\"
-            f"&= {round(self.given_volume,10)} \\times {round(calc_ratio,10)}\\\\"
-            f"&= {self.answer}\\,\\text{{cm}}^3"
+            "&\\text{Step 1: Read the volume of the known gas from the voltameter diagram.}\\\\"
+            f"&\\quad \\text{{Volume of }} \\mathrm{{{latex_given}}} = {self.given_volume} \\text{{ cm}}^3\\\\"
+            "&\\text{Step 2: Identify the stoichiometric ratio from the balanced equation.}\\\\"
+            "&\\quad \\mathrm{2H_2O \\rightarrow 2H_2 + O_2}\\\\"
+            "&\\quad \\text{Ratio of } \\mathrm{H_2 : O_2} = 2 : 1\\\\"
+            "&\\text{Step 3: Calculate the volume of the unknown gas using the ratio.}\\\\"
+            f"&\\quad V(\\mathrm{{{latex_unknown}}}) = {self.given_volume} \\times {round(calc_ratio, 4)} = {self.answer} \\text{{ cm}}^3\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1839,13 +1866,16 @@ class Chem113:
         for y in np.linspace(6, 14, 9):
             ax.plot([1.9, 2], [y, y], color="black", linewidth=1)
             ax.plot([8, 8.1], [y, y], color="black", linewidth=1)
+            
+        if self.given_gas == "H2":
+            h2_label = f"{self.volume_H2} cm³"
+            o2_label = "? cm³"
+        else:
+            h2_label = "? cm³"
+            o2_label = f"{self.volume_O2} cm³"
 
-        ax.text(2.5, 5.2, f"{round(self.volume_H2,1)} cm³", ha="center", fontsize=11)
-        ax.text(7.5, 5.2, f"{round(self.volume_O2,1)} cm³", ha="center", fontsize=11)
-
-        ax.text(5, 1.2, "Electrolysis of Water (Hoffman Voltameter)", ha="center", fontsize=13, fontweight="bold")
-
-        ax.text(5, 0.5, "Expected ratio H₂ : O₂ = 2 : 1", ha="center", fontsize=11)
+        ax.text(2.5, 5.2, h2_label, ha="center", fontsize=12, fontweight="bold", color="#2E86C1" if self.given_gas == "H2" else "#E74C3C")
+        ax.text(7.5, 5.2, o2_label, ha="center", fontsize=12, fontweight="bold", color="#2E86C1" if self.given_gas == "O2" else "#E74C3C")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -1883,11 +1913,8 @@ class Chem114:
 
         self.description = (
             "The diagram shows an electroplating setup.\n\n"
-            f"Metal being plated = {self.metal['metal']}\n"
-            f"Current = {self.current} A\n"
-            f"Time = {self.time_min} minutes\n"
-            f"Surface area plated = {self.area_cm2} cm²\n\n"
-            "Calculate the coating thickness in micrometres (µm). (Round to 2 decimal places)"
+            "Using the parameters provided in the image (current, time, surface area, and metal type), "
+            "calculate the coating thickness in micrometres (\u00b5m) (round to 2 decimal places)!"
         )
 
         self.topic = "Electrochemistry"
@@ -1897,13 +1924,22 @@ class Chem114:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"Q &= It = {round(self.current,10)} \\times {round(self.time_s,10)} = {round(self.charge,10)}\\\\"
-            f"n(e^-) &= \\frac{{Q}}{{F}} = \\frac{{{round(self.charge,10)}}}{{{self.F}}} = {round(self.moles_e,10)}\\\\"
-            f"n(\\text{{metal}}) &= \\frac{{n(e^-)}}{{{self.metal['electron_ratio']}}} = {round(self.moles_metal,10)}\\\\"
-            f"m &= nA_r = {round(self.moles_metal,10)} \\times {self.metal['Ar']} = {round(self.mass,10)}\\\\"
-            f"V &= \\frac{{m}}{{\\rho}} = \\frac{{{round(self.mass,10)}}}{{{self.metal['density']}}} = {round(self.volume_cm3,10)}\\\\"
-            f"t &= \\frac{{V}}{{A}} = \\frac{{{round(self.volume_cm3,10)}}}{{{self.area_cm2}}} = {round(self.thickness_cm,10)}\\\\"
-            f"t &= {self.answer}\\,\\mu m"
+            "&\\text{Step 1: Extract the parameters from the diagram.}\\\\"
+            f"&\\quad \\text{{Current }} (I) = {self.current} \\text{{ A}}, \\text{{ Time }} (t) = {self.time_min} \\text{{ min}}\\\\"
+            f"&\\quad \\text{{Area }} (A) = {self.area_cm2} \\text{{ cm}}^2, \\text{{ Metal: }} \\mathrm{{{self.metal['metal']}}}\\\\"
+            "&\\text{Step 2: Calculate total charge } (Q) \\text{ in Coulombs.}\\\\"
+            f"&\\quad t = {self.time_min} \\times 60 = {self.time_s} \\text{{ s}}\\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_s} = {self.charge} \\text{{ C}}\\\\"
+            "&\\text{Step 3: Calculate moles of electrons and moles of metal.}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{self.charge}}}{{{self.F}}} = {round(self.moles_e, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad n(\\mathrm{{{self.metal['metal']}}}) = \\frac{{n(\\mathrm{{e^-}})}}{{{self.metal['electron_ratio']}}} = {round(self.moles_metal, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate mass and volume of the deposited metal.}\\\\"
+            f"&\\quad m = n \\times A_r = {round(self.moles_metal, 4)} \\times {self.metal['Ar']} = {round(self.mass, 4)} \\text{{ g}}\\\\"
+            f"&\\quad V = \\frac{{m}}{{\\rho}} = \\frac{{{round(self.mass, 4)}}}{{{self.metal['density']}}} = {round(self.volume_cm3, 4)} \\text{{ cm}}^3\\\\"
+            "&\\text{Step 5: Calculate thickness in cm, then convert to } \\mu\\text{m.}\\\\"
+            f"&\\quad \\text{{Thickness (cm)}} = \\frac{{V}}{{A}} = \\frac{{{round(self.volume_cm3, 4)}}}{{{self.area_cm2}}} = {round(self.thickness_cm, 6)} \\text{{ cm}}\\\\"
+            f"&\\quad \\text{{Thickness (}}\\mu\\text{{m)}} = {round(self.thickness_cm, 6)} \\times 10000 = {self.answer} \\, \\mu\\text{{m}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -1942,6 +1978,21 @@ class Chem114:
         ax.text(10, 7.6, "Metal ions move", ha="center", fontsize=10)
 
         ax.set_title("Electroplating Setup", fontsize=16, fontweight="bold")
+
+        # --- Visual Aids: Instruments and Labels (Insert before ax.set_title) ---
+        psu = Rectangle((1, 11.5), 3.5, 2, fill=True, facecolor="#F2F3F4", edgecolor="black", linewidth=2)
+        ax.add_patch(psu)
+        ax.text(2.75, 12.8, "Power Supply", ha="center", va="center", fontsize=10, fontweight="bold")
+        ax.text(2.75, 12.0, f"{self.current} A", ha="center", va="center", fontsize=12, fontweight="bold", color="#B03A2E")
+
+        timer = Rectangle((15, 11.5), 4, 2, fill=True, facecolor="black", edgecolor="gray", linewidth=2)
+        ax.add_patch(timer)
+        time_str = f"{self.time_min:02d}:00"
+        ax.text(17, 12.8, time_str, ha="center", va="center", fontsize=16, fontweight="bold", color="lime", fontfamily="monospace")
+        ax.text(17, 12.0, "MIN : SEC", ha="center", va="center", fontsize=8, color="white")
+
+        ax.text(13, 4.3, f"Surface Area\n= {self.area_cm2} cm²", ha="center", va="top", fontsize=11, fontweight="bold", color="#1F618D")
+        # ------------------------------------------------------------------------
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -1985,12 +2036,9 @@ class Chem115:
         self.answer = round(self.mass_deposited, 2)
 
         self.description = (
-            "The diagram shows purification of an impure metal using electrolysis.\n\n"
-            f"Ore mass = {self.ore_mass} g\n"
-            f"Purity = {self.purity_percent}%\n"
-            f"Current = {self.current} A\n"
-            f"Time = {self.time_min} minutes\n\n"
-            "Calculate the mass of pure metal deposited. (Round to 2 decimal places)"
+            "The diagram shows the purification of an impure metal using electrolysis.\n\n"
+            "Using the parameters provided in the image (current, time, ore mass, metal type, and ore purity), "
+            "calculate the mass of pure metal deposited at the cathode!\n"
         )
 
         self.topic = "Electrochemistry"
@@ -2000,13 +2048,23 @@ class Chem115:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"m_{{pure}} &= \\frac{{{self.purity_percent}}}{{100}} \\times {self.ore_mass} = {round(self.pure_metal_mass_available,10)}\\\\"
-            f"n_{{metal,available}} &= \\frac{{m}}{{A_r}} = \\frac{{{round(self.pure_metal_mass_available,10)}}}{{{self.metal['Ar']}}} = {round(self.moles_metal_available,10)}\\\\"
-            f"Q &= It = {round(self.current,10)} \\times {round(self.time_s,10)} = {round(self.charge,10)}\\\\"
-            f"n(e^-) &= \\frac{{Q}}{{F}} = \\frac{{{round(self.charge,10)}}}{{{self.F}}} = {round(self.moles_e,10)}\\\\"
-            f"n_{{metal,charge}} &= \\frac{{n(e^-)}}{{{self.metal['electron_ratio']}}} = {round(self.moles_metal_possible_from_charge,10)}\\\\"
-            f"n_{{actual}} &= \\min({round(self.moles_metal_available,10)}, {round(self.moles_metal_possible_from_charge,10)}) = {round(self.actual_moles_deposited,10)}\\\\"
-            f"m_{{deposited}} &= n \\times A_r = {round(self.actual_moles_deposited,10)} \\times {self.metal['Ar']} = {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Extract the parameters from the diagram.}\\\\"
+            f"&\\quad \\text{{Ore mass}} = {self.ore_mass} \\text{{ g}}, \\text{{ Purity}} = {self.purity_percent} \\%\\\\"
+            f"&\\quad \\text{{Current }} (I) = {self.current} \\text{{ A}}, \\text{{ Time }} (t) = {self.time_min} \\text{{ min}}\\\\"
+            f"&\\quad \\text{{Metal: }} \\mathrm{{{self.metal['metal']}}}\\\\"
+            "&\\text{Step 2: Calculate the available moles of pure metal in the anode.}\\\\"
+            f"&\\quad \\text{{Mass of pure metal}} = {self.ore_mass} \\times \\frac{{{self.purity_percent}}}{{100}} = {round(self.pure_metal_mass_available, 4)} \\text{{ g}}\\\\"
+            f"&\\quad n(\\mathrm{{{self.metal['metal']}}})_{{\\text{{available}}}} = \\frac{{{round(self.pure_metal_mass_available, 4)}}}{{{self.metal['Ar']}}} = {round(self.moles_metal_available, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Calculate the moles of electrons supplied by the current.}\\\\"
+            f"&\\quad t = {self.time_min} \\times 60 = {self.time_s} \\text{{ s}}\\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_s} = {self.charge} \\text{{ C}}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{self.charge}}}{{96500}} = {round(self.moles_e, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the theoretical moles of metal that the charge can deposit.}\\\\"
+            f"&\\quad n(\\mathrm{{{self.metal['metal']}}})_{{\\text{{charge}}}} = \\frac{{n(\\mathrm{{e^-}})}}{{{self.metal['electron_ratio']}}} = {round(self.moles_metal_possible_from_charge, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Determine the limiting factor and calculate final mass.}\\\\"
+            f"&\\quad \\text{{Actual moles}} = \\min({round(self.moles_metal_available, 4)}, {round(self.moles_metal_possible_from_charge, 4)}) = {round(self.actual_moles_deposited, 4)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Mass deposited}} = {round(self.actual_moles_deposited, 4)} \\times {self.metal['Ar']} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -2047,7 +2105,25 @@ class Chem115:
         ax.add_patch(arrow)
         ax.text(11.3, 7.6, f"{self.metal['metal']} ions", ha="center", fontsize=10)
 
-        ax.set_title("Impure Ore → Extraction → Electrolysis Purification", fontsize=16, fontweight="bold")
+        # --- Visual Aids: Instruments and Labels (Insert before ax.set_title) ---
+        
+        # Anode specs (underneath the anode)
+        ax.text(9.4, 2.3, f"{self.ore_mass} g Ore", ha="center", fontsize=11, fontweight="bold")
+        ax.text(9.4, 1.7, f"{self.purity_percent}% Pure {self.metal['metal']}", ha="center", fontsize=11, fontweight="bold", color="#B03A2E")
+
+        # Power Supply
+        psu = Rectangle((3, 11), 3.5, 2, fill=True, facecolor="#F2F3F4", edgecolor="black", linewidth=2)
+        ax.add_patch(psu)
+        ax.text(4.75, 12.3, "Power Supply", ha="center", va="center", fontsize=10, fontweight="bold")
+        ax.text(4.75, 11.5, f"{self.current} A", ha="center", va="center", fontsize=12, fontweight="bold", color="#B03A2E")
+
+        # Stopwatch
+        timer = Rectangle((15, 11), 4, 2, fill=True, facecolor="black", edgecolor="gray", linewidth=2)
+        ax.add_patch(timer)
+        time_str = f"{self.time_min:02d}:00"
+        ax.text(17, 12.3, time_str, ha="center", va="center", fontsize=16, fontweight="bold", color="lime", fontfamily="monospace")
+        ax.text(17, 11.5, "MIN : SEC", ha="center", va="center", fontsize=8, color="white")
+        # ------------------------------------------------------------------------
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -2061,32 +2137,23 @@ class Chem116:
 
     def __init__(self):
 
-        variations = [
-            (1.5, 20),
-            (1.8, 25),
-            (2.0, 30),
-            (2.2, 18),
-            (2.5, 15),
-            (1.6, 35),
-            (2.8, 12),
-            (3.0, 10),
-            (2.4, 22),
-            (1.9, 28),
-        ]
+        self.F = 96500
+        self.Ar_Cu = 63.5
 
-        self.current, self.time_minutes = rnd.choice(variations)
+        self.current = round(rnd.uniform(1.0, 4.0), 1)
+        self.time_minutes = rnd.randint(10, 45)
 
         self.time_seconds = self.time_minutes * 60
         self.charge = self.current * self.time_seconds
-        self.moles_electrons = self.charge / FARADAY
+        self.moles_electrons = self.charge / self.F
         self.moles_copper = self.moles_electrons / 2
-        self.mass_copper = self.moles_copper * MOLAR_MASS_CU
+        self.mass_copper = self.moles_copper * self.Ar_Cu
 
         self.answer = round(self.mass_copper, 3)
 
         self.description = (
-            "The diagram shows electrolysis of copper(II) sulfate solution.\n"
-            "Use the information in the diagram to calculate\n"
+            "The diagram shows electrolysis of copper(II) sulfate solution. "
+            "Use the information in the diagram to calculate "
             "the mass of copper produced."
         )
 
@@ -2096,14 +2163,23 @@ class Chem116:
         self.curriculum = "GCSE"
 
         self.reasoning = (
-            r"\[\begin{aligned}"
-            f"\n\\text{{Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
-            f"\n\\text{{Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
-            f"\n\\text{{n(e}}^-\t{{)}} &= {self.charge}/96500 = {self.moles_electrons:.5f} \\\\"
-            f"\n\\text{{n(Cu)}} &= {self.moles_electrons:.5f}/2 = {self.moles_copper:.5f} \\\\"
-            f"\n\\text{{Mass}} &= {self.answer} \\text{{ g}}"
-            r"\n\end{aligned}\]"
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Extract the parameters from the diagram.}\\\\"
+            f"&\\quad \\text{{Current }} (I) = {self.current} \\text{{ A}}, \\text{{ Time }} (t) = {self.time_minutes} \\text{{ min}}\\\\"
+            "&\\text{Step 2: Convert time to seconds and calculate total charge } (Q).\\\\"
+            f"&\\quad t = {self.time_minutes} \\times 60 = {self.time_seconds} \\text{{ s}}\\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_seconds} = {round(self.charge, 4)} \\text{{ C}}\\\\"
+            "&\\text{Step 3: Calculate moles of electrons.}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{round(self.charge, 4)}}}{{{self.F}}} = {self.moles_electrons:.5f} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Use the half-equation to find moles of copper.}\\\\"
+            "&\\quad \\mathrm{Cu^{2+} + 2e^- \\rightarrow Cu} \\implies \\text{2 moles of } \\mathrm{e^-} \\text{ per mole of Cu}\\\\"
+            f"&\\quad n(\\mathrm{{Cu}}) = \\frac{{n(\\mathrm{{e^-}})}}{{2}} = \\frac{{{self.moles_electrons:.5f}}}{{2}} = {self.moles_copper:.5f} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Calculate the final mass of copper.}\\\\"
+            f"&\\quad \\text{{Mass}} = n \\times A_r = {self.moles_copper:.5f} \\times {self.Ar_Cu} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "\\end{aligned}\\]"
         )
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(12, 7))
         ax.set_xlim(0, 12)
@@ -2171,34 +2247,27 @@ class Chem117:
 
     def __init__(self):
 
-        variations = [
-            (0.40, 0.50, 2.0, 15),
-            (0.30, 0.60, 2.5, 20),
-            (0.50, 0.40, 1.8, 25),
-            (0.35, 0.55, 2.2, 18),
-            (0.45, 0.45, 3.0, 12),
-            (0.25, 0.70, 2.4, 22),
-            (0.60, 0.30, 1.5, 30),
-            (0.38, 0.52, 2.6, 16),
-            (0.42, 0.48, 2.1, 14),
-            (0.33, 0.65, 2.8, 19),
-        ]
+        self.F = 96500
+        self.Ar_Ag = 108
 
-        self.concentration, self.volume_dm3, self.current, self.time_minutes = rnd.choice(variations)
+        self.concentration = round(rnd.uniform(0.2, 0.8), 2)
+        self.volume_dm3 = round(rnd.uniform(0.3, 0.8), 2)
+        self.current = round(rnd.uniform(1.5, 3.5), 1)
+        self.time_minutes = rnd.randint(12, 35)
 
         self.moles_ag_available = self.concentration * self.volume_dm3
         self.time_seconds = self.time_minutes * 60
         self.charge = self.current * self.time_seconds
-        self.moles_electrons = self.charge / FARADAY
+        self.moles_electrons = self.charge / self.F
         self.moles_ag_deposited = min(self.moles_ag_available, self.moles_electrons)
-        self.mass_silver = self.moles_ag_deposited * MOLAR_MASS_AG
+        self.mass_silver = self.moles_ag_deposited * self.Ar_Ag
 
         self.answer = round(self.mass_silver, 3)
 
         self.description = (
-            "The diagram shows electrolysis of silver nitrate solution.\n"
-            "Use the information shown to calculate\n"
-            "the mass of silver deposited."
+            "The diagram shows an electrolysis setup for silver nitrate solution. "
+            "Using the parameters provided in the image, "
+            "calculate the mass of silver deposited at the cathode!"
         )
 
         self.topic = "Electrochemistry"
@@ -2207,15 +2276,24 @@ class Chem117:
         self.curriculum = "GCSE Higher Tier"
 
         self.reasoning = (
-            r"\[\begin{aligned}"
-            f"\n\\text{{1. Moles of Ag}}^+ &= c \\times V = {self.concentration} \\times {self.volume_dm3} = {round(self.moles_ag_available, 10)} \\\\"
-            f"\n\\text{{2. Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
-            f"\n\\text{{3. Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
-            f"\n\\text{{4. n(e}}^-) &= {self.charge}/96500 = {round(self.moles_electrons, 10)} \\\\"
-            f"\n\\text{{5. n(Ag from charge)}} &= {round(self.moles_electrons, 10)} \\\\"
-            f"\n\\text{{6. Limiting n(Ag)}} &= \\min({round(self.moles_ag_available, 10)}, {round(self.moles_electrons, 10)}) = {round(self.moles_ag_deposited, 10)} \\\\"
-            f"\n\\text{{7. Mass}} &= {round(self.moles_ag_deposited, 10)} \\times 108 = {self.answer} \\text{{ g}}"
-            r"\n\end{aligned}\]"
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Read the parameters from the diagram.}\\\\"
+            f"&\\quad \\text{{Concentration }} = {self.concentration} \\text{{ mol dm}}^{{-3}}, \\text{{ Volume }} = {self.volume_dm3} \\text{{ dm}}^3\\\\"
+            f"&\\quad \\text{{Current }} (I) = {self.current} \\text{{ A}}, \\text{{ Time }} = {self.time_minutes} \\text{{ min}}\\\\"
+            "&\\text{Step 2: Calculate the available moles of } \\mathrm{Ag^+} \\text{ in solution.}\\\\"
+            f"&\\quad n(\\mathrm{{Ag^+}})_{{\\text{{available}}}} = c \\times V = {self.concentration} \\times {self.volume_dm3} = {round(self.moles_ag_available, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Calculate the charge and moles of electrons supplied.}\\\\"
+            f"&\\quad t = {self.time_minutes} \\times 60 = {self.time_seconds} \\text{{ s}}\\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_seconds} = {round(self.charge, 4)} \\text{{ C}}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{round(self.charge, 4)}}}{{96500}} = {round(self.moles_electrons, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Determine the theoretical moles of silver based on charge.}\\\\"
+            "&\\quad \\mathrm{Ag^+ + e^- \\rightarrow Ag} \\implies \\text{1 mole of } \\mathrm{e^-} \\text{ deposits 1 mole of Ag}\\\\"
+            f"&\\quad n(\\mathrm{{Ag}})_{{\\text{{charge}}}} = {round(self.moles_electrons, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Identify the limiting factor and calculate the final mass.}\\\\"
+            f"&\\quad \\text{{Actual moles}} = \\min({round(self.moles_ag_available, 4)}, {round(self.moles_electrons, 5)}) = {round(self.moles_ag_deposited, 5)} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Mass}} = n \\times A_r = {round(self.moles_ag_deposited, 5)} \\times {self.Ar_Ag} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "\\end{aligned}\\]"
         )
 
     def generate(self, num):
@@ -2253,12 +2331,6 @@ class Chem117:
                                            color="silver")
         ax.add_patch(silver_deposit)
 
-        ax.arrow(4.4, 6, 3.2, 0,
-                 head_width=0.15,
-                 head_length=0.3,
-                 linewidth=2,
-                 color='black')
-
         ax.text(6, 6.2,
                 f"I = {self.current} A",
                 ha='center',
@@ -2269,7 +2341,7 @@ class Chem117:
                 ha='center',
                 fontsize=13)
 
-        ax.text(2.1, 3.5,
+        ax.text(6, 2.2,
                 f"{self.concentration} mol dm⁻³",
                 fontsize=12)
 
@@ -2296,27 +2368,20 @@ class Chem118:
 
     def __init__(self):
 
-        variations = [
-            (1.5, 20, 18),
-            (2.0, 25, 22),
-            (2.5, 30, 20),
-            (3.0, 15, 24),
-            (1.8, 35, 19),
-            (2.2, 40, 23),
-            (1.6, 28, 21),
-            (2.8, 32, 26),
-            (3.2, 18, 17),
-            (2.4, 45, 25),
-        ]
+        self.F = 96500
+        self.Ar_Ni = 58.7
+        self.density = 8.9
 
-        self.current, self.time_minutes, self.area_cm2 = rnd.choice(variations)
-        self.density = DENSITY_NI
+        self.current = round(rnd.uniform(1.5, 3.4), 1)
+        self.time_minutes = rnd.randint(15, 45)
+        self.area_cm2 = rnd.randint(15, 30)
 
         self.time_seconds = self.time_minutes * 60
         self.charge = self.current * self.time_seconds
-        self.moles_e = self.charge / FARADAY
+        self.moles_e = self.charge / self.F
         self.moles_ni = self.moles_e / 2
-        self.mass_ni = self.moles_ni * MOLAR_MASS_NI
+        self.mass_ni = self.moles_ni * self.Ar_Ni
+        
         self.volume_cm3 = self.mass_ni / self.density
         self.thickness_cm = self.volume_cm3 / self.area_cm2
         self.thickness_mm = self.thickness_cm * 10
@@ -2324,9 +2389,10 @@ class Chem118:
         self.answer = round(self.thickness_mm, 4)
 
         self.description = (
-            "The diagram shows nickel electroplating.\n"
-            "Use the information shown to calculate\n"
-            "the thickness of nickel deposited."
+            "The diagram shows a nickel electroplating setup. "
+            "Using the parameters provided in the image, "
+            "calculate the thickness of the nickel deposited in millimetres (mm).\n"
+            "(Round to 4 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -2335,17 +2401,26 @@ class Chem118:
         self.curriculum = "GCSE Grade 8–9"
 
         self.reasoning = (
-            r"\[\begin{aligned}"
-            f"\n\\text{{1. Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
-            f"\n\\text{{2. Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
-            f"\n\\text{{3. n(e}}^-) &= {self.charge}/96500 = {round(self.moles_e, 10)} \\\\"
-            f"\n\\text{{4. n(Ni)}} &= {round(self.moles_e, 10)}/2 = {round(self.moles_ni, 10)} \\\\"
-            f"\n\\text{{5. Mass}} &= {round(self.moles_ni, 10)} \\times 58.7 = {round(self.mass_ni, 10)} \\\\"
-            f"\n\\text{{6. Volume}} &= {round(self.mass_ni, 10)}/8.9 = {round(self.volume_cm3, 10)} \\\\"
-            f"\n\\text{{7. Thickness (cm)}} &= {round(self.volume_cm3, 10)}/{self.area_cm2} = {round(self.thickness_cm, 10)} \\\\"
-            f"\n\\text{{8. Thickness (mm)}} &= {round(self.thickness_cm, 10)} \\times 10 = {self.answer} \\text{{ mm}}"
-            r"\n\end{aligned}\]"
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Read the parameters from the diagram.}\\\\"
+            f"&\\quad I = {self.current} \\text{{ A}}, \\; t = {self.time_minutes} \\text{{ min}}, \\; A = {self.area_cm2} \\text{{ cm}}^2, \\; \\rho = {self.density} \\text{{ g/cm}}^3\\\\"
+            "&\\text{Step 2: Convert time to seconds and calculate total charge } (Q).\\\\"
+            f"&\\quad t = {self.time_minutes} \\times 60 = {self.time_seconds} \\text{{ s}}\\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_seconds} = {round(self.charge, 4)} \\text{{ C}}\\\\"
+            "&\\text{Step 3: Calculate moles of electrons.}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{round(self.charge, 4)}}}{{{self.F}}} = {round(self.moles_e, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Find moles and mass of nickel deposited.}\\\\"
+            "&\\quad \\mathrm{Ni^{2+} + 2e^- \\rightarrow Ni} \\implies \\text{2 moles of } \\mathrm{e^-} \\text{ deposit 1 mole of Ni}\\\\"
+            f"&\\quad n(\\mathrm{{Ni}}) = \\frac{{{round(self.moles_e, 5)}}}{{2}} = {round(self.moles_ni, 5)} \\text{{ mol}}\\\\"
+            f"&\\quad m(\\mathrm{{Ni}}) = n \\times A_r = {round(self.moles_ni, 5)} \\times {self.Ar_Ni} = {round(self.mass_ni, 4)} \\text{{ g}}\\\\"
+            "&\\text{Step 5: Calculate volume and thickness.}\\\\"
+            f"&\\quad V = \\frac{{m}}{{\\rho}} = \\frac{{{round(self.mass_ni, 4)}}}{{{self.density}}} = {round(self.volume_cm3, 5)} \\text{{ cm}}^3\\\\"
+            f"&\\quad \\text{{Thickness (cm)}} = \\frac{{V}}{{A}} = \\frac{{{round(self.volume_cm3, 5)}}}{{{self.area_cm2}}} = {round(self.thickness_cm, 5)} \\text{{ cm}}\\\\"
+            f"&\\quad \\text{{Thickness (mm)}} = {round(self.thickness_cm, 5)} \\times 10 = {self.answer} \\text{{ mm}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "\\end{aligned}\\]"
         )
+
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(12, 7))
         ax.set_xlim(0, 12)
@@ -2388,12 +2463,6 @@ class Chem118:
                 f"Density Ni = {self.density} g/cm³",
                 fontsize=12)
 
-        ax.arrow(4.5, 6, 3, 0,
-                 head_width=0.15,
-                 head_length=0.3,
-                 linewidth=2,
-                 color='black')
-
         ax.text(6, 6.2,
                 f"I = {self.current} A",
                 ha='center',
@@ -2422,21 +2491,13 @@ class Chem119:
 
     def __init__(self):
 
-        variations = [
-            (1.5, 20, 20),
-            (2.0, 25, 30),
-            (2.5, 30, 20),
-            (3.0, 15, 25),
-            (1.8, 35, 30),
-            (2.2, 40, 18),
-            (1.6, 28, 22),
-            (2.8, 32, 24),
-            (3.2, 18, 26),
-            (2.4, 45, 20),
-        ]
+        self.F = 96500
+        self.Ar_Ni = 58.7
+        self.density = 8.9
 
-        self.current, self.time_minutes, self.area_cm2 = rnd.choice(variations)
-        self.density = DENSITY_NI
+        self.current = round(rnd.uniform(1.5, 3.5), 1)
+        self.time_minutes = rnd.randint(15, 45)
+        self.area_cm2 = rnd.randint(15, 30)
 
         self.time_seconds = self.time_minutes * 60
         self.charge = self.current * self.time_seconds
@@ -2450,9 +2511,10 @@ class Chem119:
         self.answer = round(self.thickness_mm, 4)
 
         self.description = (
-            "The diagram shows a nickel electroplating setup.\n"
-            "Use the information shown to calculate\n"
-            "the thickness of nickel deposited."
+            "The diagram shows a nickel electroplating setup.\n\n"
+            "Using the parameters provided in the image (current, time, area, and density), "
+            "calculate the thickness of nickel deposited in millimetres (mm).\n"
+            "(Round to 4 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -2461,16 +2523,22 @@ class Chem119:
         self.curriculum = "GCSE Grade 8–9"
 
         self.reasoning = (
-            r"\[\begin{aligned}"
-            f"\n\\text{{1. Time}} &= {self.time_minutes} \\times 60 = {self.time_seconds} \\\\"
-            f"\n\\text{{2. Q}} &= {self.current} \\times {self.time_seconds} = {self.charge} \\\\"
-            f"\n\\text{{3. n(e}}^-) &= {self.charge}/96500 = {round(self.moles_e, 10)} \\\\"
-            f"\n\\text{{4. n(Ni)}} &= {round(self.moles_e, 10)}/2 = {round(self.moles_ni, 10)} \\\\"
-            f"\n\\text{{5. Mass}} &= {round(self.moles_ni, 10)} \\times 58.7 = {round(self.mass_ni, 10)} \\\\"
-            f"\n\\text{{6. Volume}} &= {round(self.mass_ni, 10)}/8.9 = {round(self.volume_cm3, 10)} \\\\"
-            f"\n\\text{{7. Thickness (cm)}} &= {round(self.volume_cm3, 10)}/{self.area_cm2} = {round(self.thickness_cm, 10)} \\\\"
-            f"\n\\text{{8. Thickness (mm)}} &= {round(self.thickness_cm, 10)} \\times 10 = {self.answer} \\text{{ mm}}"
-            r"\n\end{aligned}\]"
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Extract parameters from the diagram.}\\\\"
+            f"&\\quad I = {self.current} \\text{{ A}}, \\; t = {self.time_minutes} \\text{{ min}}, \\; A = {self.area_cm2} \\text{{ cm}}^2, \\; \\rho = {self.density} \\text{{ g/cm}}^3\\\\"
+            "&\\text{Step 2: Calculate total charge } (Q). \\\\"
+            f"&\\quad t = {self.time_minutes} \\times 60 = {self.time_seconds} \\text{{ s}} \\\\"
+            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_seconds} = {round(self.charge, 4)} \\text{{ C}} \\\\"
+            "&\\text{Step 3: Calculate moles of electrons and moles of Ni.}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{round(self.charge, 4)}}}{{96500}} = {round(self.moles_e, 5)} \\text{{ mol}} \\\\"
+            f"&\\quad n(\\mathrm{{Ni}}) = \\frac{{n(\\mathrm{{e^-}})}}{{2}} = {round(self.moles_ni, 5)} \\text{{ mol}} \\\\"
+            "&\\text{Step 4: Calculate mass, volume, and thickness.}\\\\"
+            f"&\\quad m = n \\times A_r = {round(self.moles_ni, 5)} \\times {self.Ar_Ni} = {round(self.mass_ni, 4)} \\text{{ g}} \\\\"
+            f"&\\quad V = \\frac{{m}}{{\\rho}} = \\frac{{{round(self.mass_ni, 4)}}}{{{self.density}}} = {round(self.volume_cm3, 5)} \\text{{ cm}}^3 \\\\"
+            f"&\\quad \\text{{Thickness (cm)}} = \\frac{{V}}{{A}} = \\frac{{{round(self.volume_cm3, 5)}}}{{{self.area_cm2}}} = {round(self.thickness_cm, 5)} \\text{{ cm}} \\\\"
+            f"&\\quad \\text{{Thickness (mm)}} = {round(self.thickness_cm, 5)} \\times 10 = {self.answer} \\text{{ mm}} \\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "\\end{aligned}\\]"
         )
 
     def generate(self, num):
@@ -2524,10 +2592,13 @@ class Chem119:
         ax.plot([4.35, 5.5], [5.3, 6], linewidth=2, color='black')
         ax.plot([7.75, 6.5], [5.3, 6], linewidth=2, color='black')
 
-        ax.text(6, 5.4,
+        # Moved to the upper right to avoid overlapping the wires/ammeter
+        ax.text(10, 5.8,
                 f"Time = {self.time_minutes} min",
                 ha='center',
-                fontsize=12)
+                fontsize=12,
+                fontweight='bold',
+                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="gray"))
 
         ax.text(9.3, 1.2,
                 f"Density = {self.density} g/cm³",
@@ -2552,27 +2623,15 @@ class Chem120:
 
     def __init__(self):
 
-        variations = [
-            (80, 65),
-            (80, 75),
-            (100, 70),
-            (100, 80),
-            (120, 75),
-            (120, 85),
-            (150, 70),
-            (150, 90),
-            (200, 80),
-            (200, 85),
-        ]
-
-        self.ore_mass, self.purity_percent = rnd.choice(variations)
+        self.ore_mass = rnd.randint(50, 250)
+        self.purity_percent = rnd.randint(60, 98)
 
         self.pure_cu_mass = self.ore_mass * (self.purity_percent / 100)
         self.answer = round(self.pure_cu_mass, 2)
 
         self.description = (
-            "The diagram shows copper extraction by electrolysis.\n"
-            "Use the information shown to calculate\n"
+            f"The diagram shows copper ({self.ore_mass} g) extraction by electrolysis. "
+            "Use the information shown to calculate "
             "the maximum mass of pure copper obtained."
         )
 
@@ -2582,14 +2641,15 @@ class Chem120:
         self.curriculum = "GCSE Higher Tier"
 
         self.reasoning = (
-            r"\[\begin{aligned}"
-            f"\n\\text{{1. Percentage purity formula}} & \\\\"
-            f"\\text{{Pure mass}} &= \\text{{Ore mass}} \\times \\frac{{\\text{{Purity}}}}{{100}} \\\\"
-            f"\n\\text{{2. Substitute values}} & \\\\"
-            f"m_{{\\text{{Cu}}}} &= {self.ore_mass} \\times \\frac{{{self.purity_percent}}}{{100}} \\\\"
-            f"&= {self.ore_mass} \\times {round(self.purity_percent/100, 10)} \\\\"
-            f"&= {self.answer} \\text{{ g}}"
-            r"\n\end{aligned}\]"
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Extract the parameters from the diagram.}\\\\"
+            f"&\\quad \\text{{Ore mass}} = {self.ore_mass} \\text{{ g}}, \\; \\text{{Purity}} = {self.purity_percent} \\%\\\\"
+            "&\\text{Step 2: Apply the percentage purity formula.}\\\\"
+            "&\\quad \\text{Pure mass} = \\text{Ore mass} \\times \\frac{\\text{Purity}}{100}\\\\"
+            f"&\\quad m(\\mathrm{{Cu}}) = {self.ore_mass} \\times \\frac{{{self.purity_percent}}}{{100}}\\\\"
+            f"&\\quad m(\\mathrm{{Cu}}) = {self.ore_mass} \\times {round(self.purity_percent / 100, 4)} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "\\end{aligned}\\]"
         )
 
     def generate(self, num):
@@ -2605,10 +2665,6 @@ class Chem120:
         ore = patches.Circle((2.5, 3.5), 1.2, color="#8d6e63")
         ax.add_patch(ore)
 
-        ax.text(2.5, 3.7,
-                f"{self.ore_mass} g",
-                ha='center', fontsize=12, fontweight='bold')
-
         ax.text(2.5, 3.2,
                 f"{self.purity_percent}% Cu",
                 ha='center', fontsize=11)
@@ -2617,8 +2673,8 @@ class Chem120:
                                     fill=False, linewidth=3)
         ax.add_patch(furnace)
 
-        ax.text(6.25, 4.5,
-                "Electrolysis\nCell",
+        ax.text(6.25, 5,
+                "Electrolysis Cell",
                 ha='center', fontsize=11)
 
         ax.arrow(3.8, 3.5, 0.9, 0,
@@ -2642,11 +2698,6 @@ class Chem120:
                  linewidth=2,
                  color='black')
 
-        ax.text(6, 1.2,
-                "Maximum yield depends on copper purity",
-                ha='center',
-                fontsize=11)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -2655,31 +2706,22 @@ class Chem120:
 class Chem121:
     def __init__(self):
 
-        variations = [
-            (1.0, 0.6, 0.50),
-            (0.8, 0.4, 0.50),
-            (1.2, 0.9, 0.40),
-            (1.5, 1.0, 0.30),
-            (0.9, 0.5, 0.60),
-            (1.1, 0.7, 0.45),
-            (0.7, 0.3, 0.50),
-            (1.3, 0.8, 0.35),
-            (1.0, 0.2, 0.25),
-            (0.6, 0.1, 0.40),
-        ]
-
-        self.initial_c, self.final_c, self.volume = rnd.choice(variations)
+        self.F = 96500
+        
+        self.initial_c = round(rnd.uniform(0.8, 1.5), 1)
+        self.final_c = round(rnd.uniform(0.1, self.initial_c - 0.3), 1)
+        self.volume = round(rnd.choice([0.25, 0.30, 0.40, 0.50, 0.60]), 2)
 
         self.delta_c = self.initial_c - self.final_c
         self.moles_cu = self.delta_c * self.volume
         self.moles_e = self.moles_cu * 2
-        self.charge = self.moles_e * FARADAY
+        self.charge = self.moles_e * self.F
 
         self.answer = round(self.charge, 0)
 
         self.description = (
-            "The graph shows how Cu²⁺ concentration changes during electrolysis.\n"
-            "Use the graph and information shown to calculate\n"
+            "The graph shows how Cu²⁺ concentration changes during electrolysis. "
+            "Use the graph and information shown to calculate "
             "the total charge passed."
         )
 
@@ -2689,13 +2731,20 @@ class Chem121:
         self.curriculum = "GCSE Grade 8–9"
 
         self.reasoning = (
-            r"\[\begin{aligned}"
-            f"\n\\text{{1. Concentration change}} &= {self.initial_c} - {self.final_c} = {round(self.delta_c, 10)} \\\\"
-            f"\n\\text{{2. n(Cu}}^{{2+}}\text{{)}} &= \\Delta c \\times V = {round(self.delta_c, 10)} \\times {self.volume} = {round(self.moles_cu, 10)} \\\\"
-            f"\n\\text{{3. Half-equation}} &: \\text{{Cu}}^{{2+}} + 2e^- \\rightarrow \\text{{Cu}} \\\\"
-            f"\n\\text{{4. n(e}}^-) &= 2 \\times {round(self.moles_cu, 10)} = {round(self.moles_e, 10)} \\\\"
-            f"\n\\text{{5. Charge}} &= nF = {round(self.moles_e, 10)} \\times 96500 = {self.answer} \\text{{ C}}"
-            r"\n\end{aligned}\]"
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Read the initial and final concentration from the graph.}\\\\"
+            f"&\\quad c_{{\\text{{initial}}}} = {self.initial_c} \\text{{ mol dm}}^{{-3}}, \\; c_{{\\text{{final}}}} = {self.final_c} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\Delta c = {self.initial_c} - {self.final_c} = {round(self.delta_c, 4)} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 2: Read the solution volume from the diagram and calculate moles of } \\mathrm{Cu^{2+}} \\text{ reacted.}\\\\"
+            f"&\\quad V = {self.volume} \\text{{ dm}}^3\\\\"
+            f"&\\quad n(\\mathrm{{Cu^{{2+}}}}) = \\Delta c \\times V = {round(self.delta_c, 4)} \\times {self.volume} = {round(self.moles_cu, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the half-equation to find the moles of electrons transferred.}\\\\"
+            "&\\quad \\mathrm{Cu^{2+} + 2e^- \\rightarrow Cu} \\implies \\text{2 moles of } \\mathrm{e^-} \\text{ per mole of } \\mathrm{Cu^{2+}}\\\\"
+            f"&\\quad n(\\mathrm{{e^-}}) = 2 \\times {round(self.moles_cu, 4)} = {round(self.moles_e, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the total charge passed.} \\\\"
+            f"&\\quad Q = n(\\mathrm{{e^-}}) \\times F = {round(self.moles_e, 4)} \\times {self.F} = {self.answer} \\text{{ C}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "\\end{aligned}\\]"
         )
 
     def generate(self, num):
@@ -2710,7 +2759,11 @@ class Chem121:
         ax_graph.set_ylabel("Cu²⁺ concentration (mol dm⁻³)")
         ax_graph.set_title("Concentration vs Time")
 
-        ax_graph.scatter([0, 10], [self.initial_c, self.final_c], s=60)
+        ax_graph.scatter([0, 10], [self.initial_c, self.final_c], s=60, color="#B03A2E", zorder=5)
+
+        # Explicitly annotate the exact numbers next to the scatter points
+        ax_graph.text(0.3, self.initial_c, f"{self.initial_c}", fontsize=11, fontweight="bold", va="bottom", color="#B03A2E")
+        ax_graph.text(9.7, self.final_c + 0.05, f"{self.final_c}", fontsize=11, fontweight="bold", ha="right", va="bottom", color="#B03A2E")
 
         ax_diagram = fig.add_axes([0.65, 0.2, 0.3, 0.6])
         ax_diagram.set_xlim(0, 6)
@@ -2758,20 +2811,12 @@ class Chem121:
 class Chem122:
     def __init__(self):
 
-        variations = [
-            (120, 40),
-            (150, 60),
-            (200, 80),
-            (180, 20),
-            (140, 50),
-            (160, 30),
-            (220, 100),
-            (130, 70),
-            (170, 90),
-            (190, 110),
-        ]
-
-        self.reactants_energy, self.products_energy = rnd.choice(variations)
+        self.reactants_energy = rnd.randint(50, 250)
+        self.products_energy = rnd.randint(20, 200)
+        
+        # Ensure they aren't too close in value
+        while abs(self.products_energy - self.reactants_energy) < 15:
+            self.products_energy = rnd.randint(20, 200)
 
         self.delta_h = self.products_energy - self.reactants_energy
         self.answer = self.delta_h
@@ -2788,9 +2833,14 @@ class Chem122:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{ΔH}} &= \\text{{Energy of products}} - \\text{{Energy of reactants}}\\\\"
-            f"&= {self.products_energy} - {self.reactants_energy}\\\\"
-            f"&= {self.answer}\\,\\text{{kJ}}"
+            "&\\text{Step 1: Read the energy levels of reactants and products from the diagram.}\\\\"
+            f"&\\quad \\text{{Energy of reactants}} = {self.reactants_energy} \\text{{ kJ}}\\\\"
+            f"&\\quad \\text{{Energy of products}} = {self.products_energy} \\text{{ kJ}}\\\\"
+            "&\\text{Step 2: Calculate the enthalpy change } (\\Delta H).\\\\"
+            "&\\quad \\Delta H = \\text{Energy of products} - \\text{Energy of reactants}\\\\"
+            f"&\\quad \\Delta H = {self.products_energy} - {self.reactants_energy}\\\\"
+            f"&\\quad \\Delta H = {self.answer} \\text{{ kJ}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -2834,16 +2884,6 @@ class Chem122:
                 ha='center',
                 fontsize=12)
 
-        ax.annotate("",
-                    xy=(8.8, self.products_energy),
-                    xytext=(8.8, self.reactants_energy),
-                    arrowprops=dict(arrowstyle="<->", linewidth=2.5))
-
-        ax.text(9.05,
-                (self.reactants_energy + self.products_energy) / 2,
-                "ΔH",
-                fontsize=13)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -2852,20 +2892,9 @@ class Chem122:
 class Chem123:
     def __init__(self):
 
-        variations = [
-            (60, 150, 20),
-            (80, 200, 50),
-            (40, 120, 10),
-            (100, 250, 60),
-            (70, 180, 30),
-            (90, 220, 40),
-            (50, 160, 25),
-            (110, 300, 70),
-            (75, 190, 35),
-            (65, 170, 15),
-        ]
-
-        self.reactants_energy, self.peak_energy, self.products_energy = rnd.choice(variations)
+        self.reactants_energy = rnd.randint(40, 120)
+        self.peak_energy = self.reactants_energy + rnd.randint(50, 150)
+        self.products_energy = rnd.randint(20, self.peak_energy - 20)
 
         self.activation_energy = self.peak_energy - self.reactants_energy
         self.answer = self.activation_energy
@@ -2882,9 +2911,14 @@ class Chem123:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{E}}_a &= \\text{{Peak}} - \\text{{Reactants}}\\\\"
-            f"&= {self.peak_energy} - {self.reactants_energy}\\\\"
-            f"&= {self.answer}\\,\\text{{kJ}}"
+            "&\\text{Step 1: Read the energy of the reactants and the peak energy from the diagram.}\\\\"
+            f"&\\quad \\text{{Energy of reactants}} = {self.reactants_energy} \\text{{ kJ}}\\\\"
+            f"&\\quad \\text{{Peak energy}} = {self.peak_energy} \\text{{ kJ}}\\\\"
+            "&\\text{Step 2: Calculate the activation energy } (E_a).\\\\"
+            "&\\quad E_a = \\text{Peak energy} - \\text{Energy of reactants}\\\\"
+            f"&\\quad E_a = {self.peak_energy} - {self.reactants_energy}\\\\"
+            f"&\\quad E_a = {self.answer} \\text{{ kJ}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -2941,16 +2975,6 @@ class Chem123:
                 ha='center',
                 fontsize=12)
 
-        ax.annotate("",
-                    xy=(peak_x - 0.4, self.peak_energy),
-                    xytext=(peak_x - 0.4, self.reactants_energy),
-                    arrowprops=dict(arrowstyle="<->", linewidth=2.5))
-
-        ax.text(peak_x - 0.2,
-                (self.reactants_energy + self.peak_energy) / 2,
-                "Ea",
-                fontsize=13)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
@@ -2959,20 +2983,9 @@ class Chem123:
 class Chem124:
     def __init__(self):
 
-        variations = [
-            (436, 242, 431),
-            (410, 200, 390),
-            (450, 250, 420),
-            (430, 240, 410),
-            (420, 230, 400),
-            (440, 260, 415),
-            (415, 220, 395),
-            (455, 270, 430),
-            (435, 245, 405),
-            (425, 235, 398),
-        ]
-
-        self.hh, self.clcl, self.hcl = rnd.choice(variations)
+        self.hh = 436 + rnd.randint(-15, 15)
+        self.clcl = 242 + rnd.randint(-10, 10)
+        self.hcl = 431 + rnd.randint(-15, 15)
 
         self.bonds_broken = self.hh + self.clcl
         self.bonds_formed = 2 * self.hcl
@@ -2981,9 +2994,8 @@ class Chem124:
         self.answer = self.delta_h
 
         self.description = (
-            "Using the bond energies shown in the table,\n"
-            "calculate the enthalpy change of the reaction:\n"
-            "H₂ + Cl₂ → 2HCl"
+            "Using the bond energies and the chemical equation provided in the image, "
+            "calculate the enthalpy change (\u0394H) of the reaction in kJ/mol."
         )
 
         self.topic = "Chemical Energetics"
@@ -2993,20 +3005,27 @@ class Chem124:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{ΔH}} &= \\text{{Bonds broken}} - \\text{{Bonds formed}}\\\\"
-            f"&= ({self.hh} + {self.clcl}) - (2 \\times {self.hcl})\\\\"
-            f"&= {self.bonds_broken} - {self.bonds_formed}\\\\"
-            f"&= {self.answer}\\,\\text{{kJ}}"
+            "&\\text{Step 1: Identify the bonds broken (reactants) and their total energy.}\\\\"
+            "&\\quad \\text{Reactants: } \\mathrm{H_2} \\text{ (H-H bond) and } \\mathrm{Cl_2} \\text{ (Cl-Cl bond)}\\\\"
+            f"&\\quad \\text{{Energy in}} = {self.hh} + {self.clcl} = {self.bonds_broken} \\text{{ kJ/mol}}\\\\"
+            "&\\text{Step 2: Identify the bonds formed (products) and their total energy.}\\\\"
+            "&\\quad \\text{Products: 2 } \\mathrm{HCl} \\text{ (2 } \\times \\text{ H-Cl bonds)}\\\\"
+            f"&\\quad \\text{{Energy out}} = 2 \\times {self.hcl} = {self.bonds_formed} \\text{{ kJ/mol}}\\\\"
+            "&\\text{Step 3: Calculate the overall enthalpy change } (\\Delta H).\\\\"
+            "&\\quad \\Delta H = \\text{Energy in (bonds broken)} - \\text{Energy out (bonds formed)}\\\\"
+            f"&\\quad \\Delta H = {self.bonds_broken} - {self.bonds_formed} = {self.answer} \\text{{ kJ/mol}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
 
-        fig, ax = plt.subplots(figsize=(12, 7))
+        # Use a much smaller figure size suitable for a text/table graphic
+        fig, ax = plt.subplots(figsize=(6, 4.5))
         ax.axis('off')
 
-        ax.text(0.5, 0.9, "Bond Energy Table",
-                fontsize=16, ha='center', transform=ax.transAxes)
+        ax.text(0.5, 0.95, "Bond Energy Table",
+                fontsize=16, ha='center', fontweight='bold', transform=ax.transAxes)
 
         table_data = [
             ["Bond", "Energy (kJ/mol)"],
@@ -3015,16 +3034,26 @@ class Chem124:
             ["H–Cl", str(self.hcl)],
         ]
 
+        # Use bounding box (bbox) to strictly control table width/height and positioning
         table = ax.table(cellText=table_data,
                          loc='center',
-                         cellLoc='center')
+                         cellLoc='center',
+                         bbox=[0.15, 0.35, 0.7, 0.5])
 
-        table.scale(1.5, 2)
+        table.auto_set_font_size(False)
+        table.set_fontsize(12)
 
-        ax.text(0.5, 0.25,
+        # Make header row bold
+        for (row, col), cell in table.get_celld().items():
+            if row == 0:
+                cell.set_text_props(weight='bold')
+                cell.set_facecolor('#F2F3F4')
+
+        ax.text(0.5, 0.15,
                 "Reaction:  H₂ + Cl₂ → 2HCl",
                 fontsize=14,
                 ha='center',
+                fontweight='bold',
                 transform=ax.transAxes)
 
         os.makedirs("output", exist_ok=True)
@@ -3060,8 +3089,8 @@ class Chem125:
         self.answer = round(self.rate, 2)
 
         self.description = (
-            f"The graph shows the reaction between {self.reaction}.\n"
-            "Using the graph, calculate the rate of reaction."
+            f"The graph tracks the volume of gas produced over time during the reaction between {self.reaction}. "
+            "Using the two data points explicitly highlighted on the graph, calculate the average rate of reaction for this time interval in cm\u00b3/s."
         )
 
         self.topic = "Chemical reactions"
@@ -3071,10 +3100,16 @@ class Chem125:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Rate}} &= \\frac{{\\Delta V}}{{\\Delta t}}\\\\"
-            f"&= \\frac{{{self.v2} - {self.v1}}}{{{self.t2} - {self.t1}}}\\\\"
-            f"&= \\frac{{{self.delta_v}}}{{{self.delta_t}}}\\\\"
-            f"&= {self.answer}\\,\\text{{cm}}^3\\,\\text{{s}}^{{-1}}"
+            "&\\text{Step 1: Read the time and volume data points from the graph.}\\\\"
+            f"&\\quad \\text{{Point 1: }} t_1 = {self.t1} \\text{{ s}}, \\; V_1 = {self.v1} \\text{{ cm}}^3\\\\"
+            f"&\\quad \\text{{Point 2: }} t_2 = {self.t2} \\text{{ s}}, \\; V_2 = {self.v2} \\text{{ cm}}^3\\\\"
+            "&\\text{Step 2: Calculate the change in volume } (\\Delta V) \\text{ and change in time } (\\Delta t).\\\\"
+            f"&\\quad \\Delta V = {self.v2} - {self.v1} = {self.delta_v} \\text{{ cm}}^3\\\\"
+            f"&\\quad \\Delta t = {self.t2} - {self.t1} = {self.delta_t} \\text{{ s}}\\\\"
+            "&\\text{Step 3: Calculate the average rate of reaction.}\\\\"
+            "&\\quad \\text{Rate} = \\frac{\\Delta V}{\\Delta t}\\\\"
+            f"&\\quad \\text{{Rate}} = \\frac{{{self.delta_v}}}{{{self.delta_t}}} = {self.answer} \\text{{ cm}}^3\\text{{ s}}^{-1}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3086,7 +3121,12 @@ class Chem125:
         times = [self.t1, self.t2]
         volumes = [self.v1, self.v2]
 
-        ax.bar(times, volumes, width=5)
+        ax.plot(times, volumes, color="#2E86C1", linewidth=3, zorder=2)
+        ax.scatter(times, volumes, color="#E74C3C", s=100, zorder=3)
+
+        for t, v in zip(times, volumes):
+            ax.plot([t, t], [0, v], color='gray', linestyle='--', linewidth=1.5, zorder=1)
+            ax.plot([0, t], [v, v], color='gray', linestyle='--', linewidth=1.5, zorder=1)
 
         max_time = max(times) * 1.4
         max_volume = max(volumes) * 1.4
@@ -3102,11 +3142,11 @@ class Chem125:
         for spine in ax.spines.values():
             spine.set_linewidth(1.5)
 
-        for t, v in zip(times, volumes):
-            ax.text(t, v + max_volume * 0.03,
-                    f"{v} cm³",
-                    ha='center',
-                    fontsize=11)
+        # Explicitly mark the exact time and volume points on the axes
+        ax.set_xticks(times)
+        ax.set_yticks(volumes)
+        ax.set_xticklabels([f"{t}" for t in times], fontweight='bold', fontsize=12, color="#E74C3C")
+        ax.set_yticklabels([f"{v}" for v in volumes], fontweight='bold', fontsize=12, color="#E74C3C")
 
         fig.text(0.5, 0.93,
                 f"Rate of Reaction Data\n{self.reaction}",
