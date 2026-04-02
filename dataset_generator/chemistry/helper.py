@@ -870,9 +870,9 @@ def draw_mass_spectrum_peak(ax, mz, intensity, width=0.8, color='darkblue',
     bar = ax.bar(mz, intensity, width=width, color=color,
                 edgecolor='black', linewidth=1)
     
-    if label_peak and intensity > 25:
-        ax.text(mz, intensity + label_offset, f'{int(mz)}',
-               fontsize=10, ha='center', fontweight='bold')
+    # if label_peak:
+    #     ax.text(mz, intensity + label_offset, f'{int(mz)}',
+    #            fontsize=10, ha='center', fontweight='bold')
     
     return bar
 

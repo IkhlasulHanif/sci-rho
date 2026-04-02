@@ -1097,7 +1097,7 @@ class Mat060:
         else:
             dim_text = f"radius = {self.radius}{self.unit}"
         
-        pi_instruction = {
+        self.pi_instruction = {
             'symbol': "Give your answer in terms of π.",
             '22/7': "Use π = 22/7.",
             '3.14': "Use π = 3.14."
@@ -1107,7 +1107,7 @@ class Mat060:
         
         self.description = (
             f"Calculate the length of the arc of the shaded sector. "
-            f"{pi_instruction} Give your answer correct to 2 decimal places."
+            f"{self.pi_instruction} Give your answer correct to 2 decimal places."
         )
         
         self.topic = "Mensuration"
@@ -2976,7 +2976,7 @@ class Mat077:
         self.description = "The diagram shows a right-angled triangle. Calculate the value of $x$."
         self.topic = "Trigonometry"
         self.subtopic = "Right-angled triangles"
-        self.curriculum = "IGCSE", 
+        self.curriculum = "IGCSE"
         self.source = "Adapted from IGCSE June 2025"
 
         # Dynamic Reasoning
@@ -5385,8 +5385,8 @@ class Mat098:
         # OP = (n*(c1*a) + m*(c2*b)) / (m+n)
         # OP = (1/(m+n)) * ( (n*c1)a + (m*c2)b )
         
-        term_a = self.n * self.c1
-        term_b = self.m * self.c2
+        self.term_a = self.n * self.c1
+        self.term_b = self.m * self.c2
         k_solution = 1 / (self.m + self.n)
 
         self.answer = round(k_solution, 3)
@@ -5394,7 +5394,7 @@ class Mat098:
         self.description = (
             "In the diagram, $OABC$ is a trapezium where $OA$ is parallel to $CB$. "
             "Point $P$ lies on the line segment $AB$. "
-            f"Find the value of $k$ given that $\\vec{{OP}} = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})$. "
+            f"Find the value of $k$ given that $\\vec{{OP}} = k({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}})$. "
             "Give your answer correct to 3 decimal places."
         )
 
@@ -5409,8 +5409,8 @@ class Mat098:
             f"\\text{{Substitute }} \\vec{{OA}} = {self.c1}\\mathbf{{a}} \\text{{ and }} \\vec{{OB}} = {self.c2}\\mathbf{{b}}:&\\\\"
             f"\\vec{{OP}} &= \\frac{{{self.n}({self.c1}\\mathbf{{a}}) + {self.m}({self.c2}\\mathbf{{b}})}}{{{self.m + self.n}}}\\\\"
             f"&= \\frac{{{self.n * self.c1}\\mathbf{{a}} + {self.m * self.c2}\\mathbf{{b}}}}{{{self.m + self.n}}}\\\\"
-            f"&= \\frac{{1}}{{{self.m + self.n}}} ({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}})\\\\"
-            f"\\text{{Comparing with the given }} \\vec{{OP}} = k({term_a}\\mathbf{{a}} + {term_b}\\mathbf{{b}}):&\\\\"
+            f"&= \\frac{{1}}{{{self.m + self.n}}} ({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}})\\\\"
+            f"\\text{{Comparing with the given }} \\vec{{OP}} = k({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}}):&\\\\"
             f"k &= \\frac{{1}}{{{self.m + self.n}}}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"

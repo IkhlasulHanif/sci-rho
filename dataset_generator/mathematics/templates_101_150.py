@@ -106,17 +106,17 @@ class Mat102:
         self.faces = [1, 2, 3, 4, 5, 6]
         
         # Select a target face for the question (e.g., face 6)
-        target_face = 6
-        target_freq = self.frequencies[target_face - 1]
+        self.target_face = 6
+        target_freq = self.frequencies[self.target_face - 1]
         
         # Calculate the solution for the question
-        total_rolls_scenario = rnd.randint(2, 10) * 100
-        expected_freq = (target_freq / 100) * total_rolls_scenario
+        self.total_rolls_scenario = rnd.randint(2, 10) * 100
+        expected_freq = (target_freq / 100) * self.total_rolls_scenario
 
         self.answer = int(round(expected_freq, 0))
 
         self.description = (
-            f"Using the relative frequency from the chart, calculate the expected frequency of rolling a {target_face} if the die is rolled {total_rolls_scenario} times."
+            f"Using the relative frequency from the chart, calculate the expected frequency of rolling a {self.target_face} if the die is rolled {self.total_rolls_scenario} times."
         )
 
         self.topic = "Probability"
@@ -125,13 +125,13 @@ class Mat102:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Frequency of rolling a {target_face}}} &= {target_freq}\\\\"
+            f"\\text{{Frequency of rolling a {self.target_face}}} &= {target_freq}\\\\"
             f"\\text{{Total initial rolls}} &= 100\\\\"
             f"\\text{{Relative frequency}} &= \\frac{{\\text{{Frequency}}}}{{\\text{{Total initial rolls}}}}\\\\"
             f"&= \\frac{{{target_freq}}}{{100}}\\\\"
             f"&= {round(target_freq / 100, 10)}\\\\"
             f"\\text{{Expected frequency}} &= \\text{{Relative frequency}} \\times \\text{{Target rolls}}\\\\"
-            f"&= {round(target_freq / 100, 10)} \\times {total_rolls_scenario}\\\\"
+            f"&= {round(target_freq / 100, 10)} \\times {self.total_rolls_scenario}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -168,24 +168,24 @@ class Mat103:
     
     def __init__(self):
         # M: First catch (marked and released)
-        M = rnd.randint(10, 40)
+        self.M = rnd.randint(10, 40)
         
         # n: Second catch (total fish in the net)
         self.n = rnd.randint(20, 50)
         
         # m: Recaptured (marked fish found in the second catch)
         # Ensure m is reasonable (less than n and less than M)
-        self.m = rnd.randint(3, min(15, M-1, self.n-1))
+        self.m = rnd.randint(3, min(15, self.M-1, self.n-1))
         
         # Calculate uncaptured in the second catch
         n_uncaptured = self.n - self.m
 
-        approx = (M * self.n) / self.m
+        approx = (self.M * self.n) / self.m
 
         self.answer = int(round(approx, 0))
 
         self.description = (
-            f"A ranger catches {M} fish from the lake, marks them with a tag, and releases them. "
+            f"A ranger catches {self.M} fish from the lake, marks them with a tag, and releases them. "
             f"Later, the ranger catches a new sample (shown in the figure above). "
             f"Using the relative frequency of marked fish in the second catch, "
             "estimate the total expected number of fish in the lake."
@@ -197,15 +197,15 @@ class Mat103:
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Marked fish in first catch }} (M) &= {M}\\\\"
+            f"\\text{{Marked fish in first catch }} (M) &= {self.M}\\\\"
             f"\\text{{Total fish in second catch }} (n) &= {self.n}\\\\"
             f"\\text{{Recaptured marked fish }} (m) &= {self.m}\\\\"
             f"\\text{{Using the capture-recapture formula:}} &\\\\"
             f"\\frac{{m}}{{n}} &= \\frac{{M}}{{N}}\\\\"
             f"N &= \\frac{{M \\times n}}{{m}}\\\\"
-            f"&= \\frac{{{M} \\times {self.n}}}{{{self.m}}}\\\\"
-            f"&= \\frac{{{M * self.n}}}{{{self.m}}}\\\\"
-            f"&= {round((M * self.n) / self.m, 10)}\\\\"
+            f"&= \\frac{{{self.M} \\times {self.n}}}{{{self.m}}}\\\\"
+            f"&= \\frac{{{self.M * self.n}}}{{{self.m}}}\\\\"
+            f"&= {round((self.M * self.n) / self.m, 10)}\\\\"
             f"N &\\approx {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -1077,8 +1077,8 @@ class Mat114:
         
         # Randomize the query point (x_query)
         # Pick a value somewhere between x1 and x2
-        x_query = rnd.randint(self.x1 + 2, self.x2 - 2)
-        y_query = self.m * x_query + self.c
+        self.x_query = rnd.randint(self.x1 + 2, self.x2 - 2)
+        y_query = self.m * self.x_query + self.c
 
         # Generate "Scatter" data around this line
         # We create random x values and calculate y based on the line + random noise
@@ -1096,7 +1096,7 @@ class Mat114:
 
         self.description = (
             f"Using the line of best fit shown in the figure, calculate the "
-            f"predicted height (in cm) of a plant when {x_query} grams of fertilizer are used. "
+            f"predicted height (in cm) of a plant when {self.x_query} grams of fertilizer are used. "
             f"Give your answer correct to 3 decimal places."
         )
 
@@ -1121,9 +1121,9 @@ class Mat114:
             f"&= {round(self.c, 10)}\\\\"
             f"\\text{{Equation of the line:}} &\\\\"
             f"y &= {round(self.m, 10)}x + {round(self.c, 10)}\\\\"
-            f"\\text{{Calculate height for }} x = {x_query}\\,\\text{{g:}} &\\\\"
-            f"y &= {round(self.m, 10)}({x_query}) + {round(self.c, 10)}\\\\"
-            f"&= {round(self.m * x_query, 10)} + {round(self.c, 10)}\\\\"
+            f"\\text{{Calculate height for }} x = {self.x_query}\\,\\text{{g:}} &\\\\"
+            f"y &= {round(self.m, 10)}({self.x_query}) + {round(self.c, 10)}\\\\"
+            f"&= {round(self.m * self.x_query, 10)} + {round(self.c, 10)}\\\\"
             f"&= {self.answer}\\,\\text{{cm}}"
             "\\end{aligned}\\]"
         )
@@ -1909,10 +1909,10 @@ class Mat123:
 
         sign_a = '-' if self.a > 0 else '+'
         sign_b = '+' if self.b > 0 else '-'
-        label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
+        self.label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
 
         self.description = (
-            f"The figure illustrates the graph of a quadratic function $y = f(x)$ which has a minimum turning point at the coordinate $({self.h}, {self.k})$. The figure also indicates a second dashed curve representing a transformation {label_g}. "
+            f"The figure illustrates the graph of a quadratic function $y = f(x)$ which has a minimum turning point at the coordinate $({self.h}, {self.k})$. The figure also indicates a second dashed curve representing a transformation {self.label_g}. "
             f"Calculate the $y$-coordinate of the minimum point of the transformed graph $g(x)$."
         )
 
@@ -1960,9 +1960,8 @@ class Mat123:
         # Determine sign for label: f(x - 3) vs f(x + 3)
         sign_a = '-' if self.a > 0 else '+'
         sign_b = '+' if self.b > 0 else '-'
-        label_g = f'$g(x) = f(x {sign_a} {abs(self.a)}) {sign_b} {abs(self.b)}$'
         
-        ax.plot(x, g_x, label=label_g, linestyle='--', color='red', linewidth=2)
+        ax.plot(x, g_x, label=self.label_g, linestyle='--', color='red', linewidth=2)
         
         # Formatting
         ax.set_xlabel("$x$", fontsize=12)
@@ -2280,11 +2279,11 @@ class Mat127:
         self.answer = round(answer_ab_squared, 3)
         
         # Format the equation strings for display
-        line_eq = f"y = {self.m}x + {self.c}" if self.c >= 0 else f"y = {self.m}x - {abs(self.c)}"
-        circle_eq = f"x^2 + y^2 = {self.r**2}"
+        self.line_eq = f"y = {self.m}x + {self.c}" if self.c >= 0 else f"y = {self.m}x - {abs(self.c)}"
+        self.circle_eq = f"x^2 + y^2 = {self.r**2}"
 
         self.description = (
-            f"The straight line ${line_eq}$ intersects the circle ${circle_eq}$ "
+            f"The straight line ${self.line_eq}$ intersects the circle ${self.circle_eq}$ "
             f"at two distinct points, $A$ and $B$. "
             f"Calculate the squared length of the chord $AB$ (i.e., find $AB^2$). "
             f"Give your answer correct to 3 decimal places."
@@ -2481,7 +2480,7 @@ class Mat129:
         self.y_c = rnd.randint(self.r + 2, self.r + 20)
         
         # Calculate values for the equation (x - k)^2 + (y - b)^2 = r^2
-        r_squared = self.r**2
+        self.r_squared = self.r**2
         
         # The logic: If a circle in the 1st quadrant touches the y-axis, 
         # the x-coordinate of the center (k) must equal the radius (r).
@@ -2490,7 +2489,7 @@ class Mat129:
         self.answer = self.k_hidden
 
         self.description = (
-            f"A circle with the equation $(x-k)^2 + (y-{self.y_c})^2 = {r_squared}$ "
+            f"A circle with the equation $(x-k)^2 + (y-{self.y_c})^2 = {self.r_squared}$ "
             f"lies entirely in the first quadrant and touches the y-axis at exactly one point. "
             f"Find the value of $k$."
         )
@@ -4231,12 +4230,12 @@ class Mat146:
         
         # Calculate the ratio for the ln(ratio) part of the area
         # Area = (k/a) * [ln(a*k + b) - ln(b)] = (k/a) * ln((ak + b)/b)
-        ratio = round((self.a * self.k_val + self.b) / self.b, 4)
+        self.ratio = round((self.a * self.k_val + self.b) / self.b, 4)
         
         self.description = (
             f"The figure shows the curve $y = f(x)$. The region $R$ is bounded by the curve, "
             f"the $x$-axis, and the lines $x=0$ and $x=k$. If the area of region $R$ is "
-            f"exactly $\\frac{{{self.k}}}{{{self.a}}} \\ln({ratio})$, determine the value of $k$."
+            f"exactly $\\frac{{{self.k}}}{{{self.a}}} \\ln({self.ratio})$, determine the value of $k$."
         )
         
         self.topic = "Pure Mathematics 2"
@@ -4254,9 +4253,9 @@ class Mat146:
             f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln({self.a}k + {self.b}) - \\frac{{{self.k}}}{{{self.a}}} \\ln({self.b}) \\\\"
             f"\\text{{Apply the property of logarithms }} \\ln(A) - \\ln(B) = \\ln\\left(\\frac{{A}}{{B}}\\right): &\\\\"
             f"\\text{{Area}} &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) \\\\"
-            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({ratio}\\right). \\text{{ Equating the two:}} &\\\\"
-            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({ratio}\\right) \\\\"
-            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {ratio} \\\\"
+            f"\\text{{The given area is }} \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({self.ratio}\\right). \\text{{ Equating the two:}} &\\\\"
+            f"\\frac{{{self.k}}}{{{self.a}}} \\ln\\left(\\frac{{{self.a}k + {self.b}}}{{{self.b}}}\\right) &= \\frac{{{self.k}}}{{{self.a}}} \\ln\\left({self.ratio}\\right) \\\\"
+            f"\\frac{{{self.a}k + {self.b}}}{{{self.b}}} &= {self.ratio} \\\\"
             f"{self.a}k + {self.b} &= {round(self.a * self.k_val + self.b, 10)} \\\\"
             f"{self.a}k &= {round(self.a * self.k_val, 10)} \\\\"
             f"k &= {self.answer}"

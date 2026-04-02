@@ -135,6 +135,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+envlinux/
 
 # Spyder project settings
 .spyderproject
@@ -180,8 +181,12 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-experiment/
+experiment/result/
+experiment/sample/
+experiment/user_prompt.txt
 dataset/
 envlinux/
 envlinux2/
 tes.ipynb
+dataset_generator/**/extractor.ipynb
+prompt_template/

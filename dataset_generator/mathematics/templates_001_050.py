@@ -1044,11 +1044,11 @@ class Mat012:
 
         # Equations for reasoning
         graph_eq_y = f"y = x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c, '')}"
-        target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c - self.d, '')} = 0"
+        self.target_eq = f"x^2{fmt_poly(self.b, 'x')}{fmt_poly(self.c - self.d, '')} = 0"
         
         self.description = (
             f"The graph of a quadratic function is shown on the grid. "
-            f"By first determining the equation of the graph, use it to solve ${target_eq}$."
+            f"By first determining the equation of the graph, use it to solve ${self.target_eq}$."
         )
         
         self.topic = "Algebra and Graphs"
@@ -1170,11 +1170,11 @@ class Mat013:
 
         # LaTeX strings for equations
         graph_eq_str = f"y = {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')}"
-        target_eq_str = f"{fmt_poly(T_A, 'x^3', True)}{fmt_poly(T_B, 'x^2')}{fmt_poly(T_C, 'x')}{fmt_poly(T_D, '')} = 0"
+        self.target_eq_str = f"{fmt_poly(T_A, 'x^3', True)}{fmt_poly(T_B, 'x^2')}{fmt_poly(T_C, 'x')}{fmt_poly(T_D, '')} = 0"
         
         self.answer = " or ".join([f"x = {r}" for r in self.target_roots])
         
-        self.description = f"By drawing a suitable straight line on the grid, solve the equation ${target_eq_str}$."
+        self.description = f"By drawing a suitable straight line on the grid, solve the equation ${self.target_eq_str}$."
         self.topic = "Algebra and Graphs"
         self.subtopic = "Graphs of functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 41"
@@ -2711,7 +2711,7 @@ class Mat028:
         self.answer = round(y_base + height, 2)
         
         # Calculated area will be used in the description
-        area = round(0.5 * base * (self.answer - y_base), 2)
+        self.area = round(0.5 * base * (self.answer - y_base), 2)
         
         # Peak point C(x_peak, k)
         x_peak = rnd.randint(x1, x2)
@@ -2725,7 +2725,7 @@ class Mat028:
         # Implicit description relying on k in the figure
         self.description = (
             f"The diagram shows triangle $ABC$ plotted on a coordinate grid. "
-            f"The area of the triangle is ${area}$ square units. "
+            f"The area of the triangle is ${self.area}$ square units. "
             f"Based on the figure, find the value of $k$."
         )
         
@@ -4508,10 +4508,10 @@ class Mat045:
         
         name_map = {3: "triangle", 4: "quadrilateral", 5: "pentagon", 
                     6: "hexagon", 7: "heptagon", 8: "octagon", 9: "nonagon"}
-        shape_name = name_map[self.n]
+        self.shape_name = name_map[self.n]
         
         self.description = (
-            f"The diagram shows the interior angles of a {shape_name}, written in terms of $x$. "
+            f"The diagram shows the interior angles of a {self.shape_name}, written in terms of $x$. "
             f"Find the value of $x$."
         )
         self.topic = "Geometry"
@@ -4522,7 +4522,7 @@ class Mat045:
             r"\[\begin{aligned}"
             fr"\text{{The sum of the interior angles of an }} n\text{{-sided polygon is given by:}} \\"
             fr"S &= (n - 2) \times 180^\circ \\"
-            fr"\text{{For a {shape_name} where }} n = {self.n}\text{{:}} \\"
+            fr"\text{{For a {self.shape_name} where }} n = {self.n}\text{{:}} \\"
             fr"S &= ({self.n} - 2) \times 180^\circ \\"
             fr"&= {round((self.n - 2) * 180, 10)}^\circ \\"
             fr"\text{{The sum of the given interior angles in terms of }} x \text{{ is:}} \\"

@@ -323,26 +323,26 @@ class Bio006:
         self.snake_energy = round((rnd.randint(8, 12) / 100) * self.lizard_energy, 2)
         self.trophics_energy = [self.maize_energy, self.locust_energy, self.lizard_energy, self.snake_energy]
 
-        indexA = rnd.randint(0, 2)
-        indexB = rnd.randint(indexA + 1, 3)
+        self.indexA = rnd.randint(0, 2)
+        self.indexB = rnd.randint(self.indexA + 1, 3)
 
-        self.trophicA = self.trophics_energy[indexA]
-        self.trophicB = self.trophics_energy[indexB]
+        self.trophicA = self.trophics_energy[self.indexA]
+        self.trophicB = self.trophics_energy[self.indexB]
         self.energy_transfer = (self.trophicB / self.trophicA)
         self.answer = round(self.energy_transfer * 100, 2)
 
-        self.description = f"This diagram shows a food chain. What is the efficiency of energy transfer between {self.trophics_names[indexA] and {self.trophics_names[indexB]}}?"
+        self.description = f"This diagram shows a food chain. What is the efficiency of energy transfer between {self.trophics_names[self.indexA] and {self.trophics_names[self.indexB]}}?"
         self.topic = "Organisms and their environment"
         self.subtopic = "Food chains and food webs"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Energy at }} {self.trophics_names[indexA]} &= {self.trophics_energy[indexA]}\\,\\text{{kJ}}\\\\"
-            f"\\text{{Energy at }} {self.trophics_names[indexB]} &= {self.trophics_energy[indexB]}\\,\\text{{kJ}}\\\\"
+            f"\\text{{Energy at }} {self.trophics_names[self.indexA]} &= {self.trophics_energy[self.indexA]}\\,\\text{{kJ}}\\\\"
+            f"\\text{{Energy at }} {self.trophics_names[self.indexB]} &= {self.trophics_energy[self.indexB]}\\,\\text{{kJ}}\\\\"
             f"\\text{{Efficiency of energy transfer is given by:}} &\\\\"
             f"\\text{{Efficiency}} &= \\left( \\frac{{\\text{{Energy at higher trophic level}}}}{{\\text{{Energy at lower trophic level}}}} \\right) \\times 100\\\\"
-            f"&= \\left( \\frac{{{self.trophics_energy[indexB]}}}{{{self.trophics_energy[indexA]}}} \\right) \\times 100\\\\"
+            f"&= \\left( \\frac{{{self.trophics_energy[self.indexB]}}}{{{self.trophics_energy[self.indexA]}}} \\right) \\times 100\\\\"
             f"&= {round(self.energy_transfer, 10)} \\times 100\\\\"
             f"&= {self.answer}\\%"
             "\\end{aligned}\\]"
