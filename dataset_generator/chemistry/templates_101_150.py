@@ -5,7 +5,7 @@ import matplotlib.patches as patches
 import os
 import sys
 import math
-from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle, FancyArrow
+from matplotlib.patches import Rectangle, Polygon, FancyArrowPatch, Circle, FancyArrow, FancyBboxPatch
 from matplotlib.ticker import MultipleLocator
 
 sys.path.append(os.path.dirname(__file__))
@@ -52,7 +52,7 @@ class Chem101:
         self.topic = "States of matter"
         self.subtopic = "Solids, liquids and gases"
         self.source = "GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             r"\[\begin{aligned}"
@@ -117,15 +117,15 @@ class Chem102:
         self.answer = round(self.rate, 2)
 
         self.description = (
-            "A gas diffuses across a chamber as shown in the diagram. "
-            "The gas travels a measured distance over a period of time.\n\n"
-            "Calculate the rate of diffusion of the gas (in cm/s)!"
+            f"A gas diffuses across a chamber as shown in the diagram. "
+            f"The gas travels a measured distance over a period of {self.time}.\n\n"
+            f"Calculate the rate of diffusion of the gas (in cm/s)!"
         )
 
         self.topic = "States of matter"
         self.subtopic = "Diffusion"
         self.source = "GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -182,9 +182,6 @@ class Chem102:
         ax.text(5, -0.7,
                 f"Distance travelled = {self.distance} cm",
                 ha='center', fontsize=11)
-        ax.text(5, -1.3,
-                f"Time taken = {self.time} s",
-                ha='center', fontsize=11)
 
         ax.set_xlim(-1, 11)
         ax.set_ylim(-2, 5.5)
@@ -199,96 +196,138 @@ class Chem103:
     """
     Topic: Atoms, elements and compounds
     Subtopic: Ions and ionic bonds
-    Visual: Dot and cross diagram showing electron transfer
+    Visual: Dot-and-cross diagram showing full outer-shell electrons of metal and non-metal
+            before ionic bonding. Dots = metal electrons; crosses = non-metal electrons.
     Task: Determine number of electrons transferred (single numeric answer)
     """
 
+    # Outer-shell (valence) electron counts
+    _VALENCE = {
+        "Na": 1, "K": 1, "Li": 1,
+        "Mg": 2, "Ca": 2,
+        "Cl": 7, "F": 7, "Br": 7,
+        "O":  6,
+    }
+
     def __init__(self):
+        # Only chemically valid 1-to-1 ionic pairs where the metal transfers exactly
+        # enough electrons to complete the non-metal's octet.
         ionic_pairs = [
             ("Na", "Cl", 1),
-            ("K", "Cl", 1),
-            ("Mg", "O", 2),
-            ("Ca", "O", 2),
-            ("Li", "F", 1),
-            ("Al", "O", 3),
-            ("Na", "O", 1),
-            ("K", "Br", 1),
-            ("Mg", "Cl", 2),
-            ("Ca", "F", 2),
-            ("Al", "Cl", 3),
+            ("K",  "Cl", 1),
+            ("Li", "F",  1),
+            ("K",  "Br", 1),
+            ("Mg", "O",  2),
+            ("Ca", "O",  2),
         ]
 
         self.metal, self.nonmetal, self.electrons_transferred = rnd.choice(ionic_pairs)
-
         self.answer = self.electrons_transferred
 
+        self.metal_valence    = self._VALENCE[self.metal]
+        self.nonmetal_valence = self._VALENCE[self.nonmetal]
+
         self.description = (
-            "The diagram shows electron transfer between a metal atom and a non-metal atom "
-            "during ionic bonding.\n\n"
-            "Determine the number of electrons transferred."
+            "The dot-and-cross diagram shows the outer-shell electrons of a metal atom "
+            "and a non-metal atom before ionic bonding takes place. "
+            "Electrons from the metal atom are shown as dots (•) and electrons from the "
+            "non-metal atom are shown as crosses (×). "
+            "The arrow indicates the direction of electron transfer.\n\n"
+            "How many electrons are transferred from the metal atom to the non-metal atom?"
         )
 
-        self.topic = "Atoms, elements and compounds"
-        self.subtopic = "Ions and ionic bonds"
-        self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.topic      = "Atoms, elements and compounds"
+        self.subtopic   = "Ions and ionic bonds"
+        self.source     = "Adapted from GCSE Chemistry Past Papers"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "&\\text{Step 1: Identify the process shown in the diagram.}\\\\"
-            "&\\quad \\text{The arrow represents the transfer of valence electrons during ionic bonding.}\\\\"
-            "&\\text{Step 2: Determine the number of electrons transferred.}\\\\"
-            f"&\\quad \\text{{Count the number of electrons (dots) moving from }} \\text{{{self.metal}}} \\text{{ to }} \\text{{{self.nonmetal}}}.\\\\"
+            f"&\\text{{Step 1: Identify the metal atom (shown with dot electrons) — }}"
+            f"\\text{{{self.metal}}}.\\\\"
+            f"&\\text{{Step 2: Count the dots (•) on the }} \\text{{{self.metal}}} \\text{{ atom.}}\\\\"
+            f"&\\quad \\text{{Number of outer-shell electrons}} = {self.metal_valence}\\\\"
+            f"&\\text{{Step 3: During ionic bonding the metal transfers ALL its outer-shell}}\\\\"
+            f"&\\quad \\text{{electrons to the non-metal to form a stable ion.}}\\\\"
             f"&\\quad \\text{{Electrons transferred}} = {self.electrons_transferred}\\\\"
-            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            f"&\\quad \\boxed{{\\text{{Answer}} = {self.answer}}}"
             "\\end{aligned}\\]"
         )
 
+    # --- drawing helpers ---
+
+    @staticmethod
+    def _dot(ax, x, y, r=0.09):
+        ax.add_patch(Circle((x, y), r, color='black'))
+
+    @staticmethod
+    def _cross(ax, x, y, s=0.09):
+        ax.plot([x - s, x + s], [y - s, y + s], color='black', linewidth=1.5)
+        ax.plot([x - s, x + s], [y + s, y - s], color='black', linewidth=1.5)
+
+    @staticmethod
+    def _shell_positions(cx, cy, d, n, avoid_angle=180):
+        """Return (x, y) for n electrons at shell radius d around (cx, cy).
+        Electrons are placed at 8 candidate slots (45° apart). Slots nearest to
+        avoid_angle are filled last, creating a visible gap on that side."""
+        if n == 0:
+            return []
+        all8 = [i * 45 for i in range(8)]
+
+        def angular_dist(a):
+            diff = abs(a - avoid_angle) % 360
+            return min(diff, 360 - diff)
+
+        # Sort farthest-from-avoid first so we fill the opposite side first
+        ordered = sorted(all8, key=lambda a: -angular_dist(a))
+        selected = sorted(ordered[:n])          # keep the n farthest slots
+        return [
+            (cx + d * np.cos(np.radians(a)),
+             cy + d * np.sin(np.radians(a)))
+            for a in selected
+        ]
+
     def generate(self, num):
-
-        fig, ax = plt.subplots(figsize=(10, 7))
-
-        metal_center = (3, 5)
-        nonmetal_center = (9, 5)
-
-        metal_radius = 0.9
-        nonmetal_radius = 0.9
-
-        ax.add_patch(Circle(metal_center, metal_radius, fill=False, linewidth=2))
-        ax.add_patch(Circle(nonmetal_center, nonmetal_radius, fill=False, linewidth=2))
-
-        ax.text(*metal_center, self.metal, ha='center', va='center', fontsize=16, fontweight='bold')
-        ax.text(*nonmetal_center, self.nonmetal, ha='center', va='center', fontsize=16, fontweight='bold')
-
-        electron_distance = metal_radius + 0.35
-
-        for i in range(self.electrons_transferred):
-            angle = 2 * np.pi * i / max(self.electrons_transferred, 1)
-            x = metal_center[0] + electron_distance * np.cos(angle)
-            y = metal_center[1] + electron_distance * np.sin(angle)
-            ax.add_patch(Circle((x, y), 0.12, color='black'))
-
-        for i in range(self.electrons_transferred):
-            angle = 2 * np.pi * i / max(self.electrons_transferred, 1)
-            x = nonmetal_center[0] + electron_distance * np.cos(angle)
-            y = nonmetal_center[1] + electron_distance * np.sin(angle)
-            ax.add_patch(Circle((x, y), 0.12, fill=False, linewidth=2))
-
-        ax.arrow(
-            metal_center[0] + metal_radius,
-            metal_center[1],
-            nonmetal_center[0] - metal_center[0] - 2 * metal_radius,
-            0,
-            head_width=0.25,
-            head_length=0.35,
-            fc='black',
-            ec='black'
-        )
-
-        ax.set_xlim(0, 12)
-        ax.set_ylim(2, 8)
+        fig, ax = plt.subplots(figsize=(12, 6))
         ax.set_aspect('equal')
         ax.axis('off')
+
+        r  = 0.90    # atom circle radius
+        d  = 1.35    # electron shell radius
+        mc = (3.0, 5.0)    # metal centre
+        nc = (9.0, 5.0)    # non-metal centre
+
+        # --- atom circles and labels ---
+        for centre, label in ((mc, self.metal), (nc, self.nonmetal)):
+            ax.add_patch(Circle(centre, r, fill=False, linewidth=2))
+            ax.text(*centre, label, ha='center', va='center',
+                    fontsize=16, fontweight='bold')
+
+        # Metal: dots clustered toward the right (away from 180° / left side)
+        for x, y in self._shell_positions(*mc, d, self.metal_valence, avoid_angle=180):
+            self._dot(ax, x, y)
+
+        # Non-metal: crosses fill all positions except the left (180°) side,
+        # leaving a visible gap where the incoming electron(s) will arrive.
+        for x, y in self._shell_positions(*nc, d, self.nonmetal_valence, avoid_angle=180):
+            self._cross(ax, x, y)
+
+        # --- transfer arrow ---
+        ax.annotate(
+            '', xy=(nc[0] - r - 0.15, nc[1]), xytext=(mc[0] + r + 0.15, mc[1]),
+            arrowprops=dict(arrowstyle='->', color='crimson', lw=2.5)
+        )
+
+        # --- atom labels below ---
+        ax.text(mc[0], mc[1] - r - 0.60,
+                f"{self.metal} atom\n(• = outer-shell electrons)",
+                ha='center', fontsize=11)
+        ax.text(nc[0], nc[1] - r - 0.60,
+                f"{self.nonmetal} atom\n(× = outer-shell electrons)",
+                ha='center', fontsize=11)
+
+        ax.set_xlim(0.0, 12.0)
+        ax.set_ylim(1.8, 8.0)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -299,36 +338,32 @@ class Chem104:
     Topic: Atoms, elements and compounds
     Subtopic: Simple molecules and covalent bonds
     Visual: Dot-and-cross diagram of a simple covalent molecule
-    Task: Determine the number of covalent bonds shown (single numeric answer)
+    Task: Determine the total number of covalent bonds in the molecule (single numeric answer)
+
+    Only molecules whose diagram layout is explicitly coded are included, so the diagram
+    always correctly shows all bonds and the answer matches what is visible.
     """
 
     def __init__(self):
 
         molecules = [
-            {"name": "hydrogen",           "formula": "H₂",    "atoms": ["H", "H"],             "bonds": 1},
-            {"name": "hydrogen chloride",  "formula": "HCl",   "atoms": ["H", "Cl"],            "bonds": 1},
-            {"name": "hydrogen fluoride",  "formula": "HF",    "atoms": ["H", "F"],             "bonds": 1},
-            {"name": "hydrogen bromide",   "formula": "HBr",   "atoms": ["H", "Br"],            "bonds": 1},
-            {"name": "chlorine",           "formula": "Cl₂",   "atoms": ["Cl", "Cl"],           "bonds": 1},
-            {"name": "fluorine",           "formula": "F₂",    "atoms": ["F", "F"],             "bonds": 1},
-            {"name": "bromine",            "formula": "Br₂",   "atoms": ["Br", "Br"],           "bonds": 1},
-            {"name": "iodine",             "formula": "I₂",    "atoms": ["I", "I"],             "bonds": 1},
-            {"name": "oxygen",             "formula": "O₂",    "atoms": ["O", "O"],             "bonds": 2},
-            {"name": "water",              "formula": "H₂O",   "atoms": ["H", "O", "H"],        "bonds": 2},
-            {"name": "sulfur dioxide",     "formula": "SO₂",   "atoms": ["O", "S", "O"],        "bonds": 2},
-            {"name": "hydrogen sulfide",   "formula": "H₂S",   "atoms": ["H", "S", "H"],        "bonds": 2},
-            {"name": "nitrogen",           "formula": "N₂",    "atoms": ["N", "N"],             "bonds": 3},
-            {"name": "ammonia",            "formula": "NH₃",   "atoms": ["H", "N", "H", "H"],   "bonds": 3},
-            {"name": "phosphine",          "formula": "PH₃",   "atoms": ["H", "P", "H", "H"],   "bonds": 3},
-            {"name": "methane",            "formula": "CH₄",   "atoms": ["H", "C", "H", "H", "H"], "bonds": 4},
-            {"name": "carbon dioxide",     "formula": "CO₂",   "atoms": ["O", "C", "O"],            "bonds": 4},
-            {"name": "silicon tetrafluoride", "formula": "SiF₄", "atoms": ["F", "Si", "F", "F", "F"], "bonds": 4},
-            {"name": "carbon tetrachloride", "formula": "CCl₄", "atoms": ["Cl", "C", "Cl", "Cl", "Cl"], "bonds": 4},
-            {"name": "tetrafluoromethane", "formula": "CF₄",   "atoms": ["F", "C", "F", "F", "F"],  "bonds": 4},
-            {"name": "phosphorus pentachloride", "formula": "PCl₅", "atoms": ["Cl", "P", "Cl", "Cl", "Cl", "Cl"], "bonds": 5},
-            {"name": "ethane",             "formula": "C₂H₆",  "atoms": ["H", "C", "C", "H", "H", "H", "H", "H"], "bonds": 7},
-            {"name": "ethene",             "formula": "C₂H₄",  "atoms": ["H", "C", "C", "H", "H", "H"],            "bonds": 6},
-            {"name": "ethyne",             "formula": "C₂H₂",  "atoms": ["H", "C", "C", "H"],                       "bonds": 5},
+            # --- diatomic single-bond (shown via generic 2-atom layout) ---
+            {"name": "hydrogen",          "formula": "H₂",   "atoms": ["H",  "H"],            "bonds": 1},
+            {"name": "hydrogen chloride", "formula": "HCl",  "atoms": ["H",  "Cl"],           "bonds": 1},
+            {"name": "hydrogen fluoride", "formula": "HF",   "atoms": ["H",  "F"],            "bonds": 1},
+            {"name": "hydrogen bromide",  "formula": "HBr",  "atoms": ["H",  "Br"],           "bonds": 1},
+            {"name": "chlorine",          "formula": "Cl₂",  "atoms": ["Cl", "Cl"],           "bonds": 1},
+            {"name": "fluorine",          "formula": "F₂",   "atoms": ["F",  "F"],            "bonds": 1},
+            {"name": "bromine",           "formula": "Br₂",  "atoms": ["Br", "Br"],           "bonds": 1},
+            {"name": "iodine",            "formula": "I₂",   "atoms": ["I",  "I"],            "bonds": 1},
+            # --- multi-bond diatomics (explicit symmetric layout) ---
+            {"name": "oxygen",            "formula": "O₂",   "atoms": ["O",  "O"],            "bonds": 2},
+            {"name": "nitrogen",          "formula": "N₂",   "atoms": ["N",  "N"],            "bonds": 3},
+            # --- polyatomic molecules with explicit layouts ---
+            {"name": "water",             "formula": "H₂O",  "atoms": ["H",  "O",  "H"],      "bonds": 2},
+            {"name": "ammonia",           "formula": "NH₃",  "atoms": ["H",  "N",  "H", "H"], "bonds": 3},
+            {"name": "methane",           "formula": "CH₄",  "atoms": ["H",  "C",  "H", "H", "H"], "bonds": 4},
+            {"name": "carbon dioxide",    "formula": "CO₂",  "atoms": ["O",  "C",  "O"],      "bonds": 4},
         ]
 
         self.molecule = rnd.choice(molecules)
@@ -340,23 +375,25 @@ class Chem104:
         self.description = (
             f"The dot-and-cross diagram shows the covalent bonding in a molecule of {self.name} "
             f"({self.formula}).\n\n"
-            "How many covalent bonds are shown in the diagram?"
+            f"How many covalent bonds does a molecule of {self.name} contain in total?"
         )
 
         self.topic     = "Atoms, elements and compounds"
         self.subtopic  = "Simple molecules and covalent bonds"
         self.source    = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
-            "\\[\\begin{gathered}"
-            f"\\text{{Molecule}} = \\text{{{self.name}}}\\\\"
-            f"\\text{{Chemical Formula}} = \\text{{{self.formula}}}\\\\"
-            f"\\text{{The number of covalent bonds }} (n) "
-            f"\\text{{ is the total number of shared electron pairs between atoms.}}\\\\"
-            f"n = {self.answer}\\\\"
-            f"\\text{{Total covalent bonds}} = {self.answer}"
-            "\\end{gathered}\\]"
+            r"\[\begin{aligned}"
+            r"&\text{Step 1: Identify the molecule shown in the diagram.}\\"
+            fr"&\quad \text{{Molecule}} = \text{{{self.name}}} \text{{ ({self.formula})}}\\"
+            r"&\text{Step 2: Recall the definition of a covalent bond.}\\"
+            r"&\quad \text{Each covalent bond consists of one shared pair of electrons (one dot–cross pair).}\\"
+            r"&\text{Step 3: Count every dot–cross pair visible in the diagram.}\\"
+            r"&\quad \text{Each pair between two atoms represents one covalent bond.}\\"
+            fr"&\quad \text{{Total covalent bonds}} = {self.answer}\\"
+            fr"&\quad \text{{Final Answer}} = {self.answer}"
+            r"\end{aligned}\]"
         )
 
     def _draw_electron(self, ax, x, y, style="dot"):
@@ -382,27 +419,29 @@ class Chem104:
 
         r = 0.9
 
-        if self.formula in ["H2", "Cl2", "O2", "N2"]:
+        # Use Unicode formula strings to match the molecule dict
+        if self.formula in ["H₂", "Cl₂", "O₂", "N₂", "F₂", "Br₂", "I₂"]:
             positions = [(4, 5), (8, 5)]
-            bonds_between = [(0, 1, self.answer)] 
+            bonds_between = [(0, 1, self.answer)]
 
-        elif self.formula in ["H2O"]:
+        elif self.formula == "H₂O":
             positions = [(3.8, 5), (6, 5), (8.2, 5)]
             bonds_between = [(0, 1, 1), (1, 2, 1)]
 
-        elif self.formula in ["CO2"]:
+        elif self.formula == "CO₂":
             positions = [(3.8, 5), (6, 5), (8.2, 5)]
             bonds_between = [(0, 1, 2), (1, 2, 2)]
 
-        elif self.formula in ["CH4"]:
+        elif self.formula == "CH₄":
             positions = [(6, 5), (6, 7.3), (8.3, 5), (6, 2.7), (3.7, 5)]
             bonds_between = [(0, 1, 1), (0, 2, 1), (0, 3, 1), (0, 4, 1)]
 
-        elif self.formula in ["NH3"]:
+        elif self.formula == "NH₃":
             positions = [(6, 5), (6, 7.1), (8.1, 4.2), (3.9, 4.2)]
             bonds_between = [(0, 1, 1), (0, 2, 1), (0, 3, 1)]
 
         else:
+            # Generic single-bond diatomic (HCl, HF, HBr)
             positions = [(4, 5), (8, 5)]
             bonds_between = [(0, 1, 1)]
 
@@ -451,41 +490,38 @@ class Chem105:
     """
     Topic: Atoms, elements and compounds
     Subtopic: Simple molecules and covalent bonds
-    Visual: Image of a molecule bond with dot and cross
-    Task: Determine the number of shared electrons
+    Visual: Dot-and-cross diagram showing bonding electron pairs in a covalent molecule
+    Task: Determine the total number of shared (bonding) electrons in the molecule
+
+    Only molecules whose diagram layout is explicitly coded are included, so every
+    dot/cross pair drawn in the image corresponds exactly to a shared electron pair
+    and the visible count matches the answer.
     """
     def __init__(self):
 
         molecules = [
-            {"name": "hydrogen",                "formula": "H₂",    "bonds": 1,  "shared_electrons": 2},
-            {"name": "hydrogen chloride",       "formula": "HCl",   "bonds": 1,  "shared_electrons": 2},
-            {"name": "hydrogen fluoride",       "formula": "HF",    "bonds": 1,  "shared_electrons": 2},
-            {"name": "hydrogen bromide",        "formula": "HBr",   "bonds": 1,  "shared_electrons": 2},
-            {"name": "chlorine",                "formula": "Cl₂",   "bonds": 1,  "shared_electrons": 2},
-            {"name": "fluorine",                "formula": "F₂",    "bonds": 1,  "shared_electrons": 2},
-            {"name": "bromine",                 "formula": "Br₂",   "bonds": 1,  "shared_electrons": 2},
-            {"name": "iodine",                  "formula": "I₂",    "bonds": 1,  "shared_electrons": 2},
-            {"name": "oxygen",                  "formula": "O₂",    "bonds": 2,  "shared_electrons": 4},
-            {"name": "water",                   "formula": "H₂O",   "bonds": 2,  "shared_electrons": 4},
-            {"name": "hydrogen sulfide",        "formula": "H₂S",   "bonds": 2,  "shared_electrons": 4},
-            {"name": "sulfur dioxide",          "formula": "SO₂",   "bonds": 2,  "shared_electrons": 4},
-            {"name": "nitrogen",                "formula": "N₂",    "bonds": 3,  "shared_electrons": 6},
-            {"name": "ammonia",                 "formula": "NH₃",   "bonds": 3,  "shared_electrons": 6},
-            {"name": "phosphine",               "formula": "PH₃",   "bonds": 3,  "shared_electrons": 6},
-            {"name": "methane",                 "formula": "CH₄",   "bonds": 4,  "shared_electrons": 8},
-            {"name": "carbon dioxide",          "formula": "CO₂",   "bonds": 4,  "shared_electrons": 8},
-            {"name": "carbon tetrachloride",    "formula": "CCl₄",  "bonds": 4,  "shared_electrons": 8},
-            {"name": "tetrafluoromethane",      "formula": "CF₄",   "bonds": 4,  "shared_electrons": 8},
-            {"name": "silicon tetrafluoride",   "formula": "SiF₄",  "bonds": 4,  "shared_electrons": 8},
-            {"name": "phosphorus pentachloride","formula": "PCl₅",  "bonds": 5,  "shared_electrons": 10},
-            {"name": "ethyne",                  "formula": "C₂H₂",  "bonds": 5,  "shared_electrons": 10},
-            {"name": "ethene",                  "formula": "C₂H₄",  "bonds": 6,  "shared_electrons": 12},
-            {"name": "ethane",                  "formula": "C₂H₆",  "bonds": 7,  "shared_electrons": 14},
+            # --- symmetric diatomics (handled by the first branch) ---
+            {"name": "hydrogen",          "formula": "H₂",   "atoms": ["H",  "H"],            "bonds": 1, "shared_electrons": 2},
+            {"name": "chlorine",          "formula": "Cl₂",  "atoms": ["Cl", "Cl"],           "bonds": 1, "shared_electrons": 2},
+            {"name": "fluorine",          "formula": "F₂",   "atoms": ["F",  "F"],            "bonds": 1, "shared_electrons": 2},
+            {"name": "bromine",           "formula": "Br₂",  "atoms": ["Br", "Br"],           "bonds": 1, "shared_electrons": 2},
+            {"name": "iodine",            "formula": "I₂",   "atoms": ["I",  "I"],            "bonds": 1, "shared_electrons": 2},
+            {"name": "oxygen",            "formula": "O₂",   "atoms": ["O",  "O"],            "bonds": 2, "shared_electrons": 4},
+            {"name": "nitrogen",          "formula": "N₂",   "atoms": ["N",  "N"],            "bonds": 3, "shared_electrons": 6},
+            # --- asymmetric diatomics (handled by the generic else branch) ---
+            {"name": "hydrogen chloride", "formula": "HCl",  "atoms": ["H",  "Cl"],           "bonds": 1, "shared_electrons": 2},
+            {"name": "hydrogen fluoride", "formula": "HF",   "atoms": ["H",  "F"],            "bonds": 1, "shared_electrons": 2},
+            {"name": "hydrogen bromide",  "formula": "HBr",  "atoms": ["H",  "Br"],           "bonds": 1, "shared_electrons": 2},
+            # --- polyatomic molecules with explicit layouts ---
+            {"name": "water",             "formula": "H₂O",  "atoms": ["H",  "O",  "H"],      "bonds": 2, "shared_electrons": 4},
+            {"name": "ammonia",           "formula": "NH₃",  "atoms": ["H",  "N",  "H", "H"], "bonds": 3, "shared_electrons": 6},
+            {"name": "methane",           "formula": "CH₄",  "atoms": ["C",  "H",  "H", "H", "H"], "bonds": 4, "shared_electrons": 8},
         ]
 
         self.molecule         = rnd.choice(molecules)
         self.name             = self.molecule["name"]
         self.formula          = self.molecule["formula"]
+        self.atoms            = self.molecule["atoms"]
         self.bonds            = self.molecule["bonds"]
         self.shared_electrons = self.molecule["shared_electrons"]
 
@@ -493,22 +529,27 @@ class Chem105:
 
         self.description = (
             f"The dot-and-cross diagram shows the bonding electrons in a molecule of {self.name} ({self.formula}).\n\n"
-            "Determine the total number of bonding (shared) electrons in the molecule."
+            "Count every dot–cross pair visible in the diagram to find the total number of "
+            "bonding (shared) electrons in the molecule."
         )
 
         self.topic      = "Atoms, elements and compounds"
         self.subtopic   = "Simple molecules and covalent bonds"
         self.source     = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"\\text{{Molecule: }} & {self.name} \\text{{ ({self.formula})}} \\\\"
-            f"\\text{{Number of covalent bonds}} &= {self.bonds} \\\\"
-            f"\\text{{Shared electrons per bond}} &= 2 \\\\"
-            f"\\text{{Total bonding electrons}} &= {self.bonds} \\times 2 \\\\"
-            f"n_{{shared}} &= {self.answer}"
-            "\\end{aligned}\\]"
+            r"\[\begin{aligned}"
+            r"&\text{Step 1: Identify the molecule shown in the diagram.}\\"
+            fr"&\quad \text{{Molecule}} = \text{{{self.name}}} \text{{ ({self.formula})}}\\"
+            r"&\text{Step 2: Count the number of covalent bonds in the molecule.}\\"
+            r"&\quad \text{Each dot–cross pair between two atom circles = one covalent bond.}\\"
+            fr"&\quad \text{{Number of covalent bonds}} = {self.bonds}\\"
+            r"&\text{Step 3: Calculate the total number of bonding (shared) electrons.}\\"
+            r"&\quad \text{Each covalent bond contains exactly 2 shared electrons.}\\"
+            fr"&\quad \text{{Total bonding electrons}} = {self.bonds} \times 2\\"
+            fr"&\quad \text{{Final Answer}} = {self.answer}"
+            r"\end{aligned}\]"
         )
 
     def _draw_dot(self, ax, x, y):
@@ -518,6 +559,11 @@ class Chem105:
         ax.plot([x-0.07, x+0.07], [y-0.07, y+0.07], color="black", linewidth=1.2)
         ax.plot([x-0.07, x+0.07], [y+0.07, y-0.07], color="black", linewidth=1.2)
 
+    def _draw_shared_pair(self, ax, mx, my, dx=0, dy=0):
+        """Draw one dot–cross pair (= one shared electron pair) at midpoint offset."""
+        self._draw_dot(ax,   mx + dx - 0.09, my + dy)
+        self._draw_cross(ax, mx + dx + 0.09, my + dy)
+
     def generate(self, num):
 
         fig, ax = plt.subplots(figsize=(10, 7))
@@ -526,58 +572,57 @@ class Chem105:
 
         r = 0.9
 
-        if self.formula in ["H2", "Cl2", "O2", "N2"]:
+        # --- symmetric diatomics: H₂, Cl₂, O₂, N₂, F₂, Br₂, I₂ ---
+        if self.formula in ["H₂", "Cl₂", "O₂", "N₂", "F₂", "Br₂", "I₂"]:
             positions = [(4.8, 5), (7.2, 5)]
-            bonds = self.shared_electrons // 2
+            bond_order = self.bonds  # = shared_electrons // 2
 
-            for (x, y), atom in zip(positions, list(self.formula.replace("2", ""))*2):
+            for (x, y), atom in zip(positions, self.atoms):
                 ax.add_patch(Circle((x, y), r, fill=False, linewidth=2))
-                ax.text(x, y, atom, ha="center", va="center", fontsize=16, fontweight="bold")
+                ax.text(x, y, atom, ha="center", va="center",
+                        fontsize=16, fontweight="bold")
 
-            x1, y1 = positions[0]
-            x2, y2 = positions[1]
-            mx, my = (x1 + x2) / 2, (y1 + y2) / 2
+            mx, my = (positions[0][0] + positions[1][0]) / 2, 5
 
-            offsets = []
-            if bonds == 1:
-                offsets = [(0, 0)]
-            elif bonds == 2:
-                offsets = [(-0.12, 0.12), (0.12, -0.12)]
-            elif bonds == 3:
-                offsets = [(-0.2, 0.2), (0, 0), (0.2, -0.2)]
+            offsets = {1: [(0, 0)],
+                       2: [(-0.13, 0.13), (0.13, -0.13)],
+                       3: [(-0.22, 0.22), (0, 0), (0.22, -0.22)]}
+            for dx, dy in offsets.get(bond_order, [(0, 0)]):
+                self._draw_shared_pair(ax, mx, my, dx, dy)
 
-            for dx, dy in offsets:
-                self._draw_dot(ax, mx + dx - 0.08, my + dy)
-                self._draw_cross(ax, mx + dx + 0.08, my + dy)
+        # --- polyatomic molecules with explicit layouts ---
+        elif self.formula == "H₂O":
+            atoms     = ["H", "O", "H"]
+            positions = [(4.5, 5), (6, 5), (7.5, 5)]
+            bond_pairs = [(0, 1), (1, 2)]
+
+        elif self.formula == "NH₃":
+            atoms     = ["H", "N", "H", "H"]
+            positions = [(6, 5), (6, 6.7), (7.6, 4.4), (4.4, 4.4)]
+            bond_pairs = [(0, 1), (1, 2), (1, 3)]
+
+        elif self.formula == "CH₄":
+            atoms     = ["C", "H", "H", "H", "H"]
+            positions = [(6, 5), (6, 6.8), (7.8, 5), (6, 3.2), (4.2, 5)]
+            bond_pairs = [(0, 1), (0, 2), (0, 3), (0, 4)]
 
         else:
-            if self.formula == "H2O":
-                atoms = ["H", "O", "H"]
-                positions = [(4.5, 5), (6, 5), (7.5, 5)]
-                bond_pairs = [(0, 1), (1, 2)]
-            elif self.formula == "NH3":
-                atoms = ["H", "N", "H", "H"]
-                positions = [(6, 5), (6, 6.7), (7.6, 4.4), (4.4, 4.4)]
-                bond_pairs = [(0, 1), (1, 2), (1, 3)]
-            elif self.formula == "CH4":
-                atoms = ["C", "H", "H", "H", "H"]
-                positions = [(6, 5), (6, 6.8), (7.8, 5), (6, 3.2), (4.2, 5)]
-                bond_pairs = [(0, 1), (0, 2), (0, 3), (0, 4)]
-            else:
-                atoms = ["O", "C", "O"]
-                positions = [(4.5, 5), (6, 5), (7.5, 5)]
-                bond_pairs = [(0, 1), (1, 2)]
+            # Generic single-bond diatomic (HCl, HF, HBr) — 1 shared pair shown
+            atoms     = self.atoms[:2]
+            positions = [(4.5, 5), (7.5, 5)]
+            bond_pairs = [(0, 1)]
 
+        # Draw atoms and bond pairs for non-diatomic branches
+        if self.formula not in ["H₂", "Cl₂", "O₂", "N₂", "F₂", "Br₂", "I₂"]:
             for (x, y), atom in zip(positions, atoms):
                 ax.add_patch(Circle((x, y), r, fill=False, linewidth=2))
-                ax.text(x, y, atom, ha="center", va="center", fontsize=16, fontweight="bold")
+                ax.text(x, y, atom, ha="center", va="center",
+                        fontsize=16, fontweight="bold")
 
             for i, j in bond_pairs:
-                x1, y1 = positions[i]
-                x2, y2 = positions[j]
-                mx, my = (x1 + x2) / 2, (y1 + y2) / 2
-                self._draw_dot(ax, mx - 0.08, my)
-                self._draw_cross(ax, mx + 0.08, my)
+                mx = (positions[i][0] + positions[j][0]) / 2
+                my = (positions[i][1] + positions[j][1]) / 2
+                self._draw_shared_pair(ax, mx, my)
 
         ax.set_title(
             f"Bonding Electrons in {self.name.capitalize()} ({self.formula})",
@@ -731,15 +776,15 @@ class Chem106:
 
         self.description = (
             f"The graph tracks the mass of reactants during the reaction between "
-            f"{self.reaction['reactant_A']} and {self.reaction['reactant_B']}.\n\n"
-            "Using stoichiometry and the initial data provided in the graph, "
-            "calculate the exact mass of the excess reactant remaining!"
+            f"{self.reaction['reactant_A']} ({self.mass_A} g) and {self.reaction['reactant_B']} ({self.mass_B} g).\n\n"
+            f"Using stoichiometry and the initial data provided in the graph, "
+            f"calculate the exact mass of the excess reactant remaining!"
         )
 
         self.topic = "Stoichiometry"
         self.subtopic = "Limiting reagent and excess"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -776,12 +821,6 @@ class Chem106:
 
         ax.plot(t, mass_A_arr, linewidth=3, color="#2E86C1", label=self.reaction["reactant_A"])
         ax.plot(t, mass_B_arr, linewidth=3, color="#C39A3A", label=self.reaction["reactant_B"])
-
-        # --- Visual Aids: Annotate exact numbers at points of interest ---
-        # Initial Masses (t=0)
-        ax.text(0.2, self.mass_A, f"{self.mass_A} g", color="#2E86C1", fontweight='bold', va='bottom')
-        ax.text(0.2, self.mass_B, f"{self.mass_B} g", color="#C39A3A", fontweight='bold', va='bottom')
-        # -----------------------------------------------------------------
 
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
         ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
@@ -888,14 +927,15 @@ class Chem107:
             f"The graph tracks the mass of substances during a multi-stage reaction chain.\n\n"
             f"Stage 1: {self.chain['stage1']}\n"
             f"Stage 2: {self.chain['stage2']}\n\n"
-            "Using stoichiometry and the initial mass provided in the graph, "
-            "calculate the exact mass of the final product formed!"
+            f"Starting mass: {self.start_mass} g\n\n"
+            f"Using stoichiometry and the initial mass provided in the graph, "
+            f"calculate the exact mass of the final product formed!"
         )
 
         self.topic = "Stoichiometry"
         self.subtopic = "Multi-stage reaction chains"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -931,10 +971,6 @@ class Chem107:
         ax.plot(t, start_curve, linewidth=3, color="#2E86C1", label="Starting compound")
         ax.plot(t, intermediate_curve, linewidth=3, color="#F39C12", label="Intermediate")
         ax.plot(t, product_curve, linewidth=3, color="#28B463", label="Final product")
-
-        # --- Visual Aids: Annotate exact numbers at points of interest ---
-        # Initial Mass (t=0)
-        ax.text(0.2, self.start_mass, f"{self.start_mass} g", color="#2E86C1", fontweight='bold', va='bottom')
         # -----------------------------------------------------------------
 
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
@@ -1124,7 +1160,7 @@ class Chem108:
         self.topic = "Stoichiometry"
         self.subtopic = "Percentage yield with limiting reagent"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1297,7 +1333,7 @@ class Chem109:
         self.topic = "Stoichiometry"
         self.subtopic = "Gas volumes using molar gas volume"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         # Convert numbers in gas formulas to LaTeX subscripts
         latex_gas_A = self.r['gas_A']
@@ -1487,7 +1523,7 @@ class Chem110:
         self.topic = "Stoichiometry"
         self.subtopic = "Empirical formula → balanced equation → mass product"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1571,7 +1607,7 @@ class Chem111:
         self.topic = "Electrochemistry"
         self.subtopic = "Electrolysis mass / moles / charge chain"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1695,7 +1731,7 @@ class Chem112:
         self.topic = "Electrochemistry"
         self.subtopic = "Electrolysis limiting ion in solution"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         # Format the cation for LaTeX math mode
         latex_cation = self.sys['cation'].replace('2+', '^{2+}').replace('+', '^+')
@@ -1808,7 +1844,7 @@ class Chem113:
         self.topic = "Electrochemistry"
         self.subtopic = "Electrolysis gas volume and stoichiometry"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         if self.given_gas == "H2":
             calc_ratio = self.ratio_O2 / self.ratio_H2
@@ -1838,44 +1874,110 @@ class Chem113:
         fig, ax = plt.subplots(figsize=(8, 10))
         ax.set_aspect("equal")
         ax.axis("off")
-
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 16)
 
-        center_tube = Rectangle((4.5, 2), 1, 12, fill=False, linewidth=2)
-        ax.add_patch(center_tube)
+        # --- Base reservoir ---
+        reservoir = FancyBboxPatch((2.5, 1.5), 5, 2,
+                                boxstyle="round,pad=0.1",
+                                facecolor="#D6EAF8", edgecolor="black", linewidth=2)
+        ax.add_patch(reservoir)
+        ax.text(5, 2.5, "Electrolyte Solution", ha="center", va="center",
+                fontsize=10, color="#1A5276")
 
-        left_tube = Rectangle((2, 6), 1, 8, fill=False, linewidth=2)
-        right_tube = Rectangle((7, 6), 1, 8, fill=False, linewidth=2)
+        # --- Left tube (H2) ---
+        tube_h = 8
+        tube_bottom_y = 3.3
+        left_x = 3.2
 
+        # Tube outline
+        left_tube = FancyBboxPatch((left_x - 0.5, tube_bottom_y), 1, tube_h,
+                                boxstyle="square,pad=0",
+                                facecolor="none", edgecolor="black", linewidth=2)
         ax.add_patch(left_tube)
+
+        # Gas pocket at top (H2)
+        h2_gas_height = (self.volume_H2 / 72) * tube_h * 0.85
+        h2_water_height = tube_h - h2_gas_height
+
+        # Water fill
+        water_left = FancyBboxPatch((left_x - 0.48, tube_bottom_y), 0.96, h2_water_height,
+                                    boxstyle="square,pad=0",
+                                    facecolor="#AED6F1", edgecolor="none")
+        ax.add_patch(water_left)
+
+        # Gas fill (top)
+        gas_left = FancyBboxPatch((left_x - 0.48, tube_bottom_y + h2_water_height), 0.96, h2_gas_height,
+                                boxstyle="square,pad=0",
+                                facecolor="#D5F5E3", edgecolor="none")
+        ax.add_patch(gas_left)
+
+        # Tube border again on top
+        left_tube2 = FancyBboxPatch((left_x - 0.5, tube_bottom_y), 1, tube_h,
+                                    boxstyle="square,pad=0",
+                                    facecolor="none", edgecolor="black", linewidth=2)
+        ax.add_patch(left_tube2)
+
+        # --- Right tube (O2) ---
+        right_x = 6.8
+
+        right_tube = FancyBboxPatch((right_x - 0.5, tube_bottom_y), 1, tube_h,
+                                    boxstyle="square,pad=0",
+                                    facecolor="none", edgecolor="black", linewidth=2)
         ax.add_patch(right_tube)
 
-        left_height = 6 + (self.volume_H2 / max(self.volume_H2, self.volume_O2)) * 6
-        right_height = 6 + (self.volume_O2 / max(self.volume_H2, self.volume_O2)) * 6
+        o2_gas_height = (self.volume_O2 / 72) * tube_h * 0.85
+        o2_water_height = tube_h - o2_gas_height
 
-        left_gas = Rectangle((2.1, 6), 0.8, left_height - 6, facecolor="#AED6F1")
-        right_gas = Rectangle((7.1, 6), 0.8, right_height - 6, facecolor="#F5B7B1")
+        water_right = FancyBboxPatch((right_x - 0.48, tube_bottom_y), 0.96, o2_water_height,
+                                    boxstyle="square,pad=0",
+                                    facecolor="#AED6F1", edgecolor="none")
+        ax.add_patch(water_right)
 
-        ax.add_patch(left_gas)
-        ax.add_patch(right_gas)
+        gas_right = FancyBboxPatch((right_x - 0.48, tube_bottom_y + o2_water_height), 0.96, o2_gas_height,
+                                boxstyle="square,pad=0",
+                                facecolor="#FADBD8", edgecolor="none")
+        ax.add_patch(gas_right)
 
-        ax.text(2.5, 14.5, "H₂", ha="center", fontsize=14, fontweight="bold")
-        ax.text(7.5, 14.5, "O₂", ha="center", fontsize=14, fontweight="bold")
+        right_tube2 = FancyBboxPatch((right_x - 0.5, tube_bottom_y), 1, tube_h,
+                                    boxstyle="square,pad=0",
+                                    facecolor="none", edgecolor="black", linewidth=2)
+        ax.add_patch(right_tube2)
 
-        for y in np.linspace(6, 14, 9):
-            ax.plot([1.9, 2], [y, y], color="black", linewidth=1)
-            ax.plot([8, 8.1], [y, y], color="black", linewidth=1)
-            
+        # --- Electrodes ---
+        ax.plot([left_x, left_x], [tube_bottom_y + 0.2, tube_bottom_y + h2_water_height - 0.3],
+                color="#2C3E50", linewidth=3, zorder=5)
+        ax.plot([right_x, right_x], [tube_bottom_y + 0.2, tube_bottom_y + o2_water_height - 0.3],
+                color="#2C3E50", linewidth=3, zorder=5)
+
+        # --- Labels ---
+        ax.text(left_x, tube_bottom_y + tube_h + 0.4, "H₂",
+                ha="center", fontsize=16, fontweight="bold", color="#1E8449")
+        ax.text(right_x, tube_bottom_y + tube_h + 0.4, "O₂",
+                ha="center", fontsize=16, fontweight="bold", color="#C0392B")
+
+        # Volume labels
         if self.given_gas == "H2":
             h2_label = f"{self.volume_H2} cm³"
             o2_label = "? cm³"
+            h2_color, o2_color = "#1E8449", "#E74C3C"
         else:
             h2_label = "? cm³"
             o2_label = f"{self.volume_O2} cm³"
+            h2_color, o2_color = "#E74C3C", "#1E8449"
 
-        ax.text(2.5, 5.2, h2_label, ha="center", fontsize=12, fontweight="bold", color="#2E86C1" if self.given_gas == "H2" else "#E74C3C")
-        ax.text(7.5, 5.2, o2_label, ha="center", fontsize=12, fontweight="bold", color="#2E86C1" if self.given_gas == "O2" else "#E74C3C")
+        ax.text(left_x - 0.9, tube_bottom_y + tube_h - 0.5, h2_label,
+                ha="center", fontsize=11, fontweight="bold", color=h2_color,
+                rotation=90, va="center")
+        ax.text(right_x + 0.9, tube_bottom_y + tube_h - 0.5, o2_label,
+                ha="center", fontsize=11, fontweight="bold", color=o2_color,
+                rotation=90, va="center")
+
+        # --- Title ---
+        ax.text(5, 14.5, "Hoffmann Voltameter", ha="center",
+                fontsize=14, fontweight="bold")
+        ax.text(5, 13.9, "Electrolysis of Water: 2H₂O → 2H₂ + O₂",
+                ha="center", fontsize=11, color="#555555")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
@@ -1920,7 +2022,7 @@ class Chem114:
         self.topic = "Electrochemistry"
         self.subtopic = "Electroplating thickness and mass deposition"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2044,7 +2146,7 @@ class Chem115:
         self.topic = "Electrochemistry"
         self.subtopic = "Electrolysis with impure ore and purity calculation"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2160,7 +2262,7 @@ class Chem116:
         self.topic = "Electrochemistry"
         self.subtopic = "Electrolysis calculations"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2273,7 +2375,7 @@ class Chem117:
         self.topic = "Electrochemistry"
         self.subtopic = "Limiting ion vs charge"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE Higher Tier"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2398,7 +2500,7 @@ class Chem118:
         self.topic = "Electrochemistry"
         self.subtopic = "Electroplating thickness"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE Grade 8–9"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2485,134 +2587,78 @@ class Chem118:
 
 class Chem119:
     """
-    Topic: Electroplating Thickness Calculation
-    Vision-based realistic setup
+        Chapter 5.1: Enthalpy diagram
+        Visual: Enthalpy energy levels
     """
-
+    
     def __init__(self):
-
-        self.F = 96500
-        self.Ar_Ni = 58.7
-        self.density = 8.9
-
-        self.current = round(rnd.uniform(1.5, 3.5), 1)
-        self.time_minutes = rnd.randint(15, 45)
-        self.area_cm2 = rnd.randint(15, 30)
-
-        self.time_seconds = self.time_minutes * 60
-        self.charge = self.current * self.time_seconds
-        self.moles_e = self.charge / FARADAY
-        self.moles_ni = self.moles_e / 2
-        self.mass_ni = self.moles_ni * MOLAR_MASS_NI
-        self.volume_cm3 = self.mass_ni / self.density
-        self.thickness_cm = self.volume_cm3 / self.area_cm2
-        self.thickness_mm = self.thickness_cm * 10
-
-        self.answer = round(self.thickness_mm, 4)
-
+        self.reactant_E  = rnd.randint(20, 150)
+        self.product_E   = rnd.randint(20, 150)
+        self.activation_E = self.reactant_E + rnd.randint(15, 100)
+        
+        self.delta_H = self.product_E - self.reactant_E
+        self.Ea = self.activation_E - self.reactant_E
+        
+        self.answer = self.delta_H
+        
         self.description = (
-            "The diagram shows a nickel electroplating setup.\n\n"
-            "Using the parameters provided in the image (current, time, area, and density), "
-            "calculate the thickness of nickel deposited in millimetres (mm).\n"
-            "(Round to 4 decimal places)"
+            "An enthalpy profile diagram shows the energy levels of reactants and products. "
+            "Using the values marked on the y-axis, determine the enthalpy change ΔH (kJ mol⁻¹) for this reaction."
         )
 
-        self.topic = "Electrochemistry"
-        self.subtopic = "Electroplating thickness"
-        self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE Grade 8–9"
+        self.topic = "Energetics"
+        self.subtopic = "Enthalpy"
+        self.source = "Adapted from IGCSE"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "&\\text{Step 1: Extract parameters from the diagram.}\\\\"
-            f"&\\quad I = {self.current} \\text{{ A}}, \\; t = {self.time_minutes} \\text{{ min}}, \\; A = {self.area_cm2} \\text{{ cm}}^2, \\; \\rho = {self.density} \\text{{ g/cm}}^3\\\\"
-            "&\\text{Step 2: Calculate total charge } (Q). \\\\"
-            f"&\\quad t = {self.time_minutes} \\times 60 = {self.time_seconds} \\text{{ s}} \\\\"
-            f"&\\quad Q = I \\times t = {self.current} \\times {self.time_seconds} = {round(self.charge, 4)} \\text{{ C}} \\\\"
-            "&\\text{Step 3: Calculate moles of electrons and moles of Ni.}\\\\"
-            f"&\\quad n(\\mathrm{{e^-}}) = \\frac{{Q}}{{F}} = \\frac{{{round(self.charge, 4)}}}{{96500}} = {round(self.moles_e, 5)} \\text{{ mol}} \\\\"
-            f"&\\quad n(\\mathrm{{Ni}}) = \\frac{{n(\\mathrm{{e^-}})}}{{2}} = {round(self.moles_ni, 5)} \\text{{ mol}} \\\\"
-            "&\\text{Step 4: Calculate mass, volume, and thickness.}\\\\"
-            f"&\\quad m = n \\times A_r = {round(self.moles_ni, 5)} \\times {self.Ar_Ni} = {round(self.mass_ni, 4)} \\text{{ g}} \\\\"
-            f"&\\quad V = \\frac{{m}}{{\\rho}} = \\frac{{{round(self.mass_ni, 4)}}}{{{self.density}}} = {round(self.volume_cm3, 5)} \\text{{ cm}}^3 \\\\"
-            f"&\\quad \\text{{Thickness (cm)}} = \\frac{{V}}{{A}} = \\frac{{{round(self.volume_cm3, 5)}}}{{{self.area_cm2}}} = {round(self.thickness_cm, 5)} \\text{{ cm}} \\\\"
-            f"&\\quad \\text{{Thickness (mm)}} = {round(self.thickness_cm, 5)} \\times 10 = {self.answer} \\text{{ mm}} \\\\"
-            f"&\\quad \\text{{Final Answer}} = {self.answer}"
+            "&\\text{Step 1: Read the energy of the reactants from the diagram.}\\\\"
+            f"&\\quad E_{{\\text{{reactants}}}} = {self.reactant_E}\\,\\text{{kJ/mol}}\\\\"
+            "&\\text{Step 2: Read the energy of the products from the diagram.}\\\\"
+            f"&\\quad E_{{\\text{{products}}}} = {self.product_E}\\,\\text{{kJ/mol}}\\\\"
+            "&\\text{Step 3: Apply the enthalpy change formula.}\\\\"
+            "&\\quad \\Delta H = E_{{\\text{{products}}}} - E_{{\\text{{reactants}}}}\\\\"
+            f"&\\quad \\Delta H = {self.product_E} - {self.reactant_E}\\\\"
+            f"&\\quad \\Delta H = {self.delta_H}\\,\\text{{kJ/mol}}"
             "\\end{aligned}\\]"
         )
-
+    
     def generate(self, num):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        profile = draw_enthalpy_profile(ax, self.reactant_E, self.product_E,
+                                        self.activation_E, x_start=0, x_end=10)
+        
+        ax.text(profile['reactant_x'], self.reactant_E + 8, 'Reactants',
+               fontsize=14, ha='center', fontweight='bold', color='#2196F3')
+        ax.text(profile['product_x'], self.product_E + 8, 'Products',
+               fontsize=14, ha='center', fontweight='bold', color='#E91E63')
+        
+        ax.set_title('Enthalpy Profile Diagram', fontsize=16, fontweight='bold')
+        ax.set_ylim(0, self.activation_E + 20)
+        ax.set_xlim(0, 10.5)
+        x_right = ax.get_xlim()[1]
 
-        fig, ax = plt.subplots(figsize=(12, 7))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 7)
-        ax.axis('off')
+        energy_levels = [
+            (self.reactant_E, 'Reactants', '#2196F3', True),
+            (self.product_E, 'Products',  '#E91E63', True),
+            (self.activation_E, 'Peak',   '#FF9800', False)
+        ]
 
-        ax.text(6, 6.6, "Nickel Electroplating Apparatus",
-                fontsize=16, ha='center', fontweight='bold')
-
-        beaker = patches.Rectangle((3, 1.5), 6, 4, fill=False, linewidth=3)
-        ax.add_patch(beaker)
-
-        solution = patches.Rectangle((3.1, 1.6), 5.8, 3.5,
-                                     color="#9fc5e8")
-        ax.add_patch(solution)
-
-        ax.text(6, 4.9, "Ni²⁺(aq)", ha='center',
-                fontsize=13, fontweight='bold')
-
-        cathode = patches.Rectangle((4.2, 2), 0.3, 3,
-                                    color="black")
-        anode = patches.Rectangle((7.6, 2), 0.3, 3,
-                                  color="black")
-        ax.add_patch(cathode)
-        ax.add_patch(anode)
-
-        ax.text(4.35, 5.3, "-", fontsize=18, ha='center')
-        ax.text(7.75, 5.3, "+", fontsize=18, ha='center')
-
-        plated_layer = patches.Rectangle((4.05, 2),
-                                         0.1, 3,
-                                         color="#c0c0c0")
-        ax.add_patch(plated_layer)
-
-        plate_label = patches.Rectangle((4.05, 1.2), 0.7, 0.3,
-                                        color="white", ec="black")
-        ax.add_patch(plate_label)
-        ax.text(4.4, 1.35,
-                f"{self.area_cm2} cm²",
-                fontsize=10,
-                ha='center')
-
-        ammeter = patches.Circle((6, 6), 0.5, fill=False, linewidth=2)
-        ax.add_patch(ammeter)
-        ax.text(6, 6, f"{self.current} A",
-                ha='center', va='center', fontsize=10)
-
-        ax.plot([4.35, 5.5], [5.3, 6], linewidth=2, color='black')
-        ax.plot([7.75, 6.5], [5.3, 6], linewidth=2, color='black')
-
-        # Moved to the upper right to avoid overlapping the wires/ammeter
-        ax.text(10, 5.8,
-                f"Time = {self.time_minutes} min",
-                ha='center',
-                fontsize=12,
-                fontweight='bold',
-                bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="gray"))
-
-        ax.text(9.3, 1.2,
-                f"Density = {self.density} g/cm³",
-                fontsize=11)
-
-        ax.text(6, 0.6,
-                "Ni²⁺ + 2e⁻ → Ni",
-                fontsize=12,
-                ha='center')
-
-
-        os.makedirs("output", exist_ok=True)
+        for y, label, color, bold in energy_levels:
+            ax.axhline(y=y, linestyle='--', linewidth=1.2, alpha=0.5, color=color)
+            
+            ax.text(
+                x_right, y,
+                f"{y}",
+                va='center', ha='left', fontsize=10,
+                color=color,
+                fontweight='bold' if bold else 'normal'
+            )
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
+        plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
 
 class Chem120:
@@ -2638,7 +2684,7 @@ class Chem120:
         self.topic = "Electrochemistry"
         self.subtopic = "Percentage purity + extraction"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE Higher Tier"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2728,7 +2774,7 @@ class Chem121:
         self.topic = "Electrochemistry"
         self.subtopic = "Graph-based concentration change"
         self.source = "Adapted from GCSE Chemistry Past Papers"
-        self.curriculum = "GCSE Grade 8–9"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2907,7 +2953,7 @@ class Chem123:
         self.topic = "Chemical Energetics"
         self.subtopic = "Activation energy from reaction pathway"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
-        self.curriculum = "IGCSE Supplement"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3001,7 +3047,7 @@ class Chem124:
         self.topic = "Chemical Energetics"
         self.subtopic = "Bond energy calculation"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
-        self.curriculum = "IGCSE Supplement"
+        self.curriculum = "IGCSE"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3192,10 +3238,14 @@ class Chem126:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Initial mass}} &= {self.initial_mass}\\,\\text{{g}}\\\\"
-            f"\\text{{Final mass}} &= {self.final_mass}\\,\\text{{g}}\\\\"
-            f"\\text{{Reaction finishes when mass becomes constant}}\\\\"
-            f"\\text{{Time at plateau}} &= {self.answer}\\,\\text{{s}}"
+            "&\\text{Step 1: Read the initial and final mass values from the graph.}\\\\"
+            f"&\\quad \\text{{Initial mass}} = {self.initial_mass} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final mass}} = {self.final_mass} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Identify when the mass stops changing (becomes constant).}\\\\"
+            "&\\quad \\text{The reaction finishes when the curve flattens into a horizontal plateau.}\\\\"
+            "&\\text{Step 3: Read the time at which the plateau begins from the x-axis.}\\\\"
+            f"&\\quad \\text{{Time at plateau}} = {self.answer} \\text{{ s}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3301,9 +3351,16 @@ class Chem127:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Total moles}} &= {self.product_mol} + {self.reactant1_mol} + {self.reactant2_mol} = {self.total_moles}\\\\"
-            f"\\text{{Percentage yield}} &= \\frac{{{self.product_mol}}}{{{self.total_moles}}} \\times 100\\\\"
-            f"&= {self.answer}\\,\\% "
+            "&\\text{Step 1: Read the amounts of each component from the bar chart.}\\\\"
+            f"&\\quad \\text{{Product}} ({self.product_name}) = {self.product_mol} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Reactant 1}} = {self.reactant1_mol} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Reactant 2}} = {self.reactant2_mol} \\text{{ mol}}\\\\"
+            "&\\text{Step 2: Calculate the total number of moles at equilibrium.}\\\\"
+            f"&\\quad \\text{{Total moles}} = {self.product_mol} + {self.reactant1_mol} + {self.reactant2_mol} = {self.total_moles} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Calculate the percentage yield of the product.}\\\\"
+            "&\\quad \\text{Percentage yield} = \\frac{\\text{moles of product}}{\\text{total moles}} \\times 100\\\\"
+            f"&\\quad \\text{{Percentage yield}} = \\frac{{{self.product_mol}}}{{{self.total_moles}}} \\times 100 = {self.answer} \\%\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3362,10 +3419,13 @@ class Chem128:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Initial moles}} &= {self.initial_moles}\\\\"
-            f"\\text{{Equilibrium moles}} &= {self.equilibrium_moles}\\\\"
-            f"\\text{{Decrease}} &= {self.initial_moles} - {self.equilibrium_moles}\\\\"
-            f"&= {self.answer}\\,\\text{{mol}}"
+            "&\\text{Step 1: Read the initial and equilibrium moles from the diagram.}\\\\"
+            f"&\\quad \\text{{Initial moles}} = {self.initial_moles} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Equilibrium moles}} = {self.equilibrium_moles} \\text{{ mol}}\\\\"
+            "&\\text{Step 2: Calculate the decrease in total number of moles.}\\\\"
+            "&\\quad \\text{Decrease} = \\text{Initial moles} - \\text{Equilibrium moles}\\\\"
+            f"&\\quad \\text{{Decrease}} = {self.initial_moles} - {self.equilibrium_moles} = {self.answer} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3463,10 +3523,17 @@ class Chem129:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Volume (dm³)}} &= {self.final_volume_cm3}/1000 = {round(self.volume_dm3,4)}\\\\"
-            f"\\text{{Moles of gas}} &= {round(self.volume_dm3,4)}/24 = {round(self.moles_gas,4)}\\\\"
-            f"\\text{{Moles of HCl}} &= 2 \\times {round(self.moles_gas,4)} = {round(self.moles_hcl,4)}\\\\"
-            f"\\text{{Concentration}} &= {round(self.moles_hcl,4)}/{self.acid_volume_dm3} = {self.answer}\\,\\text{{mol dm}}^{{-3}}"
+            "&\\text{Step 1: Read the final volume of gas produced from the graph.}\\\\"
+            f"&\\quad \\text{{Final volume of gas}} = {self.final_volume_cm3} \\text{{ cm}}^3\\\\"
+            "&\\text{Step 2: Convert the gas volume from cm³ to dm³.}\\\\"
+            f"&\\quad V = \\frac{{{self.final_volume_cm3}}}{{1000}} = {round(self.volume_dm3, 4)} \\text{{ dm}}^3\\\\"
+            "&\\text{Step 3: Calculate the moles of gas using molar gas volume (24 dm³ mol⁻¹).}\\\\"
+            f"&\\quad n(\\text{{gas}}) = \\frac{{{round(self.volume_dm3, 4)}}}{{24}} = {round(self.moles_gas, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Use the stoichiometric ratio to find moles of HCl.}\\\\"
+            f"&\\quad n(\\text{{HCl}}) = 2 \\times {round(self.moles_gas, 4)} = {round(self.moles_hcl, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Calculate the concentration of the acid.}\\\\"
+            f"&\\quad c = \\frac{{n}}{{V}} = \\frac{{{round(self.moles_hcl, 4)}}}{{{self.acid_volume_dm3}}} = {self.answer} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3548,9 +3615,15 @@ class Chem130:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Amount reacted}} &= {self.initial_limiting} - {self.eq_limiting} = {self.used}\\\\"
-            f"\\text{{Percentage conversion}} &= \\frac{{{self.used}}}{{{self.initial_limiting}}} \\times 100\\\\"
-            f"&= {self.answer}\\,\\%"
+            "&\\text{Step 1: Read the initial and equilibrium amounts of the limiting reactant.}\\\\"
+            f"&\\quad \\text{{Initial amount of }} {self.limiting_species} = {self.initial_limiting} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Equilibrium amount of }} {self.limiting_species} = {self.eq_limiting} \\text{{ mol}}\\\\"
+            "&\\text{Step 2: Calculate the amount that reacted.}\\\\"
+            f"&\\quad \\text{{Amount reacted}} = {self.initial_limiting} - {self.eq_limiting} = {self.used} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Calculate the percentage conversion.}\\\\"
+            "&\\quad \\text{Percentage conversion} = \\frac{\\text{Amount reacted}}{\\text{Initial amount}} \\times 100\\\\"
+            f"&\\quad \\text{{Percentage conversion}} = \\frac{{{self.used}}}{{{self.initial_limiting}}} \\times 100 = {self.answer} \\%\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3619,10 +3692,16 @@ class Chem131:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Change in concentration}} &= {self.initial_c} - {self.c_final} = {round(self.delta_c,3)}\\\\"
-            f"\\text{{Change in time}} &= {self.full_time} - 0 = {self.delta_t}\\\\"
-            f"\\text{{Average rate}} &= \\frac{{{round(self.delta_c,3)}}}{{{self.delta_t}}}\\\\"
-            f"&= {self.answer}\\,\\text{{mol dm}}^{{-3}}\\,\\text{{s}}^{{-1}}"
+            "&\\text{Step 1: Read the initial and final concentrations from the graph.}\\\\"
+            f"&\\quad c_{{\\text{{initial}}}} = {self.initial_c} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad c_{{\\text{{final}}}} = {self.c_final} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 2: Calculate the change in concentration and change in time.}\\\\"
+            f"&\\quad \\Delta c = {self.initial_c} - {self.c_final} = {round(self.delta_c, 3)} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\Delta t = {self.full_time} - 0 = {self.delta_t} \\text{{ s}}\\\\"
+            "&\\text{Step 3: Calculate the average rate of reaction.}\\\\"
+            "&\\quad \\text{Average rate} = \\frac{\\Delta c}{\\Delta t}\\\\"
+            f"&\\quad \\text{{Average rate}} = \\frac{{{round(self.delta_c, 3)}}}{{{self.delta_t}}} = {self.answer} \\text{{ mol dm}}^{{-3}} \\text{{ s}}^{{-1}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3701,10 +3780,16 @@ class Chem132:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Oxidation change}} &= {self.electron_change}\\\\"
-            f"\\text{{Moles used}} &= {self.moles_used}\\\\"
-            f"\\text{{Electrons transferred}} &= {self.moles_used} \\times {self.electron_change}\\\\"
-            f"&= {self.answer}\\,\\text{{mol}}"
+            "&\\text{Step 1: Identify the species that is oxidised from the diagram and equation.}\\\\"
+            f"&\\quad \\text{{Reactant species: }} {self.reactant} \\rightarrow {self.product}\\\\"
+            "&\\text{Step 2: Determine the change in oxidation number per mole.}\\\\"
+            f"&\\quad \\text{{Oxidation number change per mole}} = {self.electron_change}\\\\"
+            "&\\text{Step 3: Read the moles of reactant used from the diagram.}\\\\"
+            f"&\\quad \\text{{Moles of }} {self.reactant} \\text{{ used}} = {self.moles_used} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the total moles of electrons transferred.}\\\\"
+            "&\\quad \\text{Electrons transferred} = \\text{moles} \\times \\text{oxidation change}\\\\"
+            f"&\\quad \\text{{Electrons transferred}} = {self.moles_used} \\times {self.electron_change} = {self.answer} \\text{{ mol}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3782,10 +3867,18 @@ class Chem133:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Volume (dm³)}} &= {self.titrant_volume_cm3}/1000 = {round(self.titrant_volume_dm3,4)}\\\\"
-            f"\\text{{Moles titrant}} &= {self.titrant_conc} \\times {round(self.titrant_volume_dm3,4)} = {round(self.moles_titrant,4)}\\\\"
-            f"\\text{{Moles Fe}} &= {round(self.moles_titrant,4)} \\times \\frac{{{self.fe_ratio}}}{{{self.titrant_ratio}}} = {round(self.moles_fe,4)}\\\\"
-            f"\\text{{Concentration}} &= {round(self.moles_fe,4)}/{round(self.fe_volume_dm3,4)} = {self.answer}\\,\\text{{mol dm}}^{{-3}}"
+            "&\\text{Step 1: Read the titrant concentration and volume from the diagram.}\\\\"
+            f"&\\quad \\text{{Concentration of titrant}} = {self.titrant_conc} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\text{{Volume of titrant}} = {self.titrant_volume_cm3} \\text{{ cm}}^3\\\\"
+            "&\\text{Step 2: Convert the titrant volume to dm³ and calculate moles of titrant.}\\\\"
+            f"&\\quad V_{{\\text{{titrant}}}} = \\frac{{{self.titrant_volume_cm3}}}{{1000}} = {round(self.titrant_volume_dm3, 4)} \\text{{ dm}}^3\\\\"
+            f"&\\quad n_{{\\text{{titrant}}}} = {self.titrant_conc} \\times {round(self.titrant_volume_dm3, 4)} = {round(self.moles_titrant, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the stoichiometric ratio to find moles of Fe²⁺.}\\\\"
+            f"&\\quad n(\\mathrm{{Fe^{{2+}}}}) = {round(self.moles_titrant, 4)} \\times \\frac{{{self.fe_ratio}}}{{{self.titrant_ratio}}} = {round(self.moles_fe, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the concentration of Fe²⁺.}\\\\"
+            f"&\\quad V_{{\\text{{Fe}}}} = {round(self.fe_volume_dm3, 4)} \\text{{ dm}}^3\\\\"
+            f"&\\quad c(\\mathrm{{Fe^{{2+}}}}) = \\frac{{{round(self.moles_fe, 4)}}}{{{round(self.fe_volume_dm3, 4)}}} = {self.answer} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3873,10 +3966,17 @@ class Chem134:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Mr of reactant}} &= {round(self.mr_reactant,2)}\\\\"
-            f"\\text{{Moles reactant}} &= {self.mass_reactant}/{round(self.mr_reactant,2)} = {round(self.moles_reactant,4)}\\\\"
-            f"\\text{{Moles product}} &= {round(self.moles_reactant,4)} \\times {self.mole_ratio} = {round(self.moles_product,4)}\\\\"
-            f"\\text{{Mass product}} &= {round(self.moles_product,4)} \\times {self.ar_product} = {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the mass of the reactant and identify it from the diagram.}\\\\"
+            f"&\\quad \\text{{Reactant: }} \\mathrm{{{self.reactant}}}, \\text{{ Mass}} = {self.mass_reactant} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate the molar mass of the reactant.}\\\\"
+            f"&\\quad M_r(\\mathrm{{{self.reactant}}}) = {round(self.mr_reactant, 2)} \\text{{ g mol}}^{{-1}}\\\\"
+            "&\\text{Step 3: Calculate the moles of the reactant.}\\\\"
+            f"&\\quad n(\\mathrm{{{self.reactant}}}) = \\frac{{{self.mass_reactant}}}{{{round(self.mr_reactant, 2)}}} = {round(self.moles_reactant, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Use the mole ratio to find moles of product.}\\\\"
+            f"&\\quad n(\\mathrm{{{self.product}}}) = {round(self.moles_reactant, 4)} \\times {self.mole_ratio} = {round(self.moles_product, 4)} \\text{{ mol}}\\\\"
+            "&\\text{Step 5: Calculate the mass of product formed.}\\\\"
+            f"&\\quad m(\\mathrm{{{self.product}}}) = {round(self.moles_product, 4)} \\times {self.ar_product} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -3953,10 +4053,18 @@ class Chem135:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. Convert volumes}} &: {self.base_volume_cm3}/1000 = {round(self.base_volume_dm3,5)}\\,\\text{{dm}}^3\\\\"
-            f"\\text{{2. Moles NaOH}} &= cV = {self.base_conc} \\times {round(self.base_volume_dm3,5)} = {round(self.moles_base,10)}\\\\"
-            f"\\text{{3. 1:1 ratio}} &: n(\\text{{HCl}}) = n(\\text{{NaOH}}) = {round(self.moles_acid,10)}\\\\"
-            f"\\text{{4. Concentration HCl}} &= \\frac{{n}}{{V}} = \\frac{{{round(self.moles_acid,10)}}}{{{round(self.acid_volume_dm3,5)}}} = {self.answer}\\,\\text{{mol dm}}^{{-3}}"
+            "&\\text{Step 1: Read the NaOH concentration and volume from the diagram.}\\\\"
+            f"&\\quad c(\\text{{NaOH}}) = {self.base_conc} \\text{{ mol dm}}^{{-3}}, \\; V(\\text{{NaOH}}) = {self.base_volume_cm3} \\text{{ cm}}^3\\\\"
+            "&\\text{Step 2: Convert the NaOH volume to dm³ and calculate moles.}\\\\"
+            f"&\\quad V(\\text{{NaOH}}) = \\frac{{{self.base_volume_cm3}}}{{1000}} = {round(self.base_volume_dm3, 5)} \\text{{ dm}}^3\\\\"
+            f"&\\quad n(\\text{{NaOH}}) = {self.base_conc} \\times {round(self.base_volume_dm3, 5)} = {round(self.moles_base, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Apply the 1:1 mole ratio to find moles of HCl.}\\\\"
+            "&\\quad \\text{HCl + NaOH} \\rightarrow \\text{NaCl + H}_2\\text{O} \\implies 1:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{HCl}}) = n(\\text{{NaOH}}) = {round(self.moles_acid, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the concentration of HCl.}\\\\"
+            f"&\\quad V(\\text{{HCl}}) = \\frac{{{self.acid_volume_cm3}}}{{1000}} = {round(self.acid_volume_dm3, 5)} \\text{{ dm}}^3\\\\"
+            f"&\\quad c(\\text{{HCl}}) = \\frac{{n}}{{V}} = \\frac{{{round(self.moles_acid, 5)}}}{{{round(self.acid_volume_dm3, 5)}}} = {self.answer} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4018,11 +4126,6 @@ class Chem135:
         arrow2 = FancyArrowPatch((7.95, 3.3), (6.8, 3.3), arrowstyle="->", linewidth=2)
         ax.add_patch(arrow2)
 
-        ax.text(6, 0.35,
-                "Use the information shown to calculate the concentration of HCl (mol dm⁻³).",
-                ha='center',
-                fontsize=11)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -4066,11 +4169,19 @@ class Chem136:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. Volume (dm³)}} &= {self.acid_volume_cm3}/1000 = {round(self.acid_volume_dm3,5)}\\\\"
-            f"\\text{{2. Moles HCl}} &= {self.acid_conc} \\times {round(self.acid_volume_dm3,5)} = {round(self.moles_hcl,5)}\\\\"
-            f"\\text{{3. Ratio 2:1}} &: n(\\text{{CO₂}}) = {round(self.moles_hcl,5)}/2 = {round(self.moles_co2,5)}\\\\"
-            f"\\text{{4. Volume (dm³)}} &= {round(self.moles_co2,5)} \\times 24 = {round(self.volume_co2_dm3,5)}\\\\"
-            f"\\text{{5. Volume (cm³)}} &= {round(self.volume_co2_dm3,5)} \\times 1000 = {self.answer}\\,\\text{{cm}}^3"
+            "&\\text{Step 1: Read the volume and concentration of HCl from the diagram.}\\\\"
+            f"&\\quad V(\\text{{HCl}}) = {self.acid_volume_cm3} \\text{{ cm}}^3, \\; c(\\text{{HCl}}) = {self.acid_conc} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 2: Convert volume to dm³ and calculate moles of HCl.}\\\\"
+            f"&\\quad V = \\frac{{{self.acid_volume_cm3}}}{{1000}} = {round(self.acid_volume_dm3, 5)} \\text{{ dm}}^3\\\\"
+            f"&\\quad n(\\text{{HCl}}) = {self.acid_conc} \\times {round(self.acid_volume_dm3, 5)} = {round(self.moles_hcl, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the 2:1 mole ratio to find moles of CO₂.}\\\\"
+            "&\\quad \\text{CaCO}_3 + \\text{2HCl} \\rightarrow \\text{CaCl}_2 + \\text{CO}_2 + \\text{H}_2\\text{O} \\implies 2:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{CO}}_2) = \\frac{{{round(self.moles_hcl, 5)}}}{{2}} = {round(self.moles_co2, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Convert moles of CO₂ to volume using molar gas volume (24 dm³ mol⁻¹).}\\\\"
+            f"&\\quad V(\\text{{CO}}_2) = {round(self.moles_co2, 5)} \\times 24 = {round(self.volume_co2_dm3, 5)} \\text{{ dm}}^3\\\\"
+            "&\\text{Step 5: Convert the volume from dm³ to cm³.}\\\\"
+            f"&\\quad V(\\text{{CO}}_2) = {round(self.volume_co2_dm3, 5)} \\times 1000 = {self.answer} \\text{{ cm}}^3\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4121,11 +4232,6 @@ class Chem136:
                 fontsize=12,
                 fontweight='bold')
 
-        ax.text(7, 0.5,
-                "Use the information shown to calculate the volume of CO₂ produced (cm³).",
-                ha='center',
-                fontsize=11)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -4166,11 +4272,15 @@ class Chem137:
         self.curriculum = "IGCSE"
 
         self.reasoning = (
-            "\\[\\begin{aligned} " \
-            "\\text{Strong acid } & \\text{fully dissociates} \\\\ " \
-            "[H^+] &= " + str(self.concentration) + " \\\\ " \
-            "\\text{pH} &= -\\log(" + str(self.concentration) + ") \\\\ " \
-            "&= " + str(self.answer) + " " \
+            "\\[\\begin{aligned}"
+            "&\\text{Step 1: Read the acid concentration from the diagram.}\\\\"
+            f"&\\quad c({self.acid_name}) = {self.concentration} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 2: Recall that a strong acid fully dissociates in water.}\\\\"
+            f"&\\quad [\\text{{H}}^+] = c = {self.concentration} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 3: Apply the pH formula.}\\\\"
+            "&\\quad \\text{pH} = -\\log_{10}[\\text{H}^+]\\\\"
+            f"&\\quad \\text{{pH}} = -\\log_{{10}}({self.concentration}) = {self.answer}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4203,11 +4313,6 @@ class Chem137:
                 f"{self.concentration} mol dm⁻³",
                 ha='center',
                 fontsize=12)
-
-        ax.text(5, 0.6,
-                "Use pH = -log[H⁺]",
-                ha='center',
-                fontsize=11)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4253,11 +4358,19 @@ class Chem138:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. Volume (dm³)}} &= {self.volume_cm3}/1000 = {round(self.volume_dm3,5)}\\\\"
-            f"\\text{{2. Moles HNO₃}} &= {self.concentration} \\times {round(self.volume_dm3,5)} = {round(self.moles_acid,5)}\\\\"
-            f"\\text{{3. 1:1 ratio}} &: n(\\text{{NaNO₃}}) = {round(self.moles_salt,5)}\\\\"
-            f"\\text{{4. Mr NaNO₃}} &= {self.mr_nano3}\\\\"
-            f"\\text{{5. Mass}} &= {round(self.moles_salt,5)} \\times {self.mr_nano3} = {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the volume and concentration of HNO₃ from the diagram.}\\\\"
+            f"&\\quad V(\\text{{HNO}}_3) = {self.volume_cm3} \\text{{ cm}}^3, \\; c = {self.concentration} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 2: Convert volume to dm³ and calculate moles of HNO₃.}\\\\"
+            f"&\\quad V = \\frac{{{self.volume_cm3}}}{{1000}} = {round(self.volume_dm3, 5)} \\text{{ dm}}^3\\\\"
+            f"&\\quad n(\\text{{HNO}}_3) = {self.concentration} \\times {round(self.volume_dm3, 5)} = {round(self.moles_acid, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the 1:1 mole ratio to find moles of NaNO₃.}\\\\"
+            "&\\quad \\text{HNO}_3 + \\text{NaOH} \\rightarrow \\text{NaNO}_3 + \\text{H}_2\\text{O} \\implies 1:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{NaNO}}_3) = {round(self.moles_salt, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the molar mass of NaNO₃.}\\\\"
+            f"&\\quad M_r(\\text{{NaNO}}_3) = {self.mr_nano3} \\text{{ g mol}}^{{-1}}\\\\"
+            "&\\text{Step 5: Calculate the mass of NaNO₃ formed.}\\\\"
+            f"&\\quad m = n \\times M_r = {round(self.moles_salt, 5)} \\times {self.mr_nano3} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4300,11 +4413,6 @@ class Chem138:
                 ha='center',
                 fontsize=12,
                 fontweight='bold')
-
-        ax.text(6, 0.4,
-                "Use the information shown to calculate the mass of NaNO₃ formed (g).",
-                ha='center',
-                fontsize=11)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4350,11 +4458,20 @@ class Chem139:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. n(CO₂)}} &= {self.co2_volume_dm3}/24 = {round(self.moles_co2,5)}\\\\"
-            f"\\text{{2. 1:1 ratio}} &: n(CaCO₃) = {round(self.moles_caco3,5)}\\\\"
-            f"\\text{{3. Mr CaCO₃}} &= {self.mr_caco3}\\\\"
-            f"\\text{{4. Mass pure}} &= {round(self.moles_caco3,5)} \\times {self.mr_caco3} = {round(self.mass_pure,5)}\\\\"
-            f"\\text{{5. \\% purity}} &= \\frac{{{round(self.mass_pure,5)}}}{{{self.sample_mass}}} \\times 100 = {self.answer}\\%"
+            "&\\text{Step 1: Read the volume of CO₂ produced and the sample mass from the diagram.}\\\\"
+            f"&\\quad V(\\text{{CO}}_2) = {self.co2_volume_dm3} \\text{{ dm}}^3, \\; \\text{{Sample mass}} = {self.sample_mass} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate the moles of CO₂ produced.}\\\\"
+            f"&\\quad n(\\text{{CO}}_2) = \\frac{{{self.co2_volume_dm3}}}{{24}} = {round(self.moles_co2, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the 1:1 mole ratio to find moles of CaCO₃.}\\\\"
+            "&\\quad \\text{CaCO}_3 \\rightarrow \\text{CaO + CO}_2 \\implies 1:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{CaCO}}_3) = {round(self.moles_caco3, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the mass of pure CaCO₃.}\\\\"
+            f"&\\quad M_r(\\text{{CaCO}}_3) = {self.mr_caco3} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad m(\\text{{CaCO}}_3) = {round(self.moles_caco3, 5)} \\times {self.mr_caco3} = {round(self.mass_pure, 5)} \\text{{ g}}\\\\"
+            "&\\text{Step 5: Calculate the percentage purity.}\\\\"
+            "&\\quad \\% \\text{ purity} = \\frac{\\text{mass of pure compound}}{\\text{mass of sample}} \\times 100\\\\"
+            f"&\\quad \\% \\text{{ purity}} = \\frac{{{round(self.mass_pure, 5)}}}{{{self.sample_mass}}} \\times 100 = {self.answer} \\%\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4436,12 +4553,18 @@ class Chem140:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. Mr Al₂O₃}} &= {self.mr_al2o3}\\\\"
-            f"\\text{{2. n(Al₂O₃)}} &= {self.mass_al2o3}/{self.mr_al2o3} = {round(self.moles_al2o3,5)}\\\\"
-            f"\\text{{3. Mole ratio}} &: 1:2\\\\"
-            f"\\text{{4. n(AlCl₃)}} &= 2 \\times {round(self.moles_al2o3,5)} = {round(self.moles_alcl3,5)}\\\\"
-            f"\\text{{5. Mr AlCl₃}} &= {self.mr_alcl3}\\\\"
-            f"\\text{{6. Mass}} &= {round(self.moles_alcl3,5)} \\times {self.mr_alcl3} = {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the mass of Al₂O₃ from the diagram.}\\\\"
+            f"&\\quad m(\\text{{Al}}_2\\text{{O}}_3) = {self.mass_al2o3} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate the molar mass of Al₂O₃ and find moles.}\\\\"
+            f"&\\quad M_r(\\text{{Al}}_2\\text{{O}}_3) = {self.mr_al2o3} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad n(\\text{{Al}}_2\\text{{O}}_3) = \\frac{{{self.mass_al2o3}}}{{{self.mr_al2o3}}} = {round(self.moles_al2o3, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the 1:2 mole ratio from the equation to find moles of AlCl₃.}\\\\"
+            "&\\quad \\text{Al}_2\\text{O}_3 + 6\\text{HCl} \\rightarrow 2\\text{AlCl}_3 + 3\\text{H}_2\\text{O} \\implies 1:2 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{AlCl}}_3) = 2 \\times {round(self.moles_al2o3, 5)} = {round(self.moles_alcl3, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the molar mass of AlCl₃ and find the mass.}\\\\"
+            f"&\\quad M_r(\\text{{AlCl}}_3) = {self.mr_alcl3} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad m(\\text{{AlCl}}_3) = {round(self.moles_alcl3, 5)} \\times {self.mr_alcl3} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4477,11 +4600,6 @@ class Chem140:
                 "Excess HCl",
                 ha='center',
                 fontsize=12)
-
-        ax.text(6, 0.6,
-                "Calculate the mass of AlCl₃ formed (g).",
-                ha='center',
-                fontsize=11)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4528,10 +4646,17 @@ class Chem141:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. n(Mg)}} &= {self.mass_mg}/24 = {round(self.moles_mg,5)}\\\\"
-            f"\\text{{2. 1:1 ratio}} &: n(MgSO₄) = {round(self.moles_mgso4,5)}\\\\"
-            f"\\text{{3. Mr MgSO₄}} &= {self.mr_mgso4}\\\\"
-            f"\\text{{4. Mass}} &= {round(self.moles_mgso4,5)} \\times {self.mr_mgso4} = {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read the mass of magnesium from the diagram.}\\\\"
+            f"&\\quad m(\\text{{Mg}}) = {self.mass_mg} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate the moles of magnesium.}\\\\"
+            f"&\\quad n(\\text{{Mg}}) = \\frac{{{self.mass_mg}}}{{{self.mr_mg}}} = {round(self.moles_mg, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the 1:1 mole ratio to find moles of MgSO₄.}\\\\"
+            "&\\quad \\text{Mg + H}_2\\text{SO}_4 \\rightarrow \\text{MgSO}_4 + \\text{H}_2 \\implies 1:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{MgSO}}_4) = {round(self.moles_mgso4, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the molar mass of MgSO₄ and find the mass.}\\\\"
+            f"&\\quad M_r(\\text{{MgSO}}_4) = {self.mr_mgso4} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad m(\\text{{MgSO}}_4) = {round(self.moles_mgso4, 5)} \\times {self.mr_mgso4} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4566,11 +4691,6 @@ class Chem141:
         for i in range(4):
             bubble = Circle((3.2 + i*0.4, 3.8 + i*0.15), 0.12, color="white")
             ax.add_patch(bubble)
-
-        ax.text(8.5, 3.5,
-                "Calculate mass of MgSO₄ (g)",
-                ha='center',
-                fontsize=12)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4618,11 +4738,19 @@ class Chem142:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. n(Ba(NO₃)₂)}} &= ({self.v1}/1000) \\times {self.c1} = {round(self.moles_ba,5)}\\\\"
-            f"\\text{{2. n(Na₂SO₄)}} &= ({self.v2}/1000) \\times {self.c2} = {round(self.moles_so4,5)}\\\\"
-            f"\\text{{3. 1:1 ratio}} &: n(BaSO₄) = {round(self.moles_baso4,5)}\\\\"
-            f"\\text{{4. Mr BaSO₄}} &= {self.mr_baso4}\\\\"
-            f"\\text{{5. Mass}} &= {round(self.moles_baso4,5)} \\times {self.mr_baso4} = {self.answer}\\,\\text{{g}}"
+            "&\\text{Step 1: Read volumes and concentrations of both reactants from the diagram.}\\\\"
+            f"&\\quad V(\\text{{Ba(NO}}_3)_2) = {self.v1} \\text{{ cm}}^3, \\; c = {self.c1} \\text{{ mol dm}}^{{-3}}\\\\"
+            f"&\\quad V(\\text{{Na}}_2\\text{{SO}}_4) = {self.v2} \\text{{ cm}}^3, \\; c = {self.c2} \\text{{ mol dm}}^{{-3}}\\\\"
+            "&\\text{Step 2: Calculate moles of each reactant.}\\\\"
+            f"&\\quad n(\\text{{Ba(NO}}_3)_2) = \\frac{{{self.v1}}}{{1000}} \\times {self.c1} = {round(self.moles_ba, 5)} \\text{{ mol}}\\\\"
+            f"&\\quad n(\\text{{Na}}_2\\text{{SO}}_4) = \\frac{{{self.v2}}}{{1000}} \\times {self.c2} = {round(self.moles_so4, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Identify the limiting reactant using the 1:1 ratio.}\\\\"
+            "&\\quad \\text{Ba(NO}_3)_2 + \\text{Na}_2\\text{SO}_4 \\rightarrow \\text{BaSO}_4 + 2\\text{NaNO}_3 \\implies 1:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{BaSO}}_4) = \\min({round(self.moles_ba, 5)}, {round(self.moles_so4, 5)}) = {round(self.moles_baso4, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the mass of BaSO₄ precipitate formed.}\\\\"
+            f"&\\quad M_r(\\text{{BaSO}}_4) = {self.mr_baso4} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad m(\\text{{BaSO}}_4) = {round(self.moles_baso4, 5)} \\times {self.mr_baso4} = {self.answer} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4723,10 +4851,17 @@ class Chem143:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. Mass of water}} &= {self.initial_mass} - {self.anhydrous_mass} = {round(self.water_mass,5)}\\\\"
-            f"\\text{{2. n(CuSO₄)}} &= {self.anhydrous_mass}/{self.mr_cuso4} = {round(self.moles_cuso4,5)}\\\\"
-            f"\\text{{3. n(H₂O)}} &= {round(self.water_mass,5)}/{self.mr_h2o} = {round(self.moles_h2o,5)}\\\\"
-            f"\\text{{4. Ratio}} &= {round(self.moles_h2o,5)} / {round(self.moles_cuso4,5)} = {self.answer}"
+            "&\\text{Step 1: Read the initial and anhydrous masses from the diagram.}\\\\"
+            f"&\\quad \\text{{Initial mass (hydrated)}} = {self.initial_mass} \\text{{ g}}\\\\"
+            f"&\\quad \\text{{Mass after heating (anhydrous CuSO}}_4) = {self.anhydrous_mass} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate the mass of water lost.}\\\\"
+            f"&\\quad m(\\text{{H}}_2\\text{{O}}) = {self.initial_mass} - {self.anhydrous_mass} = {round(self.water_mass, 5)} \\text{{ g}}\\\\"
+            "&\\text{Step 3: Calculate the moles of CuSO₄ and H₂O.}\\\\"
+            f"&\\quad n(\\text{{CuSO}}_4) = \\frac{{{self.anhydrous_mass}}}{{{self.mr_cuso4}}} = {round(self.moles_cuso4, 5)} \\text{{ mol}}\\\\"
+            f"&\\quad n(\\text{{H}}_2\\text{{O}}) = \\frac{{{round(self.water_mass, 5)}}}{{{self.mr_h2o}}} = {round(self.moles_h2o, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the ratio to find x.}\\\\"
+            f"&\\quad x = \\frac{{n(\\text{{H}}_2\\text{{O}})}}{{n(\\text{{CuSO}}_4)}} = \\frac{{{round(self.moles_h2o, 5)}}}{{{round(self.moles_cuso4, 5)}}} = {self.answer}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4811,12 +4946,21 @@ class Chem144:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{1. Mr ZnO}} &= {self.mr_zno}\\\\"
-            f"\\text{{2. n(ZnO)}} &= {self.mass_zno}/{self.mr_zno} = {round(self.moles_zno,5)}\\\\"
-            f"\\text{{3. 1:1 ratio}} &: n(Zn(NO₃)₂) = {round(self.moles_product,5)}\\\\"
-            f"\\text{{4. Mr Zn(NO₃)₂}} &= {self.mr_znno3_2}\\\\"
-            f"\\text{{5. Theoretical mass}} &= {round(self.moles_product,5)} \\times {self.mr_znno3_2} = {round(self.theoretical_mass,5)}\\\\"
-            f"\\text{{6. \\% yield}} &= \\frac{{{self.actual_mass}}}{{{round(self.theoretical_mass,5)}}} \\times 100 = {self.answer}\\%"
+            "&\\text{Step 1: Read the mass of ZnO and the actual mass of product from the diagram.}\\\\"
+            f"&\\quad m(\\text{{ZnO}}) = {self.mass_zno} \\text{{ g}}, \\; m_{{\\text{{actual}}}}(\\text{{Zn(NO}}_3)_2) = {self.actual_mass} \\text{{ g}}\\\\"
+            "&\\text{Step 2: Calculate moles of ZnO.}\\\\"
+            f"&\\quad M_r(\\text{{ZnO}}) = {self.mr_zno} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad n(\\text{{ZnO}}) = \\frac{{{self.mass_zno}}}{{{self.mr_zno}}} = {round(self.moles_zno, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 3: Use the 1:1 ratio to find moles of product.}\\\\"
+            "&\\quad \\text{ZnO + 2HNO}_3 \\rightarrow \\text{Zn(NO}_3)_2 + \\text{H}_2\\text{O} \\implies 1:1 \\text{ ratio}\\\\"
+            f"&\\quad n(\\text{{Zn(NO}}_3)_2) = {round(self.moles_product, 5)} \\text{{ mol}}\\\\"
+            "&\\text{Step 4: Calculate the theoretical mass.}\\\\"
+            f"&\\quad M_r(\\text{{Zn(NO}}_3)_2) = {self.mr_znno3_2} \\text{{ g mol}}^{{-1}}\\\\"
+            f"&\\quad m_{{\\text{{theoretical}}}} = {round(self.moles_product, 5)} \\times {self.mr_znno3_2} = {round(self.theoretical_mass, 5)} \\text{{ g}}\\\\"
+            "&\\text{Step 5: Calculate the percentage yield.}\\\\"
+            "&\\quad \\% \\text{ yield} = \\frac{\\text{Actual mass}}{\\text{Theoretical mass}} \\times 100\\\\"
+            f"&\\quad \\% \\text{{ yield}} = \\frac{{{self.actual_mass}}}{{{round(self.theoretical_mass, 5)}}} \\times 100 = {self.answer} \\%\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4892,8 +5036,14 @@ class Chem145:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{{self.species} is an element in its free state}}\\\\"
-            f"\\text{{Oxidation number of a free element}} &= 0"
+            "&\\text{Step 1: Identify the species whose oxidation number is required.}\\\\"
+            f"&\\quad \\text{{Species: }} {self.species}\\\\"
+            "&\\text{Step 2: Determine the state of this species in the reaction.}\\\\"
+            f"&\\quad {self.species} \\text{{ appears as a free, uncombined element on the left side of the equation.}}\\\\"
+            "&\\text{Step 3: Apply the rule for free elements.}\\\\"
+            "&\\quad \\text{The oxidation number of any element in its free state is always 0.}\\\\"
+            f"&\\quad \\text{{Oxidation number of }} {self.species} = 0\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -4962,7 +5112,7 @@ class Chem145:
         ax.add_patch(highlight)
 
         ax.text(6, 1.8,
-                f"{self.species}\nOxidation number = ?",
+                f"{self.species}",
                 ha='center',
                 va='center',
                 fontsize=11)
@@ -5004,9 +5154,13 @@ class Chem146:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{From equation:}}\\\\"
-            f"{self.reactant_coeff} \\text{{ mol {self.reactant}}} \\rightarrow {self.product_coeff} \\text{{ mol {self.product}}}\\\\"
-            f"\\text{{From 1 mol {self.reactant}:}} &= {self.product_coeff/self.reactant_coeff}"
+            "&\\text{Step 1: Write out the balanced equation and identify the mole coefficients.}\\\\"
+            f"&\\quad \\text{{Equation: }} {self.equation}\\\\"
+            "&\\text{Step 2: Identify the stoichiometric ratio from the equation.}\\\\"
+            f"&\\quad {self.reactant_coeff} \\text{{ mol }} {self.reactant} \\rightarrow {self.product_coeff} \\text{{ mol }} {self.product}\\\\"
+            "&\\text{Step 3: Scale the ratio to find the moles of product per 1 mole of reactant.}\\\\"
+            f"&\\quad \\text{{From 1 mol }} {self.reactant}: \\quad \\frac{{{self.product_coeff}}}{{{self.reactant_coeff}}} = {self.product_coeff/self.reactant_coeff} \\text{{ mol }} {self.product}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -5058,11 +5212,6 @@ class Chem146:
         ax.text(4.0, y_box + box_height/2, "+", fontsize=18, ha='center', va='center')
         ax.text(7.0, y_box + box_height/2, "→", fontsize=20, ha='center', va='center')
         ax.text(10.0, y_box + box_height/2, "+", fontsize=18, ha='center', va='center')
-
-        ax.text(7, 0.9,
-                f"From 1 mol {self.reactant} → ? mol {self.product}",
-                ha='center',
-                fontsize=12)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -5119,10 +5268,13 @@ class Chem147:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{From the balanced equation:}}\\\\"
-            f"1\\,\\text{{molecule {self.reactant_formula}}} \\rightarrow 2\\,\\text{{molecules {self.product_formula}}}\\\\"
-            f"\\therefore {self.reactant_coeff}\\,\\text{{molecules {self.reactant_formula}}} "
-            f"\\rightarrow {self.reactant_coeff} \\times 2 &= {self.answer}\\,\\text{{molecules {self.product_formula}}}"
+            "&\\text{Step 1: Write out the balanced equation for fermentation.}\\\\"
+            f"&\\quad \\text{{Equation: }} {self.equation}\\\\"
+            "&\\text{Step 2: Read the stoichiometric ratio from the equation.}\\\\"
+            f"&\\quad 1 \\text{{ molecule }} {self.reactant_formula} \\rightarrow 2 \\text{{ molecules }} {self.product_formula}\\\\"
+            "&\\text{Step 3: Scale the ratio for the given number of reactant molecules.}\\\\"
+            f"&\\quad {self.reactant_coeff} \\text{{ molecules }} {self.reactant_formula} \\rightarrow {self.reactant_coeff} \\times 2 = {self.answer} \\text{{ molecules }} {self.product_formula}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -5188,11 +5340,6 @@ class Chem147:
                         ha='center',
                         va='center')
 
-        ax.text(7, 0.9,
-                f"From 1 molecule {self.reactant_formula} → ? molecules {self.product_formula}",
-                ha='center',
-                fontsize=12)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5231,8 +5378,13 @@ class Chem148:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"{self.reactant_coeff}\\,\\text{{mol {self.reactant_formula}}} &\\rightarrow {self.product_coeff}\\,\\text{{mol {self.product_formula}}}\\\\"
-            f"\\text{{From 1 mol {self.reactant_formula}:}} &= {self.answer}\\,\\text{{mol {self.product_formula}}}"
+            "&\\text{Step 1: Write out the balanced equation shown in the diagram.}\\\\"
+            f"&\\quad \\text{{Equation: }} {self.equation}\\\\"
+            "&\\text{Step 2: Identify the stoichiometric ratio from the equation.}\\\\"
+            f"&\\quad {self.reactant_coeff} \\text{{ mol }} {self.reactant_formula} \\rightarrow {self.product_coeff} \\text{{ mol }} {self.product_formula}\\\\"
+            "&\\text{Step 3: Scale the ratio to find moles of product per 1 mole of reactant.}\\\\"
+            f"&\\quad \\text{{From 1 mol }} {self.reactant_formula}: \\quad \\frac{{{self.product_coeff}}}{{{self.reactant_coeff}}} = {self.answer} \\text{{ mol }} {self.product_formula}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
     def generate(self, num):
@@ -5280,14 +5432,6 @@ class Chem148:
         ax.text(6.5, 3, "→", fontsize=22, ha='center', va='center')
         ax.text(10.0, 3, "+", fontsize=20, ha='center', va='center')
 
-        ax.text(
-            7,
-            0.9,
-            f"From 1 mol {self.reactant_formula} → ? mol {self.product_formula}",
-            ha='center',
-            fontsize=12
-        )
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5313,8 +5457,7 @@ class Chem149:
         self.answer = self.group
 
         self.description = (
-            "An element has the electron configuration:\n"
-            f"{self.config}\n"
+            "An element has the electron configuration shown in the image.\n"
             "Determine its group number (IUPAC 1–18)."
         )
 
@@ -5325,8 +5468,15 @@ class Chem149:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Valence electrons}} &= {self.valence}\\\\"
-            f"\\text{{Group number}} &= {self.group}"
+            "&\\text{Step 1: Read the electron configuration from the diagram.}\\\\"
+            f"&\\quad \\text{{Configuration: }} {self.config}\\\\"
+            "&\\text{Step 2: Identify the outermost (valence) shell and count electrons.}\\\\"
+            "&\\quad \\text{The valence electrons are those in the highest energy sub-shells.}\\\\"
+            f"&\\quad \\text{{Number of valence electrons}} = {self.valence}\\\\"
+            "&\\text{Step 3: Determine the group number from the valence electron count.}\\\\"
+            "&\\quad \\text{For main-group elements, group number equals valence electron count.}\\\\"
+            f"&\\quad \\text{{Group number}} = {self.group}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -5419,11 +5569,6 @@ class Chem149:
                 ha='center',
                 fontsize=15)
 
-        ax.text(7, 1.4,
-                "Determine the group number",
-                ha='center',
-                fontsize=12)
-
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5433,24 +5578,23 @@ class Chem150:
     def __init__(self):
 
         variations = [
-            ("1s² 2s² 2p⁶ 3s²", 2),
-            ("1s² 2s² 2p⁶ 3s¹", 1),
-            ("1s² 2s² 2p⁶ 3s² 3p¹", 3),
-            ("1s² 2s² 2p⁶ 3s² 3p²", 4),
-            ("1s² 2s² 2p⁶ 3s² 3p³", 3),
-            ("1s² 2s² 2p⁶ 3s² 3p⁴", 2),
-            ("1s² 2s² 2p⁶ 3s² 3p⁵", 1),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹", 1),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s²", 2),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s²", 2),
-        ]
+        ("1s² 2s² 2p⁶ 3s²", 2),
+        ("1s² 2s² 2p⁶ 3s¹", 1),
+        ("1s² 2s² 2p⁶ 3s² 3p¹", 3),
+        ("1s² 2s² 2p⁶ 3s² 3p²", 4),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹", 1),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s²", 2),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s²", 2),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s¹", 1),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s²", 2),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ 4s²", 2),
+    ]
 
         self.config, self.lost = rnd.choice(variations)
         self.answer = self.lost
 
         self.description = (
-            "An atom has the electron configuration:\n"
-            f"{self.config}\n"
+            "An atom has the electron configuration shown on the image.\n"
             "When forming a stable ion, how many electrons are lost?"
         )
 
@@ -5461,7 +5605,15 @@ class Chem150:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Valence electrons lost}} &= {self.lost}"
+            "&\\text{Step 1: Read the electron configuration from the diagram.}\\\\"
+            f"&\\quad \\text{{Configuration: }} {self.config}\\\\"
+            "&\\text{Step 2: Identify the outermost electrons (highest energy sub-shell).}\\\\"
+            "&\\quad \\text{Metals lose their outermost electrons to achieve a full outer shell.}\\\\"
+            "&\\text{Step 3: Count the electrons in the outermost sub-shell.}\\\\"
+            f"&\\quad \\text{{Electrons in outermost sub-shell}} = {self.lost}\\\\"
+            "&\\text{Step 4: State the number of electrons lost to form the stable ion.}\\\\"
+            f"&\\quad \\text{{Electrons lost}} = {self.lost}\\\\"
+            f"&\\quad \\text{{Final Answer}} = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -5555,11 +5707,6 @@ class Chem150:
                 f"Configuration: {self.config}",
                 ha='center',
                 fontsize=15)
-
-        ax.text(7.5, 1.4,
-                "Electrons lost = ?",
-                ha='center',
-                fontsize=12)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
