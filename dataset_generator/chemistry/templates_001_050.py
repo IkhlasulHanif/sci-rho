@@ -58,6 +58,7 @@ class Chem001:
         self.subtopic = "Isotopes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         isotope_calcs = []
         for mass, abundance in self.isotopes:
@@ -155,6 +156,7 @@ class Chem002:
         self.subtopic = "Ionisation energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701 Past Papers"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -248,6 +250,7 @@ class Chem003:
         self.subtopic   = "Electrons, energy levels, and atomic orbitals"
         self.source     = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{In the diagram, each arrow represents one electron.} &\\\\"
@@ -321,6 +324,7 @@ class Chem004:
         self.subtopic = "Particles in the atom and atomic radius"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -422,6 +426,7 @@ class Chem005:
         self.subtopic = "Ionisation energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701 Past Papers"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -487,6 +492,7 @@ class Chem006:
         self.subtopic = "Electronic Configuration"
         self.source = "Adapted from Cambridge International AS & A Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         config_lines = []
         for orbital in ['1s', '2s', '2p', '3s', '3p', '4s', '3d', '4p']:
@@ -672,6 +678,7 @@ class Chem007:
         self.subtopic   = "Relative masses"
         self.source     = "Adapted from Cambridge A-Level Chemistry 9701 past papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         # Note: Changed × to proper LaTeX \times
         calc_parts = " + ".join(f"({m} \\times {a})" for m, a in self.isotopes)
@@ -748,6 +755,7 @@ class Chem008:
         self.subtopic = "Chemical formulae"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -812,6 +820,7 @@ class Chem009:
         self.subtopic = "Stoichiometric relationships"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode characters to LaTeX equivalents
         latex_eq = self.reaction['equation'].replace('₂', '_2').replace('₃', '_3').replace('→', '\\rightarrow')
@@ -904,6 +913,7 @@ class Chem010:
         self.subtopic = "Electronegativity and bond polarity"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -966,6 +976,7 @@ class Chem011:
         self.subtopic   = "Shapes of molecules (VSEPR) -- tetrahedral"
         self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Shape: tetrahedral}} \\Rightarrow 4 \\text{{ bonds}} &\\\\"
@@ -1030,6 +1041,7 @@ class Chem012:
         self.subtopic   = "Shapes of molecules (VSEPR) -- trigonal pyramidal"
         self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Shape: trigonal pyramidal}} \\Rightarrow 3 \\text{{ bonds}} &\\\\"
@@ -1099,6 +1111,7 @@ class Chem013:
         self.subtopic   = "Shapes of molecules (VSEPR) -- bent"
         self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Shape: bent}} \\Rightarrow 2 \\text{{ bonds}} &\\\\"
@@ -1236,6 +1249,7 @@ class Chem014:
         self.subtopic = "Intermolecular forces"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode subscript to standard LaTeX math syntax
         latex_mol = self.asked_mol.replace('₂', '_2')
@@ -1323,6 +1337,7 @@ class Chem015:
         self.subtopic = "Metallic bonding"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Dynamically build the LaTeX ion using symbol and valence
         charge_str = "+" if self.metal['valence'] == 1 else f"{self.metal['valence']}+"
@@ -1459,6 +1474,7 @@ class Chem016:
         self.subtopic = "Molecular polarity"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1596,6 +1612,7 @@ class Chem017:
         self.subtopic = "Intermolecular forces"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1702,6 +1719,7 @@ class Chem018:
         self.subtopic = "Changes of state"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1763,6 +1781,7 @@ class Chem019:
         self.subtopic = "Phase changes"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1845,6 +1864,7 @@ class Chem020:
         self.subtopic = "Enthalpy changes"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1924,6 +1944,7 @@ class Chem021:
         self.subtopic = "Hess's Law"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1999,6 +2020,7 @@ class Chem022:
         self.subtopic = "Redox and electrode potentials"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2067,6 +2089,7 @@ class Chem023:
         self.subtopic = "Dynamic equilibrium"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2142,6 +2165,7 @@ class Chem024:
         self.subtopic = "Equilibrium constant"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2197,6 +2221,7 @@ class Chem025:
         self.subtopic = "Effect of temperature"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2271,6 +2296,7 @@ class Chem026:
         self.subtopic = "Order of reaction"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2388,6 +2414,7 @@ class Chem027:
         self.subtopic = "Trends in ionization energy"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2491,6 +2518,7 @@ class Chem028:
         self.subtopic = "Trends in atomic properties"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2568,6 +2596,7 @@ class Chem029:
         self.subtopic = "Halogen displacement reactions"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2673,6 +2702,7 @@ class Chem030:
         self.subtopic = "Structural formulae"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode subscripts and en-dashes to standard LaTeX math format
         tex_map = str.maketrans({
@@ -2743,6 +2773,7 @@ class Chem031:
         self.subtopic = "Hydrocarbons: alkenes"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode subscripts and en-dashes to standard LaTeX math format
         tex_map = str.maketrans({
@@ -2830,6 +2861,7 @@ class Chem032:
         self.subtopic   = "Homologous series"
         self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         # Determine the math string for the formula based on the series
         if self.series['series_key'] == 'alkane':
@@ -2922,6 +2954,7 @@ class Chem033:
         self.subtopic   = "Reactions of alkenes -- electrophilic addition"
         self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"&\\text{{1. Identify the reactants: Alkene }} \\mathrm{{C_{{{self.n_C}}}H_{{{hn}}}}} \\text{{ and Reagent }} \\mathrm{{H{self.halogen}}} \\\\"
@@ -3089,6 +3122,7 @@ class Chem034:
         self.subtopic = "Structural formulae and bond counting"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode subscripts to standard LaTeX math format
         tex_map = str.maketrans({
@@ -3192,6 +3226,7 @@ class Chem035:
         self.subtopic   = "Amide formation"
         self.source     = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         Mr_acid  = 14 * self.n_acid + 46
         Mr_amine = 14 * self.n_amine + 17
@@ -3313,6 +3348,7 @@ class Chem036:
         self.subtopic = "Addition polymerization"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3458,6 +3494,7 @@ class Chem037:
         self.subtopic = "Synthetic routes"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         reasoning = (
             "\\[\\begin{aligned}"
@@ -3559,6 +3596,7 @@ class Chem038:
         self.subtopic = "Mass spectrometry"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3674,6 +3712,7 @@ class Chem039:
         self.subtopic = "Infrared spectroscopy"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode subscripts to standard LaTeX math format
         tex_map = str.maketrans({
@@ -3794,6 +3833,7 @@ class Chem040:
         self.subtopic = "NMR spectroscopy"
         self.source = "Adapted from Cambridge A-Level Chemistry 9701"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         
         # Convert Unicode subscripts to standard LaTeX math format
         tex_map = str.maketrans({
@@ -3873,6 +3913,7 @@ class Chem041:
         self.subtopic = "Standard enthalpy changes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3930,6 +3971,7 @@ class Chem042:
         self.subtopic = "Hess's Law"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3994,6 +4036,7 @@ class Chem043:
         self.subtopic = "Bond energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4059,6 +4102,7 @@ class Chem044:
         self.subtopic = "Entropy and free energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4136,6 +4180,7 @@ class Chem045:
         self.subtopic = "Redox reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4209,6 +4254,7 @@ class Chem046:
         self.subtopic = "Electrolysis"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4282,6 +4328,7 @@ class Chem047:
         self.subtopic = "Chemical equilibria"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4365,6 +4412,7 @@ class Chem048:
         self.subtopic = "Equilibrium constant Kc"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4434,6 +4482,7 @@ class Chem049:
         self.subtopic = "Rate of reaction"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4530,6 +4579,7 @@ class Chem050:
         self.subtopic = "Order of reaction and rate equations"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"

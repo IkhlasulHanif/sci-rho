@@ -53,6 +53,7 @@ class Chem101:
         self.subtopic = "Solids, liquids and gases"
         self.source = "GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             r"\[\begin{aligned}"
@@ -126,6 +127,7 @@ class Chem102:
         self.subtopic = "Diffusion"
         self.source = "GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -240,6 +242,7 @@ class Chem103:
         self.subtopic   = "Ions and ionic bonds"
         self.source     = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -382,6 +385,7 @@ class Chem104:
         self.subtopic  = "Simple molecules and covalent bonds"
         self.source    = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             r"\[\begin{aligned}"
@@ -537,6 +541,7 @@ class Chem105:
         self.subtopic   = "Simple molecules and covalent bonds"
         self.source     = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             r"\[\begin{aligned}"
@@ -785,6 +790,7 @@ class Chem106:
         self.subtopic = "Limiting reagent and excess"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -936,6 +942,7 @@ class Chem107:
         self.subtopic = "Multi-stage reaction chains"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1161,6 +1168,7 @@ class Chem108:
         self.subtopic = "Percentage yield with limiting reagent"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1334,6 +1342,7 @@ class Chem109:
         self.subtopic = "Gas volumes using molar gas volume"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         # Convert numbers in gas formulas to LaTeX subscripts
         latex_gas_A = self.r['gas_A']
@@ -1524,6 +1533,7 @@ class Chem110:
         self.subtopic = "Empirical formula → balanced equation → mass product"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1608,6 +1618,7 @@ class Chem111:
         self.subtopic = "Electrolysis mass / moles / charge chain"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1732,6 +1743,7 @@ class Chem112:
         self.subtopic = "Electrolysis limiting ion in solution"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         # Format the cation for LaTeX math mode
         latex_cation = self.sys['cation'].replace('2+', '^{2+}').replace('+', '^+')
@@ -1845,6 +1857,7 @@ class Chem113:
         self.subtopic = "Electrolysis gas volume and stoichiometry"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         if self.given_gas == "H2":
             calc_ratio = self.ratio_O2 / self.ratio_H2
@@ -2014,7 +2027,7 @@ class Chem114:
         self.answer = round(self.thickness_um, 2)
 
         self.description = (
-            "The diagram shows an electroplating setup.\n\n"
+            f"The diagram shows an electroplating setup connected to a power source of {self.current}A.\n\n"
             "Using the parameters provided in the image (current, time, surface area, and metal type), "
             "calculate the coating thickness in micrometres (\u00b5m) (round to 2 decimal places)!"
         )
@@ -2023,6 +2036,7 @@ class Chem114:
         self.subtopic = "Electroplating thickness and mass deposition"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2081,12 +2095,6 @@ class Chem114:
 
         ax.set_title("Electroplating Setup", fontsize=16, fontweight="bold")
 
-        # --- Visual Aids: Instruments and Labels (Insert before ax.set_title) ---
-        psu = Rectangle((1, 11.5), 3.5, 2, fill=True, facecolor="#F2F3F4", edgecolor="black", linewidth=2)
-        ax.add_patch(psu)
-        ax.text(2.75, 12.8, "Power Supply", ha="center", va="center", fontsize=10, fontweight="bold")
-        ax.text(2.75, 12.0, f"{self.current} A", ha="center", va="center", fontsize=12, fontweight="bold", color="#B03A2E")
-
         timer = Rectangle((15, 11.5), 4, 2, fill=True, facecolor="black", edgecolor="gray", linewidth=2)
         ax.add_patch(timer)
         time_str = f"{self.time_min:02d}:00"
@@ -2139,6 +2147,7 @@ class Chem115:
 
         self.description = (
             "The diagram shows the purification of an impure metal using electrolysis.\n\n"
+            f"The system is connected to a {self.current}A powersource.\n"
             "Using the parameters provided in the image (current, time, ore mass, metal type, and ore purity), "
             "calculate the mass of pure metal deposited at the cathode!\n"
         )
@@ -2147,6 +2156,7 @@ class Chem115:
         self.subtopic = "Electrolysis with impure ore and purity calculation"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2213,12 +2223,6 @@ class Chem115:
         ax.text(9.4, 2.3, f"{self.ore_mass} g Ore", ha="center", fontsize=11, fontweight="bold")
         ax.text(9.4, 1.7, f"{self.purity_percent}% Pure {self.metal['metal']}", ha="center", fontsize=11, fontweight="bold", color="#B03A2E")
 
-        # Power Supply
-        psu = Rectangle((3, 11), 3.5, 2, fill=True, facecolor="#F2F3F4", edgecolor="black", linewidth=2)
-        ax.add_patch(psu)
-        ax.text(4.75, 12.3, "Power Supply", ha="center", va="center", fontsize=10, fontweight="bold")
-        ax.text(4.75, 11.5, f"{self.current} A", ha="center", va="center", fontsize=12, fontweight="bold", color="#B03A2E")
-
         # Stopwatch
         timer = Rectangle((15, 11), 4, 2, fill=True, facecolor="black", edgecolor="gray", linewidth=2)
         ax.add_patch(timer)
@@ -2263,6 +2267,7 @@ class Chem116:
         self.subtopic = "Electrolysis calculations"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2376,6 +2381,7 @@ class Chem117:
         self.subtopic = "Limiting ion vs charge"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2501,6 +2507,7 @@ class Chem118:
         self.subtopic = "Electroplating thickness"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2610,6 +2617,7 @@ class Chem119:
         self.subtopic = "Enthalpy"
         self.source = "Adapted from IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2685,6 +2693,7 @@ class Chem120:
         self.subtopic = "Percentage purity + extraction"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2775,6 +2784,7 @@ class Chem121:
         self.subtopic = "Graph-based concentration change"
         self.source = "Adapted from GCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2876,6 +2886,7 @@ class Chem122:
         self.subtopic = "Enthalpy change from reaction pathway"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2954,6 +2965,7 @@ class Chem123:
         self.subtopic = "Activation energy from reaction pathway"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3048,6 +3060,7 @@ class Chem124:
         self.subtopic = "Bond energy calculation"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3143,6 +3156,7 @@ class Chem125:
         self.subtopic = "Rate from gradient"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3235,6 +3249,7 @@ class Chem126:
         self.subtopic = "Time to completion from mass-loss graph"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3348,6 +3363,7 @@ class Chem127:
         self.subtopic = "Percentage yield from composition"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3416,6 +3432,7 @@ class Chem128:
         self.subtopic = "Mole ratio and pressure change"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3520,6 +3537,7 @@ class Chem129:
         self.subtopic = "Rate + Moles + Concentration"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3612,6 +3630,7 @@ class Chem130:
         self.subtopic = "Percentage conversion"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3689,6 +3708,7 @@ class Chem131:
         self.subtopic = "Average rate from concentration-time graph"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3777,6 +3797,7 @@ class Chem132:
         self.subtopic = "Oxidation numbers and electron transfer"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3864,6 +3885,7 @@ class Chem133:
         self.subtopic = "Redox titration"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3963,6 +3985,7 @@ class Chem134:
         self.subtopic = "Oxidising agent and mass calculation"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4050,6 +4073,7 @@ class Chem135:
         self.subtopic = "Acid–alkali titration"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4166,6 +4190,7 @@ class Chem136:
         self.subtopic = "Acid + Carbonate → Gas Volume"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4270,6 +4295,7 @@ class Chem137:
         self.subtopic = "Strong acid pH calculation"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4355,6 +4381,7 @@ class Chem138:
         self.subtopic = "Neutralisation mass calculation"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4455,6 +4482,7 @@ class Chem139:
         self.subtopic = "Percentage purity"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4550,6 +4578,7 @@ class Chem140:
         self.subtopic = "Amphoteric oxide reaction"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4643,6 +4672,7 @@ class Chem141:
         self.subtopic = "Limiting reagent"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4735,6 +4765,7 @@ class Chem142:
         self.subtopic = "Precipitation reaction"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4848,6 +4879,7 @@ class Chem143:
         self.subtopic = "Water of crystallisation"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4943,6 +4975,7 @@ class Chem144:
         self.subtopic = "Percentage yield"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -5033,6 +5066,7 @@ class Chem145:
         self.subtopic = "Oxidation numbers"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -5151,6 +5185,7 @@ class Chem146:
         self.subtopic = "Mole ratio"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -5265,6 +5300,7 @@ class Chem147:
         self.subtopic = "Fermentation stoichiometry"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -5375,6 +5411,7 @@ class Chem148:
         self.subtopic = "Combustion stoichiometry"
         self.source = "Adapted from IGCSE Chemistry Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -5465,6 +5502,7 @@ class Chem149:
         self.subtopic = "Electron configuration → group"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -5602,6 +5640,7 @@ class Chem150:
         self.subtopic = "Ion formation"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
