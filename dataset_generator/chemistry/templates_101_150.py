@@ -781,7 +781,7 @@ class Chem106:
 
         self.description = (
             f"The graph tracks the mass of reactants during the reaction between "
-            f"{self.reaction['reactant_A']} ({self.mass_A} g) and {self.reaction['reactant_B']} ({self.mass_B} g).\n\n"
+            f"{self.reaction['reactant_A']} and {self.reaction['reactant_B']}.\n\n"
             f"Using stoichiometry and the initial data provided in the graph, "
             f"calculate the exact mass of the excess reactant remaining!"
         )
@@ -814,10 +814,8 @@ class Chem106:
         fig, ax = plt.subplots(figsize=(10, 7))
 
         t = np.linspace(0, 10, 200)
-        # Create a decay curve that reaches exactly 0 at t=10
-        decay = ((10 - t) / 10)**2  
+        decay = ((10 - t) / 10)**2
 
-        # Map actual masses to the curves
         if self.limiting == "A":
             mass_A_arr = self.mass_A * decay
             mass_B_arr = (self.mass_B - self.answer) * decay + self.answer
@@ -828,6 +826,28 @@ class Chem106:
         ax.plot(t, mass_A_arr, linewidth=3, color="#2E86C1", label=self.reaction["reactant_A"])
         ax.plot(t, mass_B_arr, linewidth=3, color="#C39A3A", label=self.reaction["reactant_B"])
 
+        # Start labels (left side)
+        ax.annotate(f'{self.reaction["reactant_A"]}: {self.mass_A} g',
+                    xy=(0, mass_A_arr[0]), xytext=(-0.3, mass_A_arr[0]),
+                    fontsize=10, color="#2E86C1", fontweight='bold',
+                    ha='right', va='center')
+
+        ax.annotate(f'{self.reaction["reactant_B"]}: {self.mass_B} g',
+                    xy=(0, mass_B_arr[0]), xytext=(-0.3, mass_B_arr[0]),
+                    fontsize=10, color="#C39A3A", fontweight='bold',
+                    ha='right', va='center')
+
+        # End labels (right side)
+        ax.annotate(f'{round(mass_A_arr[-1], 2)} g',
+                    xy=(10, mass_A_arr[-1]), xytext=(10.2, mass_A_arr[-1]),
+                    fontsize=10, color="#2E86C1", fontweight='bold',
+                    ha='left', va='center')
+
+        ax.annotate(f'{round(mass_B_arr[-1], 2)} g',
+                    xy=(10, mass_B_arr[-1]), xytext=(10.2, mass_B_arr[-1]),
+                    fontsize=10, color="#C39A3A", fontweight='bold',
+                    ha='left', va='center')
+
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
         ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
         ax.set_title("Reactant Mass vs Time", fontsize=16, fontweight='bold')
@@ -835,7 +855,7 @@ class Chem106:
         ax.legend()
         ax.grid(True, linestyle='--', alpha=0.6)
 
-        ax.set_xlim(0, 10)
+        ax.set_xlim(-2, 12)
         ax.set_ylim(0, max(self.mass_A, self.mass_B) * 1.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -964,21 +984,49 @@ class Chem107:
 
         t = np.linspace(0, 10, 200)
 
-        # Create mathematical curves that hit exact start/end points
         decay = ((10 - t) / 10)**2
         growth = 1 - decay
-        intermediate_hump = 4 * (t/10) * ((10-t)/10) # Peaks in the middle
+        intermediate_hump = 4 * (t/10) * ((10-t)/10)
 
-        # Scale curves to actual masses
         start_curve = self.start_mass * decay
         product_curve = self.answer * growth
-        # Intermediate is given an arbitrary visible hump between the two
         intermediate_curve = ((self.start_mass + self.answer) / 2) * intermediate_hump
 
         ax.plot(t, start_curve, linewidth=3, color="#2E86C1", label="Starting compound")
         ax.plot(t, intermediate_curve, linewidth=3, color="#F39C12", label="Intermediate")
         ax.plot(t, product_curve, linewidth=3, color="#28B463", label="Final product")
-        # -----------------------------------------------------------------
+
+        # Start labels (left side)
+        ax.annotate(f'Start: {self.start_mass} g',
+                    xy=(0, start_curve[0]), xytext=(-0.3, start_curve[0]),
+                    fontsize=10, color="#2E86C1", fontweight='bold',
+                    ha='right', va='center')
+
+        ax.annotate(f'0 g',
+                    xy=(0, intermediate_curve[0]), xytext=(-0.3, intermediate_curve[0]),
+                    fontsize=10, color="#F39C12", fontweight='bold',
+                    ha='right', va='center')
+
+        ax.annotate(f'0 g',
+                    xy=(0, product_curve[0]), xytext=(-0.3, product_curve[0]),
+                    fontsize=10, color="#28B463", fontweight='bold',
+                    ha='right', va='center')
+
+        # End labels (right side)
+        ax.annotate(f'0 g',
+                    xy=(10, start_curve[-1]), xytext=(10.2, start_curve[-1]),
+                    fontsize=10, color="#2E86C1", fontweight='bold',
+                    ha='left', va='center')
+
+        ax.annotate(f'0 g',
+                    xy=(10, intermediate_curve[-1]), xytext=(10.2, intermediate_curve[-1]),
+                    fontsize=10, color="#F39C12", fontweight='bold',
+                    ha='left', va='center')
+
+        ax.annotate(f'{self.answer} g',
+                    xy=(10, product_curve[-1]), xytext=(10.2, product_curve[-1]),
+                    fontsize=10, color="#28B463", fontweight='bold',
+                    ha='left', va='center')
 
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
         ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
@@ -987,7 +1035,7 @@ class Chem107:
         ax.legend()
         ax.grid(True, linestyle='--', alpha=0.6)
 
-        ax.set_xlim(0, 10)
+        ax.set_xlim(-2, 12)
         ax.set_ylim(0, max(self.start_mass, self.answer) * 1.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -1194,40 +1242,54 @@ class Chem108:
         fig, ax = plt.subplots(figsize=(10, 7))
 
         t = np.linspace(0, 10, 200)
-        
-        # Create decay/growth curves
+
         decay = ((10 - t) / 10)**2
         growth = 1 - decay
 
-        # Calculate exact ending masses based on stoichiometry
         used_A = self.limiting_moles_norm * self.r["coeff_A"] * self.r["Ar_A"]
         used_B = self.limiting_moles_norm * self.r["coeff_B"] * self.r["Ar_B"]
         m_end_A = self.mass_A - used_A
         m_end_B = self.mass_B - used_B
 
-        # Map actual masses to the curves
         mass_A_arr = (self.mass_A - m_end_A) * decay + m_end_A
         mass_B_arr = (self.mass_B - m_end_B) * decay + m_end_B
         actual_product_arr = self.actual_mass * growth
 
         ax.plot(t, mass_A_arr, linewidth=3, color="#2E86C1", label=self.r["A"])
         ax.plot(t, mass_B_arr, linewidth=3, color="#C39A3A", label=self.r["B"])
-        ax.plot(t, actual_product_arr, linewidth=3, color="#E74C3C", label=f"{self.r['P']} (Actual Product)")
+        ax.plot(t, actual_product_arr, linewidth=3, color="#E74C3C", label=f"{self.r['P']} (Actual)")
 
-        # --- Visual Aids: Annotate exact numbers at points of interest ---
-        # Initial Masses (t=0)
-        ax.text(0.2, self.mass_A, f"{self.mass_A} g", color="#2E86C1", fontweight='bold', va='bottom')
-        ax.text(0.2, self.mass_B, f"{self.mass_B} g", color="#C39A3A", fontweight='bold', va='bottom')
-        
-        # Final Actual Product Mass (t=10)
-        ax.text(9.8, self.actual_mass, f"{round(self.actual_mass, 2)} g", color="#E74C3C", fontweight='bold', ha='right', va='bottom')
-        
-        # Explicitly label the limiting reactant hitting 0g to reinforce learning
-        if self.norm_A < self.norm_B:
-            ax.text(9.8, 0.2, "0 g", color="#2E86C1", fontweight='bold', ha='right', va='bottom')
-        else:
-            ax.text(9.8, 0.2, "0 g", color="#C39A3A", fontweight='bold', ha='right', va='bottom')
-        # -----------------------------------------------------------------
+        # Start labels (left side)
+        ax.annotate(f'{self.r["A"]}: {self.mass_A} g',
+                    xy=(0, mass_A_arr[0]), xytext=(-0.3, mass_A_arr[0]),
+                    fontsize=10, color="#2E86C1", fontweight='bold',
+                    ha='right', va='center')
+
+        ax.annotate(f'{self.r["B"]}: {self.mass_B} g',
+                    xy=(0, mass_B_arr[0]), xytext=(-0.3, mass_B_arr[0]),
+                    fontsize=10, color="#C39A3A", fontweight='bold',
+                    ha='right', va='center')
+
+        ax.annotate(f'{self.r["P"]}: 0 g',
+                    xy=(0, actual_product_arr[0]), xytext=(-0.3, actual_product_arr[0] + 0.5),
+                    fontsize=10, color="#E74C3C", fontweight='bold',
+                    ha='right', va='center')
+
+        # End labels (right side)
+        ax.annotate(f'{round(m_end_A, 2)} g',
+                    xy=(10, mass_A_arr[-1]), xytext=(10.2, mass_A_arr[-1]),
+                    fontsize=10, color="#2E86C1", fontweight='bold',
+                    ha='left', va='center')
+
+        ax.annotate(f'{round(m_end_B, 2)} g',
+                    xy=(10, mass_B_arr[-1]), xytext=(10.2, mass_B_arr[-1]),
+                    fontsize=10, color="#C39A3A", fontweight='bold',
+                    ha='left', va='center')
+
+        ax.annotate(f'{round(self.actual_mass, 2)} g',
+                    xy=(10, actual_product_arr[-1]), xytext=(10.2, actual_product_arr[-1]),
+                    fontsize=10, color="#E74C3C", fontweight='bold',
+                    ha='left', va='center')
 
         ax.set_xlabel("Time (s)", fontsize=14, fontweight='bold')
         ax.set_ylabel("Mass (g)", fontsize=14, fontweight='bold')
@@ -1236,7 +1298,7 @@ class Chem108:
         ax.legend()
         ax.grid(True, linestyle='--', alpha=0.6)
 
-        ax.set_xlim(0, 10)
+        ax.set_xlim(-2, 12)
         ax.set_ylim(0, max(self.mass_A, self.mass_B, self.actual_mass) * 1.2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -2259,6 +2321,7 @@ class Chem116:
 
         self.description = (
             "The diagram shows electrolysis of copper(II) sulfate solution. "
+            f"The process is done in {self.time_minutes} minutes. \n"
             "Use the information in the diagram to calculate "
             "the mass of copper produced."
         )
@@ -2321,11 +2384,6 @@ class Chem116:
                 ha='center',
                 fontsize=13)
 
-        ax.text(6, 5.9,
-                f"Time = {self.time_minutes} min",
-                ha='center',
-                fontsize=13)
-
         copper_deposit = patches.Rectangle((4.05, 2),
                                            0.1, 3,
                                            color="#b87333")
@@ -2372,9 +2430,10 @@ class Chem117:
         self.answer = round(self.mass_silver, 3)
 
         self.description = (
-            "The diagram shows an electrolysis setup for silver nitrate solution. "
-            "Using the parameters provided in the image, "
-            "calculate the mass of silver deposited at the cathode!"
+            f"The diagram shows an electrolysis setup for silver nitrate solution "
+            f"of {self.volume_dm3} dm³). "
+            f"Using the parameters provided in the image, "
+            f"calculate the mass of silver deposited at the cathode!"
         )
 
         self.topic = "Electrochemistry"
@@ -2453,11 +2512,6 @@ class Chem117:
                 f"{self.concentration} mol dm⁻³",
                 fontsize=12)
 
-        ax.text(6, 1.1,
-                f"Volume = {self.volume_dm3} dm³",
-                fontsize=12,
-                ha='center')
-
         ax.text(6, 0.6,
                 "Ag⁺ + e⁻ → Ag",
                 fontsize=12,
@@ -2497,10 +2551,11 @@ class Chem118:
         self.answer = round(self.thickness_mm, 4)
 
         self.description = (
-            "The diagram shows a nickel electroplating setup. "
-            "Using the parameters provided in the image, "
-            "calculate the thickness of the nickel deposited in millimetres (mm).\n"
-            "(Round to 4 decimal places)"
+            f"The diagram shows a nickel electroplating setup where the electrode surface area is {self.area_cm2} cm² "
+            f"and nickel has a density of {self.density} g/cm³. "
+            f"Using the parameters provided in the image, "
+            f"calculate the thickness of the nickel deposited in millimetres (mm).\n"
+            f"(Round to 4 decimal places)"
         )
 
         self.topic = "Electrochemistry"
@@ -2564,14 +2619,6 @@ class Chem118:
                                          color="#c0c0c0")
         ax.add_patch(plated_layer)
 
-        ax.text(3.5, 1.2,
-                f"Surface area = {self.area_cm2} cm²",
-                fontsize=12)
-
-        ax.text(8.5, 1.2,
-                f"Density Ni = {self.density} g/cm³",
-                fontsize=12)
-
         ax.text(6, 6.2,
                 f"I = {self.current} A",
                 ha='center',
@@ -2609,8 +2656,8 @@ class Chem119:
         self.answer = self.delta_H
         
         self.description = (
-            "An enthalpy profile diagram shows the energy levels of reactants and products. "
-            "Using the values marked on the y-axis, determine the enthalpy change ΔH (kJ mol⁻¹) for this reaction."
+            f"An enthalpy profile diagram shows reactants at {self.reactant_E} kJ/mol and products at {self.product_E} kJ/mol. "
+            f"Using the values marked on the y-axis, determine the enthalpy change ΔH (kJ mol⁻¹) for this reaction."
         )
 
         self.topic = "Energetics"
@@ -3287,7 +3334,6 @@ class Chem126:
         for spine in ax.spines.values():
             spine.set_linewidth(1.5)
 
-        import numpy as np
         t = np.linspace(0, self.finish_time, 200)
         k = 3 / self.finish_time
         mass_curve = self.final_mass + (self.initial_mass - self.final_mass) * np.exp(-k * t)
@@ -3310,22 +3356,6 @@ class Chem126:
                 f"{self.final_mass} g",
                 fontsize=10,
                 ha='center')
-
-        ax_table = fig.add_axes([0.25, 0.12, 0.5, 0.12])
-        ax_table.axis('off')
-
-        table_data = [
-            ["Time (s)", "0", f"{self.finish_time}"],
-            ["Mass (g)", f"{self.initial_mass}", f"{self.final_mass}"]
-        ]
-
-        table = ax_table.table(cellText=table_data,
-                            loc='center',
-                            cellLoc='center')
-
-        table.auto_set_font_size(False)
-        table.set_fontsize(11)
-        table.scale(1.2, 1.5)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -3501,16 +3531,16 @@ class Chem129:
     def __init__(self):
 
         variations = [
-            ("CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O", "CO₂", 72, 90, 0.50),
-            ("Mg + 2HCl → MgCl₂ + H₂", "H₂", 48, 60, 0.50),
-            ("Zn + 2HCl → ZnCl₂ + H₂", "H₂", 24, 40, 0.40),
-            ("CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + CO₂ + H₂O", "CO₂", 96, 100, 0.80),
-            ("Fe + 2HCl → FeCl₂ + H₂", "H₂", 36, 70, 0.30),
-            ("CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O", "CO₂", 48, 75, 0.50),
-            ("Mg + 2HCl → MgCl₂ + H₂", "H₂", 72, 80, 0.60),
-            ("Zn + 2HCl → ZnCl₂ + H₂", "H₂", 60, 85, 0.50),
-            ("CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + CO₂ + H₂O", "CO₂", 24, 50, 0.20),
-            ("Fe + 2HCl → FeCl₂ + H₂", "H₂", 48, 65, 0.40),
+            ("CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O",      "CO₂", 120, 90,  0.50),  # → 0.020
+            ("Mg + 2HCl → MgCl₂ + H₂",                  "H₂",  120, 60,  0.25),  # → 0.040
+            ("Zn + 2HCl → ZnCl₂ + H₂",                  "H₂",  240, 40,  0.40),  # → 0.050
+            ("CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + CO₂ + H₂O",  "CO₂", 360, 100, 0.30),  # → 0.100
+            ("Fe + 2HCl → FeCl₂ + H₂",                  "H₂",  144, 70,  0.20),  # → 0.060
+            ("CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O",      "CO₂", 480, 75,  0.80),  # → 0.050
+            ("Mg + 2HCl → MgCl₂ + H₂",                  "H₂",   72, 80,  0.30),  # → 0.020
+            ("Zn + 2HCl → ZnCl₂ + H₂",                  "H₂",  336, 85,  0.35),  # → 0.080
+            ("CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + CO₂ + H₂O",  "CO₂", 216, 50,  0.30),  # → 0.060
+            ("Fe + 2HCl → FeCl₂ + H₂",                  "H₂",  420, 65,  0.50),  # → 0.070
         ]
 
         (self.reaction,
@@ -3594,14 +3624,19 @@ class Chem130:
     def __init__(self):
 
         variations = [
-            ("Haber Process", "N₂ + 3H₂ ⇌ 2NH₃", "N₂", 40, 120, 15, 45, 30),
-            ("Haber Process", "N₂ + 3H₂ ⇌ 2NH₃", "N₂", 50, 150, 20, 60, 40),
-            ("Sulfur trioxide formation", "2SO₂ + O₂ ⇌ 2SO₃", "SO₂", 60, 40, 30, 20, 60),
-            ("Sulfur trioxide formation", "2SO₂ + O₂ ⇌ 2SO₃", "SO₂", 80, 50, 40, 25, 80),
-            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄", "NO₂", 100, None, 40, None, 60),
-            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄", "NO₂", 80, None, 30, None, 50),
-            ("Hydrogen iodide formation", "H₂ + I₂ ⇌ 2HI", "H₂", 60, 60, 20, 20, 80),
-            ("Hydrogen iodide formation", "H₂ + I₂ ⇌ 2HI", "H₂", 50, 50, 10, 10, 80),
+            # N₂ + 3H₂ → 2NH₃: NH₃_produced = N₂_reacted × 2
+            ("Haber Process",              "N₂ + 3H₂ ⇌ 2NH₃",    "N₂",  40, 120, 15, 45, 50),  # reacted=25 → 50 NH₃
+            ("Haber Process",              "N₂ + 3H₂ ⇌ 2NH₃",    "N₂",  50, 150, 20, 60, 60),  # reacted=30 → 60 NH₃
+            # 2SO₂ + O₂ → 2SO₃: SO₃_produced = SO₂_reacted (2:2); O₂_reacted = SO₂_reacted/2
+            ("Sulfur trioxide formation",  "2SO₂ + O₂ ⇌ 2SO₃",   "SO₂", 60, 40, 30, 25, 30),  # SO₂_reacted=30; O₂_eq=25; SO₃=30
+            ("Sulfur trioxide formation",  "2SO₂ + O₂ ⇌ 2SO₃",   "SO₂", 80, 50, 40, 30, 40),  # SO₂_reacted=40; O₂_eq=30; SO₃=40
+            # 2NO₂ → N₂O₄: N₂O₄_produced = NO₂_reacted / 2
+            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄",    "NO₂", 100, None, 40, None, 30),  # reacted=60 → 30 N₂O₄
+            ("Dinitrogen tetroxide formation", "2NO₂ ⇌ N₂O₄",    "NO₂",  80, None, 30, None, 25),  # reacted=50 → 25 N₂O₄
+            # H₂ + I₂ → 2HI: HI_produced = H₂_reacted × 2; stoichiometry 1:1:2
+            ("Hydrogen iodide formation",  "H₂ + I₂ ⇌ 2HI",      "H₂",  60, 60, 20, 20, 80),
+            ("Hydrogen iodide formation",  "H₂ + I₂ ⇌ 2HI",      "H₂",  50, 50, 10, 10, 80),
+            # NH₃ + HCl → NH₄Cl: 1:1:1 ratio
             ("Ammonium chloride formation", "NH₃ + HCl ⇌ NH₄Cl", "NH₃", 70, 70, 20, 20, 50),
             ("Ammonium chloride formation", "NH₃ + HCl ⇌ NH₄Cl", "NH₃", 60, 60, 15, 15, 45),
         ]
@@ -3622,7 +3657,8 @@ class Chem130:
         self.answer = round(self.percentage_conversion, 1)
 
         self.description = (
-            f"The diagram shows the equilibrium composition for {self.process}.\n"
+            f"The diagram shows the equilibrium composition for {self.process} "
+            f"({self.equation}), with {self.limiting_species} starting at {self.initial_limiting} mol. "
             f"Calculate the percentage conversion of {self.limiting_species}."
         )
 
@@ -3661,10 +3697,6 @@ class Chem130:
 
         for i, v in enumerate(values):
             ax.text(i, v + 2, str(v), ha='center')
-
-        fig.text(0.1, 0.05,
-                 f"Initial amounts:\nReactant 1 = {self.initial_r1} mol\nReactant 2 = {self.initial_r2 if self.initial_r2 else '-'} mol",
-                 fontsize=10)
 
         os.makedirs("output", exist_ok=True)
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -4450,16 +4482,16 @@ class Chem139:
     def __init__(self):
 
         variations = [
-            (5.00, 1.20),
-            (4.00, 0.96),
-            (6.00, 1.44),
-            (5.00, 0.96),
-            (8.00, 1.92),
-            (10.00, 2.40),
-            (2.50, 0.60),
-            (7.50, 1.80),
-            (3.00, 0.72),
-            (9.00, 2.16),
+            (5.00, 0.96),   # purity = 80.0%
+            (4.00, 0.72),   # purity = 75.0%
+            (5.00, 1.08),   # purity = 90.0%
+            (5.00, 0.84),   # purity = 70.0%
+            (5.00, 1.02),   # purity = 85.0%
+            (8.00, 1.44),   # purity = 75.0%
+            (8.00, 1.68),   # purity = 87.5%
+            (10.00, 2.16),  # purity = 90.0%
+            (10.00, 1.80),  # purity = 75.0%
+            (6.00, 1.20),   # purity = 83.3%
         ]
 
         self.sample_mass, self.co2_volume_dm3 = rnd.choice(variations)
