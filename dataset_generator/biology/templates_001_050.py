@@ -331,7 +331,7 @@ class Bio006:
         self.energy_transfer = (self.trophicB / self.trophicA)
         self.answer = round(self.energy_transfer * 100, 2)
 
-        self.description = f"This diagram shows a food chain. What is the efficiency of energy transfer between {self.trophics_names[self.indexA] and {self.trophics_names[self.indexB]}}?"
+        self.description = f"This diagram shows a food chain. What is the efficiency of energy transfer between {self.trophics_names[self.indexA]} and {self.trophics_names[self.indexB]}?"
         self.topic = "Organisms and their environment"
         self.subtopic = "Food chains and food webs"
         self.source = "IGCSE"
