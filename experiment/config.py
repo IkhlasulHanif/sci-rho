@@ -17,21 +17,16 @@ class SamplingConfig:
 @dataclass
 class ExperimentConfig:
     model_names: tuple[str] = (
+        "meta-llama/Llama-3.2-90B-Vision-Instruct",
         "meta-llama/Llama-3.2-11B-Vision-Instruct",
-        "meta-llama/Llama-4-Maverick-17B-128E-Instruct",
-        "Qwen/Qwen3-VL-8B-Thinking",
-        "Qwen/Qwen3-VL-30B-A3B-Thinking",
-        "Skywork/Skywork-R1V3-38B",
-        "Skywork/R1V4",
-        "OpenGVLab/InternVL3_5-8B-HF",
-        "OpenGVLab/InternVL3_5-38B-HF",
-        "google/gemma-3-4b-it",
+        "Qwen/Qwen3.5-27B",
+        "Qwen/Qwen3.5-9B",
+        "google/gemma-4-31B-it",
         "google/gemma-3-12b-it",
-        "google/gemma-3-27b-it",
-        "deepseek-ai/deepseek-vl2",
-        "llava-hf/llava-v1.6-vicuna-7b-hf",
+        "OpenGVLab/InternVL3_5-38B-HF",
+        "OpenGVLab/InternVL3_5-8B-HF",
         "llava-hf/llava-v1.6-vicuna-13b-hf",
-        "microsoft/Phi-4-multimodal-instruct"
+        "llava-hf/llava-v1.6-vicuna-7b-hf",
     )
     subject_list: tuple[str] = (
         "mathematics", 
