@@ -1008,3 +1008,53 @@ def format_chemical_formula(text):
         result = result.replace(k, v)
     
     return result
+
+def draw_skeletal_formula(ax, atoms, bonds, cx=0.0, cy=0.0, scale=1.0,
+                          fontsize=9, lw=2.0, color='black'):
+    """
+    Draw a skeletal (line-angle) formula centred at (cx, cy).
+ 
+    atoms : list of (x, y, label)
+        Normalised positions (nominal bond length = 1.0).
+        label = None  -> carbon vertex (not drawn explicitly).
+        label = str   -> heteroatom label drawn at that position
+                         e.g. 'O', 'OH', 'Cl', 'Br'.
+    bonds : list of (i, j, bond_type)
+        bond_type : 'single' or 'double'
+    cx, cy : centre of structure in axes coordinates
+    scale  : multiplier applied to all normalised distances
+    """
+    if not atoms:
+        return
+ 
+    xs = [a[0] for a in atoms]
+    ys = [a[1] for a in atoms]
+    mid_x = (max(xs) + min(xs)) / 2.0
+    mid_y = (max(ys) + min(ys)) / 2.0
+ 
+    def coord(a):
+        return (a[0] - mid_x) * scale + cx, (a[1] - mid_y) * scale + cy
+ 
+    for i, j, btype in bonds:
+        x1, y1 = coord(atoms[i])
+        x2, y2 = coord(atoms[j])
+        if btype == 'single':
+            ax.plot([x1, x2], [y1, y2], color=color, lw=lw,
+                    solid_capstyle='round', zorder=2)
+        elif btype == 'double':
+            dx, dy = x2 - x1, y2 - y1
+            length = (dx**2 + dy**2) ** 0.5 + 1e-9
+            gap = 0.055 * scale
+            ox, oy = -dy * gap / length, dx * gap / length
+            ax.plot([x1 + ox, x2 + ox], [y1 + oy, y2 + oy],
+                    color=color, lw=lw * 0.85, solid_capstyle='round', zorder=2)
+            ax.plot([x1 - ox, x2 - ox], [y1 - oy, y2 - oy],
+                    color=color, lw=lw * 0.85, solid_capstyle='round', zorder=2)
+ 
+    for atom in atoms:
+        if atom[2] is not None:
+            px, py = coord(atom)
+            ax.text(px, py, atom[2],
+                    fontsize=fontsize, ha='center', va='center',
+                    color=color, fontweight='bold', zorder=3,
+                    bbox=dict(facecolor='white', edgecolor='none', pad=1.5))
