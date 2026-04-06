@@ -1173,11 +1173,170 @@ class Chem060:
 
 
 
+
+_N = None
+
+_CHEM061_STRUCTURES = {
+    'butane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single')]
+    ),
+    '2-methylpropane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(0.5,1.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(1,3,'single')]
+    ),
+    'pentane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,4,'single')]
+    ),
+    '2-methylbutane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(0.5,1.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(1,4,'single')]
+    ),
+    '2,2-dimethylpropane': (
+        [(1,0.866,_N),(0.5,0,_N),(1.5,0,_N),(0.5,1.732,_N),(1.5,1.732,_N)],
+        [(0,1,'single'),(0,2,'single'),(0,3,'single'),(0,4,'single')]
+    ),
+    'but-1-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N)],
+        [(0,1,'double'),(1,2,'single'),(2,3,'single')]
+    ),
+    'but-2-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N)],
+        [(0,1,'single'),(1,2,'double'),(2,3,'single')]
+    ),
+    '2-methylpropene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(0.5,1.866,_N)],
+        [(0,1,'double'),(1,2,'single'),(1,3,'single')]
+    ),
+    'cyclobutane': (
+        [(0,0,_N),(1,0,_N),(1,1,_N),(0,1,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,0,'single')]
+    ),
+    'methylcyclopropane': (
+        [(0.5,0.866,_N),(0,0,_N),(1,0,_N),(0.5,1.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,0,'single'),(0,3,'single')]
+    ),
+    '1-chloropropane': (
+        [(0,0,'Cl'),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single')]
+    ),
+    '2-chloropropane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(0.5,1.866,'Cl')],
+        [(0,1,'single'),(1,2,'single'),(1,3,'single')]
+    ),
+    '1-chlorobutane': (
+        [(0,0,'Cl'),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,4,'single')]
+    ),
+    '2-chlorobutane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(0.5,1.866,'Cl')],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(1,4,'single')]
+    ),
+    '1-chloro-2-methylpropane': (
+        [(0,0,'Cl'),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(1,-0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(2,4,'single')]
+    ),
+    '2-chloro-2-methylpropane': (
+        [(1,0.866,_N),(0.5,0,_N),(1.5,0,_N),(0.5,1.732,_N),(1.5,1.732,'Cl')],
+        [(0,1,'single'),(0,2,'single'),(0,3,'single'),(0,4,'single')]
+    ),
+    'propanal': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,'O')],
+        [(0,1,'single'),(1,2,'single'),(2,3,'double')]
+    ),
+    'propan-2-one (acetone)': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(0.5,1.866,'O')],
+        [(0,1,'single'),(1,2,'single'),(1,3,'double')]
+    ),
+    'oxetane': (
+        [(0,0,'O'),(1,0,_N),(1,1,_N),(0,1,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,0,'single')]
+    ),
+    'ethanol': (
+        [(0,0,'OH'),(0.5,0.866,_N),(1,0,_N)],
+        [(0,1,'single'),(1,2,'single')]
+    ),
+    'methoxymethane': (
+        [(0,0,_N),(0.5,0.866,'O'),(1,0,_N)],
+        [(0,1,'single'),(1,2,'single')]
+    ),
+    'propan-1-ol': (
+        [(0,0,'OH'),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single')]
+    ),
+    'propan-2-ol': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(0.5,1.866,'OH')],
+        [(0,1,'single'),(1,2,'single'),(1,3,'single')]
+    ),
+    'methoxyethane': (
+        [(0,0,_N),(0.5,0.866,'O'),(1,0,_N),(1.5,0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single')]
+    ),
+    '1-bromobutane': (
+        [(0,0,'Br'),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,4,'single')]
+    ),
+    '2-bromobutane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(0.5,1.866,'Br')],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(1,4,'single')]
+    ),
+    '1-bromo-2-methylpropane': (
+        [(0,0,'Br'),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(1,-0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(2,4,'single')]
+    ),
+    '2-bromo-2-methylpropane': (
+        [(1,0.866,_N),(0.5,0,_N),(1.5,0,_N),(0.5,1.732,_N),(1.5,1.732,'Br')],
+        [(0,1,'single'),(0,2,'single'),(0,3,'single'),(0,4,'single')]
+    ),
+    'pent-1-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N)],
+        [(0,1,'double'),(1,2,'single'),(2,3,'single'),(3,4,'single')]
+    ),
+    'pent-2-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N)],
+        [(0,1,'single'),(1,2,'double'),(2,3,'single'),(3,4,'single')]
+    ),
+    '2-methylbut-1-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(0.5,1.866,_N)],
+        [(0,1,'double'),(1,2,'single'),(2,3,'single'),(1,4,'single')]
+    ),
+    '2-methylbut-2-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(0.5,1.866,_N)],
+        [(0,1,'single'),(1,2,'double'),(2,3,'single'),(1,4,'single')]
+    ),
+    '3-methylbut-1-ene': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(1,-0.866,_N)],
+        [(0,1,'double'),(1,2,'single'),(2,3,'single'),(2,4,'single')]
+    ),
+    'hexane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N),(2.5,0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,4,'single'),(4,5,'single')]
+    ),
+    '2-methylpentane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N),(0.5,1.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,4,'single'),(1,5,'single')]
+    ),
+    '3-methylpentane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(2,0,_N),(1,-0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(3,4,'single'),(2,5,'single')]
+    ),
+    '2,2-dimethylbutane': (
+        [(1.5,0.866,_N),(1,0,_N),(1,1.732,_N),(2,1.732,_N),(2,0,_N),(2.5,0.866,_N)],
+        [(0,1,'single'),(0,2,'single'),(0,3,'single'),(0,4,'single'),(4,5,'single')]
+    ),
+    '2,3-dimethylbutane': (
+        [(0,0,_N),(0.5,0.866,_N),(1,0,_N),(1.5,0.866,_N),(0.5,1.866,_N),(1,-0.866,_N)],
+        [(0,1,'single'),(1,2,'single'),(2,3,'single'),(1,4,'single'),(2,5,'single')]
+    ),
+}
+
+
 class Chem061:
     """
     Topic: 29.4 Isomerism - structural isomers
-    Visual: Shows isomers (structures only, NO count label)
-    Task: Count number of structural isomers (numerical answer)
+    Visual: Grid of skeletal formula structures with no names, formula shown at top
+    Task: Count the number of structural isomers drawn (numerical answer)
     10+ variations
     """
 
@@ -1185,12 +1344,12 @@ class Chem061:
         formulas = [
             ("C\u2084H\u2081\u2080", 2, ["butane", "2-methylpropane"]),
             ("C\u2085H\u2081\u2082", 3, ["pentane", "2-methylbutane", "2,2-dimethylpropane"]),
-            ("C\u2084H\u2088", 4, ["but-1-ene", "but-2-ene", "2-methylpropene", "cyclobutane"]),
+            ("C\u2084H\u2088", 5, ["but-1-ene", "but-2-ene", "2-methylpropene", "cyclobutane", "methylcyclopropane"]),
             ("C\u2083H\u2087Cl", 2, ["1-chloropropane", "2-chloropropane"]),
             ("C\u2084H\u2089Cl", 4, ["1-chlorobutane", "2-chlorobutane", "1-chloro-2-methylpropane", "2-chloro-2-methylpropane"]),
-            ("C\u2083H\u2086O", 3, ["propanal", "propan-2-one (acetone)", "methoxyethane"]),
+            ("C\u2083H\u2086O", 2, ["propanal", "propan-2-one (acetone)"]),
             ("C\u2082H\u2086O", 2, ["ethanol", "methoxymethane"]),
-            ("C\u2083H\u2088O", 3, ["propan-1-ol", "propan-2-ol", "methoxymethane"]),
+            ("C\u2083H\u2088O", 3, ["propan-1-ol", "propan-2-ol", "methoxyethane"]),
             ("C\u2084H\u2089Br", 4, ["1-bromobutane", "2-bromobutane", "1-bromo-2-methylpropane", "2-bromo-2-methylpropane"]),
             ("C\u2085H\u2081\u2080", 5, ["pent-1-ene", "pent-2-ene", "2-methylbut-1-ene", "2-methylbut-2-ene", "3-methylbut-1-ene"]),
             ("C\u2086H\u2081\u2084", 5, ["hexane", "2-methylpentane", "3-methylpentane", "2,2-dimethylbutane", "2,3-dimethylbutane"]),
@@ -1200,64 +1359,92 @@ class Chem061:
         self.formula = self.compound[0]
         self.num_isomers = self.compound[1]
         self.isomer_names = self.compound[2]
-
         self.answer = self.num_isomers
 
         self.description = (
-            "The diagram shows structural isomers for a specific molecular formula. "
-            "How many structural isomers does the molecular formula shown in the diagram have?"
+            "The diagram shows skeletal formulas of compounds sharing a common "
+            "molecular formula displayed at the top. "
+            "How many structural isomers are shown?"
         )
-
         self.topic = "Introduction to A Level organic chemistry"
         self.subtopic = "Isomerism"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
         self.curriculum = "A Level"
         self.question_type = "Short Answer"
 
-        # Convert Unicode subscripts to standard LaTeX math format
         tex_map = str.maketrans({
-            '₀': '_0', '₁': '_1', '₂': '_2', '₃': '_3', '₄': '_4', 
-            '₅': '_5', '₆': '_6', '₇': '_7', '₈': '_8', '₉': '_9'
+            '\u2080': '_0', '\u2081': '_1', '\u2082': '_2', '\u2083': '_3', '\u2084': '_4',
+            '\u2085': '_5', '\u2086': '_6', '\u2087': '_7', '\u2088': '_8', '\u2089': '_9'
         })
         formula_tex = self.formula.translate(tex_map)
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "&\\text{1. Structural isomers are compounds with the same molecular formula} \\\\"
-            "&\\quad \\text{but different structural arrangements (chain, position, or functional group).} \\\\"
-            f"&\\text{{2. For the formula }}\\mathrm{{{formula_tex}}}\\text{{, the unique structural isomers are:}} \\\\"
-        )
-        
-        for name in self.isomer_names:
-            # Fixing the C3H8O typo if it appears in the text
-            display_name = "methoxyethane" if name == "methoxymethane" and "3" in self.formula else name
-            self.reasoning += f"&\\quad \\bullet \\, \\text{{{display_name}}} \\\\"
-            
-        self.reasoning += (
-            f"&\\text{{3. Summing these up, we find a total of {self.answer} structural isomers.}} \\\\"
-            f"&\\text{{Note: Stereoisomers (like cis-trans) are not counted as structural isomers.}} \\\\"
+            "&\\text{1. Structural isomers share the same molecular formula} \\\\"
+            "&\\quad \\text{but differ in structural arrangement.} \\\\"
+            f"&\\text{{2. Formula shown: }}\\mathrm{{{formula_tex}}} \\\\"
+            f"&\\text{{3. Count the skeletal structures drawn in the diagram.}} \\\\"
+            f"&\\text{{4. Total = {self.answer} structural isomers.}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        # Shrink the canvas from (10,8) to a neat (6,3) card size
-        fig, ax = plt.subplots(figsize=(6, 3))
-        ax.set_xlim(0, 6)
-        ax.set_ylim(0, 3)
+        n = len(self.isomer_names)
+        cols = 2 if n <= 4 else 3
+        rows = -(-n // cols)
+
+        cell_w = 3.6
+        cell_h = 3.2
+        header_h = 1.0
+
+        fig_w = cols * cell_w + 0.5
+        fig_h = rows * cell_h + header_h + 0.4
+
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        ax.set_xlim(0, fig_w)
+        ax.set_ylim(0, fig_h)
         ax.axis('off')
 
-        # Center the formula prominently in the middle of the smaller canvas
-        add_formula_label(ax, 3, 1.5, f"Molecular Formula:\n{self.formula}", 
-                          fontsize=20, weight='bold', ha='center',
-                          bbox_style=dict(boxstyle='round,pad=1', facecolor='lightyellow', edgecolor='black'))
+        ax.text(fig_w / 2, fig_h - 0.52,
+                f"Molecular Formula:  {self.formula}",
+                fontsize=14, fontweight='bold', ha='center', va='center',
+                bbox=dict(boxstyle='round,pad=0.4', facecolor='lightyellow', edgecolor='black'))
+
+        max_mol_w = cell_w * 0.70
+        max_mol_h = cell_h * 0.68
+
+        for idx, name in enumerate(self.isomer_names):
+            row = idx // cols
+            col = idx % cols
+
+            cell_cx = 0.25 + col * cell_w + cell_w / 2
+            cell_cy = fig_h - header_h - (row + 0.5) * cell_h
+
+            rect = patches.FancyBboxPatch(
+                (0.25 + col * cell_w + 0.15, cell_cy - cell_h / 2 + 0.15),
+                cell_w - 0.3, cell_h - 0.3,
+                boxstyle='round,pad=0.05',
+                facecolor='#f9f9f9', edgecolor='#bbbbbb', linewidth=0.9, zorder=0
+            )
+            ax.add_patch(rect)
+
+            atoms, bonds = _CHEM061_STRUCTURES[name]
+            xs = [a[0] for a in atoms]
+            ys = [a[1] for a in atoms]
+            mol_w = max(xs) - min(xs) if len(set(xs)) > 1 else 1.0
+            mol_h = max(ys) - min(ys) if len(set(ys)) > 1 else 1.0
+            scale = min(max_mol_w / mol_w, max_mol_h / mol_h) * 0.88
+
+            fs = max(7, int(9 * min(scale, 1.4) / 1.1))
+            lw = max(1.3, scale * 1.5)
+
+            draw_skeletal_formula(ax, atoms, bonds,
+                                  cx=cell_cx, cy=cell_cy,
+                                  scale=scale, fontsize=fs, lw=lw)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
-
-
-
-
 
 class Chem062:
     """
@@ -2585,6 +2772,15 @@ class Chem071:
                 'by_product': 'HCl',
             },
             {
+                'acyl_chloride': 'CH\u2083COCl',
+                'acyl_name': 'ethanoyl chloride',
+                'nucleophile': 'C\u2086H\u2085OH',
+                'nuc_name': 'phenol',
+                'product': 'CH\u2083COOC\u2086H\u2085',
+                'product_name': 'phenyl ethanoate (ester)',
+                'by_product': 'HCl',
+            },
+            {
                 'acyl_chloride': 'C\u2086H\u2085COCl',
                 'acyl_name': 'benzoyl chloride',
                 'nucleophile': 'H\u2082O',
@@ -2612,6 +2808,24 @@ class Chem071:
                 'by_product': 'HCl',
             },
             {
+                'acyl_chloride': 'C\u2086H\u2085COCl',
+                'acyl_name': 'benzoyl chloride',
+                'nucleophile': 'CH\u2083NH\u2082',
+                'nuc_name': 'methylamine',
+                'product': 'C\u2086H\u2085CONHCH\u2083',
+                'product_name': 'N-methylbenzamide (amide)',
+                'by_product': 'HCl',
+            },
+            {
+                'acyl_chloride': 'C\u2086H\u2085COCl',
+                'acyl_name': 'benzoyl chloride',
+                'nucleophile': 'C\u2082H\u2085OH',
+                'nuc_name': 'ethanol',
+                'product': 'C\u2086H\u2085COOC\u2082H\u2085',
+                'product_name': 'ethyl benzoate (ester)',
+                'by_product': 'HCl',
+            },
+            {
                 'acyl_chloride': 'CH\u2083CH\u2082COCl',
                 'acyl_name': 'propanoyl chloride',
                 'nucleophile': 'H\u2082O',
@@ -2630,12 +2844,30 @@ class Chem071:
                 'by_product': 'HCl',
             },
             {
-                'acyl_chloride': 'CH\u2083COCl',
-                'acyl_name': 'ethanoyl chloride',
-                'nucleophile': 'C\u2086H\u2085OH',
-                'nuc_name': 'phenol',
-                'product': 'CH\u2083COOC\u2086H\u2085',
-                'product_name': 'phenyl ethanoate (ester)',
+                'acyl_chloride': 'CH\u2083CH\u2082COCl',
+                'acyl_name': 'propanoyl chloride',
+                'nucleophile': 'NH\u2083',
+                'nuc_name': 'ammonia',
+                'product': 'CH\u2083CH\u2082CONH\u2082',
+                'product_name': 'propanamide (amide)',
+                'by_product': 'HCl',
+            },
+            {
+                'acyl_chloride': 'CH\u2083CH\u2082COCl',
+                'acyl_name': 'propanoyl chloride',
+                'nucleophile': 'CH\u2083NH\u2082',
+                'nuc_name': 'methylamine',
+                'product': 'CH\u2083CH\u2082CONHCH\u2083',
+                'product_name': 'N-methylpropanamide (amide)',
+                'by_product': 'HCl',
+            },
+            {
+                'acyl_chloride': 'CH\u2083CH\u2082COCl',
+                'acyl_name': 'propanoyl chloride',
+                'nucleophile': 'CH\u2083OH',
+                'nuc_name': 'methanol',
+                'product': 'CH\u2083CH\u2082COOCH\u2083',
+                'product_name': 'methyl propanoate (ester)',
                 'by_product': 'HCl',
             },
         ]
@@ -2643,9 +2875,9 @@ class Chem071:
         self.rxn = rnd.choice(reactions)
         correct = f"{self.rxn['product']} + {self.rxn['by_product']}"
 
-        all_combos = [f"{r['product']} + {r['by_product']}" for r in reactions]
-        wrong = [c for c in all_combos if c != correct]
-        options = rnd.sample(wrong, 3) + [correct]
+        same_acyl = [r for r in reactions if r['acyl_chloride'] == self.rxn['acyl_chloride']]
+        wrong_pool = [f"{r['product']} + {r['by_product']}" for r in same_acyl if r['nucleophile'] != self.rxn['nucleophile']]
+        options = rnd.sample(wrong_pool, 3) + [correct]
         rnd.shuffle(options)
 
         labels = ["A", "B", "C", "D"]
@@ -2725,40 +2957,36 @@ class Chem071:
 class Chem072:
     """
     Topic: 33.3 Carboxylic acid derivatives - Hydrolysis reactivity
-    Visual: Bar chart comparing relative rates of Cl-containing compounds
-    Task: MCQ - arrange in order of hydrolysis reactivity
-    10+ variations (randomized order of bars)
+    Visual: Log-scale bar chart; highlighted bar in gold; rate value labeled on each bar
+    Task: Read the relative rate of hydrolysis for the highlighted bar (numerical answer)
+    10+ variations (randomized bar order + rate values)
     """
 
     def __init__(self):
-        # Randomise bar heights so student must READ the highlighted bar value
-        self.acyl_rate  = rnd.randint(60, 140)   # acyl chloride: always highest
-        self.alkyl_rate = rnd.randint(1, 9)       # alkyl: moderate
-        self.aryl_rate  = round(rnd.uniform(0.0001, 0.009), 4)  # aryl: very slow
+        self.acyl_rate  = rnd.randint(60, 140)
+        self.alkyl_rate = rnd.randint(1, 9)
+        self.aryl_rate  = round(rnd.uniform(0.0001, 0.009), 4)
 
         compounds_data = [
-            ('acyl chloride',  'CH\u2083COCl',   'Ethanoyl chloride\n(acyl chloride)',  self.acyl_rate),
-            ('alkyl chloride', 'CH\u2083CH\u2082Cl', 'Chloroethane\n(alkyl chloride)',  self.alkyl_rate),
-            ('aryl chloride',  'C\u2086H\u2085Cl',  'Chlorobenzene\n(aryl chloride)',    self.aryl_rate),
+            ('acyl chloride',  'CH\u2083COCl\n(acyl chloride)',      self.acyl_rate),
+            ('alkyl chloride', 'CH\u2083CH\u2082Cl\n(alkyl chloride)', self.alkyl_rate),
+            ('aryl chloride',  'C\u2086H\u2085Cl\n(aryl chloride)',    self.aryl_rate),
         ]
         rnd.shuffle(compounds_data)
-        self.display_types     = [d[0] for d in compounds_data]
-        self.display_compounds = [d[1] for d in compounds_data]
-        self.display_names     = [d[2] for d in compounds_data]
-        self.display_rates     = [d[3] for d in compounds_data]
+        self.display_types  = [d[0] for d in compounds_data]
+        self.display_labels = [d[1] for d in compounds_data]
+        self.display_rates  = [d[2] for d in compounds_data]
 
         self.highlighted_idx  = rnd.randint(0, 2)
         self.highlighted_type = self.display_types[self.highlighted_idx]
         self.highlighted_rate = self.display_rates[self.highlighted_idx]
-        self.answer = str(self.highlighted_rate)
-        self.choices = []
-        self.choices_display = {}
+        self.answer = float(self.highlighted_rate)
 
         self.description = (
-            f"The bar chart shows the relative rates of hydrolysis of three chlorine-containing "
-            f"compounds with water at room temperature. The highlighted bar is labelled with its "
-            f"compound type. What is the relative rate of hydrolysis shown for the "
-            f"{self.highlighted_type}?"
+            "The bar chart shows the relative rates of hydrolysis of three chlorine-containing "
+            "compounds with water at room temperature, plotted on a logarithmic scale. "
+            "One bar is highlighted in gold. "
+            "What is the relative rate of hydrolysis shown for the highlighted bar?"
         )
         self.topic = "Carboxylic acids and derivatives"
         self.subtopic = "Acyl chlorides"
@@ -2768,31 +2996,41 @@ class Chem072:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Highlighted: {self.highlighted_type}}} &\\\\"
-            f"\\text{{Bar height shown on diagram: {self.highlighted_rate}}} &\\\\"
-            f"\\therefore \\text{{Answer = {self.highlighted_rate}}}"
+            f"&\\text{{The highlighted bar corresponds to {self.highlighted_type}.}} \\\\"
+            f"&\\text{{Rate value labeled on highlighted bar = {self.highlighted_rate}.}} \\\\"
+            f"&\\therefore \\text{{Answer}} = {self.highlighted_rate}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize=(10, 7))
 
         x_positions = [1, 3, 5]
-        colors = [rnd.choice(['red', 'orange', 'blue']) for _ in range(3)]
+        bar_colors = ['#aaaaaa'] * 3
+        bar_edges  = ['black'] * 3
+        lws        = [1.2] * 3
+        bar_colors[self.highlighted_idx] = '#FFD700'
+        bar_edges[self.highlighted_idx]  = '#cc0000'
+        lws[self.highlighted_idx]        = 3.0
 
-        draw_bar_chart(ax, x_positions, self.display_rates,
-                      ['A', 'B', 'C'],
-                      colors=colors, width=0.8,
-                      xlabel='Compound type',
-                      ylabel='Relative Rate of Hydrolysis (log scale)',
-                      title='Reactivity of C-Cl Bonds towards Hydrolysis')
+        for i, (x, rate) in enumerate(zip(x_positions, self.display_rates)):
+            ax.bar(x, rate, width=1.0, color=bar_colors[i],
+                   edgecolor=bar_edges[i], linewidth=lws[i], alpha=0.85)
 
-        for i, (x, compound) in enumerate(zip(x_positions, self.display_compounds)):
-            ax.text(x, self.display_rates[i] + 1, compound,
-                   fontsize=11, ha='center', fontweight='bold')
+        ax.set_yscale('log')
+        ax.set_xlim(0, 6.5)
+        ax.set_ylabel('Relative Rate of Hydrolysis (log scale)', fontsize=13, fontweight='bold')
+        ax.set_xlabel('Compound', fontsize=13, fontweight='bold')
+        ax.set_title('Reactivity of C\u2013Cl Bonds towards Hydrolysis with Water', fontsize=14, fontweight='bold')
+        ax.set_xticks(x_positions)
+        ax.set_xticklabels(self.display_labels, fontsize=10, fontweight='bold')
+        ax.grid(axis='y', alpha=0.3, linestyle='--')
+        ax.set_axisbelow(True)
 
-        y_ceiling = max(self.display_rates) * 1.1 # Adds a 10% head-room ceiling
-        ax.set_ylim(0, y_ceiling)
+        for i, (x, rate) in enumerate(zip(x_positions, self.display_rates)):
+            ax.text(x, rate * 2.5, str(rate),
+                    fontsize=11, ha='center', va='bottom', fontweight='bold',
+                    color='#cc0000' if i == self.highlighted_idx else 'black')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
