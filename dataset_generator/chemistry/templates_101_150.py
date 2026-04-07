@@ -376,9 +376,8 @@ class Chem104:
         self.answer   = self.molecule["bonds"]
 
         self.description = (
-            f"The dot-and-cross diagram shows the covalent bonding in a molecule of {self.name} "
-            f"({self.formula}).\n\n"
-            f"How many covalent bonds does a molecule of {self.name} contain in total?"
+            "The dot-and-cross diagram shows the covalent bonding in a molecule.\n\n"
+            "How many covalent bonds does this molecule contain in total?"
         )
 
         self.topic     = "Atoms, elements and compounds"
@@ -532,9 +531,9 @@ class Chem105:
         self.answer = self.shared_electrons
 
         self.description = (
-            f"The dot-and-cross diagram shows the bonding electrons in a molecule of {self.name} ({self.formula}).\n\n"
+            "The dot-and-cross diagram shows the bonding electrons in a molecule.\n\n"
             "Count every dot–cross pair visible in the diagram to find the total number of "
-            "bonding (shared) electrons in the molecule."
+            "bonding (shared) electrons in this molecule."
         )
 
         self.topic      = "Atoms, elements and compounds"
@@ -2399,7 +2398,7 @@ class Chem116:
                 fontsize=12,
                 ha='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -2517,7 +2516,7 @@ class Chem117:
                 fontsize=12,
                 ha='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -2634,7 +2633,7 @@ class Chem118:
                 fontsize=12,
                 ha='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -2656,8 +2655,8 @@ class Chem119:
         self.answer = self.delta_H
         
         self.description = (
-            f"An enthalpy profile diagram shows reactants at {self.reactant_E} kJ/mol and products at {self.product_E} kJ/mol. "
-            f"Using the values marked on the y-axis, determine the enthalpy change ΔH (kJ mol⁻¹) for this reaction."
+            f"An enthalpy profile diagram shows reactants at {self.reactant_E} kJ/mol. "
+            "Using the values marked on the y-axis, determine the enthalpy change ΔH (kJ mol⁻¹) for this reaction."
         )
 
         self.topic = "Energetics"
@@ -2731,7 +2730,8 @@ class Chem120:
         self.answer = round(self.pure_cu_mass, 2)
 
         self.description = (
-            f"The diagram shows copper ({self.ore_mass} g) extraction by electrolysis. "
+            f"The diagram shows an extraction setup for copper by electrolysis. "
+            f"The ore sample has a mass of {self.ore_mass} g. "
             "Use the information shown to calculate "
             "the maximum mass of pure copper obtained."
         )
@@ -2800,7 +2800,7 @@ class Chem120:
                  linewidth=2,
                  color='black')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -2906,7 +2906,7 @@ class Chem121:
                      fontsize=15,
                      fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -2988,7 +2988,7 @@ class Chem122:
                 ha='center',
                 fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -3080,7 +3080,7 @@ class Chem123:
                 ha='center',
                 fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
         plt.close()
@@ -3162,7 +3162,7 @@ class Chem124:
                 fontweight='bold',
                 transform=ax.transAxes)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -3261,7 +3261,7 @@ class Chem125:
                 fontsize=16,
                 fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -3357,7 +3357,7 @@ class Chem126:
                 fontsize=10,
                 ha='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches="tight")
         plt.close()
@@ -3426,7 +3426,7 @@ class Chem127:
         for i, v in enumerate(values):
             ax.text(i, v + 2, str(v), ha='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
         plt.close()
@@ -3615,7 +3615,7 @@ class Chem129:
                  fontsize=14,
                  fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
         plt.close()
@@ -3698,7 +3698,7 @@ class Chem130:
         for i, v in enumerate(values):
             ax.text(i, v + 2, str(v), ha='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
         plt.close()
@@ -3790,7 +3790,7 @@ class Chem131:
                  fontsize=14,
                  fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150)
         plt.close()
@@ -3871,7 +3871,7 @@ class Chem132:
                 ha='center',
                 fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -3967,7 +3967,7 @@ class Chem133:
         ax.text(6, 5.6, self.equation,
                 ha='center', fontsize=14, fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4064,7 +4064,7 @@ class Chem134:
                 f"Ar: {self.product} = {self.ar_product}",
                 ha='center', fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4182,7 +4182,7 @@ class Chem135:
         arrow2 = FancyArrowPatch((7.95, 3.3), (6.8, 3.3), arrowstyle="->", linewidth=2)
         ax.add_patch(arrow2)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4289,7 +4289,7 @@ class Chem136:
                 fontsize=12,
                 fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4372,7 +4372,7 @@ class Chem137:
                 ha='center',
                 fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4473,7 +4473,7 @@ class Chem138:
                 fontsize=12,
                 fontweight='bold')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4568,7 +4568,7 @@ class Chem139:
                 ha='center',
                 fontsize=11)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4662,7 +4662,7 @@ class Chem140:
                 ha='center',
                 fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4754,7 +4754,7 @@ class Chem141:
             bubble = Circle((3.2 + i*0.4, 3.8 + i*0.15), 0.12, color="white")
             ax.add_patch(bubble)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4866,7 +4866,7 @@ class Chem142:
                 ha='center',
                 fontsize=11)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -4964,7 +4964,7 @@ class Chem143:
                 ha='center',
                 fontsize=11)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5064,7 +5064,7 @@ class Chem144:
                 ha='center',
                 fontsize=12)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5090,7 +5090,7 @@ class Chem145:
         self.answer = self.ox_number
 
         self.description = (
-            f"In the reaction:\n{self.equation}\n"
+            f"In the reaction on the image:\n"
             f"What is the oxidation number of the element in {self.species}?"
         )
 
@@ -5183,7 +5183,7 @@ class Chem145:
                 va='center',
                 fontsize=11)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5209,7 +5209,7 @@ class Chem146:
         self.answer = self.product_coeff / self.reactant_coeff
 
         self.description = (
-            f"In the reaction:\n{self.equation}\n"
+            f"In the reaction the image\n"
             f"How many moles of {self.product} are formed from 1 mole of {self.reactant}?"
         )
 
@@ -5280,7 +5280,7 @@ class Chem146:
         ax.text(7.0, y_box + box_height/2, "→", fontsize=20, ha='center', va='center')
         ax.text(10.0, y_box + box_height/2, "+", fontsize=18, ha='center', va='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5408,7 +5408,7 @@ class Chem147:
                         ha='center',
                         va='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5501,7 +5501,7 @@ class Chem148:
         ax.text(6.5, 3, "→", fontsize=22, ha='center', va='center')
         ax.text(10.0, 3, "+", fontsize=20, ha='center', va='center')
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5639,7 +5639,7 @@ class Chem149:
                 ha='center',
                 fontsize=15)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
@@ -5779,7 +5779,7 @@ class Chem150:
                 ha='center',
                 fontsize=15)
 
-        os.makedirs("output", exist_ok=True)
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
