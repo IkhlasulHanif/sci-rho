@@ -208,7 +208,7 @@ class Chem103:
         "Na": 1, "K": 1, "Li": 1,
         "Mg": 2, "Ca": 2,
         "Cl": 7, "F": 7, "Br": 7,
-        "O":  6,
+        "O":  6, "S":  6,
     }
 
     def __init__(self):
@@ -221,6 +221,12 @@ class Chem103:
             ("K",  "Br", 1),
             ("Mg", "O",  2),
             ("Ca", "O",  2),
+            ("Na", "F",  1),
+            ("Na", "Br", 1),
+            ("Li", "Cl", 1),
+            ("Li", "Br", 1),
+            ("K",  "F",  1),
+            ("Mg", "S",  2),
         ]
 
         self.metal, self.nonmetal, self.electrons_transferred = rnd.choice(ionic_pairs)
@@ -4319,7 +4325,7 @@ class Chem137:
 
         self.description = (
             f"A solution of {self.acid_name} has concentration "
-            f"{self.concentration} mol dm⁻³.\n"
+            f"as shown on the image.\n"
             "Calculate the pH of the solution."
         )
 
@@ -5090,8 +5096,8 @@ class Chem145:
         self.answer = self.ox_number
 
         self.description = (
-            f"In the reaction on the image:\n"
-            f"What is the oxidation number of the element in {self.species}?"
+            "The image shows a redox reaction equation.\n"
+            "What is the oxidation number of the highlighted element?"
         )
 
         self.topic = "Redox"
@@ -5131,45 +5137,10 @@ class Chem145:
                 ha='center',
                 fontsize=14)
 
-        box_width = 3.2
-        box_height = 1.2
-        y_box = 2.6
+        highlight_width = 3.0
+        highlight_height = 1.0
 
-        react_box = Rectangle((2 - box_width/2, y_box),
-                            box_width,
-                            box_height,
-                            facecolor="lightblue",
-                            edgecolor="black",
-                            linewidth=2)
-        ax.add_patch(react_box)
-
-        prod_box = Rectangle((10 - box_width/2, y_box),
-                            box_width,
-                            box_height,
-                            facecolor="lightgreen",
-                            edgecolor="black",
-                            linewidth=2)
-        ax.add_patch(prod_box)
-
-        reactants = self.equation.split("→")[0].strip()
-        products = self.equation.split("→")[1].strip()
-
-        ax.text(2, y_box + box_height/2,
-                reactants,
-                ha='center',
-                va='center',
-                fontsize=12)
-
-        ax.text(10, y_box + box_height/2,
-                products,
-                ha='center',
-                va='center',
-                fontsize=12)
-
-        highlight_width = 2.0
-        highlight_height = 0.8
-
-        highlight = Rectangle((6 - highlight_width/2, 1.4),
+        highlight = Rectangle((6 - highlight_width/2, 2.5),
                             highlight_width,
                             highlight_height,
                             facecolor="gold",
@@ -5177,11 +5148,18 @@ class Chem145:
                             linewidth=2)
         ax.add_patch(highlight)
 
-        ax.text(6, 1.8,
+        ax.text(6, 3.0,
                 f"{self.species}",
                 ha='center',
                 va='center',
-                fontsize=11)
+                fontsize=14,
+                fontweight='bold')
+
+        ax.text(6, 2.0,
+                "Find the oxidation number of this species.",
+                ha='center',
+                fontsize=11,
+                style='italic')
 
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
