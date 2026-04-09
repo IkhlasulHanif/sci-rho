@@ -53,6 +53,8 @@ class Mat051:
         self.subtopic = "Circle theorems II"
         self.source = "Original" # Complies with syllabus
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length of chord }} AB &= {round(self.c_len, 10)}\\,\\text{{cm}}\\\\"
@@ -166,6 +168,7 @@ class Mat052:
         self.subtopic = "Circle theorems II"
         self.source = "Original" # Complies with syllabus
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -285,6 +288,7 @@ class Mat053:
         self.subtopic = "Circle theorems II"
         self.source = "Original" # Complies with syllabus
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -422,6 +426,8 @@ class Mat054:
         self.subtopic = "Area and perimeter"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{We split the shape into two rectangles:}} &\\\\"
@@ -531,6 +537,8 @@ class Mat055:
         self.subtopic = "Area and perimeter"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Base }} (b) &= {self.b} \\\\"
@@ -620,6 +628,8 @@ class Mat056:
         self.subtopic = "Area and perimeter"
         self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Top side }} (a) &= {self.top_a}\\,\\text{{cm}}\\\\"
@@ -714,6 +724,8 @@ class Mat057:
         self.subtopic = "Area and perimeter"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Inner Area}} &= {self.inner_length} \\times {self.inner_width} = {round(self.inner_length * self.inner_width, 10)}\\\\"
@@ -831,6 +843,8 @@ class Mat058:
         self.subtopic = "Area and perimeter"
         self.source = "Common style in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Perimeter}} &= 2 \\times (\\text{{Width}} + \\text{{Height}} + \\text{{Depth}}) \\\\"
@@ -953,6 +967,8 @@ class Mat059:
         self.subtopic = "Circles, arcs and sectors"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Radius }} (r) &= {self.radius} \\,\\text{{cm}} \\\\"
@@ -1114,6 +1130,7 @@ class Mat060:
         self.subtopic = "Circles, arcs and sectors"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 past papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         # Reasoning (LaTeX)
         # given data
@@ -1224,6 +1241,8 @@ class Mat061:
         self.subtopic = "Circles, arcs and sectors"
         self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Width }} (w) &= {self.width}\\,\\text{{cm}} \\\\"
@@ -1312,6 +1331,8 @@ class Mat062:
         self.subtopic = "Circles, arcs and sectors"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Outer radius }} (R) &= {self.R} \\\\"
@@ -1404,6 +1425,8 @@ class Mat063:
         self.subtopic = "Circles, arcs and sectors"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Outer radius }} (R) &= {self.total_length}\\,\\text{{cm}}\\\\"
@@ -1535,6 +1558,8 @@ class Mat064:
         self.subtopic = "Surface area and volume"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Radius }} (r) &= {self.radius}\\,\\text{{m}}\\\\"
@@ -1631,6 +1656,8 @@ class Mat065:
         self.subtopic = "Surface area and volume"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Cross-Section Area}} &= \\left( \\frac{{{self.shallow_depth} + {self.deep_depth}}}{{2}} \\right) \\times {self.length}\\\\"
@@ -1746,6 +1773,8 @@ class Mat066:
         self.subtopic = "Surface area and volume"
         self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given: Radius }} (r) &= {self.radius}\\,\\text{{cm}},\\quad \\text{{Height }} (h) = {self.height}\\,\\text{{cm}}\\\\"
@@ -1867,6 +1896,8 @@ class Mat067:
         self.subtopic = "Surface area and volume"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given radius (r)}} &= {self.radius} \\\\"
@@ -1967,6 +1998,8 @@ class Mat068:
         self.subtopic = "Surface area and volume"
         self.source = "Common \"high-mark\" question in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Side length }} (s) &= {self.side_length}\\,\\text{{m}}\\\\"
@@ -2100,6 +2133,8 @@ class Mat069:
         self.subtopic = "Compound shapes and parts of shapes"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length }} (l) &= {self.length}\\,\\text{{cm}}\\\\"
@@ -2208,6 +2243,8 @@ class Mat070:
         self.subtopic = "Compound shapes and parts of shapes"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given Length }} (l) &= {self.length}\\,\\text{{cm}}\\\\"
@@ -2320,6 +2357,8 @@ class Mat071:
         self.subtopic = "Compound shapes and parts of shapes"
         self.source = "Standard Geometry Problem (Common in GCSE Mathematics past papers)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Side length, }} s &= {self.side}\\,\\text{{cm}}\\\\"
@@ -2405,6 +2444,8 @@ class Mat072:
         self.subtopic = "Compound shapes and parts of shapes"
         self.source = "Adapted from Haese Mathematics for IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Volume of cylinder}} &= \\pi r^2 h_{{cyl}}\\\\"
@@ -2526,6 +2567,8 @@ class Mat073:
         self.subtopic = "Compound shapes and parts of shapes"
         self.source = "Adapted from Haese Mathematics for IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{First, calculate the slant height }} s \\text{{ of the cone:}} &\\\\"
@@ -2640,6 +2683,8 @@ class Mat074:
         self.subtopic = "Pythagoras’ theorem"
         self.source = "Adapted from IGCSE June 2025 Question Paper 31"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given: }} AB &= {round(self.ab, 10)}\\,\\text{{cm}} \\\\"
@@ -2752,6 +2797,7 @@ class Mat075:
         self.subtopic = "Pythagoras’ theorem"
         self.source = "Adapted from 2025-specimen-paper-3"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2845,6 +2891,7 @@ class Mat076:
         self.subtopic = "Pythagoras’ theorem"
         self.source = "Common questions"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2977,6 +3024,7 @@ class Mat077:
         self.topic = "Trigonometry"
         self.subtopic = "Right-angled triangles"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.source = "Adapted from IGCSE June 2025"
 
         # Dynamic Reasoning
@@ -3082,6 +3130,7 @@ class Mat078:
         self.subtopic = "Right-angled triangles"
         self.source = "Original question"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3205,6 +3254,7 @@ class Mat079:
         self.subtopic = "Right-angled triangles"
         self.source = "Original question"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3295,6 +3345,7 @@ class Mat080:
         self.subtopic = "Trigonometric functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 43"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
 
         # Branching Reasoning Logic
         common_start = (
@@ -3430,6 +3481,7 @@ class Mat081:
         self.subtopic = "Trigonometric functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 43"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3499,6 +3551,8 @@ class Mat082:
         self.subtopic = "Non-right-angled triangles"
         self.source = "Adapted from 2025-specimen-paper-4"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The formula for the area of a triangle is:}} &\\\\"
@@ -3615,6 +3669,8 @@ class Mat083:
         self.subtopic = "Non-right-angled triangles"
         self.source = "Adapted from IGCSE June 2025 Question Paper 42"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify the given values in }} \\triangle ABC: &\\\\"
@@ -3770,6 +3826,8 @@ class Mat084:
         self.subtopic = "Non-right-angled triangles"
         self.source = "Adapted from IGCSE June 2025 Question Paper 42"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The area of quadrilateral }} ABCD \\text{{ is the sum of the areas of }} \\triangle ABD \\text{{ and }} \\triangle BCD. \\\\"
@@ -3927,6 +3985,8 @@ class Mat085:
         self.subtopic = "Non-right-angled triangles"
         self.source = "Adapted from IGCSE June 2025 Question Paper 41"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{In }} \\triangle BCD, \\text{{ we use the Sine Rule:}} &\\\\"
@@ -4059,6 +4119,8 @@ class Mat086:
         self.subtopic = "Pythagoras’ theorem and trigonometry Notes and examples in 3D"
         self.source = "Adapted from IGCSE June 2025 Question Paper 43"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Let the length, width, and height of the cuboid be }} l, w, \\text{{ and }} h \\text{{ respectively.}} \\\\"
@@ -4173,6 +4235,8 @@ class Mat087:
         self.subtopic = "Pythagoras’ theorem and trigonometry Notes and examples in 3D"
         self.source = "Adapted from IGCSE June 2025 Question Paper 41"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             rf"\[\begin{{aligned}}"
             f"\\text{{Let the square base side be }} s = {round(self.base_side, 10)}\\,\\text{{cm}} \\text{{ and the pyramid height be }} h = {round(self.height, 10)}\\,\\text{{cm}}.\\\\"
@@ -4300,6 +4364,8 @@ class Mat088:
         self.subtopic = "Pythagoras’ theorem and trigonometry Notes and examples in 3D"
         self.source = "Adapted from IGCSE June 2025 Question Paper 41"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Radius, }} r &= {round(self.r, 10)}\\,\\text{{cm}} \\\\"
@@ -4402,6 +4468,8 @@ class Mat089:
         self.subtopic = "Transformations"
         self.source = "Adapted from Cambridge IGCSE Mathematics (0580) Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Scale Factor}} &= \\frac{{\\text{{Base of Triangle B}}}}{{\\text{{Base of Triangle A}}}}\\\\"
@@ -4497,6 +4565,8 @@ class Mat090:
         self.subtopic = "Transformations"
         self.source = "Based on standard IGCSE/O Level \"Area Scale Factor\" questions"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area of shape P}} &= {self.area_p}\\,\\text{{cm}}^2\\\\"
@@ -4593,6 +4663,8 @@ class Mat091:
         self.subtopic = "Transformations"
         self.source = "Common transformation coordinate rule found in GCSE/IGCSE revision guides"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Original point }} A \\text{{ has coordinates:}} &\\quad (x, y) = ({self.x}, {self.y})\\\\"
@@ -4703,6 +4775,8 @@ class Mat092:
         self.subtopic = "Transformations"
         self.source = "Modeled after standard vector translation questions in IGCSE Mathematics (0580) Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Original Vertex Coordinates: }} P &= ({round(self.target_vertex_orig[0], 10)}, {round(self.target_vertex_orig[1], 10)})\\\\"
@@ -4844,6 +4918,8 @@ class Mat093:
         self.subtopic = "Transformations"
         self.source = "Adapted from Cambridge IGCSE Mathematics (0580) Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = self._build_reasoning()
     
     def _build_reasoning(self):
@@ -4976,6 +5052,8 @@ class Mat094:
         self.subtopic = "Vectors in two dimensions"
         self.source = "OpenStax Precalculus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given vectors:}} &\\\\"
@@ -5068,6 +5146,8 @@ class Mat095:
         self.subtopic = "Vectors in two dimensions"
         self.source = "Haese Mathematics: Mathematics for the International Student"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Read from the diagram: }} \\mathbf{{p}} = \\binom{{{self.px}}}{{{self.py}}},\\; "
@@ -5187,6 +5267,8 @@ class Mat096:
         self.subtopic = "Magnitude of a vector"
         self.source = "Cambridge IGCSE® Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given vector components:}}&\\\\"
@@ -5308,6 +5390,8 @@ class Mat097:
         self.subtopic = "Vector geometry"
         self.source = "Allen - Vector Geometry Questions"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{First, determine the vector }} \\vec{{BC}}: &\\\\"
@@ -5402,6 +5486,8 @@ class Mat098:
         self.subtopic = "Vector geometry"
         self.source = "Maths Genie - Vectors Proof Questions"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Using the Section Formula for vector }} \\vec{{OP}} \\text{{ with ratio }} {self.m}:{self.n}:&\\\\"
@@ -5509,6 +5595,8 @@ class Mat099:
         self.subtopic = "Vector geometry"
         self.source = "Maths Genie - A Level Vectors Questions"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"|\\vec{{v}}| &= \\sqrt{{x^2 + k^2}}\\\\"
@@ -5620,6 +5708,8 @@ class Mat100:
         self.subtopic = "Vector geometry"
         self.source = "Maths Genie - Vectors Proof Questions"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given ratio }} AP:PB &= {self.m}:{self.n}\\\\"

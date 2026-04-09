@@ -51,6 +51,8 @@ class Mat101:
         self.subtopic = "Relative and expected frequencies"
         self.source = "Adapted from Cambridge IGCSE Mathematics (0580)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Frequency of {self.target_color}}} &= {self.target_freq}\\\\"
@@ -123,6 +125,8 @@ class Mat102:
         self.subtopic = "Relative and expected frequencies"
         self.source = "Adapted from Edexcel GCSE Mathematics"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Frequency of rolling a {self.target_face}}} &= {target_freq}\\\\"
@@ -195,6 +199,8 @@ class Mat103:
         self.subtopic = "Relative and expected frequencies"
         self.source = "Adapted from Oxford International AQA Examinations"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Marked fish in first catch }} (M) &= {self.M}\\\\"
@@ -331,6 +337,8 @@ class Mat104:
         self.subtopic = "Interpreting statistical data"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Using the row totals for Grade 10:}} &\\\\"
@@ -405,6 +413,8 @@ class Mat105:
         self.subtopic = "Interpreting statistical data"
         self.source = "Adapted from Cambridge IGCSE® Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Hottest point}} &= \\max({self.temps[0]}, {self.temps[1]}, {self.temps[2]}, {self.temps[3]}, {self.temps[4]})\\,^\\circ\\text{{C}}\\\\"
@@ -460,6 +470,8 @@ class Mat106:
         self.subtopic = "Interpreting statistical data"
         self.source = "Adapted from Extended Mathematics for IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total Sales (Store A)}} &= {self.store_a_sales[0]} + {self.store_a_sales[1]} + {self.store_a_sales[2]} \\\\"
@@ -527,6 +539,8 @@ class Mat107:
         self.subtopic = "Averages and measures of spread"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Sorted Data}} &= \\{{ {', '.join(map(str, self.scores))} \\}}\\\\"
@@ -600,6 +614,8 @@ class Mat108:
         self.subtopic = "Averages and measures of spread"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total Frequency }} (\\sum f) &= {f_expansion}\\\\"
@@ -668,6 +684,8 @@ class Mat109:
         self.subtopic = "Averages and measures of spread"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Midpoints }} (x) &= 15, 25, 35\\\\"
@@ -724,6 +742,8 @@ class Mat110:
         self.subtopic = "Statistical charts and diagrams"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Highest age}} &= {highest}\\\\"
@@ -822,6 +842,8 @@ class Mat111:
         self.subtopic = "Statistical charts and diagrams"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total sales on Friday}} &= \\${self.friday_total}\\\\"
@@ -903,6 +925,8 @@ class Mat112:
         self.subtopic = "Statistical charts and diagrams"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Value of 1 symbol}} &= {self.key_value}\\,\\text{{pizzas}}\\\\"
@@ -1013,6 +1037,8 @@ class Mat113:
         self.subtopic = "Scatter diagrams"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify the age of the car represented by point P:}} &\\\\"
@@ -1104,6 +1130,8 @@ class Mat114:
         self.subtopic = "Scatter diagrams"
         self.source = "Adapted from Extended Mathematics for Cambridge IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify two points on the line:}} &\\\\"
@@ -1196,6 +1224,8 @@ class Mat115:
         self.subtopic = "Scatter diagrams"
         self.source = "Adapted from Mathematics for the International Student: Mathematics SL"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Line of Best Fit Equation:}} &\\\\"
@@ -1299,6 +1329,8 @@ class Mat116:
         self.subtopic = "Cumulative frequency diagrams"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total number of students (}} N \\text{{)}} &= {self.total_students}\\\\"
@@ -1386,6 +1418,8 @@ class Mat117:
         self.subtopic = "Cumulative frequency diagrams"
         self.source = "Adapted from Extended Mathematics for IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Position of Lower Quartile }} (Q_1) &= 0.25 \\times {self.total_frequency} = {round(self.y_q1, 10)}\\\\"
@@ -1470,6 +1504,8 @@ class Mat118:
         self.subtopic = "Histograms"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Class Width}} &= {self.end_x} - {self.start_x}\\\\"
@@ -1547,6 +1583,8 @@ class Mat119:
         self.subtopic = "Histograms"
         self.source = "Adapted from Cambridge IGCSE Mathematics"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Frequency}} &= \\text{{Width}} \\times \\text{{Frequency Density}} \\\\"
@@ -1621,6 +1659,8 @@ class Mat120:
         self.subtopic = "Histograms"
         self.source = "Adapted from Cambridge Assessment International Education"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Frequency Density (Height)}} &= \\frac{{\\text{{Frequency}}}}{{\\text{{Width}}}}\\\\"
@@ -1731,6 +1771,8 @@ class Mat121:
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{To evaluate the composite function }} f(g({self.start_x})), \\text{{ we work from the inside out.}}\\\\"
@@ -1813,6 +1855,8 @@ class Mat122:
         self.subtopic = "Functions"
         self.source = "Adapted from Pure Mathematics 1 for Cambridge International AS & A Level"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the graph of }} f(x), \\text{{ we identify the point:}}\\\\"
@@ -1920,6 +1964,8 @@ class Mat123:
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Original vertex coordinates}} &= ({self.h}, {self.k})\\\\"
@@ -2013,6 +2059,8 @@ class Mat124:
         self.subtopic = "Functions"
         self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given the function:}} &\\\\"
@@ -2078,6 +2126,8 @@ class Mat125:
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The x-intercept of the original function }} y = h(x) \\text{{ is }} x &= {self.original_intercept}\\\\"
@@ -2182,6 +2232,8 @@ class Mat126:
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify the center }} (h, k) \\text{{ and point }} P(x_1, y_1):&\\\\"
@@ -2293,6 +2345,8 @@ class Mat127:
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Line equation:}} &\\quad y = {self.m}x + {self.c} \\\\"
@@ -2407,6 +2461,8 @@ class Mat128:
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Pure Mathematics 1 for Cambridge International AS & A Level"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Midpoint }} M &= \\left(\\frac{{x_1 + x_2}}{{2}}, \\frac{{y_1 + y_2}}{{2}}\\right)\\\\"
@@ -2498,6 +2554,8 @@ class Mat129:
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from AS and A Level Mathematics Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The equation of the circle is given by:}} &\\\\"
@@ -2586,6 +2644,7 @@ class Mat130:
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
 
         # Format subtraction to avoid double negatives like 7 - -8
         sub1 = f"{self.by} + {abs(self.cy)}" if self.cy < 0 else f"{self.by} - {self.cy}"
@@ -2674,6 +2733,8 @@ class Mat131:
         self.subtopic = "Circular measure"
         self.source = "Adapted from Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Perimeter of sector}} &= 2r + r\\theta\\\\"
@@ -2798,6 +2859,8 @@ class Mat132:
         self.subtopic = "Circular measure"
         self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Formula for Area of Annulus Sector:}} &\\\\"
@@ -2921,6 +2984,8 @@ class Mat133:
         self.subtopic = "Circular measure"
         self.source = "Adapted from Understanding Pure Mathematics"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given: Radius of sector (Slant height) }} R &= {self.R}\\,\\text{{cm}}\\\\"
@@ -3085,6 +3150,8 @@ class Mat134:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1 Coursebook"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Equation of curve:}} &\\quad y = \\sqrt{{{self.a}x {self.sign_str} {self.b_disp}}} \\\\"
@@ -3180,6 +3247,8 @@ class Mat135:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Calculus: Early Transcendentals"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given parameters:}} &\\\\"
@@ -3269,6 +3338,8 @@ class Mat136:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Pure Mathematics 1"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Let the side length }} S &= {self.side_length}\\,\\text{{cm}}\\\\"
@@ -3396,6 +3467,8 @@ class Mat137:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Active Calculus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Using the Chain Rule for }} h(x) = f(g(x)): &\\\\"
@@ -3496,6 +3569,8 @@ class Mat138:
         self.subtopic = "Integration"
         self.source = "Adapted from Calculus: Early Transcendentals"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\int_{{0}}^{{{self.root_b}}} \\left( {self.eq_str} \\right) \\, dx\\\\"
@@ -3580,6 +3655,8 @@ class Mat139:
         self.subtopic = "Integration"
         self.source = "Adapted from Strang, G. (1991). Calculus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Displacement}} &= \\text{{Area under the }} v(t) \\text{{ graph}}\\\\"
@@ -3673,6 +3750,8 @@ class Mat140:
         self.subtopic = "Integration"
         self.source = "Adapted from Thomas' Calculus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Volume of revolution formula:}} &\\\\"
@@ -3804,6 +3883,8 @@ class Mat141:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The given relationship is: }} y &= k a^x \\\\"
@@ -3888,6 +3969,8 @@ class Mat142:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The population growth model is given by: }} N &= N_0 \\times b^{{kt}} \\\\"
@@ -3967,6 +4050,8 @@ class Mat143:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The decay model is given by: }} N &= 100e^{{-\\lambda t}} \\\\"
@@ -4059,6 +4144,8 @@ class Mat144:
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The function is given by: }} y &= {self.k}e^{{{self.a}x {self.b}}}\\\\"
@@ -4153,6 +4240,8 @@ class Mat145:
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify the interval parameters:}} &\\\\"
@@ -4242,6 +4331,7 @@ class Mat146:
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4328,6 +4418,8 @@ class Mat147:
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The function is given by: }} y &= {self.k}\\sin^2({self.a}x)\\\\"
@@ -4469,6 +4561,7 @@ class Mat148:
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
 
         # --- Dynamic Reasoning Construction ---
         d_val = round(self.d, 10)
@@ -4588,6 +4681,7 @@ class Mat149:
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
 
         # LaTeX Reasoning
         iteration_steps = ""
@@ -4723,6 +4817,8 @@ class Mat150:
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The iterative formula is given by:}} &\\\\"

@@ -49,6 +49,8 @@ class Mat151:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 2 & 3 Coursebook by Sue Pemberton"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given equation:}} &\\quad y = k e^{{ax}} \\\\"
@@ -141,6 +143,8 @@ class Mat152:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Pure Mathematics 3 by Sophie Goldie"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{Taking logs of both sides of } y = Ax^n:\\\\"
@@ -222,6 +226,8 @@ class Mat153:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Khan Academy"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\text{{Length}} \\times \\text{{Width}} \\\\"
@@ -300,6 +306,8 @@ class Mat154:
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 2 & 3 by L. Bostock"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given the function:}} &\\\\"
@@ -391,6 +399,8 @@ class Mat155:
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\int_{{0}}^{{\\ln({self.a})}} e^{{{self.k}x}} \\, dx\\\\"
@@ -473,6 +483,8 @@ class Mat156:
         self.subtopic = "Integration"
         self.source = "Adapted from Calculus: Early Transcendentals by James Stewart"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\int_{{0}}^{{{self.limit_str}}} {self.a}x \\sin({self.b}x) \\, dx \\\\"
@@ -589,6 +601,8 @@ class Mat157:
         self.subtopic = "Integration"
         self.source = "Adapted from Pure Mathematics 2 & 3 by Hugh Neill & Douglas Quadling"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The integrand is:}} &\\\\"
@@ -691,6 +705,8 @@ class Mat158:
         self.subtopic = "Integration"
         self.source = "Adapted from Thomas' Calculus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\int_{{{self.lower_limit}}}^{{{self.upper_limit}}} \\frac{{{self.m}x}}{{x^2 + {self.c}}} \\, dx\\\\"
@@ -776,6 +792,8 @@ class Mat159:
         self.subtopic = "Integration"
         self.source = "Adapted from Khan Academy"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Area}} &= \\int_{{0}}^{{{self.x_limit}}} \\frac{{{self.numerator}}}{{x^2 + {self.a_sq}}} \\, dx\\\\"
@@ -883,6 +901,7 @@ class Mat160:
         self.subtopic = "Integration"
         self.source = "Adapted from Oxford International AQA Examinations: International A Level Mathematics"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -980,6 +999,7 @@ class Mat161:
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Visualizing convergence using cobweb diagrams"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1100,6 +1120,7 @@ class Mat162:
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Locating roots graphically and by searching for a sign change"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1210,6 +1231,8 @@ class Mat163:
         self.subtopic = "Vectors"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Two vectors are perpendicular if their dot product is zero:}} &\\\\"
@@ -1365,6 +1388,8 @@ class Mat164:
         self.subtopic = "Vectors"
         self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 2 & 3"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The parametric equations for line }} L_1 \\text{{ are:}} \\\\"
@@ -1476,6 +1501,8 @@ class Mat165:
         self.subtopic = "Vectors"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3 Coursebook"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Coordinates of vertices:}} &\\\\"
@@ -1580,6 +1607,8 @@ class Mat166:
         self.subtopic = "Vectors"
         self.source = "Adapted from Pure Mathematics by Bostock and Chandler"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given vertices:}} &\\\\"
@@ -1670,6 +1699,8 @@ class Mat167:
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Pure Mathematics 2 & 3, Cambridge University Press"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given vertex }} P, z_P &= {self.z1_str}\\\\"
@@ -1761,6 +1792,8 @@ class Mat168:
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Oxford International AQA Examinations: Pure Mathematics"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the circle equation }} |z - ({self.center_str})| &= {self.r}:\\\\"
@@ -1853,6 +1886,8 @@ class Mat169:
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3 Coursebook"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Coordinates of }} A &= ({self.real_part}, {self.imag_part})\\\\"
@@ -1953,6 +1988,8 @@ class Mat170:
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Edexcel A Level Mathematics: Pure Mathematics Year 2"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The ray starts at point }} A &= (0, {self.y_start})\\\\"
@@ -2036,6 +2073,8 @@ class Mat171:
         self.subtopic = "Forces and equilibrium"
         self.source = "Adapted from AS & A level March 2025 Question Paper 42"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Resolving forces horizontally (}} \\sum F_x = 0 \\text{{):}} &\\\\"
@@ -2151,6 +2190,8 @@ class Mat172:
         self.subtopic = "Kinematics of motion in a straight line"
         self.source = "Adapted from AS & A level June 2025 Question Paper 43"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Distance traveled away from }} O \\text{{ (Area Stage 1 and 2):}} &\\\\"
@@ -2265,6 +2306,8 @@ class Mat173:
         self.subtopic = "Momentum"
         self.source = "Adapted from AS & A level March 2025 Question Paper 42"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Collision between }} P \\text{{ and }} Q: &\\\\"
@@ -2373,6 +2416,8 @@ class Mat174:
         self.subtopic = "Newton’s laws of motion"
         self.source = "Adapted from AS & A level March 2025 Question Paper 42"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Normal force (}} R \\text{{) perpendicular to the plane:}} &\\\\"
@@ -2503,6 +2548,8 @@ class Mat175:
         self.subtopic = "Energy, work and power"
         self.source = "Adapted from AS & A level June 2025 Question Paper 43"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Motion from }} A \\text{{ to }} B: & \\\\"
@@ -2650,6 +2697,8 @@ class Mat176:
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Ordered data for Class A:}} &= {sorted(self.data_a)}\\\\"
@@ -2739,6 +2788,8 @@ class Mat177:
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Upper Quartile (}} Q_3 \\text{{)}} &= {round(self.q3, 10)}\\,\\text{{cm}}\\\\"
@@ -2851,6 +2902,8 @@ class Mat178:
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total frequency (}} n \\text{{)}} &= {self.total_students} \\\\"
@@ -2943,6 +2996,8 @@ class Mat179:
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total number of parcels }} (N) &= {self.total_n}\\\\"
@@ -3031,6 +3086,8 @@ class Mat180:
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total number of students, }} n &= {self.total_students}\\\\"
@@ -3104,6 +3161,8 @@ class Mat181:
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Number of women available, }} n_w &= {self.num_women} \\\\"
@@ -3190,6 +3249,8 @@ class Mat182:
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total unique ornaments, }} n &= {self.n} \\\\"
@@ -3276,6 +3337,8 @@ class Mat183:
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total number of board members, }} n &= {self.num_members}\\\\"
@@ -3378,6 +3441,7 @@ class Mat184:
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
         
         # LaTeX Reasoning aligned with 9709 Syllabus expectations
         # Using double backslashes for f-string compatibility and rounding to 10 decimal places
@@ -3465,6 +3529,8 @@ class Mat185:
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{The probability } P(X=x) \\text{ is calculated by: } & \\\\"
@@ -3539,6 +3605,8 @@ class Mat186:
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The figure displays the probability mass function for a geometric distribution }} X \\sim \\text{{Geo}}(p). \\\\"
@@ -3612,6 +3680,7 @@ class Mat187:
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3690,6 +3759,8 @@ class Mat188:
         self.subtopic = "The normal distribution"
         self.source = "Cambridge International AS & A Level Mathematics Probability & Statistics 1 Coursebook (Chapter on Normal Distribution)."
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given distribution: }} X &\\sim N(\\mu, \\sigma^2) = N({self.mu}, {self.variance})\\\\"
@@ -3768,6 +3839,8 @@ class Mat189:
         self.subtopic = "The normal distribution"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify parameters from the figure:}} &\\\\"
@@ -3863,6 +3936,8 @@ class Mat190:
         self.subtopic = "The normal distribution" 
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus" 
         self.curriculum = "AS & A Level" 
+        self.question_type = "Short Answer"
+
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3947,6 +4022,8 @@ class Mat191:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The distance from the mean to the inflection point represents the standard error (SE):}} &\\\\"
@@ -4035,6 +4112,8 @@ class Mat192:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the dot plot, the data set is:}} &\\\\"
@@ -4116,6 +4195,7 @@ class Mat193:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4209,6 +4289,8 @@ class Mat194:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = ""
 
     def generate(self, num):
@@ -4276,6 +4358,8 @@ class Mat195:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Lower bound of the confidence interval}} &= {round(self.lower_bound, 10)}\\\\"
@@ -4359,6 +4443,7 @@ class Mat196:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4428,6 +4513,8 @@ class Mat197:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Sample size of }} A, n_A &= {self.nA}\\\\"
@@ -4512,6 +4599,7 @@ class Mat198:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4599,6 +4687,8 @@ class Mat199:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Sample sizes: }} n_1 &= {self.n1}, \\quad n_2 = {self.n2}\\\\"
@@ -4674,6 +4764,8 @@ class Mat200:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Sample size }} (n) &= {self.n}\\\\"
@@ -4747,6 +4839,8 @@ class Mat201:
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
         self.curriculum = "AS & A Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the figure, the population mean is given as:}} &\\\\"

@@ -37,6 +37,8 @@ class Mat001:
         self.subtopic = "Sets"
         self.source = "DynaMath"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total surveyed}} &= {self.total}\\\\"
@@ -90,6 +92,8 @@ class Mat002:
         self.subtopic = "Sets"
         self.source = "Original" # TODO: REMOVED
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{To find the total number of students who like Math, we sum the distinct regions}&\\\\"
@@ -147,6 +151,8 @@ class Mat003:
         self.subtopic = "Estimation"
         self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Original dimensions:}} &\\\\"
@@ -245,6 +251,8 @@ class Mat004:
         self.subtopic = "Limits of accuracy"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Since measurements are to the nearest meter, the error is }} \\pm 0.5\\,\\text{{m}}.\\\\"
@@ -324,6 +332,7 @@ class Mat005:
         self.subtopic = "Ratio and proportion"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "MCQ"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{To determine the better value, we calculate the unit rate (ml per dollar) for each bottle.}} &\\\\"
@@ -410,6 +419,7 @@ class Mat006:
         self.subtopic = "Rates"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given amount}} &= {self.total_eur}\\,\\text{{EUR}}\\\\"
@@ -479,6 +489,7 @@ class Mat007:
         self.subtopic = "Percentages"
         self.source = "Adapted from Complete Mathematics for Cambridge IGCSE (David Rayner)"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total squares}} &= \\text{{width}} \\times \\text{{height}}\\\\"
@@ -561,6 +572,7 @@ class Mat008:
         self.subtopic = "Time"
         self.source = "Adapted from Cambridge IGCSE Mathematics Core and Extended Coursebook (Pimentel & Wall)"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Start Time}} &= {self.start_hour}:{self.start_minute:02d}\\\\"
@@ -688,7 +700,8 @@ class Mat009:
         self.subtopic = "Graphs in practical situations"
         self.source = "Adapted from 2025-specimen-paper-3"
         self.curriculum = "IGCSE"
-        
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Average Speed from A to B:}} & \\\\"
@@ -821,6 +834,7 @@ class Mat010:
         self.subtopic = "Graphs in practical situations"
         self.source = "Adapted from 2025-specimen-paper-4"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -921,6 +935,7 @@ class Mat011:
         self.subtopic = "Graphs in practical situations"
         self.source = "Adapted from IGCSE June 2025 Question Paper 11"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1055,6 +1070,7 @@ class Mat012:
         self.subtopic = "Graphs of functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 12"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1179,6 +1195,7 @@ class Mat013:
         self.subtopic = "Graphs of functions"
         self.source = "Adapted from IGCSE June 2025 Question Paper 41"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         
         # Revised Reasoning
         self.reasoning = (
@@ -1263,6 +1280,7 @@ class Mat014:
         self.subtopic = "Graphs of functions"
         self.source = "Original" # Comply to syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1366,6 +1384,7 @@ class Mat015:
         self.subtopic = "Graphs of functions"
         self.source = "Original" # Comply to syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1461,6 +1480,7 @@ class Mat016:
         self.subtopic = "Sketching curves"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The cubic function can be expressed in factored form using the roots }} r_1, r_2, r_3: &\\\\"
@@ -1556,6 +1576,7 @@ class Mat017:
         self.subtopic = "Sketching curves"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1670,6 +1691,7 @@ class Mat018:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         # Identification of M (used in both cases)
         m_x_rounded = round(self.m_x, 10)
@@ -1791,6 +1813,7 @@ class Mat019:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The cubic function is: }} y &= {fmt_poly(self.a, 'x^3', True)}{fmt_poly(self.b, 'x^2')}{fmt_poly(self.c, 'x')}{fmt_poly(self.d, '')} \\\\"
@@ -1894,6 +1917,7 @@ class Mat020:
         self.subtopic = "Differentiation"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Find the gradient of the secant line passing through }} A({self.x_a}, {self.y_a}) \\text{{ and }} B({self.x_b}, {self.y_b}): \\\\"
@@ -1994,6 +2018,7 @@ class Mat021:
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Determine the equation of }} f(x) \\text{{ from the roots and }} y\\text{{-intercept:}} &\\\\"
@@ -2101,6 +2126,7 @@ class Mat022:
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Determine the intermediate product }} u = g(x) \\text{{ where }} x = {self.input_x}\\,\\text{{kg:}} &\\\\"
@@ -2217,6 +2243,7 @@ class Mat023:
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         if self.q_type == 0:
             self.reasoning = (
                 "\\[\\begin{aligned}"
@@ -2333,6 +2360,7 @@ class Mat024:
         self.subtopic = "Coordinates"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2449,6 +2477,7 @@ class Mat025:
         self.subtopic = "Gradient of linear graphs"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         # Pre-calculating values for reasoning
         m_val = round(self.answer, 10)
@@ -2542,6 +2571,7 @@ class Mat026:
         self.subtopic = "Gradient of linear graphs"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Since points }} P(k, {self.p_y}), Q({self.q_x}, {self.q_y}), \\text{{ and }} R({self.r_x}, {self.r_y}) \\text{{ are collinear,}} &\\\\"
@@ -2635,6 +2665,7 @@ class Mat027:
         self.subtopic = "Gradient of linear graphs"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
         "\\[\\begin{aligned}"
         f"\\text{{Point }} A = ({self.x1}, {self.y1}), \\text{{ Point }} B = ({self.x2}, {self.y2}) &\\\\"
@@ -2733,6 +2764,7 @@ class Mat028:
         self.subtopic = "Length and midpoint"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the figure, the vertices are }} A({self.pts['A'][0]}, {self.pts['A'][1]}), B({self.pts['B'][0]}, {self.pts['B'][1]}), \\text{{ and }} C({self.pts['C'][0]}, k). \\\\"
@@ -2839,6 +2871,7 @@ class Mat029:
         self.subtopic = "Length and midpoint"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2940,6 +2973,7 @@ class Mat030:
         self.subtopic = "Length and midpoint"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Let }} P = ({self.p_x}, {self.p_y}) \\text{{ and }} Q = ({self.q_x}, {self.q_y}). &\\\\"
@@ -3020,6 +3054,7 @@ class Mat031:
         self.subtopic = "Equations of linear graphs"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the figure, the gradient is: }} m &= {round(self.m, 10)}\\\\"
@@ -3103,6 +3138,7 @@ class Mat032:
         self.subtopic = "Equations of linear graphs"
         self.source = "Adapted from 2025-specimen-paper-1"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3204,6 +3240,7 @@ class Mat033:
         self.subtopic = "Equations of linear graphs"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The equation of line }} L \\text{{ is:}} &\\\\"
@@ -3335,6 +3372,7 @@ class Mat034:
         self.subtopic = "Parallel lines"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3460,6 +3498,7 @@ class Mat035:
         self.subtopic = "Parallel lines"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Find the gradient of line }} k \\text{{ using points }} ({self.x1}, {self.y1}) \\text{{ and }} ({self.x2}, {round(self.y2, 10)}): &\\\\"
@@ -3562,6 +3601,7 @@ class Mat036:
         self.subtopic = "Equations of linear graphs"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify the gradient of line }} L, m_1: &\\\\"
@@ -3718,6 +3758,7 @@ class Mat037:
         self.subtopic = "Perpendicular lines"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3836,6 +3877,8 @@ class Mat038:
         self.subtopic = "Perpendicular lines"
         self.source = "Adapted from Cambridge IGCSE Mathematics 0580 Syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Equations of the lines:}} & \\\\"
@@ -3944,6 +3987,7 @@ class Mat039:
         self.subtopic = "Similarity"
         self.source = "Adapted from IGCSE June 2025 Question Paper 13"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4009,6 +4053,8 @@ class Mat040:
         self.subtopic = "Similarity"
         self.source = "Adapted from IGCSE June 2025 Question Paper 23"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Let }} k \\text{{ be the linear scale factor between Solid }} A \\text{{ and Solid }} B: & \\\\"
@@ -4076,6 +4122,8 @@ class Mat041:
         self.subtopic = "Similarity"
         self.source = "Adapted from IGCSE June 2025 Question Paper 23"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Let }} k \\text{{ be the linear scale factor:}} & \\\\"
@@ -4157,6 +4205,7 @@ class Mat042:
         self.subtopic = "Angles"
         self.source = "Adapted from IGCSE March 2025 Question Paper 13"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4263,6 +4312,7 @@ class Mat043:
         self.subtopic = "Angles"
         self.source = "Adapted from 2025-specimen-paper-2"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4348,6 +4398,7 @@ class Mat044:
         self.subtopic = "Angles"
         self.source = "Adapted from 2025-specimen-paper-1"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4518,6 +4569,8 @@ class Mat045:
         self.subtopic = "Angles"
         self.source = "Adapted from IGCSE March 2025 Question Paper 32"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             r"\[\begin{aligned}"
             fr"\text{{The sum of the interior angles of an }} n\text{{-sided polygon is given by:}} \\"
@@ -4621,6 +4674,8 @@ class Mat046:
         self.subtopic = "Circle theorems I"
         self.source = "Adapted from 2025-specimen-paper-2"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             f"\\[\\begin{{aligned}} "
             f"\\text{{Since }} ABCD \\text{{ is a cyclic quadrilateral, opposite angles sum to }} 180^\\circ: & \\\\"
@@ -4723,6 +4778,8 @@ class Mat047:
         self.subtopic = "Circle theorems I"
         self.source = "Adapted from IGCSE June 2025 Question Paper 13"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{In }}\\triangle OPS, OP = OS \\text{{ (radii), so the triangle is isosceles:}} &\\\\"
@@ -4862,6 +4919,8 @@ class Mat048:
         self.subtopic = "Circle theorems I"
         self.source = "Adapted from IGCSE June 2025 Question Paper 21"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{In }} \\triangle AOC, OA &= OC \\text{{ (radii of the circle)}}\\\\"
@@ -4998,6 +5057,8 @@ class Mat049:
         self.subtopic = "Circle theorems I"
         self.source = "Adapted from IGCSE March 2025 Question Paper 22"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{1. Angles in the same segment subtended by the same arc } BC \\text{ are equal:} &\\\\"
@@ -5121,6 +5182,8 @@ class Mat050:
         self.subtopic = "Circle theorems II"
         self.source = "Original" # Complies with syllabus"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Radius, }} r &= {round(self.r, 10)}\\,\\text{{cm}}\\\\"
