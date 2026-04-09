@@ -44,7 +44,7 @@ def get_template_classes(subject: str, multi: bool = False):
     """
     Dynamically import template classes based on the mode.
     If multi=False, loads from templates_*.py and looks for classes ending in 3 digits.
-    If multi=True, loads from <subject>_problems.py and looks for classes ending in _multi.
+    If multi=True, loads from multi_<subject>.py and looks for classes ending in _multi.
     """
     subject_path = os.path.join(subject)
     template_classes = []
@@ -57,14 +57,14 @@ def get_template_classes(subject: str, multi: bool = False):
     try:
         if multi:
             # MULTILINGUAL MODE: Target the combined problems file
-            filename = f"{subject}_problems.py"
+            filename = f"multi_{subject}.py"
             filepath = os.path.join(subject_path, filename)
             
             if not os.path.exists(filepath):
                 print(f"  [WARNING] Multilingual file '{filepath}' not found. Skipping subject.")
                 return []
                 
-            module_name = f"{subject}.{subject}_problems"
+            module_name = f"{subject}.multi_{subject}"
             spec = importlib.util.spec_from_file_location(module_name, filepath)
             if spec is not None:
                 module = importlib.util.module_from_spec(spec)
@@ -96,6 +96,15 @@ def get_template_classes(subject: str, multi: bool = False):
         # Restore original path
         sys.path = original_sys_path
 
+        # This prevents Python from reusing the previous subject's files 
+        # when the next subject has files with the exact same name.
+        keys_to_remove = [
+            mod_name for mod_name in sys.modules 
+            if mod_name.startswith("templates_")
+        ]
+        for key in keys_to_remove:
+            del sys.modules[key]
+
     return template_classes
 
 def parse_args():
@@ -114,7 +123,7 @@ def parse_args():
     parser.add_argument("--exp", action="store_true",
                         help="Generate 10 instances of dataset for experiment (default: False)")
     parser.add_argument("--multi", action="store_true",
-                        help="Generate multilingual dataset using <subject>_problems.py (default: False)")
+                        help="Generate multilingual dataset using multi_<subject>.py (default: False)")
     parser.add_argument("--max_trials", type=int, default=100,
                         help="Maximum attempts to find a unique instance before skipping (default: 100)")
     
