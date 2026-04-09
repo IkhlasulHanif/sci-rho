@@ -1770,7 +1770,7 @@ class Mat121:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1854,7 +1854,7 @@ class Mat122:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Functions"
         self.source = "Adapted from Pure Mathematics 1 for Cambridge International AS & A Level"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1963,7 +1963,7 @@ class Mat123:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2058,7 +2058,7 @@ class Mat124:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Functions"
         self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2125,7 +2125,7 @@ class Mat125:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Functions"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2231,7 +2231,7 @@ class Mat126:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2344,7 +2344,7 @@ class Mat127:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2460,7 +2460,7 @@ class Mat128:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Pure Mathematics 1 for Cambridge International AS & A Level"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2553,7 +2553,7 @@ class Mat129:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from AS and A Level Mathematics Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2643,7 +2643,7 @@ class Mat130:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Coordinate geometry"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         # Format subtraction to avoid double negatives like 7 - -8
@@ -2732,7 +2732,7 @@ class Mat131:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Circular measure"
         self.source = "Adapted from Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2858,7 +2858,7 @@ class Mat132:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Circular measure"
         self.source = "Adapted from Cambridge International AS and A Level Mathematics: Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2983,7 +2983,7 @@ class Mat133:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Circular measure"
         self.source = "Adapted from Understanding Pure Mathematics"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3149,7 +3149,7 @@ class Mat134:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Differentiation"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 1 Coursebook"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3246,7 +3246,7 @@ class Mat135:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Differentiation"
         self.source = "Adapted from Calculus: Early Transcendentals"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3337,7 +3337,7 @@ class Mat136:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Differentiation"
         self.source = "Adapted from Pure Mathematics 1"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3466,7 +3466,7 @@ class Mat137:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Differentiation"
         self.source = "Adapted from Active Calculus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3568,7 +3568,7 @@ class Mat138:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Integration"
         self.source = "Adapted from Calculus: Early Transcendentals"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3654,7 +3654,7 @@ class Mat139:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Integration"
         self.source = "Adapted from Strang, G. (1991). Calculus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3749,7 +3749,7 @@ class Mat140:
         self.topic = "Pure Mathematics 1"
         self.subtopic = "Integration"
         self.source = "Adapted from Thomas' Calculus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3882,7 +3882,7 @@ class Mat141:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3968,7 +3968,7 @@ class Mat142:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4049,7 +4049,7 @@ class Mat143:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4143,7 +4143,7 @@ class Mat144:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4239,7 +4239,7 @@ class Mat145:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4330,7 +4330,7 @@ class Mat146:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4417,7 +4417,7 @@ class Mat147:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4560,7 +4560,7 @@ class Mat148:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         # --- Dynamic Reasoning Construction ---
@@ -4680,7 +4680,7 @@ class Mat149:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         # LaTeX Reasoning
@@ -4816,7 +4816,7 @@ class Mat150:
         self.topic = "Pure Mathematics 2"
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (

@@ -48,7 +48,7 @@ class Mat151:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 2 & 3 Coursebook by Sue Pemberton"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -142,7 +142,7 @@ class Mat152:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Pure Mathematics 3 by Sophie Goldie"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -225,7 +225,7 @@ class Mat153:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Khan Academy"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -305,7 +305,7 @@ class Mat154:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Logarithmic and exponential functions"
         self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 2 & 3 by L. Bostock"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -398,7 +398,7 @@ class Mat155:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Integration"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -482,7 +482,7 @@ class Mat156:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Integration"
         self.source = "Adapted from Calculus: Early Transcendentals by James Stewart"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -600,7 +600,7 @@ class Mat157:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Integration"
         self.source = "Adapted from Pure Mathematics 2 & 3 by Hugh Neill & Douglas Quadling"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -704,7 +704,7 @@ class Mat158:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Integration"
         self.source = "Adapted from Thomas' Calculus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -791,7 +791,7 @@ class Mat159:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Integration"
         self.source = "Adapted from Khan Academy"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -900,7 +900,7 @@ class Mat160:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Integration"
         self.source = "Adapted from Oxford International AQA Examinations: International A Level Mathematics"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -998,7 +998,7 @@ class Mat161:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Visualizing convergence using cobweb diagrams"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1119,7 +1119,7 @@ class Mat162:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Numerical solution of equations"
         self.source = "Adapted from Locating roots graphically and by searching for a sign change"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1230,7 +1230,7 @@ class Mat163:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Vectors"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1387,7 +1387,7 @@ class Mat164:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Vectors"
         self.source = "Adapted from Nelson Mathematics for Cambridge International A Level: Pure Mathematics 2 & 3"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1500,7 +1500,7 @@ class Mat165:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Vectors"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3 Coursebook"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1606,7 +1606,7 @@ class Mat166:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Vectors"
         self.source = "Adapted from Pure Mathematics by Bostock and Chandler"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1698,7 +1698,7 @@ class Mat167:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Pure Mathematics 2 & 3, Cambridge University Press"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1791,7 +1791,7 @@ class Mat168:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Oxford International AQA Examinations: Pure Mathematics"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1885,7 +1885,7 @@ class Mat169:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Cambridge International AS & A Level Mathematics: Pure Mathematics 3 Coursebook"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -1987,7 +1987,7 @@ class Mat170:
         self.topic = "Pure Mathematics 3"
         self.subtopic = "Complex numbers"
         self.source = "Adapted from Edexcel A Level Mathematics: Pure Mathematics Year 2"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2072,7 +2072,7 @@ class Mat171:
         self.topic = "Mechanics"
         self.subtopic = "Forces and equilibrium"
         self.source = "Adapted from AS & A level March 2025 Question Paper 42"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2189,7 +2189,7 @@ class Mat172:
         self.topic = "Mechanics"
         self.subtopic = "Kinematics of motion in a straight line"
         self.source = "Adapted from AS & A level June 2025 Question Paper 43"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2305,7 +2305,7 @@ class Mat173:
         self.topic = "Mechanics"
         self.subtopic = "Momentum"
         self.source = "Adapted from AS & A level March 2025 Question Paper 42"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2415,7 +2415,7 @@ class Mat174:
         self.topic = "Mechanics"
         self.subtopic = "Newton’s laws of motion"
         self.source = "Adapted from AS & A level March 2025 Question Paper 42"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2547,7 +2547,7 @@ class Mat175:
         self.topic = "Mechanics"
         self.subtopic = "Energy, work and power"
         self.source = "Adapted from AS & A level June 2025 Question Paper 43"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2696,7 +2696,7 @@ class Mat176:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2787,7 +2787,7 @@ class Mat177:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2901,7 +2901,7 @@ class Mat178:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -2995,7 +2995,7 @@ class Mat179:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Representation of data"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3085,7 +3085,7 @@ class Mat180:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3160,7 +3160,7 @@ class Mat181:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3248,7 +3248,7 @@ class Mat182:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3336,7 +3336,7 @@ class Mat183:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Permutations and combinations"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3440,7 +3440,7 @@ class Mat184:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         # LaTeX Reasoning aligned with 9709 Syllabus expectations
@@ -3528,7 +3528,7 @@ class Mat185:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3604,7 +3604,7 @@ class Mat186:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3679,7 +3679,7 @@ class Mat187:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "Discrete random variables"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -3758,7 +3758,7 @@ class Mat188:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "The normal distribution"
         self.source = "Cambridge International AS & A Level Mathematics Probability & Statistics 1 Coursebook (Chapter on Normal Distribution)."
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3838,7 +3838,7 @@ class Mat189:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "The normal distribution"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3935,7 +3935,7 @@ class Mat190:
         self.topic = "Probability & Statistics 1"
         self.subtopic = "The normal distribution" 
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus" 
-        self.curriculum = "AS & A Level" 
+        self.curriculum = "A-Level" 
         self.question_type = "Short Answer"
 
         
@@ -4021,7 +4021,7 @@ class Mat191:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4111,7 +4111,7 @@ class Mat192:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4194,7 +4194,7 @@ class Mat193:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4288,7 +4288,7 @@ class Mat194:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = ""
@@ -4357,7 +4357,7 @@ class Mat195:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4442,7 +4442,7 @@ class Mat196:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4512,7 +4512,7 @@ class Mat197:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4598,7 +4598,7 @@ class Mat198:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4686,7 +4686,7 @@ class Mat199:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4763,7 +4763,7 @@ class Mat200:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4838,7 +4838,7 @@ class Mat201:
         self.topic = "Probability & Statistics 2"
         self.subtopic = "Sampling and estimation"
         self.source = "Adapted from Cambridge AS & A level Mathematics 9709 Syllabus"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
