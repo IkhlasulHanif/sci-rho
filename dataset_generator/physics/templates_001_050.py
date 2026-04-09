@@ -27,6 +27,8 @@ class Phy001:
         self.subtopic = "Physical quantities and measurement techniques"
         self.source = "DynaMath"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Left point}} &= {self.lower_bound}\\,\\text{{cm}}\\\\"
@@ -62,6 +64,8 @@ class Phy002:
         self.subtopic = "Physical quantities and measurement techniques"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial volume of water}} &= {self.water_volume_default}\\,\\text{{ml}}\\\\"
@@ -134,6 +138,8 @@ class Phy003:
         self.subtopic = "Physical quantities and measurement techniques"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Horizontal component}} &= {self.x_direction}\\,\\text{{N}}\\\\"
@@ -191,6 +197,8 @@ class Phy004:
         self.subtopic = "Motion"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Time taken}} &= {self.time}\\,\\text{{s}}\\\\"
@@ -232,6 +240,8 @@ class Phy005:
         self.subtopic = "Motion"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{First distance}} &= {self.first_distance}\\,\\text{{m}},\\quad \\text{{Time}} = {self.first_time}\\,\\text{{s}}\\\\"
@@ -274,6 +284,8 @@ class Phy006:
         self.subtopic = "Motion"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the distance-time graph, the gradient represents the velocity.}} &\\\\"
@@ -307,6 +319,8 @@ class Phy007:
         self.subtopic = "Motion"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the distance-time graph, the gradient represents velocity.}} &\\\\"
@@ -342,6 +356,8 @@ class Phy008:
         self.subtopic = "Motion"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given:}} &\\\\"
@@ -381,6 +397,8 @@ class Phy009:
         self.subtopic = "Motion"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given:}} &\\\\"
@@ -423,6 +441,8 @@ class Phy010:
         self.subtopic = "Density"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given:}} &\\\\"
@@ -470,6 +490,8 @@ class Phy011:
         self.subtopic = "Forces"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Force 1}} &= {self.f1}\\,\\text{{N}}\\\\"
@@ -518,6 +540,8 @@ class Phy012:
         self.subtopic = "Forces"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given:}} &\\\\"
@@ -561,6 +585,8 @@ class Phy013:
         self.subtopic = "Forces"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the graph, the spring obeys Hooke's law only up to }} x = {self.breaking_point}\\,\\text{{m.}}\\\\"
@@ -609,6 +635,8 @@ class Phy014:
         self.subtopic = "Forces"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given:}} &\\\\"
@@ -654,6 +682,8 @@ class Phy015:
         self.subtopic = "Momentum"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of cart A}} &= {self.mass_first_cart}\\,\\text{{kg}}\\\\"
@@ -697,6 +727,8 @@ class Phy016:
         self.subtopic = "Energy, work and power"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of the ball}} &= {self.ball_mass}\\,\\text{{kg}}\\\\"
@@ -745,6 +777,8 @@ class Phy017:
         self.subtopic = "Energy, work and power"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Applied force}} &= {self.horizontal_force}\\,\\text{{N}}\\\\"
@@ -797,6 +831,8 @@ class Phy018:
         self.subtopic = "Energy, work and power"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of load}} &= {self.load_mass}\\,\\text{{kg}}\\\\"
@@ -844,6 +880,8 @@ class Phy019:
         self.subtopic = "Pressure"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Depth change}} &= {self.depth_change}\\,\\text{{cm}} = {self.depth_change_in_meters}\\,\\text{{m}}\\\\"
@@ -880,6 +918,8 @@ class Phy020:
         self.subtopic = "Kinetic particle model of matter"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{At constant temperature, for a fixed mass of gas:}} &\\\\"
@@ -917,6 +957,8 @@ class Phy021:
         self.subtopic = "Kinetic particle model of matter"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{At constant temperature, for a fixed mass of gas:}} &\\\\"
@@ -962,6 +1004,8 @@ class Phy022:
         self.subtopic = "Thermal properties and temperature"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the heat vs. temperature graph:}} &\\\\"
@@ -1017,6 +1061,8 @@ class Phy023:
         self.subtopic = "Thermal properties and temperature"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The graph of thermal energy vs. temperature is linear.}} &\\\\"
@@ -1072,6 +1118,8 @@ class Phy024:
         self.subtopic = "Thermal properties and temperature"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The graph of thermal energy vs. temperature is linear.}} &\\\\"
@@ -1127,6 +1175,8 @@ class Phy025:
         self.subtopic = "Thermal properties and temperature"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{From the thermal energy vs. temperature graph:}} &\\\\"
@@ -1178,6 +1228,8 @@ class Phy026:
         self.subtopic = "Transfer of thermal energy"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Rate of heat input (}} Q_{{in}} \\text{{)}} &= {round(self.heat_in, 10)}\\,\\text{{kJ/s}}\\\\"
@@ -1217,6 +1269,8 @@ class Phy027:
         self.subtopic = "General properties of waves"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Wavelength (}} \\lambda \\text{{)}} &= {round(self.lambda_, 10)}\\,\\text{{cm}}\\\\"
@@ -1270,6 +1324,8 @@ class Phy028:
         self.subtopic = "General properties of waves"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Wave speed (}} v \\text{{)}} &= {round(self.speed, 10)}\\,\\text{{cm/s}}\\\\"
@@ -1326,6 +1382,8 @@ class Phy029:
         self.subtopic = "Light"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Speed of light in medium A (}} v_A \\text{{)}} &= {round(self.speed_medium_a, 10)}\\,\\text{{m/s}}\\\\"
@@ -1371,6 +1429,8 @@ class Phy030:
         self.subtopic = "Light"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Speed of light in medium A (}} v_A \\text{{)}} &= {round(self.speed_medium_a, 10)}\\,\\text{{m/s}}\\\\"
@@ -1417,6 +1477,8 @@ class Phy031:
         self.subtopic = "Light"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Refractive index of medium 1, }} n_1 &= {self.n1}\\\\"
@@ -1464,6 +1526,8 @@ class Phy032:
         self.subtopic = "Light"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Refractive index of medium 1, }} n_1 &= {self.n1}\\\\"
@@ -1509,6 +1573,8 @@ class Phy033:
         self.subtopic = "Sound"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Distance between point A and B, }} d &= {self.distance}\\,\\text{{m}}\\\\"
@@ -1547,6 +1613,8 @@ class Phy034:
         self.subtopic = "Sound"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Speed of sound in water}} &= {self.sound_speed}\\,\\text{{m/s}}\\\\"
@@ -1588,6 +1656,8 @@ class Phy035:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Current, }} I &= {self.current}\\,\\text{{A}}\\\\"
@@ -1627,6 +1697,8 @@ class Phy036:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total charge (Q)}} &= {self.total_charge}\\,\\text{{C}}\\\\"
@@ -1669,6 +1741,8 @@ class Phy037:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total charge at resistor B (Q)}} &= {self.total_charge}\\,\\text{{C}}\\\\"
@@ -1711,6 +1785,8 @@ class Phy038:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Work done (W)}} &= {self.work}\\,\\text{{J}}\\\\"
@@ -1753,6 +1829,8 @@ class Phy039:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Voltage across resistor A (V)}} &= {self.voltage_A}\\,\\text{{V}}\\\\"
@@ -1795,6 +1873,8 @@ class Phy040:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Voltage across resistor A (V)}} &= {self.voltage_A}\\,\\text{{V}}\\\\"
@@ -1838,6 +1918,8 @@ class Phy041:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Voltage across the parallel branch BC (V)}} &= {self.voltage_BC}\\,\\text{{V}}\\\\"
@@ -1881,6 +1963,8 @@ class Phy042:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Current through resistor C (I)}} &= {self.current_C}\\,\\text{{A}}\\\\"
@@ -1923,6 +2007,7 @@ class Phy043:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         # Use the maximum plotted point for the reasoning since it guarantees a clean grid intersection
         v_point = self.max_voltage
@@ -1983,6 +2068,7 @@ class Phy044:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2049,6 +2135,8 @@ class Phy045:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Voltage across lamp A }} (V) &= {self.voltage_A}\\,\\text{{V}}\\\\"
@@ -2100,6 +2188,8 @@ class Phy046:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Power dissipated by lamp B }} (P) &= {self.power_B}\\,\\text{{W}}\\\\"
@@ -2144,6 +2234,8 @@ class Phy047:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Voltage across lamp C }} (V) &= {self.voltage_ABC}\\,\\text{{V}}\\\\"
@@ -2191,6 +2283,8 @@ class Phy048:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Energy dissipated by resistor B }} (E) &= {self.energy_dissipated}\\,\\text{{J}}\\\\"
@@ -2250,6 +2344,8 @@ class Phy049:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{Based on the circuit diagram, resistors E, F, and G are connected in parallel.}\\\\"
@@ -2309,6 +2405,8 @@ class Phy050:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{Based on the circuit diagram, resistors A, B, C, and D are connected in series.}\\\\"

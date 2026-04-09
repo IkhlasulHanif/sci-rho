@@ -41,6 +41,7 @@ class Phy151:
         self.subtopic = "Uniform electric fields"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -220,6 +221,7 @@ class Phy152:
         self.subtopic = "Uniform electric field"
         self.source = "Save My Exams"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -415,6 +417,7 @@ class Phy153:
         self.subtopic = "Electric force between point charges"
         self.source = "Past Paper"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -505,6 +508,8 @@ class Phy154:
         self.subtopic = "Electric force between point charges" 
         self.source = "Original" 
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\textbf{Given:}\\\\"
@@ -593,6 +598,7 @@ class Phy155:
         self.subtopic = "Electric field of a charged conducting sphere"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -688,6 +694,7 @@ class Phy156:
         self.subtopic = "Electric Potentials"
         self.source = "Save My Exam"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         ke_coeff, ke_power = f"{self.KE:.3e}".split("e")
         r_coeff, r_power = f"{self.r_min:.3e}".split("e")
@@ -776,6 +783,8 @@ class Phy157:
         self.subtopic = "Electric Potentials"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\textbf{Step 1: Electric potential energy between two charges}\\\\"
@@ -854,6 +863,7 @@ class Phy158:
         self.subtopic = "Electric Potentials"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -924,6 +934,8 @@ class Phy159:
         self.subtopic = "Capacitor and Capacitance"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\textbf{Step 1: Identify given values} \\\\"
@@ -1006,6 +1018,7 @@ class Phy160:
         self.subtopic = "Capacitor and Capacitance"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1096,6 +1109,7 @@ class Phy161:
         self.subtopic = "Energy Stored in a Capacitor"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1168,6 +1182,8 @@ class Phy162:
         self.subtopic = "Energy Stored in a Capacitor"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         def sci(val):
             if val == 0:
                 return "0"
@@ -1283,6 +1299,7 @@ class Phy163:
         self.subtopic = "Discharging a capacitor"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         def sci_latex(val):
             exponent = int(math.floor(math.log10(abs(val))))
@@ -1361,6 +1378,7 @@ class Phy164:
         self.subtopic = "Discharging a capacitor"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         def sci_latex(val):
             exponent = int(math.floor(math.log10(abs(val))))
@@ -1450,6 +1468,7 @@ class Phy165:
         self.subtopic = "Capacitance"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         def sci(val):
             exponent = int(math.floor(math.log10(abs(val))))
@@ -1551,6 +1570,7 @@ class Phy166:
         self.subtopic = "Force on a current-carrying conductor"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         def sci_latex(val):
             if abs(val) < 0.01 or abs(val) > 1000:
@@ -1643,6 +1663,7 @@ class Phy167:
         self.subtopic = "Force on a current-carrying conductor"
         self.source = "Save My Exam" 
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         def sci_latex(val):
             if abs(val) < 0.01:
@@ -1727,6 +1748,7 @@ class Phy168:
         self.subtopic = "Force on a current-carrying conductor"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         lF = f"{self.force:.3e}" if self.force < 0.001 else f"{self.force:.4f}"
 
@@ -1811,6 +1833,7 @@ class Phy169:
         self.subtopic = "Force on a current-carrying conductor"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1905,6 +1928,7 @@ class Phy170:
         self.subtopic = "Force on a moving charge"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -1976,6 +2000,8 @@ class Phy171:
         self.topic = "Electricity"
         self.subtopic = "Electric fields"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.source =  "Original"
         e_val_tex = f"{self.E:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
@@ -2041,6 +2067,7 @@ class Phy172:
 
         self.topic, self.subtopic = "Electricity", "Electric fields"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -2101,6 +2128,7 @@ class Phy173:
         self.topic = "Magnetic fields"
         self.subtopic = "Force on a moving charge"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
         
         lF = f"{self.F:.4e}".replace("e", "\\times 10^{") + "}"
@@ -2186,6 +2214,7 @@ class Phy174:
         self.topic = "Magnetic Fields"
         self.subtopic = "Force on a Moving Charge"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2263,6 +2292,7 @@ class Phy175:
         self.topic = "Magnetic Fields"
         self.subtopic = "Electromagnetic Induction"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2326,6 +2356,7 @@ class Phy176:
         self.topic = "Magnetic Fields"
         self.subtopic = "Electromagnetic induction"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2405,6 +2436,7 @@ class Phy177:
         self.topic = "Alternating currents"
         self.subtopic = "Characteristics of Alternating Currents"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2467,6 +2499,7 @@ class Phy178:
         self.topic = "Alternating currents"
         self.subtopic = "Characteristics of alternating currents"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Past Papers"
 
         self.reasoning = (
@@ -2535,6 +2568,7 @@ class Phy179:
         self.topic = "Alternating Currents"
         self.subtopic = "Rectification and Smoothing"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2650,6 +2684,7 @@ class Phy180:
         self.topic = "Quantum physics"
         self.subtopic = "Energy and momentum of a photon"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         lE = f"{self.E:.3e}".replace("e", "\\times 10^{") + "}"
@@ -2719,6 +2754,7 @@ class Phy181:
         self.topic = "Quantum physics"
         self.subtopic = "Energy and Momentum of a photon"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2773,6 +2809,7 @@ class Phy182:
         self.topic = "Quantum physics" 
         self.subtopic = "Photoelectric effect"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2829,6 +2866,7 @@ class Phy183:
         self.topic = "Quantum physics"
         self.subtopic = "Photoelectric effect"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -2924,6 +2962,7 @@ class Phy184:
         self.topic = "Quantum physics"
         self.subtopic = "Wave-particle duality"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         l_val_tex = f"{self.lambda_val:.4e}".replace("e", "\\times 10^{") + "}"
@@ -2994,6 +3033,7 @@ class Phy185:
         self.topic = "Quantum physics"
         self.subtopic = "Energy levels"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         lE = f"{self.E:.4e}".replace("e", "\\times 10^{") + "}"
@@ -3067,6 +3107,7 @@ class Phy186:
         self.topic = "Quantum physics"
         self.subtopic = "Line spectra"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         lW = f"{self.lambda_val:.4e}".replace("e", "\\times 10^{") + "}"
@@ -3151,6 +3192,7 @@ class Phy187:
         self.topic = "Nuclear physics"
         self.subtopic = "Mass defect and binding energy"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         self.reasoning = (
@@ -3227,6 +3269,7 @@ class Phy188:
         )
         self.topic, self.subtopic = "Nuclear physics", "Nuclear Binding energy"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3293,6 +3336,7 @@ class Phy189:
         )
         self.topic, self.subtopic = "Nuclear physics", "Radioactive decay"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3352,6 +3396,8 @@ class Phy190:
         
         self.topic, self.subtopic = "Nuclear physics", "Radioactive decay"
         self.curriculum, self.source = "A-Level", "Past Papers"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\text{{Step 1: Calculate the decay constant (}}\\lambda\\text{{)}} &\\\\"
@@ -3410,6 +3456,7 @@ class Phy191:
         )
         self.topic, self.subtopic = "Medical physics", "Ultrasound"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3469,6 +3516,7 @@ class Phy192:
         self.topic = "Medical physics"
         self.subtopic = "Production and use of ultrasound"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         l_val_tex = f"{self.lambda_val:.3e}".replace("e", "\\times 10^{") + "}"
@@ -3540,6 +3588,7 @@ class Phy193:
         self.topic = "Medical physics"
         self.subtopic = "X-ray production and energy"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.source = "Original"
 
         l_val_tex = f"{self.E:.4e}".replace("e", "\\times 10^{") + "}"
@@ -3619,6 +3668,7 @@ class Phy194:
         )
         self.topic, self.subtopic = "Medical physics", "X-ray production"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3686,6 +3736,7 @@ class Phy195:
         )
         self.topic, self.subtopic = "Astronomy and Cosmology", "Standard candles"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         l_val = f"{self.d:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
@@ -3745,6 +3796,7 @@ class Phy196:
         )
         self.topic, self.subtopic = "Astronomy and cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         l_val = f"{self.R:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
@@ -3816,6 +3868,7 @@ class Phy197:
         )
         self.topic, self.subtopic = "Astronomy and Cosmology", "Wien's displacement law"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         l_val = f"{self.lambda_max:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (
@@ -3900,6 +3953,7 @@ class Phy198:
         )
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Past Papers"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -3959,6 +4013,7 @@ class Phy199:
         )
         self.topic, self.subtopic = "Astronomy & Cosmology", "Cosmology"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -4033,6 +4088,7 @@ class Phy200:
         )
         self.topic, self.subtopic = "Astronomy & cosmology", "Stellar radii"
         self.curriculum, self.source = "A-Level", "Original"
+        self.question_type = "Short Answer"
 
         l_val = f"{self.L:.4e}".replace("e", "\\times 10^{") + "}"
         self.reasoning = (

@@ -48,6 +48,8 @@ class Phy101:
         self.subtopic = "Electric current"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Electric current, }} I &= {'\\text{?}' if self.target == 'I' else sig_figs(self.I, 3)}\\,\\text{{A}}\\\\"
@@ -162,6 +164,8 @@ class Phy102:
         self.subtopic = "Electric current"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Current, }} I &= {'\\text{?}' if self.target == 'I' else sig_figs(self.I, 3)}\\,\\text{{A}}\\\\"
@@ -261,6 +265,8 @@ class Phy103:
         self.subtopic = "Potential difference and power"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Potential difference, }} V &= {'\\text{?}' if self.target == 'V' else sig_figs(self.V, 3)}\\,\\text{{V}}\\\\"
@@ -380,6 +386,8 @@ class Phy104:
         self.subtopic = "Potential difference and power"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Potential difference, }} V &= {'\\text{?}' if self.target == 'V' else sig_figs(self.V, 3)}\\,\\text{{V}}\\\\"
@@ -490,6 +498,8 @@ class Phy105:
         self.subtopic = "Resistance and resistivity"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Resistance, }} R &= {sig_figs(self.R, 3)}\\,\\Omega\\\\"
@@ -581,6 +591,8 @@ class Phy106:
         self.subtopic = "Resistance and resistivity"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Resistivity, }} \\rho &= {self.rho_disp}\\,\\Omega\\,\\text{{m}}\\\\"
@@ -665,6 +677,8 @@ class Phy107:
         self.subtopic = "Resistance and resistivity"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Potential difference at a point, }} V &= {sig_figs(self.V_point, 3)}\\,\\text{{V}}\\\\"
@@ -750,6 +764,8 @@ class Phy108:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Electromotive force (e.m.f.), }} E &= {sig_figs(self.E, 3)}\\,\\text{{V}}\\\\"
@@ -877,6 +893,8 @@ class Phy109:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Voltmeter reading (potential difference), }} V &= {sig_figs(self.V, 3)}\\,\\text{{V}}\\\\"
@@ -970,6 +988,8 @@ class Phy110:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Potential difference, }} V &= {sig_figs(self.V, 3)}\\,\\text{{V}}\\\\"
@@ -1058,6 +1078,8 @@ class Phy111:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Potential difference, }} V &= {sig_figs(self.V, 3)}\\,\\text{{V}}\\\\"
@@ -1151,6 +1173,8 @@ class Phy112:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Terminal potential difference, }} V &= {sig_figs(self.V, 3)}\\,\\text{{V}}\\\\"
@@ -1279,6 +1303,8 @@ class Phy113:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Measurement 1: }} I_1 &= {sig_figs(self.I1, 3)}\\,\\text{{A}}, \\, V_1 = {sig_figs(self.V1, 3)}\\,\\text{{V}}\\\\"
@@ -1388,6 +1414,8 @@ class Phy114:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Number of cells, }} n &= 2\\\\"
@@ -1497,6 +1525,8 @@ class Phy115:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Emf of each cell, }} E &= {sig_figs(self.E, 3)}\\,\\text{{V}}\\\\"
@@ -1611,6 +1641,8 @@ class Phy116:
         self.subtopic = "Practical circuits"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Supply voltage, }} V_s &= {self.Vs}\\,\\text{{V}}\\\\"
@@ -1738,6 +1770,8 @@ class Phy117:
         self.subtopic = "Kirchhoff’s laws"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Free-form"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Step 1: Define mesh currents }} I_1 \\text{{ (left loop) and }} I_2 \\text{{ (right loop).}} &\\\\"
@@ -1867,6 +1901,8 @@ class Phy118:
         self.subtopic = "Kirchhoff’s laws"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Supply voltage, }} V_s &= {self.Vs}\\,\\text{{V}}\\\\"
@@ -2010,6 +2046,8 @@ class Phy119:
         self.subtopic = "Kirchhoff’s laws"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Branch 1: }} R_1 &= {self.R1}\\,\\Omega, \\, I_1 = {sig_figs(self.I1, 3)}\\,\\text{{A}}\\\\"
@@ -2124,6 +2162,8 @@ class Phy120:
         self.subtopic = "Potential dividers"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Supply voltage, }} V_s &= {self.Vs}\\,\\text{{V}}\\\\"
@@ -2253,6 +2293,8 @@ class Phy121:
         self.subtopic = "Kinematics of uniform circular motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Radius, }} r &= {'\\text{?}' if self.target == 'r' else sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
@@ -2369,6 +2411,8 @@ class Phy122:
         self.subtopic = "Kinematics of uniform circular motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Radius, }} r &= {sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
@@ -2505,6 +2549,8 @@ class Phy123:
         self.subtopic = "Kinematics of uniform circular motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Rotation rate, }} n &= {self.n}\\,\\text{{rpm}}\\\\"
@@ -2618,6 +2664,8 @@ class Phy124:
         self.subtopic = "Centripetal acceleration"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Radius, }} r &= {'\\text{?}' if self.target == 'r' else sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
@@ -2726,6 +2774,8 @@ class Phy125:
         self.subtopic = "Centripetal acceleration"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Radius, }} r &= {'\\text{?}' if self.target == 'r' else sig_figs(self.r, 3)}\\,\\text{{m}}\\\\"
@@ -2820,6 +2870,8 @@ class Phy126:
         self.subtopic = "Centripetal Acceleration"
         self.source = "Past Papers"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "\\textbf{Step 1: Identify the given physical quantities} \\\\"
@@ -2895,6 +2947,7 @@ class Phy127:
         self.subtopic = "Gravitational force between point masses"
         self.source = "Save My Exams"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "Based on the masses and gravitational force of attraction provided in the diagram, "
@@ -2983,6 +3036,8 @@ class Phy128:
         self.subtopic = "Newton's Law of Gravitation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.description = (
             "A satellite is in a circular orbit at an altitude above the surface of a planet as shown. "
             "Using the parameters provided in the diagram, calculate the mass of the planet. "
@@ -3078,6 +3133,8 @@ class Phy129:
         self.subtopic = "Gravitational field strength"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Free-form"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             "&\\textbf{Step 1: Express field strength } g \\text{ in terms of density } \\rho \\\\"
@@ -3148,6 +3205,8 @@ class Phy130:
         self.subtopic = "Gravitational field of a point mass"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.description = (
             "A rock is located at a distance above a planet's surface as shown. "
             "Using the planet's mass, diameter, and altitude data provided in the diagram, "
@@ -3240,6 +3299,7 @@ class Phy131:
         self.subtopic = "Gravitational Potential"
         self.source = "Save My Exam"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A rock is located at a specific height above a planet's surface as shown. "
@@ -3329,8 +3389,9 @@ class Phy132:
 
         self.topic = "Gravitational Fields"
         self.subtopic = "Gravitational Potential Change"
-        self.source = "Original / A-Level Physics"
-        self.curriculum = "Cambridge A-Level"
+        self.source = "Original"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A planet is modeled as an isolated sphere. An object is projected vertically from "
@@ -3430,6 +3491,7 @@ class Phy133:
         self.subtopic = "Kinetic Theory of Gases"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A rigid vessel contains Helium-4 gas. Assuming Helium behaves as an ideal gas, "
@@ -3511,6 +3573,7 @@ class Phy134:
         self.subtopic = "Equation of state"
         self.source = "Save My Exams"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A rigid container of fixed volume contains an ideal gas. The gas is heated to a new temperature. "
@@ -3583,6 +3646,7 @@ class Phy135:
         self.subtopic = "Ideal gas - Dalton's Law"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "The diagram shows two rigid cylinders, A and B, connected by a tube of "
@@ -3662,6 +3726,7 @@ class Phy136:
         self.subtopic = "Kinetic theory of gases"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A sample of an ideal gas is maintained in a rigid container. "
@@ -3759,6 +3824,7 @@ class Phy137:
         self.subtopic = "Kinetic theory of gases"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "Helium behaves as an ideal gas. Based on the initial parameters and the final temperature shown in the diagram, "
@@ -3836,6 +3902,7 @@ class Phy138:
         self.subtopic = "Kinetic theory of gases"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "The provided graph illustrates the distribution of molecular speeds for oxygen gas at two different temperatures. "
@@ -3914,6 +3981,7 @@ class Phy139:
         self.subtopic = "First law of thermodynamics"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A monatomic gas is contained within a flexible balloon. "
@@ -3995,6 +4063,7 @@ class Phy140:
         self.subtopic = "First law of thermodynamics"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         p_val = f"{self.pressure}"
         du_val = f"{self.delta_U}"
@@ -4086,6 +4155,7 @@ class Phy141:
         self.subtopic = "First law of thermodynamics"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         m_str = f"{self.mass:.2f}"
         l_str = f"{self.latent_heat:.2e}"
@@ -4182,7 +4252,8 @@ class Phy142:
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         l_str = f"{self.length:.2f}"
         self.g_str = f"{self.g:.2f}"
@@ -4273,7 +4344,8 @@ class Phy143:
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         t_str = f"{self.total_time:.2f}"
         n_str = f"{self.num_oscillations}"
@@ -4364,7 +4436,8 @@ class Phy144:
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         x_str = f"{self.x_max:.3f}"
         a_str = f"{self.a_max:.3f}"
@@ -4451,7 +4524,8 @@ class Phy145:
         self.topic = "Oscillations"
         self.subtopic = "Simple harmonic motion"
         self.source = "Original"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         t1_str = f"{self.time_first_peak:.2f}"
         t2_str = f"{self.time_second_peak:.2f}"
@@ -4529,7 +4603,8 @@ class Phy146:
         self.topic = "Oscillations"
         self.subtopic = "Energy in simple harmonic motion"
         self.source = "Original"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         m_str = f"{self.mass:.3f}"
         ke_str = f"{self.KE_mJ:.1f}"
@@ -4620,7 +4695,9 @@ class Phy147:
         self.topic = "Oscillations"
         self.subtopic = "Damped oscillations"
         self.source = "Original"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
 
         self.description = (
             "The figure shows the displacement-time graph for a damped oscillating system. "
@@ -4711,6 +4788,7 @@ class Phy148:
         self.subtopic = "Damped oscillations"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "A block is connected between two identical springs and undergoes damped oscillations. "
@@ -4822,6 +4900,7 @@ class Phy149:
         self.subtopic = "Electric fields and field lines"
         self.source = "Save my Exam"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.description = (
             "Two identical positive point charges $+Q$ are fixed in a vacuum. Point $A$ is located on the line connecting them. "
@@ -4908,6 +4987,7 @@ class Phy150:
         self.subtopic = "Electric fields and field lines"
         self.source = "Save My Exams"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
 
         self.reasoning = (
             "\\[\\begin{aligned}"

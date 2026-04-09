@@ -38,6 +38,8 @@ class Phy051:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Supply voltage, }} V_s &= {self.Vs}\\,\\text{{V}}\\\\"
@@ -168,6 +170,8 @@ class Phy052:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Supply voltage, }} V_s &= {self.Vs}\\,\\text{{V}}\\\\"
@@ -264,6 +268,8 @@ class Phy053:
         self.subtopic = "Electric circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Supply voltage, }} V_s &= {self.Vs}\\,\\text{{V}}\\\\"
@@ -360,6 +366,7 @@ class Phy054:
         self.subtopic = "Electromagnetic effects"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "MCQ"
 
         # Reasoning includes the shuffled label mapping
         self.reasoning = (
@@ -476,6 +483,7 @@ class Phy055:
         self.subtopic = "Electromagnetic effects"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "MCQ"
 
         # Reasoning includes the shuffled mapping
         B_text = (
@@ -581,6 +589,8 @@ class Phy056:
         self.subtopic = "Electromagnetic effects"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Primary voltage, }} V_p &= {self.Vp}\\,\\text{{V}}\\\\"
@@ -651,6 +661,8 @@ class Phy057:
         self.subtopic = "Radioactivity"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial count rate, }} N_0 &= {self.N0}\\,\\text{{s}}^{{-1}}\\\\"
@@ -769,6 +781,8 @@ class Phy058:
         self.subtopic = "Radioactivity"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "MCQ"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial reading (no absorber)}} &= {self.readings[0]}\\,\\text{{cps}}\\\\"
@@ -852,6 +866,8 @@ class Phy059:
         self.subtopic = "SI units"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.description = (
             "An ammeter shows a current (A) flowing for some time (t) (values are shown in the image). "
             "Calculate the charge transferred. Give your answer in coulombs (C).\n"
@@ -939,6 +955,8 @@ class Phy060:
         self.subtopic = "Errors and uncertainties"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Free-form"
+
         self.description = (
             "A trolley travels a measured distance and the time taken is recorded (the values are shown in the image).\n"
             "Calculate the speed v and the absolute uncertainty in v.\n"
@@ -1035,6 +1053,8 @@ class Phy061:
         self.subtopic = "Scalars and vectors"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.description = (
             "Two forces (F₁ and F₂) act at a point as shown in the image.\n"
             "Calculate the magnitude of the resultant force.\n"
@@ -1142,6 +1162,8 @@ class Phy062:
         self.subtopic = "Equations of motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Point A}} &= ({self.tA}\\,\\text{{s}}, {self.sA}\\,\\text{{m}})\\\\"
@@ -1223,6 +1245,8 @@ class Phy063:
         self.subtopic = "Equations of motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial velocity, }} u &= {self.u}\\,\\text{{m s}}^{{-1}}\\\\"
@@ -1302,6 +1326,8 @@ class Phy064:
         self.subtopic = "Equations of motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial velocity, }} u &= 0\\,\\text{{m s}}^{{-1}}\\\\"
@@ -1392,6 +1418,8 @@ class Phy065:
         self.subtopic = "Momentum and Newton’s laws of motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m:.2f}\\,\\text{{kg}}\\\\"
@@ -1474,6 +1502,8 @@ class Phy066:
         self.subtopic = "Momentum and Newton’s laws of motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of left block, }} m_1 &= {self.m1}\\,\\text{{kg}}\\\\"
@@ -1593,6 +1623,8 @@ class Phy067:
         self.subtopic = "Momentum and Newton’s laws of motion"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of the person, }} m &= {self.m}\\,\\text{{kg}}\\\\"
@@ -1713,6 +1745,8 @@ class Phy068:
         self.subtopic = "Linear momentum and its conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of trolley 1, }} m_1 &= {self.m1:.2f}\\,\\text{{kg}}\\\\"
@@ -1824,6 +1858,8 @@ class Phy069:
         self.subtopic = "Linear momentum and its conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Free-form"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial total momentum, }} p_{{initial}} &= 0\\,\\text{{kg m s}}^{{-1}}\\\\"
@@ -1939,6 +1975,8 @@ class Phy070:
         self.subtopic = "Linear momentum and its conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Free-form"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass of trolley A, }} m_A &= {self.mA}\\,\\text{{kg}}\\\\"
@@ -2046,6 +2084,8 @@ class Phy071:
         self.subtopic = "Turning effects of forces"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Weight (downward force), }} W &= {self.W}\\,\\text{{N}}\\\\"
@@ -2168,6 +2208,8 @@ class Phy072:
         self.subtopic = "Turning effects of forces"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Magnitude of each force, }} F &= {self.F if self.target != 'F' else '\\text{?}'}\\,\\text{{N}}\\\\"
@@ -2294,6 +2336,8 @@ class Phy073:
         self.subtopic = "Equilibrium of forces"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m:.1f}\\,\\text{{kg}}\\\\"
@@ -2409,6 +2453,8 @@ class Phy074:
         self.subtopic = "Equilibrium of forces"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length of the beam, }} L &= {self.L:.1f}\\,\\text{{m}}\\\\"
@@ -2531,6 +2577,8 @@ class Phy075:
         self.subtopic = "Density and pressure"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Density of liquid, }} \\rho &= {self.rho}\\,\\text{{kg m}}^{{-3}}\\\\"
@@ -2651,6 +2699,8 @@ class Phy076:
         self.subtopic = "Density and pressure"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Side of the cube, }} s &= {self.s_cm}\\,\\text{{cm}} = {self.s_cm / 100:.2f}\\,\\text{{m}}\\\\"
@@ -2782,6 +2832,8 @@ class Phy077:
         self.subtopic = "Energy conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m:.1f}\\,\\text{{kg}}\\\\"
@@ -2923,6 +2975,8 @@ class Phy078:
         self.subtopic = "Energy conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m}\\,\\text{{kg}}\\\\"
@@ -3066,6 +3120,8 @@ class Phy079:
         self.subtopic = "Energy conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m}\\,\\text{{kg}}\\\\"
@@ -3196,6 +3252,8 @@ class Phy080:
         self.subtopic = "Gravitational potential energy and kinetic energy"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Mass, }} m &= {self.m:.2f}\\,\\text{{kg}}\\\\"
@@ -3332,6 +3390,8 @@ class Phy081:
         self.subtopic = "Gravitational potential energy and kinetic energy"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.description = (
             "A cart moves from A to B on a smooth track as shown. The mass, g, and all required values are shown in the diagram.\n"
             "Determine the missing quantity.\n"
@@ -3506,6 +3566,8 @@ class Phy082:
         self.subtopic = "Energy conservation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial force, }} F_0 &= {self.F0}\\,\\text{{N}}\\\\"
@@ -3640,6 +3702,8 @@ class Phy083:
         self.subtopic = "Stress and strain"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Diameter, }} d &= {self.d_mm}\\,\\text{{mm}} = {self.d_mm} \\times 10^{{-3}}\\,\\text{{m}}\\\\"
@@ -3739,6 +3803,8 @@ class Phy084:
         self.subtopic = "Stress and strain"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Original length, }} L &= {self.L}\\,\\text{{m}}\\\\"
@@ -3829,6 +3895,8 @@ class Phy085:
         self.subtopic = "Elastic and plastic behaviour"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Extension, }} x &= {self.x_m * 100:.1f}\\,\\text{{cm}} = {self.x_m:.2f}\\,\\text{{m}}\\\\"
@@ -3903,6 +3971,8 @@ class Phy086:
         self.subtopic = "Elastic and plastic behaviour"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Extension, }} x &= {self.x_m * 100:.1f}\\,\\text{{cm}} = {self.x_m:.2f}\\,\\text{{m}}\\\\"
@@ -4016,6 +4086,8 @@ class Phy087:
         self.subtopic = "Elastic and plastic behaviour"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Maximum extension reached, }} x_{{max}} &= {self.xmax_mm}\\,\\text{{mm}}\\\\"
@@ -4111,6 +4183,8 @@ class Phy088:
         self.subtopic = "Progressive waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Wave speed, }} v &= {self.v if self.target != 'v' else '\\text{?}'}\\,\\text{{m s}}^{{-1}}\\\\"
@@ -4225,6 +4299,8 @@ class Phy089:
         self.subtopic = "Progressive waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Wavelength, }} \\lambda &= {sig_figs(self.lam, 3)}\\,\\text{{m}}\\\\"
@@ -4348,6 +4424,8 @@ class Phy090:
         self.subtopic = "Doppler effect for sound waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Source frequency, }} f_0 &= {self.f0}\\,\\text{{Hz}}\\\\"
@@ -4461,6 +4539,8 @@ class Phy091:
         self.subtopic = "Doppler effect for sound waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Source frequency, }} f_0 &= {self.f0}\\,\\text{{Hz}}\\\\"
@@ -4595,6 +4675,8 @@ class Phy092:
         self.subtopic = "Doppler effect for sound waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Source frequency, }} f_0 &= {self.f0}\\,\\text{{Hz}}\\\\"
@@ -4722,6 +4804,8 @@ class Phy093:
         self.subtopic = "Polarisation"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Incident intensity of unpolarised light, }} I_0 &= {self.I0}\\,\\text{{W m}}^{{-2}}\\\\"
@@ -4856,6 +4940,8 @@ class Phy094:
         self.subtopic = "Stationary waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length of the string, }} L &= {self.L}\\,\\text{{m}}\\\\"
@@ -4977,6 +5063,8 @@ class Phy095:
         self.subtopic = "Stationary waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Speed of sound, }} v &= {self.v}\\,\\text{{m s}}^{{-1}}\\\\"
@@ -5102,6 +5190,8 @@ class Phy096:
         self.subtopic = "Stationary waves"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length of the string, }} L &= {self.L}\\,\\text{{m}}\\\\"
@@ -5221,6 +5311,8 @@ class Phy097:
         self.subtopic = "Interference"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Distance to screen, }} D &= {self.D}\\,\\text{{m}}\\\\"
@@ -5373,6 +5465,8 @@ class Phy098:
         self.subtopic = "Interference"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Distance from }} S_1 \\text{{ to }} P, r_1 &= {sig_figs(self.r1, 3)}\\,\\text{{m}}\\\\"
@@ -5487,6 +5581,8 @@ class Phy099:
         self.subtopic = "The diffraction grating"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
+
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Lines per mm, }} N &= {self.N}\\,\\text{{lines mm}}^{{-1}}\\\\"
@@ -5619,6 +5715,8 @@ class Phy100:
         self.subtopic = "The diffraction grating"
         self.source = "Original"
         self.curriculum = "A-Level"
+        self.question_type = "Free-form"
+
         self.reasoning = (
             f"\\begin{{aligned}}"
             f"\\text{{Lines per mm, }} N &= {self.N}\\,\\text{{lines mm}}^{{-1}}\\\\"
