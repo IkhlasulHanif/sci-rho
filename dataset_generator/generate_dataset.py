@@ -273,7 +273,6 @@ if __name__ == "__main__":
 
                 # Store baseline JSON data in memory
                 temp_data = {
-                    "description": instance.description,
                     "topic": instance.topic,
                     "subtopic": instance.subtopic,
                     "source": instance.source,
@@ -282,6 +281,8 @@ if __name__ == "__main__":
                     "reasoning": instance.reasoning,
                     "image": os.path.join("image", f"image{count}.png")
                 }
+                
+                temp_data["description"] = instance.description
                 
                 # --- NEW: Dynamically inject multilingual translations if available ---
                 if multi:
