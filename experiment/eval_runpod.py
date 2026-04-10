@@ -45,7 +45,7 @@ experiment_cfg = extract_config(args, ExperimentConfig, "experiment.")
 if experiment_cfg.debug:
     NUM_OF_INSTANCES = 1
 else:
-    NUM_OF_INSTANCES = 10
+    NUM_OF_INSTANCES = experiment_cfg.num_of_instance
 
 # loop for all models, then all subjects, then all instances
 for model_name in experiment_cfg.model_names:

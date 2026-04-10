@@ -17,16 +17,12 @@ class SamplingConfig:
 @dataclass
 class ExperimentConfig:
     model_names: tuple[str] = (
-        "meta-llama/Llama-3.2-90B-Vision-Instruct",
-        "meta-llama/Llama-3.2-11B-Vision-Instruct",
-        "Qwen/Qwen3.5-27B",
         "Qwen/Qwen3.5-9B",
-        "google/gemma-4-31B-it",
+        "meta-llama/Llama-3.2-11B-Vision-Instruct",
         "google/gemma-3-12b-it",
-        "OpenGVLab/InternVL3_5-38B-HF",
-        "OpenGVLab/InternVL3_5-8B-HF",
-        "llava-hf/llava-v1.6-vicuna-13b-hf",
-        "llava-hf/llava-v1.6-vicuna-7b-hf",
+        "allenai/Molmo2-8B",
+        "OpenGVLab/InternVL3_5-14B",
+        "OpenGVLab/InternVL3_5-8B"
     )
     subject_list: tuple[str] = (
         "mathematics", 
@@ -36,3 +32,4 @@ class ExperimentConfig:
         "compsci"
     )
     debug: bool = False
+    num_of_instance: int = 5
