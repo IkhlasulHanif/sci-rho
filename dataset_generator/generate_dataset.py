@@ -273,6 +273,7 @@ if __name__ == "__main__":
 
                 # Store baseline JSON data in memory
                 temp_data = {
+                    "problem_id": class_id,
                     "topic": instance.topic,
                     "subtopic": instance.subtopic,
                     "source": instance.source,
