@@ -1475,11 +1475,11 @@ class Bio023:
 class Bio024:
 
     def __init__(self):
-        self.total_cells = 50
-        self.interphase = rnd.randint(16, 18)
-        self.prophase = rnd.randint(9, 11)
-        self.metaphase = rnd.randint(7, 9)
-        self.anaphase = rnd.randint(7, 9)
+        self.total_cells = 30
+        self.interphase = rnd.randint(10, 11)
+        self.prophase = rnd.randint(5, 7)
+        self.metaphase = rnd.randint(3, 6)
+        self.anaphase = rnd.randint(3, 5)
         self.telophase = self.total_cells - self.interphase - self.prophase - self.metaphase - self.anaphase
         self.mitosis_cells = self.prophase + self.metaphase + self.anaphase + self.telophase
         self.mitotic_index = self.mitosis_cells / self.total_cells
@@ -1520,7 +1520,7 @@ class Bio024:
             "telophase":  (1488,350, 1825,  731),
         }
 
-        rows, cols = 5, 10
+        rows, cols = 5, 6
         cell_w, cell_h = 500, 500
 
         sprites = {}
