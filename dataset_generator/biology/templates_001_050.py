@@ -27,6 +27,7 @@ class Bio001:
         self.subtopic = "Size of specimens"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Measured image length (I)}} &= {self.image_mm}\\,\\text{{mm}}\\\\"
@@ -68,6 +69,7 @@ class Bio002:
         self.subtopic = "Size of specimens"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length of image (cm)}} &= {self.image_cm}\\,\\text{{cm}}\\\\"
@@ -128,6 +130,7 @@ class Bio003:
         self.subtopic = "Monohybrid inheritance"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Parent 1 Genotype}} &= {self.parent1}\\\\"
@@ -204,6 +207,7 @@ class Bio004:
         self.subtopic = "Populations"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Population in {self.year_a}}} &= {self.pop_a}\\\\"
@@ -269,6 +273,7 @@ class Bio005:
         self.subtopic = "Populations"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Population at start of log phase (4h)}} &= {self.log_start_pop}\\\\"
@@ -336,6 +341,7 @@ class Bio006:
         self.subtopic = "Food chains and food webs"
         self.source = "IGCSE"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Energy at }} {self.trophics_names[self.indexA]} &= {self.trophics_energy[self.indexA]}\\,\\text{{kJ}}\\\\"
@@ -376,7 +382,8 @@ class Bio007:
         self.topic = "Cell structure"
         self.subtopic = "The microscope in cell studies"
         self.source = "AQA"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Cell width}} &= {self.cell_width_um}\\,\\mu\\text{{m}}\\\\"
@@ -424,7 +431,8 @@ class Bio008:
         self.topic = "Classification, biodiversity and conservation"
         self.subtopic = "Biodiversity"
         self.source = "AQA"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total number of individuals (N)}} &= {self.N}\\\\"
@@ -475,7 +483,8 @@ class Bio009:
         self.topic = "Genetic technology"
         self.subtopic = "Principles of genetic technology"
         self.source = "AQA"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Maximum concentration}} &= {self.max_intensity}\\\\"
@@ -541,7 +550,8 @@ class Bio010:
         self.topic = "Transport in plants"
         self.subtopic = "Transport mechanisms"
         self.source = "AQA"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Distance bubble moved}} &= {self.distance}\\,\\text{{mm}}\\\\"
@@ -597,7 +607,8 @@ class Bio011:
         self.topic = "Energy and respiration"
         self.subtopic = "Respiration"
         self.source = "OCR"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Identify mass of the largest fish:}} &\\\\"
@@ -655,7 +666,8 @@ class Bio012:
         self.topic = "Classification, biodiversity and conservation"
         self.subtopic = "Biodiversity"
         self.source = "QCAA"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Researcher I:}} &\\\\"
@@ -721,6 +733,7 @@ class Bio013:
         self.subtopic = "Populations"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Final population (P}}_{{\\text{{final}}}}) &= {self.final_population}\\\\"
@@ -795,6 +808,7 @@ class Bio014:
         self.subtopic = "Populations"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Observations in quadrat 1}} &= {self.quadrat_1}\\\\"
@@ -849,7 +863,8 @@ class Bio015:
         self.topic = "Cell structure"
         self.subtopic = "The microscope in cell studies"
         self.source = "Original"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Length per stage micrometer division}} &= {self.stage_division_mm}\\,\\text{{mm}}\\\\"
@@ -955,7 +970,8 @@ class Bio016:
         self.topic = "Inheritance"
         self.subtopic = "The roles of genes in determining the phenotype"
         self.source = "My Science Squad"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total observed individuals (n)}} &= {self.total_frequency}\\\\"
@@ -1011,7 +1027,8 @@ class Bio017:
         self.topic = "Selection and evolution"
         self.subtopic = "Natural and artificial selection"
         self.source = "Original"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total population size (n)}} &= {self.total_ladybug}\\\\"
@@ -1098,7 +1115,8 @@ class Bio018:
         self.topic = "Selection and evolution"
         self.subtopic = "Variation"
         self.source = "PhysicsandMathsTutor"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Number of pairs (n)}} &= {self.plants}\\\\"
@@ -1152,7 +1170,8 @@ class Bio019:
         self.topic = "Photosynthesis"
         self.subtopic = "Photosynthesis as an energy transfer process"
         self.source = "Original"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Distance traveled by solvent front}} &= {self.solvent_front_cm}\\,\\text{{cm}}\\\\"
@@ -1195,7 +1214,8 @@ class Bio020:
         self.topic = "Enzymes"
         self.subtopic = "Mode of action of enzymes"
         self.source = "PhysicsandMathsTutor"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Maximum reaction rate with lyxose (Experiment L)}} &= {self.max_rate_L}\\,\\text{{units}}\\\\"
@@ -1263,7 +1283,8 @@ class Bio021:
         self.topic = "Nucleic acids and protein synthesis"
         self.subtopic = "Structure of nucleic acids and replication of DNA"
         self.source = "Original"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Number of base pairs}} &= {self.bases}\\\\"
@@ -1350,7 +1371,8 @@ class Bio022:
         self.topic = "Inheritance"
         self.subtopic = "The roles of genes indetermining the phenotype"
         self.source = "Original"
-        self.curriculum = "A & AS Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Dominant hair allele}} &= {self.dom_hair_allele}\\,({self.dominant_hair_pheno})\\\\"
@@ -1412,7 +1434,8 @@ class Bio023:
         self.topic = "Cell structure"
         self.subtopic = "The microscope in cell studies"
         self.source = "OCR H422/03 2016"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Grid Length}} &= {self.grid_length_mm}\\,\\text{{mm}}\\\\"
@@ -1466,7 +1489,8 @@ class Bio024:
         self.topic = "The mitotic cell cycle"
         self.subtopic = "Chromosome behaviour in mitosis"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Number of cells in Interphase}} &= {self.interphase}\\\\"
