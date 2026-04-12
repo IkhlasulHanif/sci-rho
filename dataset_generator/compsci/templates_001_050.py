@@ -27,6 +27,7 @@ class Com001:
         self.subtopic = "Number systems"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Decimal number}} &= {self.decimal}\\\\"
@@ -65,6 +66,7 @@ class Com002:
         self.subtopic = "Number systems"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Binary number}} &= {self.binary}_2\\\\"
@@ -106,6 +108,7 @@ class Com003:
         self.subtopic = "Number systems"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Hexadecimal number}} &= {self.hex}_{{16}}\\\\"
@@ -148,6 +151,7 @@ class Com004:
         self.subtopic = "Number systems"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Binary 1}} &= {self.binary_1.zfill(8)}_2\\\\"
@@ -216,6 +220,7 @@ class Com005:
         self.subtopic = "Number systems"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial positive binary}} &= {self.positive_binary}_2\\\\"
@@ -291,6 +296,7 @@ class Com006:
         self.subtopic = "Methods of error detection"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Parity Type}} &= \\text{{{self.type}}}\\\\"
@@ -377,6 +383,7 @@ class Com007:
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Array}} &= [{', '.join(map(str, self.array))}]\\\\"
@@ -462,6 +469,7 @@ class Com008:
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Daily steps (S)}} &= [{', '.join(map(str, self.steps))}]\\\\"
@@ -528,6 +536,7 @@ class Com009:
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial array (Data)}} &= [{', '.join(map(str, self.array_copy))}]\\\\"
@@ -669,6 +678,7 @@ class Com010:
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Input }} N &= {self.N_copy}\\\\"
@@ -726,6 +736,7 @@ class Com011:
         self.subtopic = "Understand standard methods of solution"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial search index}} &= i = {self.current_idx + 1}\\\\"
@@ -838,6 +849,7 @@ class Com012:
         self.subtopic = "Programming concepts"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Input }} n &= {self.n}\\\\"
@@ -901,6 +913,7 @@ class Com013:
         self.subtopic = "Programming concepts"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Original Input: }} s &= \"{self.input_text}\",\\, c = '{self.input_ch}'\\\\"
@@ -958,6 +971,7 @@ class Com014:
         self.subtopic = "Arrays"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{The program reads 9 integers to fill a }} 3 \\times 3 \\text{{ grid.}}\\\\"
@@ -1006,6 +1020,7 @@ class Com015:
         self.subtopic = "Understand structured query language scripts (custom subtopic)"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Query conditions: Items}} &< {self.items_threshold} \\text{{ AND Total}} \\ge {self.total_threshold}\\\\"
@@ -1051,6 +1066,7 @@ class Com016:
         self.subtopic = "Understand structured query language scripts (custom subtopic)"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Query Condition: LaptopType}} &= \\text{{{self.query_type}}}\\\\"
@@ -1107,6 +1123,7 @@ class Com017:
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1153,6 +1170,7 @@ class Com018:
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1200,6 +1218,7 @@ class Com019:
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1257,6 +1276,7 @@ class Com020:
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1305,6 +1325,7 @@ class Com021:
         self.subtopic = "Logic circuits"
         self.source = "Original"
         self.curriculum = "IGCSE"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1350,7 +1371,8 @@ class Com022:
         self.topic = "Information representation"
         self.subtopic = "Data representation"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{BCD Input Sequence:}} & \\text{{ [{', '.join([b.zfill(4) for b in self.BCD])}]}} \\\\"
@@ -1413,7 +1435,8 @@ class Com023:
         self.topic = "Information representation"
         self.subtopic = "Data representation"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Binary 1 (Minuend)}} &= {self.binary_1.zfill(8)}_2 ({self.decimal_1}_{{10}})\\\\"
@@ -1471,7 +1494,8 @@ class Com024:
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1525,7 +1549,8 @@ class Com025:
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1576,7 +1601,8 @@ class Com026:
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"Y_2 &= {self.input_1}\\\\"
@@ -1645,7 +1671,8 @@ class Com027:
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Adapted from Chegg"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Determine input states from sensor values:}} &\\\\"
@@ -1689,7 +1716,8 @@ class Com028:
         self.topic = "Hardware"
         self.subtopic = "Logic Gates and Logic Circuits"
         self.source = "Adapted from PapaCambridge 1.3.1 Logic Gates"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"A &= {self.input_1}\\\\"
@@ -1747,7 +1775,8 @@ class Com029:
         self.topic = "Processor Fundamentals"
         self.subtopic = "Assembly Language"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Input Phase:}} & \\\\"
@@ -1792,7 +1821,8 @@ class Com030:
         self.topic = "Processor Fundamentals"
         self.subtopic = "Assembly Language"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Initializing Memory and Inputs:}} & \\\\"
@@ -1843,7 +1873,8 @@ class Com031:
         self.topic = "Databases"
         self.subtopic = "Data Definition Language (DDL) and Data Manipulation Language (DML)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial health scores}} &= [{', '.join(map(str, self.health_scores))}]\\\\"
@@ -1896,7 +1927,8 @@ class Com032:
         self.topic = "Databases"
         self.subtopic = "Data Definition Language (DDL) and Data Manipulation Language (DML)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Group by station and calculate individual averages:}} & \\\\"
@@ -1951,7 +1983,8 @@ class Com033:
         self.topic = "Algorithm Design and Problem-solving"
         self.subtopic = "Algorithms"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Input Parameter (number)}} &= {self.number}\\\\"
@@ -2024,7 +2057,8 @@ class Com034:
         self.topic = "Algorithm Design and Problem-solving"
         self.subtopic = "Algorithms"
         self.source = "Adapted from CAIE COMPUTER SCIENCE 9618/22 Paper 2 Fundamental Problem-solving and Programming Skills May/June 2024"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Inputs: }} \\text{{Num1}} &= {self.input_1}, \\text{{Num2}} = {self.input_2}, \\text{{Num3}} = {self.input_3}\\\\"
@@ -2069,7 +2103,8 @@ class Com035:
         self.topic = "Data Types and Structures"
         self.subtopic = "Introduction to Abstract Data Types (ADT)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial stack (bottom to top)}} &= [{', '.join(map(str, self.initial_stack_elements))}] \\\\"
@@ -2141,7 +2176,8 @@ class Com036:
         self.topic = "Data Types and Structures"
         self.subtopic = "Introduction to Abstract Data Types (ADT)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial number of elements}} &= {self.filled_length}\\\\"
@@ -2218,7 +2254,8 @@ class Com037:
         self.topic = "Data Types and Structures"
         self.subtopic = "Introduction to Abstract Data Types (ADT)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Queue}} &= [{', '.join(map(str, self.queue))}]\\\\"
@@ -2302,7 +2339,8 @@ class Com038:
         self.topic = "Data Types and Structures"
         self.subtopic = "Introduction to Abstract Data Types (ADT)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial queue values}} &= [{', '.join(map(str, self.values))}] \\\\"
@@ -2402,7 +2440,8 @@ class Com039:
         self.topic = "Data Types and Structures"
         self.subtopic = "Introduction to Abstract Data Types (ADT)"
         self.source = "Adapted from PastPapersCo CAIE A-Level 4.1.2"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Parameters:}} &\\\\"
@@ -2503,7 +2542,8 @@ class Com040:
         self.topic = "Data Types and Structures"
         self.subtopic = "Introduction to Abstract Data Types (ADT)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Identify the node to be deleted:}} &\\\\"
@@ -2637,7 +2677,8 @@ class Com041:
         self.topic = "Programming"
         self.subtopic = "Structured Programming"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given string}}\\; s &= \\texttt{{\"{self.input}\"}}\\\\"
@@ -2705,7 +2746,8 @@ class Com042:
         self.topic = "Programming"
         self.subtopic = "Structured Programming"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Evaluate inner function:}} &\\ \\text{{func2(inp) where inp}} = {self.input} \\\\"
@@ -2783,7 +2825,8 @@ class Com043:
         self.topic = "Programming"
         self.subtopic = "Structured Programming"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial value}}\\; x_0 &= {self.x_copy}\\\\"
@@ -2905,7 +2948,8 @@ class Com044:
         self.topic = "Hardware and Virtual Machines"
         self.subtopic = "Boolean Algebra and Logic Circuits"
         self.source = "Adapted from Learnabout electronics (Module 2.5 Digital Logic Quiz)"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Identify coordinates of the shaded cell:}} &\\\\"
@@ -3122,7 +3166,8 @@ class Com045:
         self.topic = "Artificial Intelligence (AI)"
         self.subtopic = "Artificial Intelligence (AI)"
         self.source = "Adapted from Mahesh Huddar (Youtube)"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Heuristic:}} & \\\\"
@@ -3283,7 +3328,8 @@ class Com046:
         self.topic = "Artificial Intelligence (AI)"
         self.subtopic = "Artificial Intelligence (AI)"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Initialize Dijkstra's Algorithm:}} &\\\\"
@@ -3389,7 +3435,8 @@ class Com047:
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Algorithms"
         self.source = "Adapted from Physics & Maths Tutor"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Stack}} &= [{', '.join(map(str, self.initial_values))}]\\\\"
@@ -3465,7 +3512,8 @@ class Com048:
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Recursion"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Coordinate: }} & ({self.x}, {self.y}) \\\\"
@@ -3563,7 +3611,8 @@ class Com049:
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Algorithms"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{A Postorder traversal follows the rule:}} &\\quad \\text{{Left Subtree}} \\to \\text{{Right Subtree}} \\to \\text{{Root}}\\\\"
@@ -3686,7 +3735,8 @@ class Com050:
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Algorithms"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Sorted Array:}} &= [{', '.join(map(str, self.values))}]\\\\"

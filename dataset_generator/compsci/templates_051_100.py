@@ -44,7 +44,8 @@ class Com051:
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Algorithms"
         self.source = "Original"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Initial Array}} &= [{', '.join(map(str, self.first_arr))}]\\\\"
@@ -115,7 +116,8 @@ class Com052:
         self.topic = "Computational thinking and Problem-solving"
         self.subtopic = "Recursion"
         self.source = "Adapted from Indonesia's National Science Olympiad Selection Test for Informatics at the Regency/City Level 2018"
-        self.curriculum = "AS & A Level"
+        self.curriculum = "A-Level"
+        self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Input: }} x &= {self.x} \\\\"
