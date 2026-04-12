@@ -3761,10 +3761,10 @@ class Com050:
         img = Image.open('compsci/temp_image/Com050temp.png')
         fig, ax = plt.subplots()
         ax.imshow(img)
-        x = 360
+        x = 359
         for val in self.values:
             ax.text(x, 592, val, fontsize=14, color='black')
-            x += 138
+            x += 143
         plt.axis('off')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
