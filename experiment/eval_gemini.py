@@ -68,7 +68,7 @@ if args.prepare:
     
     if not os.path.exists(IMAGE_URLS_FILE):
         raise FileNotFoundError(f"Image URLs map not found at {IMAGE_URLS_FILE}. Run your drive crawler first.")
-    with open(IMAGE_URLS_FILE, 'r') as f:
+    with open(IMAGE_URLS_FILE, 'r', encoding='utf-8') as f:
         image_url_map = json.load(f)
 
     # Load User Prompt
@@ -144,7 +144,8 @@ if args.prepare:
         
         with open(jsonl_filename, 'w', encoding='utf-8') as f:
             for req in batch_requests:
-                f.write(json.dumps(req) + "\n")
+                # ensure_ascii=False handles Hindi, Arabic, Chinese, Kazakh properly
+                f.write(json.dumps(req, ensure_ascii=False) + "\n")
         print(f"[INFO] Prepared {len(batch_requests)} requests -> {jsonl_filename}")
 
 
@@ -176,6 +177,7 @@ if args.send:
             src=uploaded_file.name
         )
         
+        # Extract state cleanly
         state_str = batch_job.state.name if hasattr(batch_job.state, 'name') else str(batch_job.state)
         batch_jobs[model_name] = {
             "batch_id": batch_job.name, # Gemini uses '.name' as the ID (e.g. 'batches/12345')
