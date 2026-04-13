@@ -4534,7 +4534,7 @@ class Phy145:
         self.description = (
             "A pendulum bob oscillates with simple harmonic motion. The variation with time $t$ "
             "of its kinetic energy $E_k$ is shown in the graph. Using the time coordinates of the successive maxima, "
-            "determine the time period $T$ of the pendulum's oscillation. (_) s Example format: 2.6430486321164166)"
+            "determine the time period $T$ of the pendulum's oscillation. (_) s (Example format: 2.6430486321164166)"
         )
 
         self.reasoning = (
