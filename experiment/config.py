@@ -1,17 +1,20 @@
 from dataclasses import dataclass
 
+@dataclass
+#TODO: ADJUST (https://docs.vllm.ai/en/latest/api/vllm/#vllm.LLM)
 class ModelConfig:
     dtype: str = "bfloat16"
-    max_model_len: int = 2**16
-    tensor_parallel_size: int = 1
-    gpu_memory_utilization: float = 0.9
+    max_model_len: int = 2**14 # 16384
+    tensor_parallel_size: int = 1 # (number of GPUs)
+    gpu_memory_utilization: float = 0.95 # percentage of VRAM maximum utilization (beware OOM)
     swap_space: float = 4
     cpu_offload_gb: float = 0
     enforce_eager: bool = False
 
+# TODO: ADJUST. PLEASE REFER TO (https://arxiv.org/pdf/2411.00836)
 @dataclass
 class SamplingConfig:
-    max_tokens: int = 2**15
+    max_tokens: int = 2048
     temperature: float = 0.0 # for deterministic result
 
 @dataclass
@@ -32,4 +35,4 @@ class ExperimentConfig:
         "compsci"
     )
     debug: bool = False
-    num_of_instance: int = 5
+    num_of_instance: int = 5 #TODO: ADJUST
