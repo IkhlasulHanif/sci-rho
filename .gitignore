@@ -183,6 +183,7 @@ cython_debug/
 
 experiment/result/
 experiment/sample/
+experiment/secrets/**
 dataset/
 envlinux/
 envlinux2/
