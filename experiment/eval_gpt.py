@@ -223,16 +223,28 @@ if args.retrieve:
     with open(BATCH_JOBS_FILE, 'r') as f:
         batch_jobs = json.load(f)
 
+    # Recap list to store failures
+    retrieve_error_logs = []
+
     for model_name, job_info in batch_jobs.items():
         if job_info["status"] != "completed":
-            print(f"[SKIP] {model_name}: Status is '{job_info['status']}' (Needs to be 'completed')")
+            log_msg = f"[SKIP] {model_name}: Status is '{job_info['status']}' (Needs to be 'completed')"
+            print(log_msg)
+            retrieve_error_logs.append(log_msg)
             continue
             
         print(f"\n[INFO] Retrieving results for {model_name}...")
         job_status = client.batches.retrieve(job_info["batch_id"])
         
         if not job_status.output_file_id:
-            print(f"[!] Warning: No output file generated for {model_name}")
+            log_msg = f"[!] Warning: No output file generated for {model_name}"
+            print(log_msg)
+            retrieve_error_logs.append(log_msg)
+            
+            # If batch failed, it might have an error file instead
+            if getattr(job_status, 'error_file_id', None):
+                error_content = client.files.content(job_status.error_file_id).text
+                retrieve_error_logs.append(f"[{model_name}] Error File Content:\n{error_content}")
             continue
             
         # Download the JSONL output from OpenAI
@@ -245,13 +257,18 @@ if args.retrieve:
         for line in result_content.strip().split('\n'):
             if not line: continue
             res = json.loads(line)
-            subj, idx_str, row_id, lang = res['custom_id'].split("||")
+            
+            # Handle potential missing custom_id safely
+            custom_id = res.get('custom_id', 'UNKNOWN||UNKNOWN||UNKNOWN||UNKNOWN')
+            subj, idx_str, row_id, lang = custom_id.split("||")
             
             try:
                 answer = res['response']['body']['choices'][0]['message']['content']
-            except Exception:
+            except Exception as e:
                 answer = "[ERROR GENERATING RESPONSE]"
                 error_count += 1
+                error_details = res.get('error', str(e))
+                retrieve_error_logs.append(f"[{model_name}] Failed response for item {custom_id}. Details: {error_details}")
                 
             if subj not in mapped_results: mapped_results[subj] = {}
             if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
@@ -299,5 +316,14 @@ if args.retrieve:
                 
                 df.to_excel(full_output_path, index=False, engine="openpyxl")
                 print(f"[SUCCESS] Saved Excel -> {full_output_path}")
+
+    # Write recap logs if any failures occurred
+    if retrieve_error_logs:
+        log_path = os.path.join(GPT_TEMP_DIR, "retrieve_failures.log")
+        with open(log_path, 'w', encoding='utf-8') as f:
+            f.write("=== RETRIEVE FAILURES LOG ===\n")
+            for log_msg in retrieve_error_logs:
+                f.write(log_msg + "\n")
+        print(f"\n[INFO] Failure recap saved to {log_path}")
 
 print("\n[INFO] Execution Finished.")
