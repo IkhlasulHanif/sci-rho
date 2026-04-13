@@ -50,18 +50,29 @@ else:
 
 # loop for all models, then all subjects, then all instances
 for model_name in experiment_cfg.model_names:
+    print(f"\n{'='*60}\n[INFO] LOADING MODEL: {model_name}\n{'='*60}")
     llm = LLM(model=model_name, **asdict(model_cfg))
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+    
     for subject in experiment_cfg.subject_list:
+        print(f"\n[INFO] Starting Subject: {subject.upper()}")
+        
         for index in range(NUM_OF_INSTANCES):
+            print(f"[INFO]   -> Processing Instance: 0{index}")
 
             # process dataset
             dataset_path = os.path.join("sample", f"0{index}", subject) # ex: 'sample/01/physics/'
             json_path = os.path.join(dataset_path, 'dataset.json') # ex: 'sample/01/physics/dataset.json'
+            
+            if not os.path.exists(json_path):
+                print(f"[WARNING] Dataset JSON not found at {json_path}. Skipping...")
+                continue
+                
             with open(json_path, 'r') as file:
                 data = json.load(file)
             df = pd.DataFrame.from_dict(data, orient="index")
             if len(df) == 0: # skip if instance has no data. To be deleted later
+                print(f"[WARNING] Instance 0{index} for {subject} has no data. Skipping...")
                 continue
             df.insert(0, "id", range(1, len(df) + 1)) # insert `id` starting from 1
 
@@ -70,6 +81,10 @@ for model_name in experiment_cfg.model_names:
             df_new = df.copy()
 
             for desc_col in desc_columns:
+                # Extract language/variant name for better logging visibility
+                variant_name = desc_col.replace("description_", "") if desc_col != "description" else "default (English)"
+                print(f"[INFO]      --> Generating Model: {model_name} | Variant: {variant_name.upper()} | Column: {desc_col}")
+                
                 # process chat template
                 messages = [
                     [
@@ -115,8 +130,11 @@ for model_name in experiment_cfg.model_names:
             os.makedirs(output_path, exist_ok=True)
             full_output_path = os.path.join(output_path, output_filename) # ex: 'result/raw/physics/00/model_name.xlsx'
             df_new.to_excel(full_output_path, index=False, engine="openpyxl")
+            print(f"[INFO]   -> Saved results to {full_output_path}")
 
     # clear memory
+    print(f"\n[INFO] Unloading {model_name} and clearing VRAM...")
     del llm
     gc.collect()
     torch.cuda.empty_cache()
+    print("[INFO] VRAM cleared successfully.")
