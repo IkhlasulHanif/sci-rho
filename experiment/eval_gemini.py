@@ -301,13 +301,17 @@ if args.retrieve:
                         
                         if answer_parts:
                             answer = "\n".join(answer_parts).strip()
-                        elif parts:
+                        elif parts and 'text' in parts[-1]:
                             # Fallback: grab the very last part if no standard text was caught
-                            answer = parts[-1].get('text', '[NO TEXT IN RESPONSE]')
+                            answer = parts[-1]['text']
                         else:
                             answer = "[NO TEXT IN RESPONSE]"
+                            error_count += 1
+                            retrieve_error_logs.append(f"[{model_name}] No text in response for {custom_id}")
                     else:
                         answer = "[NO CANDIDATES GENERATED]"
+                        error_count += 1
+                        retrieve_error_logs.append(f"[{model_name}] No candidates generated for {custom_id}")
                 except Exception as e:
                     answer = "[ERROR EXTRACTING RESPONSE]"
                     error_count += 1
