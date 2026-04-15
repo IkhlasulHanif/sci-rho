@@ -164,6 +164,9 @@ if __name__ == "__main__":
     else:
         num_of_loop = 1
 
+    # --- Initialize a master list to collect data across all subjects ---
+    master_dfs = [[] for _ in range(num_of_loop)]
+
     for subject in subjects:
         print(f"\n=====================================")
         print(f"Generating Subject: {subject}")
@@ -326,7 +329,7 @@ if __name__ == "__main__":
             with open(seed_path, "w", encoding="utf-8") as file:
                 file.write(str(seed + index))
 
-        # --- NEW: Write all instances into a single .xlsx file ---
+        # Write all instances into a single .xlsx file per subject
         if exp:
             excel_path = PROJECT_ROOT / "experiment" / "sample" / f"{subject}_dataset.xlsx"
         else:
@@ -340,6 +343,11 @@ if __name__ == "__main__":
                     df.index.name = 'No'
                     df.reset_index(inplace=True)
                     
+                    # --- Append to master list for the final combined Excel ---
+                    df_master = df.copy()
+                    df_master.insert(1, 'subject', subject) # Add subject column for clarity
+                    master_dfs[index].append(df_master)
+                    
                     # Write to a specific sheet (e.g., Instance_00, Instance_01)
                     sheet_name = f"Instance_{index:02d}"
                     df.to_excel(writer, sheet_name=sheet_name, index=False)
@@ -347,7 +355,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"  [ERROR] Could not save Excel file: {e}")
 
-        # --- NEW: Write the log files if any errors were captured ---
+        # Write the log files if any errors were captured
         if exceeded_trials_log:
             exceeded_log_path = staging_folder / "exceeded_trials.log"
             with open(exceeded_log_path, "w", encoding="utf-8") as log_file:
@@ -367,6 +375,33 @@ if __name__ == "__main__":
             print(f"  [INFO] Saved log of runtime errors to {runtime_log_path}")
                 
         print(f"\n[SUCCESS] Generation loop for {subject} finished!")
+
+    # --- Write the master Excel file containing all subjects if mode is 'all' ---
+    if len(subjects) == 5:  # 5 subjects means generation mode is 'all'
+        print(f"\n=====================================")
+        print(f"Compiling Master Excel Dataset")
+        print(f"=====================================")
+        
+        if exp:
+            master_excel_path = PROJECT_ROOT / "experiment" / "sample" / "master_dataset.xlsx"
+        else:
+            master_excel_path = PROJECT_ROOT / "dataset" / "master_dataset.xlsx"
+            
+        try:
+            with pd.ExcelWriter(master_excel_path) as writer:
+                for index in range(num_of_loop):
+                    if master_dfs[index]:  # Ensure there is data to concatenate
+                        # Concatenate all subjects for this specific instance
+                        combined_df = pd.concat(master_dfs[index], ignore_index=True)
+                        
+                        # Re-number the 'No' column so it's continuous across all subjects
+                        combined_df['No'] = range(1, len(combined_df) + 1)
+                        
+                        sheet_name = f"Instance_{index:02d}"
+                        combined_df.to_excel(writer, sheet_name=sheet_name, index=False)
+            print(f"  [SUCCESS] Saved MASTER Excel dataset to {master_excel_path}")
+        except Exception as e:
+            print(f"  [ERROR] Could not save MASTER Excel file: {e}")
 
     end_time = time.perf_counter()
     total_time = int(end_time - start_time)
