@@ -57,7 +57,7 @@ class Chem001:
         self.topic = "Atomic structure"
         self.subtopic = "Isotopes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         isotope_calcs = []
@@ -155,7 +155,7 @@ class Chem002:
         self.topic = "Atomic structure"
         self.subtopic = "Ionisation energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701 Past Papers"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -249,7 +249,7 @@ class Chem003:
         self.topic      = "Atomic structure"
         self.subtopic   = "Electrons, energy levels, and atomic orbitals"
         self.source     = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -323,7 +323,7 @@ class Chem004:
         self.topic = "Atomic structure"
         self.subtopic = "Particles in the atom and atomic radius"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -425,7 +425,7 @@ class Chem005:
         self.topic = "Atomic structure"
         self.subtopic = "Ionisation energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701 Past Papers"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -3912,7 +3912,7 @@ class Chem041:
         self.topic = "Chemical energetics"
         self.subtopic = "Standard enthalpy changes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -3970,7 +3970,7 @@ class Chem042:
         self.topic = "Chemical energetics"
         self.subtopic = "Hess's Law"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4035,7 +4035,7 @@ class Chem043:
         self.topic = "Chemical energetics"
         self.subtopic = "Bond energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4101,7 +4101,7 @@ class Chem044:
         self.topic = "Chemical energetics"
         self.subtopic = "Entropy and free energy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4179,7 +4179,7 @@ class Chem045:
         self.topic = "Electrochemistry"
         self.subtopic = "Redox reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4253,7 +4253,7 @@ class Chem046:
         self.topic = "Electrochemistry"
         self.subtopic = "Electrolysis"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4327,7 +4327,7 @@ class Chem047:
         self.topic = "Equilibria"
         self.subtopic = "Chemical equilibria"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4411,7 +4411,7 @@ class Chem048:
         self.topic = "Equilibria"
         self.subtopic = "Equilibrium constant Kc"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4481,7 +4481,7 @@ class Chem049:
         self.topic = "Reaction kinetics"
         self.subtopic = "Rate of reaction"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (
@@ -4578,7 +4578,7 @@ class Chem050:
         self.topic = "Reaction kinetics"
         self.subtopic = "Order of reaction and rate equations"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         
         self.reasoning = (

@@ -64,7 +64,7 @@ class Chem051:
         self.topic = "Group 2"
         self.subtopic = "Trends in Group 2"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
     def generate(self, num):
@@ -196,7 +196,7 @@ class Chem052:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "General physical and chemical properties"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Determine explanation text for the reasoning block
@@ -304,7 +304,7 @@ class Chem053:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "General properties"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -398,7 +398,7 @@ class Chem054:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Ligands and complex formation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -584,7 +584,7 @@ class Chem055:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Characteristic chemical properties"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Safely convert Unicode subscripts/superscripts to LaTeX for math mode
@@ -690,7 +690,7 @@ class Chem056:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Ligand substitution"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Safely convert Unicode subscripts/superscripts to LaTeX for math mode
@@ -780,7 +780,7 @@ class Chem057:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Colour of complexes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -879,7 +879,7 @@ class Chem058:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Redox and catalysis"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Safely convert Unicode subscripts/superscripts to LaTeX for math mode
@@ -1044,7 +1044,7 @@ class Chem059:
         self.topic = "Chemistry of transition elements"
         self.subtopic = "Stability constants"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         comparison_word = "greater" if self.exchange['feasible'] else "less"
@@ -1138,7 +1138,7 @@ class Chem060:
         self.topic = "Introduction to A Level organic chemistry"
         self.subtopic = "Nomenclature"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -1369,7 +1369,7 @@ class Chem061:
         self.topic = "Introduction to A Level organic chemistry"
         self.subtopic = "Isomerism"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         tex_map = str.maketrans({
@@ -1485,7 +1485,7 @@ class Chem062:
         self.topic = "Introduction to A Level organic chemistry"
         self.subtopic = "Geometric isomerism"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         # Determine the positional description based on the chosen isomer
@@ -1649,7 +1649,7 @@ class Chem063:
         self.topic = "Introduction to A Level organic chemistry"
         self.subtopic = "Isomerism: optical"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         # Define the map to turn Unicode subscripts into LaTeX inline math
@@ -1837,7 +1837,7 @@ class Chem064:
         self.topic = "Hydrocarbons"
         self.subtopic = "Arenes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts/superscripts to standard LaTeX math format
@@ -1958,7 +1958,7 @@ class Chem065:
         self.topic = "Hydrocarbons"
         self.subtopic = "Alkane reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -2113,7 +2113,7 @@ class Chem066:
         self.topic = "Hydrocarbons"
         self.subtopic = "Arenes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -2299,7 +2299,7 @@ class Chem067:
         self.topic = "Hydroxy compounds"
         self.subtopic = "Phenol"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -2463,7 +2463,7 @@ class Chem068:
         self.topic = "Hydroxy compounds"
         self.subtopic = "Phenol"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -2568,7 +2568,7 @@ class Chem069:
         self.topic = "Hydroxy compounds"
         self.subtopic = "Alcohol reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts and arrows to standard LaTeX math format
@@ -2677,7 +2677,7 @@ class Chem070:
         self.topic = "Hydroxy compounds"
         self.subtopic = "Alcohol dehydration"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -2895,7 +2895,7 @@ class Chem071:
         self.topic = "Carboxylic acids and derivatives"
         self.subtopic = "Acyl chlorides"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -2991,7 +2991,7 @@ class Chem072:
         self.topic = "Carboxylic acids and derivatives"
         self.subtopic = "Acyl chlorides"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -3090,7 +3090,7 @@ class Chem073:
         self.topic = "Carboxylic acids and derivatives"
         self.subtopic = "Acyl chloride reactions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -3277,7 +3277,7 @@ class Chem074:
         self.topic = "Nitrogen compounds"
         self.subtopic = "Amino acids"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts and superscripts to standard LaTeX math format
@@ -3436,7 +3436,7 @@ class Chem075:
         self.topic = "Nitrogen compounds"
         self.subtopic = "Amino acids"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Determine the general type of amino acid to teach the logic
@@ -3611,7 +3611,7 @@ class Chem076:
         self.topic = "Nitrogen compounds"
         self.subtopic = "Amide formation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Safely convert Unicode subscripts to inline math for rendering inside \text{}
@@ -3773,7 +3773,7 @@ class Chem077:
         self.topic = "Polymerisation"
         self.subtopic = "Condensation polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Safely convert Unicode subscripts to inline math for rendering inside \text{}
@@ -3937,7 +3937,7 @@ class Chem078:
         self.topic = "Polymerisation"
         self.subtopic = "Condensation polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Safely convert Unicode subscripts to inline math for rendering inside \text{}
@@ -4037,7 +4037,7 @@ class Chem079:
         self.topic = "Polymerisation"
         self.subtopic = "Addition polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to standard LaTeX math format
@@ -4210,7 +4210,7 @@ class Chem080:
         self.topic = "Polymerisation"
         self.subtopic = "Degradable polymers"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -4332,7 +4332,7 @@ class Chem081:
         self.topic = "Polymerisation"
         self.subtopic = "Condensation polymerisation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -4494,7 +4494,7 @@ class Chem082:
         self.topic = "Organic synthesis"
         self.subtopic = "Organic synthesis"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to LaTeX math subscripts
@@ -4641,7 +4641,7 @@ class Chem083:
         self.topic = "Organic synthesis"
         self.subtopic = "Synthesis routes"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -4737,7 +4737,7 @@ class Chem084:
         self.topic = "Analytical techniques"
         self.subtopic = "Mass spectrometry"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts and superscripts to LaTeX math format
@@ -4831,7 +4831,7 @@ class Chem085:
         self.topic = "Analytical techniques"
         self.subtopic = "Thin-layer chromatography"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -4932,7 +4932,7 @@ class Chem086:
         self.topic = "Analytical techniques"
         self.subtopic = "Gas-liquid chromatography"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         total_area_sum = sum(p['area'] for p in self.peaks)
@@ -5038,7 +5038,7 @@ class Chem087:
         self.topic = "Analytical techniques"
         self.subtopic = "IR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         self.reasoning = (
@@ -5144,7 +5144,7 @@ class Chem088:
         self.topic = "Analytical techniques"
         self.subtopic = "\u00b9H NMR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts and special characters to LaTeX math format
@@ -5290,7 +5290,7 @@ class Chem089:
         self.topic = "Analytical techniques"
         self.subtopic = "Carbon-13 NMR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         self.reasoning = (
@@ -5467,7 +5467,7 @@ class Chem090:
         self.topic = "Analytical techniques"
         self.subtopic = "Proton (\u00b9H) NMR spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to LaTeX math format for the key group
@@ -5630,7 +5630,7 @@ class Chem091:
         self.topic = "Analytical techniques"
         self.subtopic = "Combined spectroscopy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode characters to LaTeX math format, and escape spaces so \mathrm renders them properly
@@ -5857,7 +5857,7 @@ class Chem092:
         self.topic = "Chemical energetics"
         self.subtopic = "Born-Haber cycles and lattice enthalpy"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to LaTeX math format for the compound
@@ -6016,7 +6016,7 @@ class Chem093:
         self.topic = "Electrode potentials and electrochemical cells"
         self.subtopic = "Standard electrode potentials"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
@@ -6205,7 +6205,7 @@ class Chem094:
         self.topic = "Equilibria"
         self.subtopic = "pH curves and buffer solutions"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
         if self.q_type == "equivalence_vol":
@@ -6323,7 +6323,7 @@ class Chem095:
         self.topic      = "Reaction kinetics"
         self.subtopic   = "Arrhenius equation and activation energy"
         self.source     = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A Level"
+        self.curriculum = "A-Level"
         self.question_type = "Short Answer"
         self.options    = []
 
@@ -6505,7 +6505,7 @@ class Chem096:
         self.topic = "Hydroxy compounds"
         self.subtopic = "Oxidation of alcohols"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
-        self.curriculum = "AS Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to LaTeX math format
@@ -6692,7 +6692,7 @@ class Chem097:
         self.topic = "Carbonyl compounds"
         self.subtopic = "Distinguishing aldehydes and ketones"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
-        self.curriculum = "AS Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Deduction logic based on the compound type
@@ -6927,7 +6927,7 @@ class Chem098:
         self.topic = "Introduction to organic chemistry"
         self.subtopic = "Electrophilic addition mechanisms"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
-        self.curriculum = "AS Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts and special characters to LaTeX math format
@@ -7106,7 +7106,7 @@ class Chem099:
         self.topic = "Group 17 (Halogens)"
         self.subtopic = "Halide ion tests"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
-        self.curriculum = "AS Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode to LaTeX for the reasoning block
@@ -7257,7 +7257,7 @@ class Chem100:
         self.topic = "States of matter"
         self.subtopic = "Ideal and real gas behaviour"
         self.source = "Adapted from Cambridge AS Level Chemistry 9701"
-        self.curriculum = "AS Level"
+        self.curriculum = "A-Level"
         self.question_type = "MCQ"
 
         # Convert Unicode subscripts to LaTeX math format for the gas name
