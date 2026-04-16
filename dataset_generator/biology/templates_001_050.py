@@ -1556,6 +1556,6 @@ class Bio024:
         plt.axis("off")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
-        plt.savefig(dest_image_path, dpi=600, bbox_inches="tight")
+        plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
 

@@ -862,11 +862,6 @@ class Chem009:
         draw_arrow(ax, 5.5, 2.6, 7, 2.6, arrowstyle='->', color='black', linewidth=2)
         
         product_formula = self.reaction['equation'].split('→')[1].strip()
-        draw_labeled_box(ax, 8.5, 2, 1.6, 1.2, 
-                    product_formula, '? mol', 
-                    facecolor='lightgreen',
-                    edgecolor='black', linewidth=2)
-        
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')

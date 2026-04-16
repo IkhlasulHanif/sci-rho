@@ -2039,10 +2039,10 @@ class Chem113:
         # Volume labels
         if self.given_gas == "H2":
             h2_label = f"{self.volume_H2} cm³"
-            o2_label = "? cm³"
+            o2_label = ""
             h2_color, o2_color = "#1E8449", "#E74C3C"
         else:
-            h2_label = "? cm³"
+            h2_label = ""
             o2_label = f"{self.volume_O2} cm³"
             h2_color, o2_color = "#E74C3C", "#1E8449"
 
@@ -5154,13 +5154,6 @@ class Chem145:
                 va='center',
                 fontsize=14,
                 fontweight='bold')
-
-        ax.text(6, 2.0,
-                "Find the oxidation number of this species.",
-                ha='center',
-                fontsize=11,
-                style='italic')
-
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5611,12 +5604,6 @@ class Chem149:
                     self.draw_orbital(ax, x + i*0.7, 3, "" if i != 1 else orb, e)
             else:
                 self.draw_orbital(ax, x, 3, orb, electrons)
-
-        ax.text(7, 2.2,
-                f"Configuration: {self.config}",
-                ha='center',
-                fontsize=15)
-
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5751,12 +5738,6 @@ class Chem150:
             else:
                 if electrons > 0:
                     self.draw_orbital(ax, x, 3, orb, electrons)
-
-        ax.text(7.5, 2.2,
-                f"Configuration: {self.config}",
-                ha='center',
-                fontsize=15)
-
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
