@@ -281,6 +281,7 @@ if __name__ == "__main__":
                     "subtopic": instance.subtopic,
                     "source": instance.source,
                     "curriculum": instance.curriculum,
+                    "question_type": instance.question_type,
                     "answer": instance.answer,
                     "reasoning": instance.reasoning,
                     "image": os.path.join("image", f"image{count}.png")
