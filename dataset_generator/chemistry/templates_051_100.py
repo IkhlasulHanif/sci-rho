@@ -4902,12 +4902,12 @@ class Chem086:
     """
 
     def __init__(self):
-        num_peaks = rnd.randint(2, 4)
+        self.num_peaks = rnd.randint(2, 4)
 
         self.peaks = []
         total_area = 0
 
-        for i in range(num_peaks):
+        for i in range(self.num_peaks):
             retention_time = round(1.5 + i * 1.5 + rnd.uniform(0, 0.5), 1)
             peak_area = rnd.randint(15, 85)
             total_area += peak_area
@@ -4924,7 +4924,7 @@ class Chem086:
         self.answer = self.questioned_peak['percentage']
 
         self.description = (
-            f"A gas chromatogram shows {num_peaks} peaks. "
+            f"A gas chromatogram shows {self.num_peaks} peaks. "
             f"Calculate the percentage composition of {self.questioned_peak['name']} "
             f"given the peak areas shown in the diagram."
         )
