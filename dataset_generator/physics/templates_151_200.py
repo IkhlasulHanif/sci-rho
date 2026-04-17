@@ -2178,8 +2178,21 @@ class Phy173:
         ax.add_patch(plt.Circle((0, 0), 0.3, color=particle_color, ec='black', zorder=5))
         
         ax.text(0, -0.7, f"$q = {self.q_base} \\times 10^{{-19}}$ C", ha='center', fontweight='bold', fontsize=11)
-        ax.text(vx/2, vy/2 + 0.3, f"$v = {self.v_base} \\times 10^6$ m/s", color=particle_color, 
-                rotation=self.theta, fontweight='bold', fontsize=14)
+
+        # unit perpendicular vector
+        norm = np.hypot(vx, vy)
+        px, py = -vy / norm, vx / norm   # perpendicular direction
+
+        offset = 0.5
+        tx = vx/2 + offset * px
+        ty = vy/2 + offset * py
+
+        ax.text(tx, ty,
+                f"$v = {self.v_base} \\times 10^6$ m/s",
+                color=particle_color,
+                rotation=self.theta,
+                fontweight='bold',
+                fontsize=14)
 
         arc_r = 1.2
         arc_angles = np.linspace(0, angle_rad, 50)
@@ -2931,7 +2944,7 @@ class Phy183:
         ax2.text(1.5, 8.8, 'Photons', color='#d35400', fontweight='bold', fontsize=11)
 
         ax2.add_patch(plt.Rectangle((3.5, 1), 3, 1.5, fill=False, ec='#c0392b', lw=2))
-        ax2.text(5, 1.75, f'$V_s = ?$ V', color='#c0392b', ha='center', fontweight='bold', fontsize=14)
+        ax2.text(5, 1.75, f'$V_s$', color='#c0392b', ha='center', fontweight='bold', fontsize=14)
         ax2.plot([3, 3, 3.5], [4.5, 1.75, 1.75], color='#c0392b', lw=2)
         ax2.plot([7, 7, 6.5], [4.5, 1.75, 1.75], color='#c0392b', lw=2)
         ax2.set_title('Experiment Setup', fontsize=13, fontweight='bold')
@@ -3156,7 +3169,7 @@ class Phy186:
         ax.plot([6.1667, 6.1667], [3.2, 3.8], color='#8e44ad', lw=1.5, ls=':')
         ax.annotate('', xy=(5.5, 3.7), xytext=(6.1667, 3.7), 
                     arrowprops=dict(arrowstyle='<->', color='#8e44ad', lw=2))
-        ax.text(5.833, 4.0, "$\\lambda = ?$", color='#8e44ad', fontsize=14, fontweight='bold', ha='center')
+        ax.text(5.833, 4.0, "$\\lambda$", color='#8e44ad', fontsize=14, fontweight='bold', ha='center')
 
         props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
         const_text = (
@@ -3305,7 +3318,7 @@ class Phy188:
         ax.annotate('', xy=(5.2, 2.5), xytext=(2.8, 2.5),
                     arrowprops=dict(arrowstyle='-|>', lw=3, color='#7f8c8d', mutation_scale=20))
       
-        ax.text(6.5, 1.0, "Binding\nEnergy ($E = ?$)", ha='center', va='center', fontweight='bold', color='#d35400')
+        # ax.text(6.5, 1.0, "Binding\nEnergy ($E = ?$)", ha='center', va='center', fontweight='bold', color='#d35400')
 
         props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
         ax.text(0.5, 0.8, f"$\\Delta m = {self.dm_base} \\times 10^{{-29}}$ kg\n$c = 3.00 \\times 10^8$ m/s", 
@@ -3429,7 +3442,7 @@ class Phy190:
         ax.text(0.7, 0.7, "GM Tube\nDetector", ha='center', fontsize=12, fontweight='bold')
         
         ax.add_patch(plt.Rectangle((0.62, 0.1), 0.16, 0.2, color='black', ec='#2c3e50', lw=2))
-        ax.text(0.7, 0.2, "A = ?", color='#2ecc71', ha='center', va='center', fontsize=13, fontweight='bold')
+        ax.text(0.7, 0.2, "A = ...", color='#2ecc71', ha='center', va='center', fontsize=13, fontweight='bold')
 
         props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
         ax.text(0.5, 0.9, f"$N = {self.N:.1e}$ \n$T_{{1/2}} = {self.half_life}$ s", 
@@ -3488,7 +3501,7 @@ class Phy191:
         ax.text(2.5, 0.6, "Tissue Boundary / Reflector", ha='center', fontweight='bold', color='#d35400', fontsize=11)
         
         ax.annotate('', xy=(4.5, 1.0), xytext=(4.5, 3.5), arrowprops=dict(arrowstyle='<->', color='black', lw=2))
-        ax.text(4.7, 2.25, "$d = ?$", va='center', fontweight='bold', fontsize=14)
+        ax.text(4.7, 2.25, "$d$", va='center', fontweight='bold', fontsize=14)
         
         props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#7f8c8d')
         ax.text(0.3, 1.5, f"Echo Time $t = {self.time}$ s\nSpeed $v = 1540$ m s$^{{-1}}$", bbox=props, fontsize=11)
@@ -3560,7 +3573,7 @@ class Phy192:
         peak_x2 = peak_x1 + (1 / wave_freq)
         ax.annotate('', xy=(peak_x1, 1.2), xytext=(peak_x2, 1.2),
                     arrowprops=dict(arrowstyle='<->', color='#2c3e50', lw=2))
-        ax.text((peak_x1 + peak_x2)/2, 1.5, r"$\lambda = ?$", ha='center', fontsize=14, fontweight='bold')
+        ax.text((peak_x1 + peak_x2)/2, 1.5, r"$\lambda$", ha='center', fontsize=14, fontweight='bold')
 
         props = dict(boxstyle='round', facecolor='white', alpha=0.9, edgecolor='#bdc3c7')
         info_text = (
@@ -3698,7 +3711,7 @@ class Phy194:
         
         ax.annotate('', xy=(0.4, 0.4), xytext=(0.9, 0.4),
                     arrowprops=dict(arrowstyle='->', color='#c0392b', lw=2.5))
-        ax.text(1.0, 0.38, "$\\lambda_{min} = ?$", color='#c0392b', fontweight='bold', fontsize=16)
+        ax.text(1.0, 0.38, "$\\lambda_{min}$", color='#c0392b', fontweight='bold', fontsize=16)
         
         props = dict(boxstyle='round,pad=0.8', facecolor='white', alpha=0.95, edgecolor='#bdc3c7', lw=1.5)
         info_text = (
@@ -3765,7 +3778,7 @@ class Phy195:
 
         ax.annotate('', xy=(7.6, 2), xytext=(1.5, 2),
                     arrowprops=dict(arrowstyle='<->', color='#bdc3c7', lw=2, ls='--'))
-        ax.text(4.5, 2.2, "$d = ?$", color='white', ha='center', fontsize=14, fontweight='bold')
+        ax.text(4.5, 2.2, "$d$", color='white', ha='center', fontsize=14, fontweight='bold')
         
         props = dict(boxstyle='round,pad=0.5', facecolor='#1e272e', alpha=0.9, edgecolor='#f1c40f')
         ax.text(1, 3.4, f"$L = {self.L_base} \\times 10^{{26}}$ W", color='#f1c40f', ha='center', bbox=props, fontweight='bold')
@@ -3826,7 +3839,7 @@ class Phy196:
 
         ax.annotate('', xy=(7, 4), xytext=(5, 4),
                     arrowprops=dict(arrowstyle='-|>', color='black', lw=2, mutation_scale=15), zorder=10)
-        ax.text(6, 4.2, "$R = ?$", ha='center', fontweight='bold', fontsize=14, zorder=11)
+        ax.text(6, 4.2, "$R$", ha='center', fontweight='bold', fontsize=14, zorder=11)
 
         ax.text(5, 2.8, f"Surface Temperature\n$T = {self.T}$ K", 
                 ha='center', va='center', fontsize=12, fontweight='bold', color='black', zorder=10)
@@ -3902,7 +3915,7 @@ class Phy197:
 
         ax.plot([peak_x, peak_x], [0, peak_y], color='grey', ls=':', lw=2, zorder=4)
 
-        ax.text(peak_x, -0.08, "$\\lambda_{\\text{max}} = ?$", ha='center', fontweight='bold', fontsize=14, color='#c0392b')
+        ax.text(peak_x, -0.08, "$\\lambda_{\\text{max}}$", ha='center', fontweight='bold', fontsize=14, color='#c0392b')
 
         ax.annotate("Peak", xy=(peak_x, peak_y), xytext=(peak_x, peak_y + 0.1),
                     arrowprops=dict(facecolor='black', arrowstyle='->', lw=1.5), fontsize=11, ha='center', va='bottom', fontweight='bold')
@@ -3982,7 +3995,7 @@ class Phy198:
         
         ax.annotate('', xy=(8.5, 2), xytext=(7.5, 2),
                     arrowprops=dict(arrowstyle='->', color='#e74c3c', lw=4))
-        ax.text(8.0, 2.3, "Velocity $v = ?$", color='#e74c3c', fontsize=12, fontweight='bold', ha='center')
+        ax.text(8.0, 2.3, "Velocity $v$", color='#e74c3c', fontsize=12, fontweight='bold', ha='center')
         
         x = np.linspace(1.5, 6.5, 200)
         wave = 2 + 0.3 * np.sin(2 * np.pi * x / (0.5 + self.z * 10))
@@ -4054,7 +4067,7 @@ class Phy199:
         
         ax.annotate('', xy=(g_x - 0.4, g_y - 0.15), xytext=(0.4, 0.15), 
                     arrowprops=dict(arrowstyle='<->', color='#3498db', lw=2.5, ls='--'))
-        ax.text(g_x/2 - 0.6, g_y/2 + 0.6, "Distance $d = ?$", color='#74b9ff', ha='center', rotation=21, fontweight='bold', fontsize=14)
+        ax.text(g_x/2 - 0.6, g_y/2 + 0.6, "Distance $d$", color='#74b9ff', ha='center', rotation=21, fontweight='bold', fontsize=14)
         
         props_h = dict(boxstyle='round,pad=0.8', facecolor='#192a56', edgecolor='#3498db', lw=2)
         const_text = (
@@ -4126,7 +4139,7 @@ class Phy200:
         props = dict(boxstyle='round,pad=0.8', facecolor='#1e272e', edgecolor=color, lw=2)
         ax.text(3.5, 0.5, f"Surface Temperature\n$T = {self.T}$ K", color='white', ha='center', fontsize=12, bbox=props, fontweight='bold')
         
-        ax.text(3.5, 6.5, "Luminosity $L = ?$", color='white', ha='center', fontsize=16, fontweight='bold')
+        ax.text(3.5, 6.5, "Luminosity $L$", color='white', ha='center', fontsize=16, fontweight='bold')
 
         ax.set_xlim(0, 7)
         ax.set_ylim(0, 7)

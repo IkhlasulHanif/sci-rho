@@ -549,8 +549,8 @@ class Phy105:
 
         ax.text(2.0, 3.5, f"R = {sig_figs(self.R,3)} Ω", ha="left", va="top",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
-        ax.text(9.7, 3.5, "ρ = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(9.7, 3.5, "ρ = ?", ha="right", va="top",
+                # bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -641,8 +641,8 @@ class Phy106:
 
         ax.text(2.0, 3.5, f"ρ = {self.rho_disp} Ω m", ha="left", va="top",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
-        ax.text(9.7, 3.5, "R = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(9.7, 3.5, "R = ?", ha="right", va="top",
+                # bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -725,8 +725,8 @@ class Phy107:
                 ha="right", va="bottom",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
-        ax.text(0.98, 0.96, "R = ?", transform=ax.transAxes,
-                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(0.98, 0.96, "R = ?", transform=ax.transAxes,
+                # ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.10)
@@ -810,7 +810,7 @@ class Phy108:
         # Internal resistance box (unknown)
         top_r, bot_r = draw_resistor_box(
             ax, x=left_x, y=y_r, w=wR, h=hR, label="r",
-            value_text="r = ?", fontsize=8
+            value_text="r", fontsize=8
         )
 
         # Wires on left vertical
@@ -946,7 +946,7 @@ class Phy109:
         r_right = (x_R + wR/2, top_y)
         draw_wire(ax, [(left_x, top_y), r_left], lw=2)
         draw_wire(ax, [r_right, (right_x, top_y)], lw=2)
-        draw_resistor_box(ax, x=x_R, y=top_y, w=wR, h=hR, label="R", value_text="R = ?", fontsize=8)
+        draw_resistor_box(ax, x=x_R, y=top_y, w=wR, h=hR, label="R", value_text="", fontsize=8)
 
         # Voltmeter across resistor with shown reading
         x_vm, y_vm, r_vm = x_R, top_y + 1.2, 0.35
@@ -1043,8 +1043,8 @@ class Phy110:
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         # Unknown power
-        ax.text(11.0, 5.8, "P = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(11.0, 5.8, "P = ?", ha="right", va="top",
+                # bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -1136,8 +1136,8 @@ class Phy111:
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         # Unknown energy
-        ax.text(11.0, 5.8, "W = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(11.0, 5.8, "W = ?", ha="right", va="top",
+                # bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -1222,7 +1222,7 @@ class Phy112:
 
         draw_cell_vertical(
             ax, x=left_x, y_bottom=y_cell_bot, y_top=y_cell_top,
-            value_text="E = ?", fontsize=9
+            value_text="", fontsize=9
         )
 
         # Right vertical
@@ -1486,7 +1486,7 @@ class Phy114:
         # Labels for the two identical cells
         draw_text(ax, 0.8, 9.2, "2 identical cells (series)", fontsize=9, ha="left", boxed=True)
         draw_text(ax, 0.8, 8.4, f"each: r = {sig_figs(self.r,3)} Ω", fontsize=9, ha="left", boxed=True)
-        draw_text(ax, 0.8, 7.6, "each: E = ?", fontsize=9, ha="left", boxed=True)
+        # draw_text(ax, 0.8, 7.6, "each: E = ?", fontsize=9, ha="left", boxed=True)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -1604,7 +1604,7 @@ class Phy115:
         draw_wire(ax, [A_right, (right_x, bot_y)], lw=2)
         draw_circle_meter(ax, x=x_A, y=bot_y, letter="A", r=r_A, fontsize=9)
 
-        draw_text(ax, x_A, bot_y - 0.85, "I = ?", fontsize=9, boxed=True)
+        draw_text(ax, x_A, bot_y - 0.85, "I", fontsize=9, boxed=True)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -1701,7 +1701,7 @@ class Phy116:
                           value_text=f"{self.R} Ω", fontsize=9)
 
         draw_thermistor(ax, x=x_T, y=top_y, label="NTC",
-                        value_text="R_T = ?", fontsize=9)
+                        value_text="R_T", fontsize=9)
 
         # Voltmeter across fixed resistor (shows V_R)
         x_vm, y_vm, r_vm = x_R, top_y + 1.2, 0.35
@@ -1853,7 +1853,7 @@ class Phy117:
         draw_text(ax, xM + 1.2, (top_y + bot_y) / 2, "I3", fontsize=9, ha="left", boxed=True)
 
         # Unknown label
-        draw_text(ax, 9.2, 9.2, "I3 = ?", fontsize=9, ha="right", boxed=True)
+        # draw_text(ax, 9.2, 9.2, "I3 = ?", fontsize=9, ha="right", boxed=True)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
@@ -2992,7 +2992,7 @@ class Phy127:
 
         ax.annotate('', xy=(r_orbit_vis, -0.5), xytext=(0, -0.5),
                     arrowprops=dict(arrowstyle='<->', color='black', lw=1.2))
-        ax.text(r_orbit_vis/2, -0.7, "$r = ?$", ha='center', fontsize=12, fontweight='bold')
+        ax.text(r_orbit_vis/2, -0.7, "$r$", ha='center', fontsize=12, fontweight='bold')
         
         ax.plot([0, 0], [0, -0.6], 'k:', lw=1)
         ax.plot([r_orbit_vis, r_orbit_vis], [0, -0.6], 'k:', lw=1)
@@ -3533,7 +3533,7 @@ class Phy133:
         ax.text(0.5, 0.9, "Helium-4 Gas", ha='center', fontsize=14, fontweight='bold')
         ax.text(0.88, 0.5, f"$T = {self.temperature_c}^\circ$C", va='center', fontsize=12, fontweight='bold')
         ax.text(0.13, 0.5, f"Mass = {self.mass_g} g", ha='right', va='center', fontsize=12, fontweight='bold')
-        ax.text(0.5, 0.1, r"$c_{rms} = \ ?$", ha='center', fontsize=14, fontweight='bold')
+        # ax.text(0.5, 0.1, r"$c_{rms} = \ ?$", ha='center', fontsize=14, fontweight='bold')
 
         info_box = (
             f"Molar mass = 4.003 g mol$^{{-1}}$\n"
@@ -3620,7 +3620,7 @@ class Phy134:
             ax.arrow(px, py, rnd.uniform(-0.15, 0.15), rnd.uniform(-0.15, 0.15), head_width=0.04, color='black')
 
         ax.text(7.75, 5, "Final State", ha='center', fontweight='bold', fontsize=12)
-        ax.text(7.75, 1.1, f"$P_2 = ?$\n$T_2 = {self.T2_c}^\circ$C", ha='center', va='top', fontsize=11, fontweight='bold')
+        ax.text(7.75, 1.1, f"$P_2$\n$T_2 = {self.T2_c}^\circ$C", ha='center', va='top', fontsize=11, fontweight='bold')
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -3701,8 +3701,8 @@ class Phy135:
         ax.text(5, 2.2, "Valve\n(Closed)", ha='center', fontweight='bold', fontsize=10)
 
         ax.text(5, 6.2, "ISOTHERMAL GAS MIXING", ha='center', fontsize=14, fontweight='bold')
-        ax.text(5, 5.6, r"Find $P_{final}$", ha='center', fontsize=12, fontweight='bold',
-                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
+        # ax.text(5, 5.6, r"Find $P_{final}$", ha='center', fontsize=12, fontweight='bold',
+                # bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
         plt.tight_layout()
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -3792,8 +3792,8 @@ class Phy136:
         ax.text(0.02, 0.98, info_box, transform=ax.transAxes,
                 va='top', ha='left', fontsize=11, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
 
-        ax.text(x_start - 0.5, y_start + tank_height/2, r"Find $c_{rms}$", 
-                ha='right', va='center', fontsize=14, fontweight='bold')
+        # ax.text(x_start - 0.5, y_start + tank_height/2, r"Find $c_{rms}$", 
+                # ha='right', va='center', fontsize=14, fontweight='bold')
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.1)
@@ -4028,7 +4028,7 @@ class Phy139:
 
         ax.annotate("", xy=(8.5, 4.5), xytext=(6.5, 4.5),
                     arrowprops=dict(arrowstyle="<-", lw=3, color='black', mutation_scale=20))
-        ax.text(8.5, 4.5, "$W = ?$", color='black', fontsize=14, fontweight='bold', va='center')
+        ax.text(8.5, 4.5, "$W$", color='black', fontsize=14, fontweight='bold', va='center')
 
         ax.text(5, 4.5, f"$\\Delta U = +{self.delta_U_kJ}$ kJ", 
                 ha='center', va='center', fontweight='bold', fontsize=12,
@@ -4116,7 +4116,7 @@ class Phy140:
         ax.plot([3, 7], [3.5, 3.5], '--', color='black', lw=1.5)
         ax.annotate("", xy=(8, 5), xytext=(8, 3.5),
                     arrowprops=dict(arrowstyle="<->", lw=2, color='black'))
-        ax.text(8.3, 4.25, "$\\Delta V = ?$", color='black', fontweight='bold', fontsize=12)
+        ax.text(8.3, 4.25, "$\\Delta V$", color='black', fontweight='bold', fontsize=12)
 
         ax.annotate("", xy=(3.5, 3), xytext=(1.5, 2),
                     arrowprops=dict(arrowstyle="->", lw=3, color='black', mutation_scale=20))
@@ -4319,9 +4319,9 @@ class Phy142:
         ax.text(0.5, pivot_y - arc_radius - 0.2, f"$\\theta = {self.theta_degrees}^\\circ$", 
                 color='black', fontsize=11, fontweight='bold')
 
-        ax.text(0, pivot_y - v_scale - 1.2, r"Find $v_{max}$ at equilibrium", 
-                color='black', fontsize=11, fontweight='bold', ha='center', 
-                bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
+        # ax.text(0, pivot_y - v_scale - 1.2, r"Find $v_{max}$ at equilibrium", 
+                # color='black', fontsize=11, fontweight='bold', ha='center', 
+                # bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.5'))
         
         ax.set_title("PENDULUM OSCILLATION", fontsize=14, fontweight='bold', pad=15)
 
@@ -4656,7 +4656,7 @@ class Phy146:
         
         ax.annotate("", xy=(1.2, pivot_y - length), xytext=(0, pivot_y - length),
                     arrowprops=dict(arrowstyle="->", color='black', lw=3, mutation_scale=20))
-        ax.text(0.6, pivot_y - length + 0.5, "$v_{max} = ?$", color='black', fontsize=12, fontweight='bold')
+        ax.text(0.6, pivot_y - length + 0.5, "$v_{max}$", color='black', fontsize=12, fontweight='bold')
 
         info_box = (
             f"Mass ($m$) = {self.mass:.3f} kg\n"
@@ -5045,7 +5045,7 @@ class Phy150:
         ax.add_patch(electron)
         ax.text(electron_x, electron_y, "-", fontsize=20, ha="center", va="center", weight="bold")
         
-        ax.text(electron_x, electron_y + 0.5, "Electron\n$a = ?$", fontsize=12, ha="center", weight="bold")
+        ax.text(electron_x, electron_y + 0.5, "Electron", fontsize=12, ha="center", weight="bold")
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight", pad_inches=0.2)

@@ -628,7 +628,7 @@ class Phy056:
         ax.text(2.1, 8.2, f"Vp = {self.Vp} V", ha="left", va="center", fontsize=11)
 
         ax.text(6.2, 9.0, f"Ns = {self.Ns}", ha="left", va="center", fontsize=11)
-        ax.text(6.2, 8.2, "Vs = ?", ha="left", va="center", fontsize=11)
+        # ax.text(6.2, 8.2, "Vs = ?", ha="left", va="center", fontsize=11)
 
         # Simple wires to suggest terminals
         draw_wire(ax, [(2.1, 3.0), (2.1, 7.0)], lw=2)
@@ -1907,11 +1907,11 @@ class Phy069:
             # A known, B unknown
             ax.text(8.75, 1.6, f"A: {self.mA} kg, {self.vA} m s⁻¹", fontsize=10,
                     ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
-            ax.text(1.25, 1.6, f"B: {self.mB} kg, v = ?", fontsize=10,
+            ax.text(1.25, 1.6, f"B: {self.mB} kg", fontsize=10,
                     ha="right", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
         else:
             # B known, A unknown
-            ax.text(8.75, 1.6, f"A: {self.mA} kg, v = ?", fontsize=10,
+            ax.text(8.75, 1.6, f"A: {self.mA} kg", fontsize=10,
                     ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
             ax.text(1.25, 1.6, f"B: {self.mB} kg, {abs(self.vB)} m s⁻¹", fontsize=10,
                     ha="right", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
@@ -2153,7 +2153,7 @@ class Phy071:
         # Upward force F (unknown)
         ax.annotate("", xy=(xF, y_beam + 1.1), xytext=(xF, y_beam - 0.1),
                     arrowprops=dict(arrowstyle="->", linewidth=2, color="black"))
-        ax.text(xF, y_beam + 1.25, "F = ?", ha="center", va="bottom",
+        ax.text(xF, y_beam + 1.25, "F", ha="center", va="bottom",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         # Distance d1 (pivot to W)
@@ -2908,8 +2908,8 @@ class Phy077:
         # Start from rest and unknown final speed (VLM reads)
         ax.text(bx + 0.15, by + bh/2, "u = 0", ha="left", va="center",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.15))
-        ax.text(8.7, 2.7, "v = ?", ha="center", va="center",
-                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        # ax.text(8.7, 2.7, "v = ?", ha="center", va="center",
+        #         bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -3862,8 +3862,8 @@ class Phy084:
                 ha="left", va="center", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         # Unknown label
-        ax.text(2.6, 6.6, "strain = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        # ax.text(2.6, 6.6, "strain = ?", ha="right", va="top",
+                # bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -3936,9 +3936,9 @@ class Phy085:
                 ha="right", va="bottom", fontsize=10,
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
-        ax.text(0.98, 0.98, "k = ?", transform=ax.transAxes,
-                ha="right", va="top", fontsize=10,
-                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        # ax.text(0.98, 0.98, "k = ?", transform=ax.transAxes,
+                # ha="right", va="top", fontsize=10,
+                # bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -4052,8 +4052,8 @@ class Phy086:
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         # Unknown label
-        ax.text(9.6, 4.2, "E = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        # ax.text(9.6, 4.2, "E = ?", ha="right", va="top",
+                # bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.05)
@@ -4136,8 +4136,8 @@ class Phy087:
                 ha="right", va="bottom", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         # Unknown label at x-intercept of unloading line
-        ax.text(self.xp_mm, -0.08 * self.Fmax, "xₚ = ?", ha="center", va="top",
-                bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
+        # ax.text(self.xp_mm, -0.08 * self.Fmax, "xₚ = ?", ha="center", va="top",
+                # bbox=dict(facecolor="white", edgecolor="black", pad=0.25))
 
         # Show unloading gradient (helps interpret the dashed line; still minimal)
         ax.text(0.98, 0.98, f"unloading gradient = {self.k_N_per_mm:.1f} N/mm",
@@ -4489,8 +4489,8 @@ class Phy090:
         # Values in diagram
         ax.text(1.6, 3.7, f"f₀ = {self.f0} Hz", ha="left", va="top",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
-        ax.text(9.2, 3.7, "f = ?", ha="right", va="top",
-                bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
+        # ax.text(9.2, 3.7, "f = ?", ha="right", va="top",
+        #         bbox=dict(facecolor="white", edgecolor="none", pad=0.25))
         ax.text(9.2, 0.35, f"speed of sound v = {self.v_sound} m s⁻¹", ha="right", va="center",
                 bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
@@ -5749,7 +5749,7 @@ class Phy100:
         plt.rcParams.update({"font.size": 9})
 
         fig, ax = plt.subplots(figsize=(7.6, 3.6))
-        ax.set_xlim(0, 12)
+        ax.set_xlim(0, 10)
         ax.set_ylim(0, 6)
         ax.set_aspect("equal", adjustable="box")
         ax.axis("off")
@@ -5813,10 +5813,10 @@ class Phy100:
         ax.text(0.02, 0.84, f"λ = {self.lam_nm} nm", transform=ax.transAxes,
                 ha="left", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
-        ax.text(0.98, 0.95, "nₘₐₓ = ?", transform=ax.transAxes,
-                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
-        ax.text(0.98, 0.84, "θₘₐₓ = ?", transform=ax.transAxes,
-                ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(0.98, 0.95, "nₘₐₓ = ?", transform=ax.transAxes,
+        #         ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
+        # ax.text(0.98, 0.84, "θₘₐₓ = ?", transform=ax.transAxes,
+        #         ha="right", va="top", bbox=dict(facecolor="white", edgecolor="none", pad=0.2))
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=600, bbox_inches="tight", pad_inches=0.08)
