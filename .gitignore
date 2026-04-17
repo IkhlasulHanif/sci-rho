@@ -182,7 +182,6 @@ cython_debug/
 .cursorindexingignore
 
 experiment/result/
-experiment/sample/
 experiment/secrets/**
 dataset/
 envlinux/
