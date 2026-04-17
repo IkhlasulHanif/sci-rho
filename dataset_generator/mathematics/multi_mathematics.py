@@ -6,6 +6,7 @@ from templates_151_200 import *
 class Mat001_multi(Mat001):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'{self.total} orang disurvei tentang preferensi minuman mereka. Hasilnya ditampilkan pada diagram Venn di bawah ini. Berapakah jumlah orang yang hanya menyukai Kopi atau hanya Teh?'
         self.description_chinese = f'对{self.total}人进行了关于饮料偏好的调查。结果显示在下方的韦恩图中。只喜欢咖啡或只喜欢茶的人数总和是多少？'
         self.description_arabic = f'تم استطلاع آراء {self.total} شخصًا حول تفضيلاتهم للمشروبات. تُعرض النتائج في مخطط فن أدناه. ما مجموع عدد الأشخاص الذين يفضلون القهوة فقط أو الشاي فقط؟'
         self.description_hindi = f'{self.total} लोगों से उनकी पेय पदार्थों की पसंद के बारे में सर्वेक्षण किया गया। परिणाम नीचे दिए गए वेन चित्र (Venn diagram) में प्रदर्शित हैं। केवल कॉफ़ी या केवल चाय पसंद करने वाले लोगों का योग क्या है?'
@@ -15,6 +16,7 @@ class Mat001_multi(Mat001):
 class Mat002_multi(Mat002):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Dalam sebuah survei terhadap {self.total} siswa, informasi berikut dikumpulkan mengenai preferensi mereka terhadap tiga mata pelajaran: Matematika, Sains, dan Bahasa Inggris. Hasilnya ditunjukkan pada diagram Venn di bawah ini. Berapa banyak siswa yang menyukai Matematika?'
         self.description_chinese = f'在一项对{self.total}名学生的调查中，收集了关于他们对数学、科学和英语三科偏好的以下信息。结果显示在下方的韦恩图中。有多少学生喜欢数学？'
         self.description_arabic = f'في استطلاع شمل {self.total} طالبًا، جُمعت المعلومات التالية حول تفضيلاتهم لثلاث مواد: الرياضيات، والعلوم، واللغة الإنجليزية. تُعرض النتائج في مخطط فن أدناه. كم عدد الطلاب الذين يفضلون الرياضيات؟'
         self.description_hindi = f'{self.total} छात्रों के एक सर्वेक्षण में, तीन विषयों - गणित, विज्ञान और अंग्रेजी - के प्रति उनकी पसंद के बारे में निम्नलिखित जानकारी एकत्र की गई। परिणाम नीचे दिए गए वेन चित्र में दिखाए गए हैं। कितने छात्रों को गणित पसंद है?'
@@ -24,6 +26,7 @@ class Mat002_multi(Mat002):
 class Mat003_multi(Mat003):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Dengan membulatkan setiap dimensi ke 1 angka penting, perkirakan volume kotak tersebut.'
         self.description_chinese = f'将各尺寸保留至1位有效数字，估算该长方体的体积。'
         self.description_arabic = f'بتقريب كل بُعد إلى رقم معنوي واحد، قدّر حجم الصندوق.'
         self.description_hindi = f'प्रत्येक आयाम को 1 सार्थक अंक (significant figure) तक पूर्णांकित करके, बॉक्स के आयतन का अनुमान लगाएँ।'
@@ -33,6 +36,7 @@ class Mat003_multi(Mat003):
 class Mat004_multi(Mat004):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diberikan sebuah taman di bawah ini yang ukurannya akurat hingga meter terdekat. Hitunglah batas atas dari luas taman tersebut.'
         self.description_chinese = f'如图所示，一个花园的各测量值均精确到最近的整米。试计算该花园面积的上界。'
         self.description_arabic = f'بالنظر إلى الحديقة أدناه التي قياساتها مضبوطة لأقرب متر، احسب الحد الأعلى لمساحة الحديقة.'
         self.description_hindi = f'नीचे दिए गए बगीचे के माप निकटतम मीटर तक सही हैं। बगीचे के क्षेत्रफल की ऊपरी सीमा (upper bound) की गणना कीजिए।'
@@ -42,6 +46,7 @@ class Mat004_multi(Mat004):
 class Mat005_multi(Mat005):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Botol mana yang menawarkan nilai ekonomis yang lebih baik? Tunjukkan bagaimana Anda menentukannya.'
         self.description_chinese = f'哪个瓶子更物有所值？写出你的判断过程。'
         self.description_arabic = f'أي زجاجة تقدم قيمة أفضل مقابل المال؟ وضّح كيفية توصلت إلى ذلك.'
         self.description_hindi = f'कौन सी बोतल पैसे के लिए बेहतर मूल्य (value for money) प्रदान करती है? दिखाएँ कि आपने यह कैसे तय किया।'
@@ -51,6 +56,7 @@ class Mat005_multi(Mat005):
 class Mat006_multi(Mat006):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Seorang turis ingin menukar {self.total_eur} Euro (EUR) ke Yen Jepang (JPY) menggunakan nilai tukar yang ditunjukkan di papan. Berapa banyak Yen yang akan mereka terima? Bulatkan hasilnya ke dua tempat desimal.'
         self.description_chinese = f'一名游客想使用公告牌上显示的汇率将{self.total_eur}欧元（EUR）兑换成日元（JPY）。他们将收到多少日元？结果保留两位小数。'
         self.description_arabic = f'يريد سائح تحويل {self.total_eur} يورو (EUR) إلى ين ياباني (JPY) باستخدام الأسعار المعروضة على اللوحة. كم ين سيحصل عليه؟ قرّب النتيجة إلى منزلتين عشريتين.'
         self.description_hindi = f'एक पर्यटक बोर्ड पर दिखाई गई दरों का उपयोग करके {self.total_eur} Euros (EUR) को Japanese Yen (JPY) में बदलना चाहते हैं। उन्हें कितने Yen मिलेंगे? परिणाम को दो दशमलव स्थानों तक पूर्णांकित करें।'
@@ -60,6 +66,7 @@ class Mat006_multi(Mat006):
 class Mat007_multi(Mat007):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah berapa persentase kisi yang diarsir. Bulatkan hasilnya ke dua tempat desimal.'
         self.description_chinese = f'计算网格中阴影部分所占的百分比。结果精确至两位小数。'
         self.description_arabic = f'احسب النسبة المئوية للجزء المظلل من الشبكة. قرّب النتيجة إلى منزلتين عشريتين.'
         self.description_hindi = f'गणना करें कि ग्रिड का कितना प्रतिशत हिस्सा छायांकित है। परिणाम को दो दशमलव स्थानों तक पूर्णांकित करें।'
@@ -69,6 +76,7 @@ class Mat007_multi(Mat007):
 class Mat008_multi(Mat008):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Jam menunjukkan waktu mulai dan selesai suatu ujian matematika. Hitunglah total lama ujian tersebut dalam jam dan menit.'
         self.description_chinese = f'时钟显示了一场数学考试的开始和结束时间。计算考试的总时长，以小时和分钟为单位。'
         self.description_arabic = f'تُظهر الساعات وقتي بدء وانتهاء امتحان الرياضيات. احسب المدة الكلية للامتحان بالساعات والدقائق.'
         self.description_hindi = f'घड़ियाँ गणित की परीक्षा के शुरू होने और समाप्त होने का समय दिखाती हैं। परीक्षा की कुल अवधि (total length) की घंटों और मिनटों में गणना करें।'
@@ -78,6 +86,7 @@ class Mat008_multi(Mat008):
 class Mat009_multi(Mat009):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f"Jason meninggalkan Kota A pada pukul {self.departure_time}.00 dan bersepeda ke Kota D. Grafik perjalanan menunjukkan perjalanan Jason. Carilah selisih Kecepatan Rata-rata Jason dari A ke B dan C ke D."
         self.description_chinese = f"杰森在{self.departure_time}.00时离开A镇，骑车前往D镇。行程图显示了杰森的旅程。试求杰森从A到B和从C到D的平均速度之差。"
         self.description_arabic = f"يغادر جيسون المدينة A عند الساعة {self.departure_time}.00 ويتجه بالدراجة إلى المدينة D. يوضح الرسم البياني للحركة رحلة جيسون. أوجد الفرق بين متوسط سرعة جيسون من A إلى B ومن C إلى D."
         self.description_hindi = f"जेसन (Jason) शहर A से {self.departure_time}.00 बजे निकलता है और साइकिल से शहर D की ओर जाता है। यात्रा ग्राफ जेसन (Jason) की यात्रा को दर्शाता है। A से B और C से D तक जेसन की औसत गति (Average Speed) का अंतर ज्ञात कीजिए।"
@@ -87,6 +96,7 @@ class Mat009_multi(Mat009):
 class Mat010_multi(Mat010):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan grafik kecepatan-waktu dari sebagian perjalanan mobil. Hitunglah total jarak yang ditempuh selama {self.t_end} detik tersebut.'
         self.description_chinese = f'该图显示了一段汽车旅程的速度-时间图。计算在这{self.t_end}秒内行驶的总距离。'
         self.description_arabic = f'يوضح الرسم البياني للسرعة مقابل الزمن جزءًا من رحلة سيارة. احسب المسافة الكلية المقطوعة خلال {self.t_end} ثانية.'
         self.description_hindi = f'चित्र में कार यात्रा के एक भाग का गति-समय ग्राफ दर्शाया गया है। {self.t_end} सेकंड के दौरान तय की गई कुल दूरी की गणना कीजिए।'
@@ -96,6 +106,7 @@ class Mat010_multi(Mat010):
 class Mat011_multi(Mat011):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Ky bersepeda dari kantornya ke sebuah pertemuan dan kembali lagi. Grafik perjalanan menunjukkan waktunya saat pertemuan dan perjalanan pulangnya. Ky bersepeda dari kantornya ke pertemuan tersebut dengan kecepatan konstan {self.speed:.2f} km/jam. Pukul berapa Ky meninggalkan kantornya?'
         self.description_chinese = f'凯从办公室骑车去开会，然后再骑回来。行程图显示了他在会议上的时间以及他返回的旅程。凯以{self.speed:.2f} km/h的恒定速度从办公室骑车去开会。凯什么时间离开他的办公室？'
         self.description_arabic = f'يقود كاي دراجته من مكتبه إلى اجتماع ثم يعود مرة أخرى. يوضح الرسم البياني للحركة الزمن الذي قضاه في الاجتماع ورحلة العودة. يسير كاي بسرعة ثابتة مقدارها {self.speed:.2f} كم/ساعة من مكتبه إلى الاجتماع. في أي وقت يغادر كاي مكتبه؟'
         self.description_hindi = f'Ky अपने कार्यालय से मीटिंग तक साइकिल से जाता है और वापस आता है। यात्रा ग्राफ में मीटिंग में बिताया गया समय और वापसी की यात्रा दर्शाई गई है। Ky अपने कार्यालय से मीटिंग तक {self.speed:.2f} km/h की स्थिर गति (constant speed) से साइकिल चलाता है। Ky अपने कार्यालय से किस समय निकलता है?'
@@ -105,6 +116,7 @@ class Mat011_multi(Mat011):
 class Mat012_multi(Mat012):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Grafik fungsi kuadrat ditunjukkan pada kisi berikut. Tentukan persamaan grafik tersebut terlebih dahulu, lalu gunakan persamaan tersebut untuk menyelesaikan ${self.target_eq}$.'
         self.description_chinese = f'图中所示为二次函数的图像。首先确定图像的方程，然后用它来求解${self.target_eq}$。'
         self.description_arabic = f'يُعرض التمثيل البياني لدالة تربيعية على الشبكة. بعد تحديد معادلة التمثيل البياني أولًا، استخدمها لحل ${self.target_eq}$.'
         self.description_hindi = f'ग्रिड पर एक द्विघात फलन (quadratic function) का ग्राफ दिखाया गया है। पहले ग्राफ का समीकरण ज्ञात कीजिए और फिर उसका उपयोग करके ${self.target_eq}$ को हल कीजिए।'
@@ -114,6 +126,7 @@ class Mat012_multi(Mat012):
 class Mat013_multi(Mat013):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Dengan menggambar garis lurus yang sesuai pada kisi, selesaikan persamaan ${self.target_eq_str}$.'
         self.description_chinese = f'通过在网格上画一条合适的直线，求解方程${self.target_eq_str}$。'
         self.description_arabic = f'برسم خط مستقيم مناسب على الشبكة، حل المعادلة ${self.target_eq_str}$.'
         self.description_hindi = f'ग्रिड पर एक उपयुक्त सीधी रेखा खींचकर, समीकरण ${self.target_eq_str}$ को हल करें।'
@@ -123,6 +136,7 @@ class Mat013_multi(Mat013):
 class Mat014_multi(Mat014):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Populasi kultur bakteri, $P$, meningkat secara eksponensial terhadap waktu $t$ (jam). Grafik pertumbuhan ini ditunjukkan pada kisi. Gunakan grafik tersebut untuk mencari berapa jam yang dibutuhkan agar jumlah bakteri mencapai {round(float(self.k), 10)}.'
         self.description_chinese = f'细菌培养物中的数量 $P$在$t$小时后呈指数增长。\n该增长曲线如图所示。\n利用该曲线求出细菌数量达到 {round(float(self.k), 10)} 需要多少小时。'
         self.description_arabic = f'يزداد عدد أفراد مزرعة بكتيرية، $P$، أسيًا مع الزمن $t$ بالساعات.\nيُعرض التمثيل البياني لهذا النمو على الشبكة.\nاستخدم التمثيل البياني لإيجاد عدد الساعات اللازمة لوصول عدد البكتيريا إلى {round(float(self.k), 10)}.'
         self.description_hindi = f'एक जीवाणु संवर्धन (bacterial culture) की जनसंख्या, $P$, समय $t$ घंटों के साथ घातीय रूप से बढ़ती है।\nइस वृद्धि का ग्राफ ग्रिड पर दिखाया गया है।\nग्राफ का उपयोग करके पता लगाएँ कि जीवाणुओं की संख्या को {round(float(self.k), 10)} तक पहुँचने में कितने घंटे लगते हैं।'
@@ -132,6 +146,7 @@ class Mat014_multi(Mat014):
 class Mat015_multi(Mat015):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Massa suatu zat radioaktif, $M$ gram, menyusut secara eksponensial terhadap waktu $t$ tahun.\nGrafik peluruhan ini ditunjukkan pada kisi.\nGunakan grafik tersebut untuk mencari berapa tahun yang dibutuhkan agar massa zat mencapai {round(float(self.k), 10)} gram.'
         self.description_chinese = f'放射性物质的质量$M$（克）随时间$t$（年）呈指数衰减。\n这种衰减的图像显示在网格上。\n使用该图求出质量达到{round(float(self.k), 10)}克需要多少年。'
         self.description_arabic = f'تتناقص الكتلة، $M$ جرامًا، لمادة مشعة أسيًا مع الزمن $t$ بالسنوات.\nيُعرض التمثيل البياني لهذا الاضمحلال على الشبكة.\nاستخدم التمثيل البياني لإيجاد عدد السنوات اللازمة لوصول الكتلة إلى {round(float(self.k), 10)} جرامًا.'
         self.description_hindi = f'एक रेडियोधर्मी पदार्थ (radioactive substance) का द्रव्यमान (mass), $M$ ग्राम, समय $t$ वर्षों में घातीय रूप से घटता है।\nइस क्षय का ग्राफ ग्रिड पर दिखाया गया है।\nग्राफ का उपयोग करके पता लगाएँ कि द्रव्यमान को {round(float(self.k), 10)} ग्राम तक पहुँचने में कितने वर्ष लगते हैं।'
@@ -141,6 +156,7 @@ class Mat015_multi(Mat015):
 class Mat016_multi(Mat016):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menunjukkan grafik fungsi kubik dengan titik-titik potong sumbu yang telah diberi label. Sebuah garis vertikal ditarik. Berdasarkan informasi pada grafik, tentukan nilai $y$ pada titik perpotongan yang diberi label $(k, ?)$.'
         self.description_chinese = f'该图显示了一个三次函数的图像，已标出其截距。图中画了一条垂直线。根据图中的信息，确定标记为$(k, ?)$的交点处的$y$值。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة تكعيبية مع تحديد نقاط تقاطعها. تم رسم خط عمودي. بناءً على المعلومات الواردة في التمثيل البياني، أوجد قيمة $y$ عند نقطة التقاطع $(k, ?)$.'
         self.description_hindi = f'चित्र में एक त्रिघात फलन (cubic function) का ग्राफ दर्शाया गया है, जिसके अंतःखंडों (intercepts) को अंकित किया गया है। एक ऊर्ध्वाधर रेखा खींची गई है। ग्राफ में दी गई जानकारी के आधार पर, अंकित प्रतिच्छेदन बिंदु $(k, ?)$ पर $y$ का मान ज्ञात कीजिए।'
@@ -150,6 +166,7 @@ class Mat016_multi(Mat016):
 class Mat017_multi(Mat017):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar menunjukkan grafik fungsi kebalikan (resiprokal) dalam bentuk $y = \\frac{k}{x - p} + q$. Asimtot vertikal dan horizontal ditunjukkan sebagai garis putus-putus, dan satu titik pada kurva diberikan. Berdasarkan informasi yang diberikan pada diagram, carilah nilai $y$ yang hilang pada titik yang ditunjukkan.'
         self.description_chinese = '该图显示了形式为$y = \\frac{k}{x - p} + q$的反比例函数图像。垂直和水平渐近线显示为虚线，并且给出了曲线上的一点。根据图表提供的信息，求出指示点处缺失的$y$值。'
         self.description_arabic = 'يوضح الشكل التمثيل البياني لدالة مقلوب على الصورة $y = \\frac{k}{x - p} + q$. تظهر الخطوط التقاربية الرأسية والأفقية كخطوط متقطعة، وقد أُعطيت نقطة واحدة على المنحنى. بناءً على المعلومات المقدمة في الشكل، أوجد قيمة $y$ المجهولة عند النقطة المشار إليها.'
         self.description_hindi = 'चित्र में व्युत्क्रम फलन (reciprocal function) $y = \\frac{k}{x - p} + q$ का ग्राफ दर्शाया गया है। ऊर्ध्वाधर और क्षैतिज अनंतस्पर्शी (asymptotes) रेखाओं को खंडित रेखाओं के रूप में दर्शाया गया है, और वक्र पर एक बिंदु दिया गया है। आरेख में दी गई जानकारी के आधार पर, इंगित बिंदु पर लुप्त $y$-value ज्ञात कीजिए।'
@@ -159,6 +176,7 @@ class Mat017_multi(Mat017):
 class Mat018_multi(Mat018):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan grafik fungsi kubik. Titik $M$ adalah {self.m_type} lokal dari kurva. Berdasarkan gambar, carilah koordinat-{self.ask_for} dari $M$.'
         self.description_chinese = f'该图显示了一个三次函数的图像。点$M$是该曲线的局部{self.m_type}。根据该图，试求出$M$的{self.ask_for}坐标。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة تكعيبية. النقطة $M$ تمثل {self.m_type} محليًا للمنحنى. بناءً على الشكل، أوجد إحداثي {self.ask_for} للنقطة $M$.'
         self.description_hindi = f'चित्र एक त्रिघात फलन (cubic function) का ग्राफ दिखाता है। बिंदु $M$ वक्र का एक स्थानीय (local) {self.m_type} है। चित्र के आधार पर, $M$ का {self.ask_for}-निर्देशांक ज्ञात करें।'
@@ -168,6 +186,7 @@ class Mat018_multi(Mat018):
 class Mat019_multi(Mat019):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan grafik fungsi kubik dan garis singgung $l$ yang menyinggung kurva di titik $M$ seperti ditunjukkan pada gambar. Berdasarkan gambar, carilah nilai gradien $m$.'
         self.description_chinese = f'该图显示了一个三次函数的图像以及在点$M$处与曲线相切的切线$l$，如图所示。根据该图，试求出斜率$m$的值。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة تكعيبية وخطًا مماسًا $l$ يلامس المنحنى عند النقطة $M$ كما هو موضح في الشكل. بناءً على الشكل، أوجد قيمة الميل $m$.'
         self.description_hindi = f'चित्र एक त्रिघात फलन (cubic function) का ग्राफ और चित्र में दिखाए गए अनुसार बिंदु $M$ पर वक्र को छूने वाली एक स्पर्श रेखा $l$ को दिखाता है। चित्र के आधार पर, प्रवणता (gradient) $m$ का मान ज्ञात करें।'
@@ -177,6 +196,7 @@ class Mat019_multi(Mat019):
 class Mat020_multi(Mat020):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan grafik parabola $g(x)$ dan garis sekan yang memotong kurva di titik $A$ dan $B$. Terdapat titik $T$ pada kurva di mana garis singgung sejajar dengan sekan $AB$. Berdasarkan informasi yang diberikan pada gambar, carilah koordinat-{self.ask_for} dari titik $T$.'
         self.description_chinese = f'该图显示了抛物线$g(x)$的图像以及与曲线交于$A$、$B$两点的割线。曲线上存在一点$T$，该点处的切线平行于割线$AB$。根据图中提供的信息，求出点$T$的{self.ask_for}坐标。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني للقطع المكافئ $g(x)$ وخطًا قاطعًا يقطع المنحنى عند النقطتين $A$ و $B$. توجد نقطة $T$ على المنحنى يكون عندها المماس موازيًا للقاطع $AB$. بناءً على المعلومات المقدمة في الشكل، أوجد إحداثي {self.ask_for} للنقطة $T$.'
         self.description_hindi = f'चित्र परवलय $g(x)$ का ग्राफ और वक्र को बिंदु $A$ और $B$ पर प्रतिच्छेद करने वाली एक छेदक रेखा (secant line) दिखाता है। वक्र पर एक बिंदु $T$ है जहां स्पर्श रेखा छेदक $AB$ के समानांतर है। चित्र में दी गई जानकारी के आधार पर, बिंदु $T$ का {self.ask_for}-निर्देशांक ज्ञात करें।'
@@ -186,6 +206,7 @@ class Mat020_multi(Mat020):
 class Mat021_multi(Mat021):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menunjukkan grafik fungsi kuadrat $f(x)$ sebagai garis tegas dan fungsi inversnya $f^{{-1}}(x)$ sebagai garis putus-putus. Berdasarkan koordinat yang diberikan pada diagram, carilah nilai $f^{{-1}}({self.k})$.'
         self.description_chinese = f'该图将二次函数$f(x)$的图像显示为实线，将其反函数$f^{{-1}}(x)$显示为虚线。根据图中提供的坐标，试求出$f^{{-1}}({self.k})$的值。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة تربيعية $f(x)$ بخط متصل، ودالتها العكسية $f^{{-1}}(x)$ بخط متقطع. بناءً على الإحداثيات المقدمة في الشكل، أوجد قيمة $f^{{-1}}({self.k})$.'
         self.description_hindi = f'चित्र एक द्विघात फलन (quadratic function) $f(x)$ का ग्राफ एक ठोस रेखा के रूप में और इसके प्रतिलोम फलन (inverse function) $f^{{-1}}(x)$ को एक खंडित रेखा के रूप में दिखाता है। आरेख में दिए गए निर्देशांकों के आधार पर, $f^{{-1}}({self.k})$ का मान ज्ञात करें।'
@@ -195,6 +216,7 @@ class Mat021_multi(Mat021):
 class Mat022_multi(Mat022):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sebuah pabrik menggunakan sistem pemrosesan dua tahap seperti ditunjukkan pada diagram. Berdasarkan input bahan baku dan fungsi masing-masing mesin, tentukan nilai produk akhir dalam liter.'
         self.description_chinese = '如图所示，一家工厂使用两阶段处理系统。根据原材料的输入和每台机器的功能，确定最终产品的体积（单位：升）。'
         self.description_arabic = 'يستخدم مصنع نظام معالجة من مرحلتين كما هو موضح في الشكل. بناءً على مدخلات المواد الخام ووظائف كل آلة، أوجد قيمة الناتج النهائي باللتر.'
         self.description_hindi = 'एक कारखाना आरेख में दिखाए गए अनुसार दो-चरणीय प्रसंस्करण प्रणाली का उपयोग करता है। कच्चे माल के इनपुट और प्रत्येक मशीन के कार्यों के आधार पर, अंतिम उत्पाद का मान लीटर में निर्धारित करें।'
@@ -204,6 +226,7 @@ class Mat022_multi(Mat022):
 class Mat023_multi(Mat023):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menunjukkan grafik fungsi kebalikan (resiprokal) $f(x)$ yang melalui titik $P$. Berdasarkan informasi yang diberikan pada diagram, tentukan {self.target_text}.'
         self.description_chinese = f'该图显示了经过点$P$的反比例函数$f(x)$的图像。根据图表提供的信息，确定{self.target_text}。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة مقلوب $f(x)$ التي تمر بالنقطة $P$. بناءً على المعلومات المقدمة في الشكل، أوجد {self.target_text}.'
         self.description_hindi = f'चित्र एक व्युत्क्रम फलन (reciprocal function) $f(x)$ का ग्राफ दिखाता है जो बिंदु $P$ से होकर गुजरता है। आरेख में दी गई जानकारी के आधार पर, {self.target_text} निर्धारित करें।'
@@ -213,6 +236,7 @@ class Mat023_multi(Mat023):
 class Mat024_multi(Mat024):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = "Sebuah robot berjalan dari titik $D$ ke titik $E$ sepanjang garis kisi seperti ditunjukkan pada gambar. Jalur robot terdiri dari langkah horizontal dan vertikal, dan robot bergerak secara monoton (tidak pernah menjauh dari tujuannya). Berdasarkan koordinat yang diberikan pada diagram, carilah total jarak yang ditempuh oleh robot tersebut."
         self.description_chinese = "如图所示，一个机器人沿网格线从点$D$移动到点$E$。机器人的路径由水平和垂直步数组成，并且它单调移动（从不远离其目的地）。根据图表提供的坐标，求机器人移动的总距离。"
         self.description_arabic = "يتحرك روبوت من النقطة $D$ إلى النقطة $E$ على طول خطوط الشبكة كما هو موضح في الشكل. يتكون مسار الروبوت من خطوات أفقية ورأسية، ويتحرك بشكل رتيب (أي لا يبتعد عن وجهته). بناءً على الإحداثيات المقدمة في الشكل، أوجد المسافة الكلية التي يقطعها الروبوت."
         self.description_hindi = "एक रोबोट चित्र में दिखाए अनुसार ग्रिड लाइनों के साथ बिंदु $D$ से बिंदु $E$ तक यात्रा करता है। रोबोट के पथ में क्षैतिज और ऊर्ध्वाधर कदम शामिल हैं, और यह एकदिष्ट (monotonically) रूप से चलता है (यह कभी भी अपने गंतव्य से दूर नहीं जाता है)। आरेख में दिए गए निर्देशांकों के आधार पर, रोबोट द्वारा तय की गई कुल दूरी ज्ञात करें।"
@@ -222,6 +246,7 @@ class Mat024_multi(Mat024):
 class Mat025_multi(Mat025):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan segitiga siku-siku $MNO$. Titik $O$ berada di titik asal $(0,0)$ dan titik $N$ berada di sumbu-$x$. Luas segitiga $MNO$ adalah {self.area} satuan luas. Berdasarkan koordinat yang ditunjukkan pada gambar, hitunglah gradien segmen garis $MO$.'
         self.description_chinese = f'该图显示了一个直角三角形$MNO$。点$O$位于原点$(0,0)$，点$N$位于$x$轴上。三角形$MNO$的面积为{self.area}平方单位。根据图中显示的坐标，计算线段$MO$的斜率。'
         self.description_arabic = f'يوضح الشكل مثلثًا قائم الزاوية $MNO$. تقع النقطة $O$ عند نقطة الأصل $(0,0)$ وتقع النقطة $N$ على المحور $x$. مساحة المثلث $MNO$ هي {self.area} وحدة مربعة. بناءً على الإحداثيات الموضحة في الشكل، احسب ميل القطعة المستقيمة $MO$.'
         self.description_hindi = f'चित्र एक समकोण त्रिभुज $MNO$ दिखाता है। बिंदु $O$ मूल बिंदु $(0,0)$ पर है और बिंदु $N$ $x$-अक्ष पर है। त्रिभुज $MNO$ का क्षेत्रफल {self.area} वर्ग इकाई है। चित्र में दिखाए गए निर्देशांकों के आधार पर, रेखाखंड $MO$ की प्रवणता की गणना करें।'
@@ -231,6 +256,7 @@ class Mat025_multi(Mat025):
 class Mat026_multi(Mat026):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan tiga titik kolinear $P$, $Q$, dan $R$ pada kisi koordinat. Titik $P$ memiliki koordinat-$x$ yang belum diketahui, yaitu $k$. Berdasarkan koordinat yang tertera, hitunglah nilai $k$.'
         self.description_chinese = '图中显示了坐标网格上的三个共线点 $P$、$Q$ 和 $R$。点 $P$ 的 $x$ 坐标 $k$ 未知。根据图中所示的坐标，计算$k$的值。'
         self.description_arabic = 'يوضح الشكل ثلاث نقاط على استقامة واحدة $P$ و $Q$ و $R$ على شبكة إحداثيات. للنقطة $P$ إحداثي $x$ غير معلوم مقداره $k$. بناءً على الإحداثيات الموضحة، احسب قيمة $k$.'
         self.description_hindi = 'दिए गए चित्र में निर्देशांक ग्रिड पर तीन संरेख बिंदु $P$, $Q$ और $R$ दर्शाए गए हैं। बिंदु $P$ का x-निर्देशांक $k$ अज्ञात है। दिए गए निर्देशांकों के आधार पर $k$ का मान ज्ञात कीजिए।'
@@ -240,6 +266,7 @@ class Mat026_multi(Mat026):
 class Mat027_multi(Mat027):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan garis $L_1$ yang melalui titik $A$ dan $B$. Garis $L_2$ tegak lurus terhadap $L_1$ dan memotong sumbu-$y$ di titik yang sama dengan $L_1$. Berdasarkan gambar, hitunglah gradien garis $L_2$.'
         self.description_chinese = '该图显示了经过点$A$和$B$的直线$L_1$。直线$L_2$垂直于$L_1$，且与$L_1$在同一点与$y$轴相交。根据该图，计算直线$L_2$的斜率。'
         self.description_arabic = 'يوضح الشكل المستقيم $L_1$ المار بالنقطتين $A$ و $B$. المستقيم $L_2$ عمودي على $L_1$ ويقطع المحور $y$ عند نفس نقطة تقاطع $L_1$. بناءً على الشكل، احسب ميل المستقيم $L_2$.'
         self.description_hindi = 'चित्र में रेखा $L_1$ बिंदुओं $A$ और $B$ से होकर गुजरती है। रेखा $L_2$, $L_1$ पर लंबवत है और $y$-अक्ष को उसी बिंदु पर काटती है जहाँ $L_1$ काटती है। चित्र के आधार पर रेखा $L_2$ की प्रवणता ज्ञात कीजिए।'
@@ -249,6 +276,7 @@ class Mat027_multi(Mat027):
 class Mat028_multi(Mat028):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan segitiga $ABC$ digambar pada kisi koordinat. Luas segitiga tersebut adalah ${self.area}$ satuan luas. Berdasarkan gambar, carilah nilai $k$.'
         self.description_chinese = f'该图显示了绘制在坐标网格上的三角形$ABC$。该三角形的面积为${self.area}$平方单位。根据该图，计算$k$的值。'
         self.description_arabic = f'يوضح الشكل المثلث $ABC$ مرسومًا على شبكة إحداثيات. مساحة المثلث هي ${self.area}$ وحدة مربعة. بناءً على الشكل، أوجد قيمة $k$.'
         self.description_hindi = f'चित्र एक समन्वय ग्रिड पर बने त्रिभुज $ABC$ को दिखाता है। त्रिभुज का क्षेत्रफल ${self.area}$ वर्ग इकाई है। चित्र के आधार पर, $k$ का मान ज्ञात करें।'
@@ -258,6 +286,7 @@ class Mat028_multi(Mat028):
 class Mat029_multi(Mat029):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan segmen garis $AB$. Titik $C$ adalah titik tengah $AB$, titik $D$ adalah titik tengah $AC$, dan titik $E$ adalah titik tengah $DB$. Berdasarkan koordinat yang diberikan pada gambar, hitunglah panjang segmen $AE$.'
         self.description_chinese = '该图显示了一条线段$AB$。点$C$是$AB$的中点，点$D$是$AC$的中点，点$E$是$DB$的中点。根据图中提供的坐标，计算线段$AE$的长度。'
         self.description_arabic = 'يوضح الشكل قطعة مستقيمة $AB$. النقطة $C$ هي منتصف $AB$، والنقطة $D$ هي منتصف $AC$، والنقطة $E$ هي منتصف $DB$. بناءً على الإحداثيات المقدمة في الشكل، احسب طول القطعة $AE$.'
         self.description_hindi = 'चित्र एक रेखाखंड $AB$ दिखाता है। बिंदु $C$, $AB$ का मध्यबिंदु है, बिंदु $D$, $AC$ का मध्यबिंदु है, और बिंदु $E$, $DB$ का मध्यबिंदु है। चित्र में दिए गए निर्देशांकों के आधार पर, रेखाखंड $AE$ की लंबाई की गणना करें।'
@@ -267,6 +296,7 @@ class Mat029_multi(Mat029):
 class Mat030_multi(Mat030):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan segmen garis $PQ$ pada bidang koordinat. Berdasarkan gambar, carilah jarak tegak lurus dari titik tengah $PQ$ ke {self.target_axis}.'
         self.description_chinese = f'该图显示了坐标平面上的线段$PQ$。根据该图，求出$PQ$中点到{self.target_axis}的垂直距离。'
         self.description_arabic = f'يوضح الشكل قطعة مستقيمة $PQ$ على مستوى إحداثي. بناءً على الشكل، أوجد المسافة العمودية من منتصف $PQ$ إلى {self.target_axis}.'
         self.description_hindi = f'चित्र एक समन्वय तल पर एक रेखाखंड $PQ$ दिखाता है। चित्र के आधार पर, $PQ$ के मध्यबिंदु से {self.target_axis} की लंबवत दूरी ज्ञात करें।'
@@ -276,6 +306,7 @@ class Mat030_multi(Mat030):
 class Mat031_multi(Mat031):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar menunjukkan grafik garis lurus. Berdasarkan informasi yang diberikan pada diagram, carilah nilai titik potong sumbu-$y$, yaitu $c$.'
         self.description_chinese = '该图显示了一条直线的图像。根据图表提供的信息，求出$y$截距$c$的值。'
         self.description_arabic = 'يوضح الشكل التمثيل البياني لخط مستقيم. بناءً على المعلومات المقدمة في الشكل، أوجد قيمة نقطة التقاطع مع المحور $y$، $c$.'
         self.description_hindi = 'चित्र एक सीधी रेखा का ग्राफ दिखाता है। चित्र में दी गई जानकारी के आधार पर, $y$-intercept, $c$ का मान ज्ञात करें।'
@@ -285,6 +316,7 @@ class Mat031_multi(Mat031):
 class Mat032_multi(Mat032):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Garis L ditunjukkan pada kisi. Carilah persamaan garis L dalam bentuk y = mx + c.'
         self.description_chinese = f'直线L显示在网格上。求直线L的方程，形式为y = mx + c。'
         self.description_arabic = f'يوضح الشكل الخط $L$ على الشبكة. أوجد معادلة الخط $L$ على الصورة y = mx + c.'
         self.description_hindi = f'ग्रिड पर रेखा L दिखाई गई है। y = mx + c के रूप में रेखा L का समीकरण ज्ञात करें।'
@@ -294,6 +326,7 @@ class Mat032_multi(Mat032):
 class Mat033_multi(Mat033):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menampilkan garis lurus $L$ dan garis putus-putus $M$ dengan persamaan ${self.line_m_eq}$. Seperti ditunjukkan pada gambar, carilah koordinat-${self.find_coord}$ dari titik potongnya.'
         self.description_chinese = f'该图显示了一条直线$L$和一条方程为${self.line_m_eq}$的虚线$M$。如图所示，求交点的${self.find_coord}$坐标。'
         self.description_arabic = f'يوضح الشكل خطًا مستقيمًا $L$ وخطًا متقطعًا $M$ معادلته ${self.line_m_eq}$. كما هو موضح في الشكل، أوجد الإحداثي ${self.find_coord}$ لنقطة التقاطع.'
         self.description_hindi = f'चित्र एक सीधी रेखा $L$ और समीकरण ${self.line_m_eq}$ के साथ एक खंडित रेखा $M$ प्रदर्शित करता है। जैसा कि चित्र में दिखाया गया है, प्रतिच्छेदन बिंदु का ${self.find_coord}$-निर्देशांक ज्ञात करें।'
@@ -303,6 +336,7 @@ class Mat033_multi(Mat033):
 class Mat034_multi(Mat034):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menunjukkan dua garis sejajar, $L_1$ dan $L_2$. Berdasarkan informasi yang diberikan pada diagram, carilah koordinat-{self.target_var} dari titik pada $L_2$ di mana koordinat-{self.given_var} bernilai {self.const_val}.'
         self.description_chinese = f'该图显示了两条平行线$L_1$和$L_2$。根据图表提供的信息，求出$L_2$上当{self.given_var}坐标为{self.const_val}时该点的{self.target_var}坐标。'
         self.description_arabic = f'يوضح الشكل خطين متوازيين، $L_1$ و $L_2$. بناءً على المعلومات المقدمة في الشكل، أوجد إحداثي {self.target_var} للنقطة على $L_2$ حيث يكون إحداثي {self.given_var} مساويًا لـ {self.const_val}.'
         self.description_hindi = f'चित्र दो समानांतर रेखाएँ, $L_1$ और $L_2$ दिखाता है। आरेख में दी गई जानकारी के आधार पर, $L_2$ पर उस बिंदु का {self.target_var}-निर्देशांक ज्ञात करें जहाँ {self.given_var}-निर्देशांक {self.const_val} है।'
@@ -312,6 +346,7 @@ class Mat034_multi(Mat034):
 class Mat035_multi(Mat035):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menunjukkan dua garis, garis $k$ dan garis $m$, di mana garis $m$ sejajar dengan garis $k$. Berdasarkan koordinat dan informasi yang diberikan pada diagram, carilah koordinat-{self.target_var} pada garis $m$ saat koordinat-{self.given_var} bernilai {self.const_val}.'
         self.description_chinese = f'该图显示了两条直线，直线$k$和直线$m$，其中直线$m$平行于直线$k$。根据图中提供的坐标和信息，求出当直线$m$上的{self.given_var}坐标为{self.const_val}时该点的{self.target_var}坐标。'
         self.description_arabic = f'يوضح الشكل خطين، $k$ و $m$، حيث إن الخط $m$ موازٍ للخط $k$. بناءً على الإحداثيات والمعلومات المقدمة في الشكل، أوجد إحداثي {self.target_var} على الخط $m$ عندما يكون إحداثي {self.given_var} مساويًا لـ {self.const_val}.'
         self.description_hindi = f'चित्र दो रेखाएँ, रेखा $k$ और रेखा $m$ दिखाता है, जहाँ रेखा $m$ रेखा $k$ के समानांतर है। आरेख में दिए गए निर्देशांकों और जानकारी के आधार पर, जब {self.given_var}-निर्देशांक {self.const_val} हो तो रेखा $m$ पर {self.target_var}-निर्देशांक ज्ञात करें।'
@@ -321,6 +356,7 @@ class Mat035_multi(Mat035):
 class Mat036_multi(Mat036):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Seperti ditunjukkan pada diagram, garis $M$ tegak lurus terhadap garis $L$. Carilah koordinat-{self.find_var} dari titik di mana garis $M$ memotong garis ${self.given_line}$.'
         self.description_chinese = f'如图所示，直线$M$垂直于直线$L$。求直线$M$与直线${self.given_line}$交点的{self.find_var}坐标。'
         self.description_arabic = f'كما هو موضح في الشكل، الخط $M$ عمودي على الخط $L$. أوجد إحداثي {self.find_var} للنقطة التي يتقاطع فيها الخط $M$ مع الخط ${self.given_line}$.'
         self.description_hindi = f'जैसा कि आरेख में दिखाया गया है, रेखा $M$ रेखा $L$ के लंबवत है। उस बिंदु का {self.find_var}-निर्देशांक ज्ञात करें जहाँ रेखा $M$ रेखा ${self.given_line}$ को प्रतिच्छेद करती है।'
@@ -330,6 +366,7 @@ class Mat036_multi(Mat036):
 class Mat037_multi(Mat037):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar menunjukkan garis $L$ dan garis $P$, di mana garis $P$ tegak lurus terhadap garis $L$. Berdasarkan koordinat yang diberikan pada diagram, carilah koordinat-{self.target_var} dari titik pada garis $P$ di mana koordinat-{self.given_var} bernilai {self.const_val}.'
         self.description_chinese = f'该图显示了直线$L$和直线$P$，其中直线$P$垂直于直线$L$。根据图表提供的坐标，求出直线$P$上当{self.given_var}坐标为{self.const_val}时该点的{self.target_var}坐标。'
         self.description_arabic = f'يوضح الشكل الخط $L$ والخط $P$، حيث إن الخط $P$ عمودي على الخط $L$. بناءً على الإحداثيات المقدمة في الشكل، أوجد إحداثي {self.target_var} للنقطة على الخط $P$ حيث يكون إحداثي {self.given_var} مساويًا لـ {self.const_val}.'
         self.description_hindi = f'चित्र रेखा $L$ और रेखा $P$ दिखाता है, जहाँ रेखा $P$ रेखा $L$ के लंबवत है। आरेख में दिए गए निर्देशांकों के आधार पर, रेखा $P$ पर उस बिंदु का {self.target_var}-निर्देशांक ज्ञात करें जहाँ {self.given_var}-निर्देशांक {self.const_val} है।'
@@ -339,6 +376,7 @@ class Mat037_multi(Mat037):
 class Mat038_multi(Mat038):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar menunjukkan dua garis tegak lurus, garis $k$ dan garis $l$, yang berpotongan di titik $C$. Berdasarkan koordinat titik $A$ dan $B$ serta persamaan yang diberikan pada diagram, carilah luas segitiga $ABC$.'
         self.description_chinese = '该图显示了两条相互垂直的直线，直线$k$和直线$l$，它们相交于点$C$。根据点$A$和$B$的坐标以及图中提供的方程，求三角形$ABC$的面积。'
         self.description_arabic = 'يوضح الشكل خطين متعامدين، $k$ و $l$، يتقاطعان عند النقطة $C$. بناءً على إحداثيات النقطتين $A$ و $B$ والمعادلات المقدمة في الشكل، أوجد مساحة المثلث $ABC$.'
         self.description_hindi = 'चित्र दो लंबवत रेखाएँ, रेखा $k$ और रेखा $l$ दिखाता है, जो एक बिंदु $C$ पर प्रतिच्छेद करती हैं। आरेख में दिए गए बिंदुओं $A$ और $B$ के निर्देशांकों और समीकरणों के आधार पर, त्रिभुज $ABC$ का क्षेत्रफल ज्ञात करें।'
@@ -348,6 +386,7 @@ class Mat038_multi(Mat038):
 class Mat039_multi(Mat039):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Persegi panjang $A$ sebangun secara matematis dengan persegi panjang $B$. Hitunglah nilai $x$.'
         self.description_chinese = f'矩形$A$与矩形$B$在数学上相似。计算$x$的值。'
         self.description_arabic = f'المستطيل $A$ مشابه للمستطيل $B$ رياضيًا. أوجد قيمة $x$.'
         self.description_hindi = f'आयत $A$ गणितीय रूप से आयत $B$ के समरूप (similar) है। $x$ का मान ज्ञात करें।'
@@ -357,6 +396,7 @@ class Mat039_multi(Mat039):
 class Mat040_multi(Mat040):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Bangun ruang $A$ sebangun secara matematis dengan bangun ruang $B$. Diagram menunjukkan tinggi dan luas permukaan untuk kedua bangun ruang ($S_A$ dan $S_B$). Hitunglah tinggi, $H$, dari bangun ruang $B$.'
         self.description_chinese = f'立体图形 $A$ 在数学上与立体图形 $B$ 相似。图示显示了这两个立体图形的高度和表面积（$S_A$ 和 $S_B$）。计算立体$B$的高度$H$。'
         self.description_arabic = f'المجسم $A$ مشابه للمجسم $B$ رياضيًا. يوضح الشكل الارتفاعات ومساحات السطح ($S_A$ و $S_B$) لكلا المجسمين. احسب الارتفاع $H$ للمجسم $B$.'
         self.description_hindi = f'ठोस $A$ गणितीय रूप से ठोस $B$ के समान है। आरेख में दोनों ठोसों की ऊँचाई और पृष्ठीय क्षेत्रफल ($S_A$ और $S_B$) दर्शाए गए हैं। ठोस $B$ की ऊँचाई $H$ ज्ञात कीजिए।'
@@ -366,6 +406,7 @@ class Mat040_multi(Mat040):
 class Mat041_multi(Mat041):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Bangun ruang $A$ dan bangun ruang $B$ sebangun secara matematis. Diagram menunjukkan tinggi dan volume ($V_A$ dan $V_B$) untuk kedua bangun ruang. Hitunglah volume, $V_B$, dari bangun ruang $B$.'
         self.description_chinese = f'立体$A$和立体$B$在数学上相似。该图显示了两个立体的高度和体积（$V_A$和$V_B$）。计算立体$B$的体积$V_B$。'
         self.description_arabic = f'المجسم $A$ والمجسم $B$ متشابهان رياضيًا. يوضح الشكل الارتفاعات والأحجام ($V_A$ و $V_B$) لكلا المجسمين. احسب الحجم $V_B$ للمجسم $B$.'
         self.description_hindi = f'ठोस $A$ और ठोस $B$ गणितीय रूप से समरूप हैं। आरेख दोनों ठोसों की ऊँचाई और आयतन ($V_A$ और $V_B$) दिखाता है। ठोस $B$ के आयतन, $V_B$, की गणना करें।'
@@ -375,6 +416,7 @@ class Mat041_multi(Mat041):
 class Mat042_multi(Mat042):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah segi empat dengan sisi-sisi yang sama panjang. Hitunglah nilai $a$.'
         self.description_chinese = f'该图显示了一个四边等长的四边形。计算$a$的值。'
         self.description_arabic = f'يوضح الشكل شكلًا رباعيًا أضلاعه متساوية في الطول. أوجد قيمة $a$.'
         self.description_hindi = f'चित्र समान लंबाई की भुजाओं वाला एक चतुर्भुज (quadrilateral) दिखाता है। $a$ का मान ज्ञात करें।'
@@ -384,6 +426,7 @@ class Mat042_multi(Mat042):
 class Mat043_multi(Mat043):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'$BDC$ adalah garis lurus, $AB = AC$, sudut $ABD = {round(self.angle_B, 2)}^\\circ$ dan sudut $ADC = {round(self.angle_ADC, 2)}^\\circ$. \\\\ Hitunglah sudut $DAC$.'
         self.description_chinese = f'$BDC$是一条直线，$AB = AC$，角$ABD = {round(self.angle_B, 2)}^\\circ$，角$ADC = {round(self.angle_ADC, 2)}^\\circ$。 \\\\ 计算角$DAC$。'
         self.description_arabic = f'$BDC$ خط مستقيم، و $AB = AC$، والزاوية $ABD = {round(self.angle_B, 2)}^\\circ$ والزاوية $ADC = {round(self.angle_ADC, 2)}^\\circ$. \\\\ أوجد الزاوية $DAC$.'
         self.description_hindi = f'$BDC$ एक सीधी रेखा है, $AB = AC$, कोण $ABD = {round(self.angle_B, 2)}^\\circ$ और कोण $ADC = {round(self.angle_ADC, 2)}^\\circ$ है। \\\\ कोण $DAC$ ज्ञात करें।'
@@ -393,15 +436,17 @@ class Mat043_multi(Mat043):
 class Mat044_multi(Mat044):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Garis $AB$ dan $CD$ sejajar. $EF$ dan $EG$ adalah garis lurus. Sudut yang terbentuk pada perpotongan $EF$ dan $CD$ adalah {self.angle_top:.2f}°. Carilah nilai $a$.'
         self.description_chinese = f'直线$AB$和$CD$平行。$EF$和$EG$是直线。在$EF$和$CD$交点处形成的角是{self.angle_top:.2f}°。求$a$的值。'
         self.description_arabic = f'الخطان $AB$ و $CD$ متوازيان. $EF$ و $EG$ خطان مستقيمان. الزاوية المتكونة عند تقاطع $EF$ و $CD$ هي {self.angle_top:.2f}°. أوجد قيمة $a$.'
         self.description_hindi = f'रेखाएँ $AB$ और $CD$ समानांतर हैं। $EF$ और $EG$ सीधी रेखाएँ हैं। $EF$ और $CD$ के प्रतिच्छेदन पर बना कोण {self.angle_top:.2f}° है। $a$ का मान ज्ञात करें।'
         self.description_kazakh = f'$AB$ және $CD$ түзулері параллель. $EF$ және $EG$ - түзу сызықтар. $EF$ пен $CD$ қиылысуында пайда болған бұрыш {self.angle_top:.2f}° тең. $a$ мәнін табыңыз.'
-        self.description_swahili = f'Mistari $AB$ na $CD$ ni sambamba. $EF$ na $EG$ ni mistari ilionyooka. Pembe inayoundwa kwenye makutano ya $EF$ na $CD$ ni {self.angle_top:.2f}^\\circ$. Tafuta thamani ya $a$.'
+        self.description_swahili = f'Mistari $AB$ na $CD$ ni sambamba. $EF$ na $EG$ ni mistari ilionyooka. Pembe inayoundwa kwenye makutano ya $EF$ na $CD$ ni {self.angle_top:.2f}°. Tafuta thamani ya $a$.'
 
 class Mat045_multi(Mat045):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sudut-sudut dalam sebuah {self.shape_name}, ditulis dalam variabel $x$. Carilah nilai $x$.'
         self.description_chinese = f'该图显示了{self.shape_name}的内角，用$x$表示。求$x$的值。'
         self.description_arabic = f'يوضح الشكل الزوايا الداخلية لـ {self.shape_name} مكتوبة بدلالة $x$. أوجد قيمة $x$.'
         self.description_hindi = f'चित्र एक {self.shape_name} के आंतरिक कोणों को दिखाता है, जिन्हें $x$ के पदों में लिखा गया है। $x$ का मान ज्ञात करें।'
@@ -411,6 +456,7 @@ class Mat045_multi(Mat045):
 class Mat046_multi(Mat046):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan segi empat siklis $ABCD$. Diagonal $BD$ dan $AC$ berpotongan. Sudut $BAD = {self.angle_bad}^\\circ$ dan sudut $BCA = {self.angle_bca}^\\circ$. Carilah nilai sudut $ABD$.'
         self.description_chinese = f'该图显示了一个圆内接四边形$ABCD$。对角线$BD$和$AC$相交。角$BAD = {self.angle_bad}^\\circ$，角$BCA = {self.angle_bca}^\\circ$。求角$ABD$的值。'
         self.description_arabic = f'يوضح الشكل شكلًا رباعيًا دائريًا $ABCD$. يتقاطع القطران $BD$ و $AC$. الزاوية $BAD = {self.angle_bad}^\\circ$ والزاوية $BCA = {self.angle_bca}^\\circ$. أوجد قيمة الزاوية $ABD$.'
         self.description_hindi = f'चित्र एक चक्रीय चतुर्भुज (cyclic quadrilateral) $ABCD$ दिखाता है। विकर्ण $BD$ और $AC$ प्रतिच्छेद करते हैं। कोण $BAD = {self.angle_bad}^\\circ$ और कोण $BCA = {self.angle_bca}^\\circ$ है। कोण $ABD$ का मान ज्ञात करें।'
@@ -420,6 +466,7 @@ class Mat046_multi(Mat046):
 class Mat047_multi(Mat047):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah lingkaran dengan pusat $O$. $P$ dan $S$ adalah titik-titik pada lingkaran. $POR$ adalah garis lurus. $QRST$ adalah garis singgung pada lingkaran di $S$. Sudut $OPS = {self.angle_ops}^\\circ$. Carilah nilai $y$.'
         self.description_chinese = f'该图显示了一个圆心为$O$的圆。$P$和$S$是圆上的点。$POR$是一条直线。$QRST$是圆在点$S$处的切线。角$OPS = {self.angle_ops}^\\circ$。求$y$的值。'
         self.description_arabic = f'يوضح الشكل دائرة مركزها $O$. النقطتان $P$ و $S$ تقعان على الدائرة. $POR$ خط مستقيم. $QRST$ مماس للدائرة عند $S$. الزاوية $OPS = {self.angle_ops}^\\circ$. أوجد قيمة $y$.'
         self.description_hindi = f'चित्र केंद्र $O$ वाला एक वृत्त दिखाता है। $P$ और $S$ वृत्त पर बिंदु हैं। $POR$ एक सीधी रेखा है। $QRST$ बिंदु $S$ पर वृत्त की स्पर्श रेखा है। कोण $OPS = {self.angle_ops}^\\circ$ है। $y$ का मान ज्ञात करें।'
@@ -429,6 +476,7 @@ class Mat047_multi(Mat047):
 class Mat048_multi(Mat048):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah lingkaran dengan pusat $O$. $A$, $B$, dan $C$ adalah tiga titik pada lingkaran. Sudut $ACO = {self.angle_aco}^\\circ$ dan sudut $BCO = {self.angle_bco}^\\circ$. Carilah nilai sudut $ABC$.'
         self.description_chinese = f'该图显示了一个圆心为$O$的圆。$A$、$B$和$C$是圆上的三个点。角$ACO = {self.angle_aco}^\\circ$，角$BCO = {self.angle_bco}^\\circ$。求角$ABC$的值。'
         self.description_arabic = f'يوضح الشكل دائرة مركزها $O$. النقاط $A$ و $B$ و $C$ تقع على الدائرة. الزاوية $ACO = {self.angle_aco}^\\circ$ والزاوية $BCO = {self.angle_bco}^\\circ$. أوجد قيمة الزاوية $ABC$.'
         self.description_hindi = f'चित्र केंद्र $O$ वाला एक वृत्त दिखाता है। $A$, $B$ और $C$ वृत्त पर तीन बिंदु हैं। कोण $ACO = {self.angle_aco}^\\circ$ और कोण $BCO = {self.angle_bco}^\\circ$ है। कोण $ABC$ का मान ज्ञात करें।'
@@ -438,6 +486,7 @@ class Mat048_multi(Mat048):
 class Mat049_multi(Mat049):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Titik-titik $A, B, C, D$ dan $E$ terletak pada sebuah lingkaran. $FG$ adalah garis singgung pada lingkaran di $C$. Menggunakan informasi yang diberikan pada diagram, carilah nilai sudut $DCG$.'
         self.description_chinese = '点$A、B、C、D$和$E$位于一个圆上。$FG$是圆在点$C$处的切线。利用图中提供的信息，求角$DCG$的值。'
         self.description_arabic = 'تقع النقاط $A$ و $B$ و $C$ و $D$ و $E$ على دائرة. $FG$ مماس للدائرة عند $C$. باستخدام المعلومات المقدمة في الشكل، أوجد قيمة الزاوية $DCG$.'
         self.description_hindi = 'बिंदु $A, B, C, D$ और $E$ एक वृत्त पर स्थित हैं। $FG$ बिंदु $C$ पर वृत्त की स्पर्श रेखा है। आरेख में दी गई जानकारी का उपयोग करके, कोण $DCG$ का मान ज्ञात करें।'
@@ -447,6 +496,7 @@ class Mat049_multi(Mat049):
 class Mat050_multi(Mat050):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah lingkaran dengan pusat $O$. Jari-jari dan tali busur $AB$ memiliki panjang seperti ditunjukkan pada gambar. Hitunglah jarak terpendek dari pusat lingkaran ke tali busur tersebut.'
         self.description_chinese = f'该图显示了一个圆心为$O$的圆。半径和弦$AB$的长度如图所示。计算从圆心到弦的最短距离。'
         self.description_arabic = f'يوضح الشكل دائرة مركزها $O$. نصف القطر والوتر $AB$ لهما أطوال كما هو موضح في الشكل. احسب أقصر مسافة من مركز الدائرة إلى الوتر.'
         self.description_hindi = f'चित्र केंद्र $O$ वाला एक वृत्त दिखाता है। त्रिज्या और जीवा (chord) $AB$ की लंबाई चित्र में दिखाए अनुसार है। वृत्त के केंद्र से जीवा तक की न्यूनतम दूरी की गणना करें।'
@@ -456,6 +506,7 @@ class Mat050_multi(Mat050):
 class Mat051_multi(Mat051):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah lingkaran dengan pusat $O$. Dua tali busur, $AB$ dan $CD$, masing-masing memiliki panjang ${round(self.c_len, 2)}$ cm. Tali busur $AB$ berjarak ${round(self.d, 2)}$ cm dari pusat. Jarak dari pusat ke tali busur $CD$ adalah $({self.expr.strip()})$ cm. Tentukan nilai $x$.'
         self.description_chinese = f'该图显示了一个圆心为$O$的圆。两条弦$AB$和$CD$的长度均为${round(self.c_len, 2)}$ cm。弦 $AB$ 到中心的距离为 ${round(self.d, 2)}$ cm。弦 $CD$ 到中心的距离为 $({self.expr.strip()})$ cm。求$x$的值。'
         self.description_arabic = f'يوضح الشكل دائرة مركزها $O$. الوتران $AB$ و $CD$، طول كل منهما ${round(self.c_len, 2)}$ سم. يبعد الوتر $AB$ مسافة ${round(self.d, 2)}$ سم عن المركز. المسافة من المركز إلى الوتر $CD$ هي $({self.expr.strip()})$ سم. أوجد قيمة $x$.'
         self.description_hindi = f'चित्र में केंद्र $O$ वाला एक वृत्त दर्शाया गया है। दो जीवाएँ $AB$ और $CD$ हैं, जिनमें से प्रत्येक की लंबाई ${round(self.c_len, 2)}$ cm है। जीवा $AB$ केंद्र से ${round(self.d, 2)}$ cm की दूरी पर है। केंद्र से जीवा $CD$ की दूरी $({self.expr.strip()})$ cm है। x का मान ज्ञात कीजिए।'
@@ -465,6 +516,7 @@ class Mat051_multi(Mat051):
 class Mat052_multi(Mat052):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah lingkaran dengan pusat $O$. $PA$ dan $PB$ adalah garis singgung pada lingkaran dari titik luar $P$, yang menyinggung lingkaran di $A$ dan $B$. Jari-jari lingkaran adalah ${self.radius}$ cm dan sudut $\\angle APB = {self.angle_apb}^\\circ$. Hitunglah panjang garis singgung $PA$.'
         self.description_chinese = f'该图显示了一个圆心为$O$的圆。$PA$和$PB$是从圆外一点$P$引出的圆的切线，分别切于点$A$和$B$。圆的半径为${self.radius}$ cm，且角$\\angle APB = {self.angle_apb}^\\circ$。计算切线$PA$的长度。'
         self.description_arabic = f'يوضح الشكل دائرة مركزها $O$. القطعتان $PA$ و $PB$ مماسان للدائرة من النقطة الخارجية $P$، وتمسان الدائرة عند $A$ و $B$. نصف قطر الدائرة هو ${self.radius}$ سم، والزاوية $\\angle APB = {self.angle_apb}^\\circ$. احسب طول المماس $PA$.'
         self.description_hindi = f'चित्र केंद्र $O$ वाला एक वृत्त दिखाता है। $PA$ और $PB$ एक बाहरी बिंदु $P$ से वृत्त पर स्पर्श रेखाएँ हैं, जो वृत्त को $A$ और $B$ पर छूती हैं। वृत्त की त्रिज्या ${self.radius}$ cm है और कोण $\\angle APB = {self.angle_apb}^\\circ$ है। स्पर्श रेखा $PA$ की लंबाई की गणना करें।'
@@ -474,6 +526,7 @@ class Mat052_multi(Mat052):
 class Mat053_multi(Mat053):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan lingkaran dalam pada segitiga $ABC$, yang menyinggung sisi-sisi di $P$, $Q$, dan $R$. Keliling segitiga $ABC$ adalah ${self.perimeter:.1f}$ cm. Diketahui bahwa segmen garis singgung $AR = {self.x:.1f}$ cm dan $BP = {self.y:.1f}$ cm, hitunglah panjang sisi $AC$.'
         self.description_chinese = f'该图显示了三角形$ABC$的内切圆，切各边于$P$、$Q$和$R$。三角形$ABC$的周长为${self.perimeter:.1f}$ cm。已知切线段$AR = {self.x:.1f}$ cm 且 $BP = {self.y:.1f}$ cm，计算边$AC$的长度。'
         self.description_arabic = f'يوضح الشكل دائرة داخلة في المثلث $ABC$، وتمس الأضلاع عند $P$ و $Q$ و $R$. محيط المثلث $ABC$ هو ${self.perimeter:.1f}$ سم. علمًا بأن طولي المماسين $AR = {self.x:.1f}$ سم و $BP = {self.y:.1f}$ سم، احسب طول الضلع $AC$.'
         self.description_hindi = f'चित्र त्रिभुज $ABC$ के भीतर खुदा हुआ (inscribed) एक वृत्त दिखाता है, जो भुजाओं को $P$, $Q$, और $R$ पर छूता है। त्रिभुज $ABC$ का परिमाप ${self.perimeter:.1f}$ cm है। यह देखते हुए कि स्पर्श रेखा खंड $AR = {self.x:.1f}$ cm और $BP = {self.y:.1f}$ cm हैं, भुजा $AC$ की लंबाई की गणना करें।'
@@ -483,6 +536,7 @@ class Mat053_multi(Mat053):
 class Mat054_multi(Mat054):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total luas bangun yang ditunjukkan.'
         self.description_chinese = f'计算所示图形的总面积。'
         self.description_arabic = f'احسب المساحة الكلية للشكل الموضح.'
         self.description_hindi = f'दिखाई गई आकृति के कुल क्षेत्रफल की गणना करें।'
@@ -492,6 +546,7 @@ class Mat054_multi(Mat054):
 class Mat055_multi(Mat055):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas jajar genjang tersebut.'
         self.description_chinese = f'计算平行四边形的面积。'
         self.description_arabic = f'احسب مساحة متوازي الأضلاع.'
         self.description_hindi = f'समांतर चतुर्भुज (parallelogram) के क्षेत्रफल की गणना करें।'
@@ -501,6 +556,7 @@ class Mat055_multi(Mat055):
 class Mat056_multi(Mat056):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas trapesium tersebut.'
         self.description_chinese = f'计算梯形的面积。'
         self.description_arabic = f'احسب مساحة شبه المنحرف.'
         self.description_hindi = f'समलंब चतुर्भुज (trapezium) के क्षेत्रफल की गणना करें।'
@@ -510,6 +566,7 @@ class Mat056_multi(Mat056):
 class Mat057_multi(Mat057):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas jalan tersebut.'
         self.description_chinese = f'计算小径的面积。'
         self.description_arabic = f'احسب مساحة المسار.'
         self.description_hindi = f'पथ के क्षेत्रफल की गणना करें।'
@@ -519,6 +576,7 @@ class Mat057_multi(Mat057):
 class Mat058_multi(Mat058):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah keliling bangun tersebut.'
         self.description_chinese = f'计算图形的周长。'
         self.description_arabic = f'احسب محيط الشكل.'
         self.description_hindi = f'आकृति के परिमाप (perimeter) की गणना करें।'
@@ -528,6 +586,7 @@ class Mat058_multi(Mat058):
 class Mat059_multi(Mat059):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas juring mayor yang diarsir. Berikan jawaban Anda dalam bentuk $\\pi$. Bulatkan hasilnya ke dua tempat desimal.'
         self.description_chinese = f'计算阴影优角扇形的面积。结果用$\\pi$表示。结果保留2位小数。'
         self.description_arabic = f'احسب مساحة القطاع الدائري الأكبر المظلل. أعطِ إجابتك بدلالة $\\pi$. قرّب النتيجة إلى منزلتين عشريتين.'
         self.description_hindi = f'छायांकित दीर्घ त्रिज्यखंड (major sector) के क्षेत्रफल की गणना करें। अपना उत्तर $\\pi$ के पदों में दें। परिणाम को दो दशमलव स्थानों तक पूर्णांकित करें।'
@@ -537,6 +596,7 @@ class Mat059_multi(Mat059):
 class Mat060_multi(Mat060):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah panjang busur dari juring yang diarsir. {self.pi_instruction} Berikan jawaban Anda dengan benar hingga 2 tempat desimal.'
         self.description_chinese = f'计算阴影扇形的弧长。{self.pi_instruction} 结果保留2位小数。'
         self.description_arabic = f'احسب طول قوس القطاع المظلل. {self.pi_instruction} أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'छायांकित त्रिज्यखंड के चाप (arc) की लंबाई की गणना करें। {self.pi_instruction} अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -546,6 +606,7 @@ class Mat060_multi(Mat060):
 class Mat061_multi(Mat061):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total keliling bingkai jendela tersebut. Berikan jawaban Anda dengan benar hingga 2 tempat desimal.'
         self.description_chinese = f'计算窗框的总周长。结果保留2位小数。'
         self.description_arabic = f'احسب المحيط الكلي لإطار النافذة. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'खिड़की के फ्रेम के कुल परिमाप की गणना करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -555,6 +616,7 @@ class Mat061_multi(Mat061):
 class Mat062_multi(Mat062):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas daerah yang diarsir. Berikan jawaban Anda dalam bentuk $\\pi$.'
         self.description_chinese = f'计算阴影部分的面积。结果用$\\pi$表示。'
         self.description_arabic = f'احسب مساحة المنطقة المظللة. اترك إجابتك بدلالة $\\pi$.'
         self.description_hindi = f'छायांकित क्षेत्र के क्षेत्रफल की गणना करें। अपना उत्तर $\\pi$ के पदों में छोड़ें।'
@@ -564,6 +626,7 @@ class Mat062_multi(Mat062):
 class Mat063_multi(Mat063):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas kaca depan yang dibersihkan oleh bilah pembersih (wiper). Berikan jawaban Anda dalam bentuk $\\pi$. Berikan jawaban Anda dengan benar hingga 2 tempat desimal.'
         self.description_chinese = f'计算雨刷清理挡风玻璃的面积。结果用$\\pi$表示。结果保留2位小数。'
         self.description_arabic = f'احسب مساحة الجزء من الزجاج الأمامي الذي تنظفه الشفرة. أعطِ إجابتك بدلالة $\\pi$. قرّب النتيجة إلى منزلتين عشريتين.'
         self.description_hindi = f'ब्लेड द्वारा साफ किए गए विंडशील्ड के क्षेत्रफल की गणना करें। अपना उत्तर $\\pi$ के पदों में दें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -573,6 +636,7 @@ class Mat063_multi(Mat063):
 class Mat064_multi(Mat064):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total volume silo tersebut. Berikan jawaban Anda dalam bentuk $\\pi$. Berikan jawaban Anda dengan benar hingga 2 tempat desimal.'
         self.description_chinese = f'计算筒仓的总体积。结果用$\\pi$表示。结果保留2位小数。'
         self.description_arabic = f'احسب الحجم الكلي للصومعة. أعطِ إجابتك بدلالة $\\pi$. قرّب النتيجة إلى منزلتين عشريتين.'
         self.description_hindi = f'साइलो (silo) के कुल आयतन की गणना करें। अपना उत्तर $\\pi$ के पदों में दें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -582,6 +646,7 @@ class Mat064_multi(Mat064):
 class Mat065_multi(Mat065):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah kapasitas kolam tersebut dalam meter kubik. Berikan jawaban Anda dengan benar hingga 2 tempat desimal.'
         self.description_chinese = f'计算水池的容量（立方米）。结果保留2位小数。'
         self.description_arabic = f'احسب سعة المسبح بالمتر المكعب. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'पूल की क्षमता (capacity) की घन मीटर (cubic meters) में गणना करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -591,6 +656,7 @@ class Mat065_multi(Mat065):
 class Mat066_multi(Mat066):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total luas permukaan kerucut tersebut. Gunakan $\\pi = 3.142$. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算圆锥的总表面积。使用 $\\pi = 3.142$。结果保留2位小数。'
         self.description_arabic = f'احسب المساحة السطحية الكلية للمخروط. استخدم $\\pi = 3.142$. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'शंकु (cone) के कुल पृष्ठीय क्षेत्रफल की गणना करें। $\\pi = 3.142$ का उपयोग करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -600,6 +666,7 @@ class Mat066_multi(Mat066):
 class Mat067_multi(Mat067):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas permukaan total belahan bola padat tersebut. Gunakan $\\pi = 3,14$. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算实心半球的总表面积。使用 $\\pi = 3.14$。结果保留2位小数。'
         self.description_arabic = f'احسب المساحة السطحية الكلية لنصف كرة مصمتة. استخدم $\\pi = 3.14$. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'ठोस अर्धगोले (solid hemisphere) का कुल पृष्ठीय क्षेत्रफल ज्ञात कीजिए। $\\pi = 3.14$ का प्रयोग कीजिए। उत्तर को 2 दशमलव स्थानों तक सही दीजिए।'
@@ -609,6 +676,7 @@ class Mat067_multi(Mat067):
 class Mat068_multi(Mat068):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah tinggi vertikal limas dan kemudian gunakan untuk mencari volumenya. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算棱锥的垂直高度，然后用它来求体积。结果保留2位小数。'
         self.description_arabic = f'احسب الارتفاع العمودي للهرم، ثم استخدمه لإيجاد الحجم. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'पिरामिड की ऊर्ध्वाधर ऊँचाई (vertical height) की गणना करें और फिर इसका उपयोग आयतन ज्ञात करने के लिए करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -618,6 +686,7 @@ class Mat068_multi(Mat068):
 class Mat069_multi(Mat069):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total keliling bangun tersebut. Gunakan $\\pi = 3.1416$. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算图形的总周长。使用 $\\pi = 3.1416$。结果保留2位小数。'
         self.description_arabic = f'احسب المحيط الكلي للشكل. استخدم $\\pi = 3.1416$. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'आकृति के कुल परिमाप (perimeter) की गणना करें। $\\pi = 3.1416$ का उपयोग करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -627,6 +696,7 @@ class Mat069_multi(Mat069):
 class Mat070_multi(Mat070):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total luas bangun tersebut. Gunakan $\\pi = 3.1416$. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算图形的总面积。使用 $\\pi = 3.1416$。结果保留2位小数。'
         self.description_arabic = f'احسب المساحة الكلية للشكل. استخدم $\\pi = 3.1416$. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'आकृति के कुल क्षेत्रफल की गणना करें। $\\pi = 3.1416$ का उपयोग करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -636,6 +706,7 @@ class Mat070_multi(Mat070):
 class Mat071_multi(Mat071):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah luas daerah yang diarsir. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算阴影部分的面积。结果保留2位小数。'
         self.description_arabic = f'احسب مساحة المنطقة المظللة. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'छायांकित क्षेत्र के क्षेत्रफल की गणना करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -645,6 +716,7 @@ class Mat071_multi(Mat071):
 class Mat072_multi(Mat072):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total volume tangki tersebut. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算水箱的总体积。结果保留2位小数。'
         self.description_arabic = f'احسب الحجم الكلي للخزان. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'टैंक के कुल आयतन की गणना करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -654,6 +726,7 @@ class Mat072_multi(Mat072):
 class Mat073_multi(Mat073):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah total luas permukaan luar tangki (dengan asumsi alasnya datar dan tertutup). Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算水箱的总外表面积（假设底部是平的且封闭）。结果保留2位小数。'
         self.description_arabic = f'احسب المساحة السطحية الخارجية الكلية للخزان (بافتراض أن القاعدة مسطحة ومغلقة). أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'टैंक के कुल बाहरी पृष्ठीय क्षेत्रफल की गणना करें (यह मानते हुए कि आधार सपाट और बंद है)। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -663,6 +736,7 @@ class Mat073_multi(Mat073):
 class Mat074_multi(Mat074):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan segitiga siku-siku $ABC$. Hitunglah $BC$.'
         self.description_chinese = f'该图显示了一个直角三角形$ABC$。计算$BC$。'
         self.description_arabic = f'يوضح الشكل مثلثًا قائم الزاوية $ABC$. احسب $BC$.'
         self.description_hindi = f'चित्र एक समकोण त्रिभुज (right-angled triangle) $ABC$ दिखाता है। $BC$ की गणना करें।'
@@ -672,6 +746,7 @@ class Mat074_multi(Mat074):
 class Mat075_multi(Mat075):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebuah tangga bersandar pada dinding vertikal. Ujung bawah tangga berada ${self.ground_dist}$ m dari dasar dinding, pada tanah mendatar. Tangga tersebut mencapai ketinggian ${self.wall_height}$ m pada dinding. Hitunglah panjang tangga tersebut.'
         self.description_chinese = f'一把梯子靠在垂直的墙上。梯子的底部位于水平地面上，距墙底部${self.ground_dist}$ m。梯子达到墙面高度${self.wall_height}$ m处。计算梯子的长度。'
         self.description_arabic = f'يستند سلم إلى جدار عمودي. يبعد أسفل السلم مسافة ${self.ground_dist}$ م عن قاعدة الجدار على أرض أفقية. يصل السلم إلى ارتفاع ${self.wall_height}$ م على الجدار. احسب طول السلم.'
         self.description_hindi = f'एक सीढ़ी एक ऊर्ध्वाधर दीवार के सहारे टिकी है। क्षैतिज जमीन पर सीढ़ी का निचला सिरा दीवार के निचले सिरे से ${self.ground_dist}$ m दूर है। सीढ़ी दीवार पर ${self.wall_height}$ m ऊपर तक पहुँचती है। सीढ़ी की लंबाई की गणना करें।'
@@ -681,6 +756,7 @@ class Mat075_multi(Mat075):
 class Mat076_multi(Mat076):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan sebuah balok dengan panjang, lebar, tinggi seperti ditunjukkan pada gambar dalam cm. Hitunglah panjang diagonal ruang dari sudut $A$ ke sudut $G$.'
         self.description_chinese = f'该图显示了一个长方体，其长、宽、高如图所示（单位：cm）。计算从角$A$到角$G$的内部对角线长度。'
         self.description_arabic = f'يوضح الشكل متوازي مستطيلات أبعاده (الطول والعرض والارتفاع) بالسنتيمتر كما هو موضح. احسب طول القطر الداخلي من النقطة $A$ إلى النقطة $G$.'
         self.description_hindi = f'आरेख एक घनाभ (cuboid) दिखाता है जिसकी लंबाई, चौड़ाई, ऊँचाई चित्र में दिखाए अनुसार cm में है। कोने $A$ से कोने $G$ तक आंतरिक विकर्ण (internal diagonal) की लंबाई की गणना करें।'
@@ -690,6 +766,7 @@ class Mat076_multi(Mat076):
 class Mat077_multi(Mat077):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan sebuah segitiga siku-siku. Hitunglah nilai $x$.'
         self.description_chinese = '该图显示了一个直角三角形。计算$x$的值。'
         self.description_arabic = 'يوضح الشكل مثلثًا قائم الزاوية. احسب قيمة $x$.'
         self.description_hindi = 'आरेख एक समकोण त्रिभुज (right-angled triangle) दिखाता है। $x$ के मान की गणना करें।'
@@ -699,6 +776,7 @@ class Mat077_multi(Mat077):
 class Mat078_multi(Mat078):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f"Seseorang dengan tinggi {self.person_height} m berdiri di tanah mendatar, sejauh {self.distance} m dari dasar sebuah menara vertikal. Sudut elevasi dari mata orang tersebut ke puncak menara adalah {self.angle_elevation}^\\circ. Hitunglah total tinggi menara tersebut."
         self.description_chinese = f"一个身高为{self.person_height} m的人站在水平地面上，距离垂直塔的底部{self.distance} m。从该人眼睛到塔顶的仰角为{self.angle_elevation}^\\circ。计算塔的总高度。"
         self.description_arabic = f'يقف شخص طوله {self.person_height} م على أرض أفقية، وعلى بعد {self.distance} م من قاعدة برج عمودي. زاوية الارتفاع من عيني الشخص إلى قمة البرج هي {self.angle_elevation}^\\circ. احسب الارتفاع الكلي للبرج.'
         self.description_hindi = f"क्षैतिज जमीन पर {self.person_height} m ऊँचाई वाला एक व्यक्ति, एक ऊर्ध्वाधर टावर के आधार से {self.distance} m की दूरी पर खड़ा है। व्यक्ति की आँखों से टावर के शीर्ष का उन्नयन कोण (angle of elevation) {self.angle_elevation}^\\circ है। टावर की कुल ऊँचाई की गणना करें।"
@@ -708,6 +786,7 @@ class Mat078_multi(Mat078):
 class Mat079_multi(Mat079):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Pada segitiga $ABC$, $AC = {self.side_ac}$ cm, $BC = {self.side_bc}$ cm. Sudut $BAC = {self.angle_a}^\\circ$. Sebuah garis tinggi ditarik dari $C$ dan memotong $AB$ tegak lurus di titik $D$. Hitunglah panjang $AB$.'
         self.description_chinese = f'在三角形$ABC$中，$AC = {self.side_ac}$ cm 和 $BC = {self.side_bc}$ cm。角 $BAC = {self.angle_a}^\\circ$。从点$C$作垂线交$AB$于$D$。计算$AB$的长度。'
         self.description_arabic = f'في المثلث $ABC$، $AC = {self.side_ac}$ سم و $BC = {self.side_bc}$ سم. الزاوية $BAC = {self.angle_a}^\\circ$. أُسقط عمود من $C$ على $AB$ عند النقطة $D$. احسب طول $AB$.'
         self.description_hindi = f'त्रिभुज $ABC$ में, $AC = {self.side_ac}$ cm और $BC = {self.side_bc}$ cm है। कोण $BAC = {self.angle_a}^\\circ$ है। $C$ से $AB$ पर $D$ पर एक लंब डाला जाता है। $AB$ की लंबाई ज्ञात कीजिए।'
@@ -717,6 +796,7 @@ class Mat079_multi(Mat079):
 class Mat080_multi(Mat080):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan grafik fungsi trigonometri dalam bentuk $y = a {self.func_name}(bx + c) + d$. Carilah nilai $a$, $b$, $c$, dan $d$. (Berikan jawaban Anda dalam format: a, b, c, d. Contoh: 1, 2, 3, 4)'
         self.description_chinese = f'该图显示了形式为$y = a {self.func_name}(bx + c) + d$的三角函数图像。求$a$、$b$、$c$和$d$的值。（请按以下格式提供答案：a, b, c, d。例如：1, 2, 3, 4）'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة مثلثية على الصورة $y = a {self.func_name}(bx + c) + d$. أوجد قيم $a$ و $b$ و $c$ و $d$. (اكتب الإجابة بالترتيب: a, b, c, d. مثال: 1, 2, 3, 4)'
         self.description_hindi = f'आरेख $y = a {self.func_name}(bx + c) + d$ के रूप के एक त्रिकोणमितीय फलन (trigonometric function) का ग्राफ दिखाता है। $a$, $b$, $c$, और $d$ के मान ज्ञात करें। (अपना उत्तर इस प्रारूप में दें: a, b, c, d. उदाहरण: 1, 2, 3, 4)'
@@ -726,6 +806,7 @@ class Mat080_multi(Mat080):
 class Mat081_multi(Mat081):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diagram menunjukkan grafik dari $y = f(x)$ di mana $f(x) = {self.func_display}$. Menggunakan informasi visual yang diberikan, carilah semua penyelesaian untuk ${self.implicit_eq}$ dalam rentang $0^\\circ \\leqslant x \\leqslant 360^\\circ$.'
         self.description_chinese = f'该图显示了$y = f(x)$的图像，其中$f(x) = {self.func_display}$。利用提供的视觉信息，在$0^\\circ \\leqslant x \\leqslant 360^\\circ$的范围内求${self.implicit_eq}$的所有解。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لـ $y = f(x)$ حيث $f(x) = {self.func_display}$. باستخدام المعلومات المعطاة، أوجد جميع حلول ${self.implicit_eq}$ في المجال $0^\\circ \\leqslant x \\leqslant 360^\\circ$.'
         self.description_hindi = f'आरेख $y = f(x)$ का ग्राफ दिखाता है जहाँ $f(x) = {self.func_display}$ है। दी गई दृश्य जानकारी का उपयोग करते हुए, $0^\\circ \\leqslant x \\leqslant 360^\\circ$ की सीमा में ${self.implicit_eq}$ के लिए सभी हल ज्ञात करें।'
@@ -735,6 +816,7 @@ class Mat081_multi(Mat081):
 class Mat082_multi(Mat082):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berdasarkan gambar, hitunglah nilai $\\sin x$.'
         self.description_chinese = f'根据图像，计算$\\sin x$的值。'
         self.description_arabic = f'بناءً على الشكل، احسب قيمة $\\sin x$.'
         self.description_hindi = f'इमेज के आधार पर, $\\sin x$ के मान की गणना करें।'
@@ -744,6 +826,7 @@ class Mat082_multi(Mat082):
 class Mat083_multi(Mat083):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan posisi tiga titik $A$, $B$, dan $C$. Berdasarkan informasi pada gambar, hitunglah jarak $AB$.'
         self.description_chinese = '该图显示了三个点$A$、$B$和$C$的位置。根据图中的信息，计算距离$AB$。'
         self.description_arabic = 'يوضح الشكل مواقع ثلاث نقاط $A$ و $B$ و $C$. بناءً على المعلومات الواردة في الشكل، احسب المسافة $AB$.'
         self.description_hindi = 'आरेख तीन बिंदुओं $A$, $B$ और $C$ की स्थिति दिखाता है। चित्र में दी गई जानकारी के आधार पर, दूरी $AB$ की गणना करें।'
@@ -753,6 +836,7 @@ class Mat083_multi(Mat083):
 class Mat084_multi(Mat084):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan segi empat $ABCD$. Hitunglah luas segi empat $ABCD$ berdasarkan informasi yang diberikan pada gambar.'
         self.description_chinese = '该图显示了一个四边形$ABCD$。根据图中提供的信息计算四边形$ABCD$的面积。'
         self.description_arabic = 'يوضح الشكل شكلًا رباعيًا $ABCD$. احسب مساحة الشكل الرباعي $ABCD$ بناءً على المعلومات المقدمة في الشكل.'
         self.description_hindi = 'आरेख एक चतुर्भुज $ABCD$ दिखाता है। चित्र में दी गई जानकारी के आधार पर चतुर्भुज $ABCD$ के क्षेत्रफल की गणना करें।'
@@ -762,6 +846,7 @@ class Mat084_multi(Mat084):
 class Mat085_multi(Mat085):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berdasarkan gambar tersebut, hitunglah sudut tumpul $BDC$.'
         self.description_chinese = '根据该图，计算钝角$BDC$。'
         self.description_arabic = 'بناءً على الشكل، احسب قياس الزاوية المنفرجة $BDC$.'
         self.description_hindi = 'दिए गए चित्र के आधार पर, अधिक कोण $BDC$ की गणना करें।'
@@ -771,6 +856,7 @@ class Mat085_multi(Mat085):
 class Mat086_multi(Mat086):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan sebuah balok. Hitunglah sudut antara $AB$ dan bidang alas mendatar balok tersebut.'
         self.description_chinese = '该图显示了一个长方体。计算$AB$与长方体水平底面之间的夹角。'
         self.description_arabic = 'يوضح الشكل متوازي مستطيلات. احسب الزاوية بين $AB$ والقاعدة الأفقية لمتوازي المستطيلات.'
         self.description_hindi = 'आरेख एक घनाभ दिखाता है। $AB$ और घनाभ के क्षैतिज आधार के बीच के कोण की गणना करें।'
@@ -780,6 +866,7 @@ class Mat086_multi(Mat086):
 class Mat087_multi(Mat087):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan limas $OABCD$ dengan alas persegi $ABCD$. Titik puncak $O$ berada vertikal di atas pusat alas, $M$. Hitunglah sudut yang dibentuk $OA$ dengan alas.'
         self.description_chinese = '该图显示了一个具有正方形底面$ABCD$的棱锥$OABCD$。顶点$O$位于底面中心$M$的正上方。计算$OA$与底面的夹角。'
         self.description_arabic = 'يوضح الشكل هرمًا $OABCD$ بقاعدة مربعة $ABCD$. تقع النقطة $O$ عموديًا فوق مركز القاعدة $M$. احسب الزاوية التي يصنعها $OA$ مع القاعدة.'
         self.description_hindi = 'आरेख एक वर्गाकार आधार $ABCD$ वाला एक पिरामिड $OABCD$ दिखाता है। शीर्ष (vertex) $O$ आधार के केंद्र, $M$ के ऊर्ध्वाधर ऊपर है। $OA$ आधार के साथ जो कोण बनाता है, उसकी गणना करें।'
@@ -789,6 +876,7 @@ class Mat087_multi(Mat087):
 class Mat088_multi(Mat088):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram menunjukkan bangun ruang yang terbuat dari setengah bola (hemisfer) dan kerucut, keduanya memiliki jari-jari yang sama. Berdasarkan ukuran yang ditunjukkan pada gambar, hitunglah total volume bangun ruang tersebut.'
         self.description_chinese = '该图显示了一个由半球和圆锥组成的立体，两者的半径相同。根据图中显示的测量值，计算立体的总体积。'
         self.description_arabic = 'يوضح الشكل مجسمًا مكوّنًا من نصف كرة ومخروط لهما نفس نصف القطر. بناءً على القياسات الموضحة، احسب الحجم الكلي للمجسم.'
         self.description_hindi = 'आरेख एक अर्धगोले और एक शंकु से बना एक ठोस दिखाता है, दोनों की त्रिज्या समान है। चित्र में दिखाए गए मापों के आधार पर, ठोस के कुल आयतन की गणना करें।'
@@ -798,6 +886,7 @@ class Mat088_multi(Mat088):
 class Mat089_multi(Mat089):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berapakah faktor skala dari perbesaran tersebut?'
         self.description_chinese = f'放大倍数是多少？'
         self.description_arabic = f'ما معامل التكبير؟'
         self.description_hindi = f'विस्तार (enlargement) का स्केल फैक्टर (scale factor) क्या है?'
@@ -807,6 +896,7 @@ class Mat089_multi(Mat089):
 class Mat090_multi(Mat090):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berapakah luas bangun Q dalam $cm^2$? Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'图形Q的面积是多少$cm^2$？结果保留2位小数。'
         self.description_arabic = f'ما مساحة الشكل $Q$ بوحدة $cm^2$؟ أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'आकृति Q का क्षेत्रफल $cm^2$ में क्या है?, अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -816,6 +906,7 @@ class Mat090_multi(Mat090):
 class Mat091_multi(Mat091):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f"Berapakah koordinat-$y$ yang baru dari titik $A'$?"
         self.description_chinese = f"点$A'$的新$y$坐标是多少？"
         self.description_arabic = f"ما إحداثي $y$ الجديد للنقطة $A'$؟"
         self.description_hindi = f"बिंदु $A'$ का नया $y$-निर्देशांक क्या है?"
@@ -825,6 +916,7 @@ class Mat091_multi(Mat091):
 class Mat092_multi(Mat092):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Salah satu titik sudut dari segitiga asli disorot pada gambar. Setelah ditranslasikan, berapakah hasil penjumlahan koordinat $x$ dan $y$ dari titik sudut yang baru?'
         self.description_chinese = f'原始三角形的一个顶点被高亮显示。在它被平移后，新顶点的$x$和$y$坐标之和是多少？'
         self.description_arabic = f'تم إبراز أحد رؤوس المثلث الأصلي. بعد إجراء الانسحاب، ما مجموع إحداثيي $x$ و $y$ للرأس الجديد؟'
         self.description_hindi = f'मूल त्रिभुज के शीर्षों (vertices) में से एक को हाइलाइट किया गया है। इसके स्थानांतरण (translation) के बाद, नए शीर्ष के $x$ और $y$ निर्देशांकों का योग क्या है?'
@@ -834,7 +926,8 @@ class Mat092_multi(Mat092):
 class Mat093_multi(Mat093):
     def __init__(self):
         super().__init__()
-        self.description_chinese = f"在{self.line['desc']}反射后的图像的{self.ask_for}坐标是多少？"
+        self.description_indonesian = f"Berapakah koordinat-{self.ask_for} dari bayangan titik A setelah refleksi terhadap {self.line['desc']}?"
+        self.description_chinese = f"点A在{self.line['desc']}反射后的图像的{self.ask_for}坐标是多少？"
         self.description_arabic = f'ما إحداثي {self.ask_for} لصورة النقطة $A$ بعد انعكاسها حول {self.line["desc"]}؟'
         self.description_hindi = f"{self.line['desc']} में परावर्तन के बाद बिंदु A की इमेज का {self.ask_for}-निर्देशांक क्या है?"
         self.description_kazakh = f"А нүктесін {self.line['desc']} түзуіне қатысты шағылдырғаннан кейін пайда болған бейненің {self.ask_for}-координатасы неге тең?"
@@ -843,6 +936,7 @@ class Mat093_multi(Mat093):
 class Mat094_multi(Mat094):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berapakah nilai komponen-x dari vektor resultan $\\mathbf{{r}}$?'
         self.description_chinese = f'合向量$\\mathbf{{r}}$的x分量的值是多少？'
         self.description_arabic = f'ما قيمة المركبة $x$ للمتجه المحصل $\\mathbf{{r}}$؟'
         self.description_hindi = f'परिणामी सदिश (resultant vector) $\\mathbf{{r}}$ के x-घटक (x-component) का मान क्या है?'
@@ -852,15 +946,17 @@ class Mat094_multi(Mat094):
 class Mat095_multi(Mat095):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Pada diagram, vektor $\\mathbf{p}$ dan $\\mathbf{q}$ ditunjukkan pada sebuah kisi. Jika $\\mathbf{p}$ dan $\\mathbf{q}$ sejajar, carilah nilai $k$.'
         self.description_chinese = '在图中，网格上显示了向量$\\mathbf{p}$和$\\mathbf{q}$。如果$\\mathbf{p}$和$\\mathbf{q}$平行，求$k$的值。'
         self.description_arabic = 'في الشكل، تظهر المتجهات $\\mathbf{p}$ و $\\mathbf{q}$ على شبكة. إذا كان $\\mathbf{p}$ و $\\mathbf{q}$ متوازيين، فأوجد قيمة $k$.'
         self.description_hindi = 'आरेख में, सदिश $\\mathbf{p}$ और $\\mathbf{q}$ एक ग्रिड पर दिखाए गए हैं। यदि $\\mathbf{p}$ और $\\mathbf{q}$ समानांतर हैं, तो $k$ का मान ज्ञात करें।'
         self.description_kazakh = 'Диаграммада $\\mathbf{p}$ және $\\mathbf{q}$ векторлары торда көрсетілген. Егер $\\mathbf{p}$ және $\\mathbf{q}$ параллель болса, $k$ мәнін табыңыз.'
-        self.description_swahili = 'Kwenye mchoro, vekta $\\mathbf{{p}}$ na $\\mathbf{{q}}$ zinaonyeshwa kwenye gridi. Ikiwa $\\mathbf{{p}}$ na $\\mathbf{{q}}$ ni sambamba, tafuta thamani ya $k$.'
+        self.description_swahili = 'Kwenye mchoro, vekta $\\mathbf{p}$ na $\\mathbf{q}$ zinaonyeshwa kwenye gridi. Ikiwa $\\mathbf{p}$ na $\\mathbf{q}$ ni sambamba, tafuta thamani ya $k$.'
 
 class Mat096_multi(Mat096):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah magnitudo (panjang) vektor tersebut. Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = f'计算向量的大小（长度）。结果保留2位小数。'
         self.description_arabic = f'احسب مقدار (طول) المتجه. أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = f'सदिश के परिमाण (लंबाई) की गणना करें। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -870,6 +966,7 @@ class Mat096_multi(Mat096):
 class Mat097_multi(Mat097):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Menggunakan vektor, carilah nilai skalar $k$ sehingga titik $A$, $B$, dan $C$ kolinear.'
         self.description_chinese = f'利用向量，求标量$k$的值，使得点$A$、$B$和$C$共线。'
         self.description_arabic = f'باستخدام المتجهات، أوجد قيمة الكمية القياسية $k$ بحيث تقع النقاط $A$ و $B$ و $C$ على استقامة واحدة.'
         self.description_hindi = f'सदिशों का उपयोग करते हुए, अदिश (scalar) $k$ का मान इस प्रकार ज्ञात करें कि बिंदु $A$, $B$, और $C$ संरेख (collinear) हों।'
@@ -879,6 +976,7 @@ class Mat097_multi(Mat097):
 class Mat098_multi(Mat098):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Pada diagram, $OABC$ adalah sebuah trapesium di mana $OA$ sejajar dengan $CB$. Titik $P$ terletak pada segmen garis $AB$. Carilah nilai $k$ jika diketahui bahwa $\\vec{{OP}} = k({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}})$. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'在图中，$OABC$是一个梯形，其中$OA$平行于$CB$。点$P$位于线段$AB$上。已知$\\vec{{OP}} = k({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}})$，求$k$的值。结果保留3位小数。'
         self.description_arabic = f'في الشكل، $OABC$ شبه منحرف حيث $OA$ موازٍ لـ $CB$. تقع النقطة $P$ على القطعة $AB$. أوجد قيمة $k$ علمًا بأن $\\vec{{OP}} = k({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}})$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'आरेख में, $OABC$ एक समलंब चतुर्भुज है जहाँ $OA$, $CB$ के समानांतर है। बिंदु $P$ रेखाखंड $AB$ पर स्थित है। $k$ का मान ज्ञात करें, यह देखते हुए कि $\\vec{{OP}} = k({self.term_a}\\mathbf{{a}} + {self.term_b}\\mathbf{{b}})$ है। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -888,6 +986,7 @@ class Mat098_multi(Mat098):
 class Mat099_multi(Mat099):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gunakan informasi pada diagram vektor untuk mencari nilai skalar positif $k$.'
         self.description_chinese = '利用向量图中的信息求正标量$k$的值。'
         self.description_arabic = 'باستخدام المعلومات في مخطط المتجهات، أوجد قيمة الكمية القياسية الموجبة $k$.'
         self.description_hindi = 'धनात्मक अदिश $k$ का मान ज्ञात करने के लिए सदिश आरेख में दी गई जानकारी का उपयोग करें।'
@@ -897,6 +996,7 @@ class Mat099_multi(Mat099):
 class Mat100_multi(Mat100):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Pada segitiga $OAB$, vektor $\\vec{{OA}} = \\mathbf{{a}}$ dan vektor $\\vec{{OB}} = \\mathbf{{b}}$. Diketahui bahwa $\\vec{{OP}} = k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$, carilah nilai $k$ dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'在三角形$OAB$中，向量$\\vec{{OA}} = \\mathbf{{a}}$，向量$\\vec{{OB}} = \\mathbf{{b}}$。已知$\\vec{{OP}} = k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$，求$k$的值。结果保留3位小数。'
         self.description_arabic = f'في المثلث $OAB$، المتجه $\\vec{{OA}} = \\mathbf{{a}}$ والمتجه $\\vec{{OB}} = \\mathbf{{b}}$. إذا كان $\\vec{{OP}} = k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$، فأوجد قيمة $k$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'त्रिभुज $OAB$ में, सदिश $\\vec{{OA}} = \\mathbf{{a}}$ और सदिश $\\vec{{OB}} = \\mathbf{{b}}$ है। यह देखते हुए कि $\\vec{{OP}} = k({self.n}\\mathbf{{a}} + {self.m}\\mathbf{{b}})$ है, $k$ का मान ज्ञात करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -906,6 +1006,7 @@ class Mat100_multi(Mat100):
 class Mat101_multi(Mat101):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berdasarkan hasil pada gambar, berapakah frekuensi relatif pemutar (spinner) mendarat pada warna {self.target_color}? Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'根据图中的结果，转盘停在颜色{self.target_color}上的相对频率是多少？结果保留3位小数。'
         self.description_arabic = f'بناءً على النتائج في الشكل، ما التكرار النسبي لوقوع المؤشر الدوار على اللون {self.target_color}؟ أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'चित्र में परिणामों के आधार पर, स्पिनर के रंग {self.target_color} पर रुकने की सापेक्ष आवृत्ति क्या है? अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -915,6 +1016,7 @@ class Mat101_multi(Mat101):
 class Mat102_multi(Mat102):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Menggunakan frekuensi relatif dari diagram, hitunglah frekuensi harapan munculnya angka {self.target_face} jika dadu dilempar sebanyak {self.total_rolls_scenario} kali.'
         self.description_chinese = f'利用图表中的相对频率，计算如果掷骰子{self.total_rolls_scenario}次，掷出{self.target_face}的期望频率。'
         self.description_arabic = f'باستخدام التكرار النسبي من المخطط، احسب التكرار المتوقع لظهور {self.target_face} عند رمي حجر النرد {self.total_rolls_scenario} مرة.'
         self.description_hindi = f'चार्ट से सापेक्ष आवृत्ति का उपयोग करते हुए, यदि पासा {self.total_rolls_scenario} बार फेंका जाता है तो {self.target_face} आने की अपेक्षित आवृत्ति की गणना करें।'
@@ -924,6 +1026,7 @@ class Mat102_multi(Mat102):
 class Mat103_multi(Mat103):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Seorang penjaga hutan menangkap {self.M} ikan dari danau, menandainya dengan tanda, dan melepaskannya. Kemudian, penjaga hutan tersebut menangkap sampel baru (ditunjukkan pada gambar di atas). Menggunakan frekuensi relatif ikan bertanda pada tangkapan kedua, perkirakan total frekuensi harapan ikan di danau tersebut.'
         self.description_chinese = f'护林员从湖中捕获了{self.M}条鱼，给它们打上标签，然后释放。后来，护林员捕获了一个新样本（如上图所示）。利用第二次捕获中带标记鱼的相对频率，估计湖中鱼的预期总数。'
         self.description_arabic = f'يصطاد حارس {self.M} سمكة من البحيرة، ويضع عليها علامة ثم يطلقها. لاحقًا، يصطاد عينة جديدة (كما هو موضح في الشكل). باستخدام التكرار النسبي للأسماك المعلمة في الصيد الثاني، قدّر العدد الكلي المتوقع للأسماك في البحيرة.'
         self.description_hindi = f'एक रेंजर झील से {self.M} मछलियाँ पकड़ता है, उन्हें एक टैग से चिह्नित करता है, और उन्हें छोड़ देता है। बाद में, रेंजर एक नया नमूना पकड़ता है (ऊपर चित्र में दिखाया गया है)। दूसरी पकड़ में चिह्नित मछलियों की सापेक्ष आवृत्ति का उपयोग करते हुए, झील में मछलियों की कुल अपेक्षित संख्या का अनुमान लगाएँ।'
@@ -933,6 +1036,7 @@ class Mat103_multi(Mat103):
 class Mat104_multi(Mat104):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Menggunakan data pada gambar, tentukan jumlah siswa di Kelas 10 yang bergabung dengan Klub Seni (diwakili oleh $x$).'
         self.description_chinese = '利用图中的数据，确定加入艺术俱乐部（用$x$表示）的10年级学生人数。'
         self.description_arabic = 'باستخدام البيانات في الشكل، أوجد عدد طلاب الصف العاشر الذين انضموا إلى نادي الفنون (الممثل بـ $x$).'
         self.description_hindi = 'चित्र में दिए गए डेटा का उपयोग करते हुए, ग्रेड 10 में उन छात्रों की संख्या निर्धारित करें जो Art Club में शामिल हुए (जिसे $x$ द्वारा दर्शाया गया है)।'
@@ -942,6 +1046,7 @@ class Mat104_multi(Mat104):
 class Mat105_multi(Mat105):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Grafik garis di atas merepresentasikan suhu yang dicatat setiap dua jam di sebuah kota selama periode 8 jam. Hitunglah total penurunan suhu, dalam derajat Celsius, antara titik terpanas yang tercatat dan suhu pada pukul 16:00.'
         self.description_chinese = '上方的折线图代表某城市8小时内每两小时记录一次的温度。计算记录的最高温度与16:00温度之间的总降温（单位：摄氏度）。'
         self.description_arabic = 'يمثل الرسم البياني الخطي أعلاه درجة الحرارة المسجلة كل ساعتين في مدينة خلال فترة 8 ساعات. احسب مقدار الانخفاض الكلي في درجة الحرارة، بالدرجات المئوية، بين أعلى درجة حرارة مسجلة ودرجة الحرارة عند الساعة 16:00.'
         self.description_hindi = 'ऊपर दिया गया रेखा ग्राफ 8 घंटे की अवधि में एक शहर में हर दो घंटे में दर्ज किए गए तापमान को दर्शाता है। दर्ज किए गए सबसे गर्म बिंदु और 16:00 बजे के तापमान के बीच, डिग्री सेल्सियस में, कुल गिरावट की गणना करें।'
@@ -951,6 +1056,7 @@ class Mat105_multi(Mat105):
 class Mat106_multi(Mat106):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Menggunakan gambar tersebut, hitunglah selisih antara total jumlah laptop yang dijual oleh Toko A dan total jumlah laptop yang dijual oleh Toko B selama seluruh periode tiga minggu tersebut.'
         self.description_chinese = '利用该图，计算在整个三周期间内，商店A售出的笔记本电脑总数与商店B售出的笔记本电脑总数之差。'
         self.description_arabic = 'باستخدام الشكل، احسب الفرق بين إجمالي عدد الحواسيب المحمولة المباعة في المتجر A والمتجر B خلال فترة الثلاثة أسابيع.'
         self.description_hindi = 'चित्र का उपयोग करते हुए, पूरे तीन सप्ताह की अवधि में Store A द्वारा बेचे गए लैपटॉप की कुल संख्या और Store B द्वारा बेचे गए लैपटॉप की कुल संख्या के बीच के अंतर की गणना करें।'
@@ -960,6 +1066,7 @@ class Mat106_multi(Mat106):
 class Mat107_multi(Mat107):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Merujuk pada gambar, yang menunjukkan nilai ujian 11 siswa, terurut dari yang terkecil. Hitung nilai Jangkauan Interkuartil (IQR) dari kumpulan data ini.'
         self.description_chinese ='参考该图。列出了 11 名学生的考试成绩，按升序排列。计算此数据集的四分位距（IQR）。'
         self.description_arabic = 'بالرجوع إلى الشكل الذي يعرض درجات 11 طالبًا مرتبة تصاعديًا، احسب المدى الربيعي (IQR) لهذه البيانات.'
         self.description_hindi = 'चित्र को देखें, जिसमें 11 छात्रों के परीक्षा अंकों को आरोही क्रम में सूचीबद्ध किया गया है। इस डेटा सेट का अंतरचतुर्थक रेंज (IQR) ज्ञात करें।'
@@ -969,6 +1076,7 @@ class Mat107_multi(Mat107):
 class Mat108_multi(Mat108):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Merujuk pada gambar. Hitunglah rata-rata jumlah buku yang dibaca oleh para siswa. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '参考该图。计算学生阅读书籍的平均数量。结果保留3位小数。'
         self.description_arabic = 'بالرجوع إلى الشكل، احسب المتوسط الحسابي لعدد الكتب التي قرأها الطلاب. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र देखें। छात्रों द्वारा पढ़ी गई पुस्तकों की माध्य संख्या की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -978,6 +1086,7 @@ class Mat108_multi(Mat108):
 class Mat109_multi(Mat109):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Merujuk pada gambar, yang menunjukkan tinggi bibit pohon. Hitunglah estimasi rata-rata tinggi bibit pohon tersebut. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '参考显示树苗高度的图。计算树苗的估计平均高度。结果保留3位小数。'
         self.description_arabic = 'بالرجوع إلى الشكل الذي يوضح أطوال الشتلات، احسب المتوسط الحسابي التقديري لأطوال الشتلات. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र देखें, जो पौधों की ऊँचाई दिखाता है। पौधों की अनुमानित माध्य ऊँचाई की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -987,6 +1096,7 @@ class Mat109_multi(Mat109):
 class Mat110_multi(Mat110):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram batang-daun di bawah ini menampilkan usia anggota klub buku. Menggunakan keterangan yang diberikan, hitunglah jangkauan dari usia-usia tersebut.'
         self.description_chinese = '下方的茎叶图显示了读书俱乐部成员的年龄。利用提供的图例，计算年龄的极差。'
         self.description_arabic = 'يعرض مخطط الساق والورقة أدناه أعمار الأعضاء في نادي كتاب. باستخدام المفتاح المعطى، احسب مدى الأعمار.'
         self.description_hindi = 'नीचे दिया गया स्टेम-एंड-लीफ़ आरेख एक बुक क्लब में सदस्यों की आयु प्रदर्शित करता है। प्रदान की गई कुंजी का उपयोग करके, आयु की सीमा की गणना करें।'
@@ -996,6 +1106,7 @@ class Mat110_multi(Mat110):
 class Mat111_multi(Mat111):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f"Diagram batang komposit di bawah ini menunjukkan total pendapatan sebuah toko selama tiga hari. Pada hari Jumat, total tinggi batang merepresentasikan ${self.friday_total}. Berapakah nilai penjualan 'Drink' untuk hari itu?"
         self.description_chinese = f"下方的复合条形图显示了一家商店三天的总收入。在星期五，条形图的总高度代表${self.friday_total}。那天的'Drink'销售额是多少？"
         self.description_arabic = f"يوضح المخطط الشريطي المركب أدناه الإيرادات الإجمالية لمتجر على مدار ثلاثة أيام. في يوم الجمعة، يمثل الارتفاع الإجمالي للشريط ${self.friday_total}. ما قيمة مبيعات 'المشروبات' في ذلك اليوم؟"
         self.description_hindi = f"नीचे दिया गया मिश्रित दंड आरेख तीन दिनों में एक स्टोर का कुल राजस्व दिखाता है। शुक्रवार को, बार की कुल ऊँचाई ${self.friday_total} का प्रतिनिधित्व करती है। उस दिन के लिए 'Drink' की बिक्री का मूल्य क्या है?"
@@ -1005,6 +1116,7 @@ class Mat111_multi(Mat111):
 class Mat112_multi(Mat112):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Piktogram berikut menunjukkan jumlah piza yang terjual selama empat malam. Keterangan gambar menunjukkan bahwa satu simbol penuh mewakili {self.key_value} piza. Berapa banyak piza yang terjual pada hari Selasa?'
         self.description_chinese = f'象形图显示了四个晚上售出的比萨饼。图例表明，一个完整的符号代表{self.key_value}个比萨饼。星期二售出了多少个比萨？'
         self.description_arabic = f'يوضح المخطط الرمزي عدد البيتزا المباعة في أربع أمسيات. يشير المفتاح إلى أن الرمز الكامل الواحد يمثل {self.key_value} بيتزا. كم عدد البيتزا التي بيعت يوم الثلاثاء؟'
         self.description_hindi = f'चित्रलेख चार शामों में बेचे गए पिज्जा दिखाता है। कुंजी इंगित करती है कि एक पूर्ण प्रतीक {self.key_value} पिज्जा का प्रतिनिधित्व करता है। मंगलवार को कितने पिज्जा बेचे गए?'
@@ -1014,6 +1126,7 @@ class Mat112_multi(Mat112):
 class Mat113_multi(Mat113):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berdasarkan diagram pencar tersebut, berapakah nilai jual kembali (dalam ribuan dolar) dari mobil berusia {self.target_age} tahun yang direpresentasikan oleh titik P?'
         self.description_chinese = f'根据散点图，由点P代表的车龄为{self.target_age}年的汽车的转售价值（以千美元为单位）是多少？'
         self.description_arabic = f'وفقًا لمخطط الانتشار، ما قيمة إعادة البيع (بآلاف الدولارات) للسيارة البالغة من العمر {self.target_age} سنوات والممثلة بالنقطة $P$؟'
         self.description_hindi = f'प्रकीर्ण आरेख के अनुसार, बिंदु P द्वारा दर्शाई गई {self.target_age}-वर्ष पुरानी कार का पुनर्विक्रय मूल्य (हजारों डॉलर में) क्या है?'
@@ -1023,6 +1136,7 @@ class Mat113_multi(Mat113):
 class Mat114_multi(Mat114):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Menggunakan garis regresi yang ditunjukkan pada gambar, hitunglah prediksi tinggi (dalam cm) tanaman ketika {self.x_query} gram pupuk digunakan. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'利用图中显示的最佳拟合线，计算使用{self.x_query}克肥料时植物的预测高度（单位：cm）。结果保留3位小数。'
         self.description_arabic = f'باستخدام خط أفضل مطابقة الموضح في الشكل، احسب الطول المتوقع (بالسنتيمتر) لنبتة عند استخدام {self.x_query} جرامًا من السماد. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'चित्र में दिखाई गई सबसे उपयुक्त रेखा का उपयोग करते हुए, जब {self.x_query} ग्राम उर्वरक का उपयोग किया जाता है तो एक पौधे की अनुमानित ऊँचाई (cm में) की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1032,6 +1146,7 @@ class Mat114_multi(Mat114):
 class Mat115_multi(Mat115):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f"Berapakah selisih vertikal (residual) antara nilai Fisika aktual Siswa A dan nilai yang diprediksi oleh garis regresi untuk nilai Matematika {self.student_a_x}? Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma."
         self.description_chinese = f"学生A的实际物理分数与最佳拟合线根据数学分数{self.student_a_x}预测的分数之间的垂直差异（残差）是多少？结果保留3位小数。"
         self.description_arabic = f'ما الفرق الرأسي (الباقي) بين درجة الطالب $A$ الفعلية في الفيزياء والدرجة المتوقعة من خط أفضل مطابقة لدرجة رياضيات مقدارها {self.student_a_x}؟ أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f"छात्र A के वास्तविक भौतिकी अंक और {self.student_a_x} के गणित अंक के लिए सर्वोत्तम फिट रेखा द्वारा अनुमानित अंक के बीच ऊर्ध्वाधर अंतर (अवशेष) क्या है? अपना उत्तर 3 दशमलव स्थानों तक सही दें।"
@@ -1041,6 +1156,7 @@ class Mat115_multi(Mat115):
 class Mat116_multi(Mat116):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Menggunakan titik-titik koordinat yang diberikan pada gambar, tentukan nilai median untuk para siswa. Berikan jawaban Anda dengan ketelitian 1 angka di belakang koma.'
         self.description_chinese = f'利用图中提供的坐标点，确定学生的分数中位数。结果保留1位小数。'
         self.description_arabic = f'باستخدام نقاط الإحداثيات المقدمة في الشكل، أوجد الوسيط لدرجات الطلاب. أعطِ إجابتك مقربة إلى منزلة عشرية واحدة.'
         self.description_hindi = f'चित्र में दिए गए समन्वय बिंदुओं का उपयोग करते हुए, छात्रों के लिए माध्यिका अंक निर्धारित करें।अपना उत्तर 1 दशमलव स्थान तक सही दें।'
@@ -1050,6 +1166,7 @@ class Mat116_multi(Mat116):
 class Mat117_multi(Mat117):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah Jangkauan Interkuartil (IQR) dari tinggi tanaman berdasarkan data yang diberikan pada gambar.'
         self.description_chinese = f'根据图中提供的数据，计算植物高度的四分位距（IQR）。'
         self.description_arabic = f'احسب المدى الربيعي (IQR) لأطوال النباتات بناءً على البيانات المقدمة في الشكل.'
         self.description_hindi = f'चित्र में दिए गए डेटा के आधार पर पौधों की ऊँचाई की इंटरक्वार्टाइल रेंज (IQR) की गणना करें।'
@@ -1059,6 +1176,7 @@ class Mat117_multi(Mat117):
 class Mat118_multi(Mat118):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Hitunglah frekuensi data yang direpresentasikan oleh batang ini. Berikan jawaban Anda dengan ketelitian 1 angka di belakang koma.'
         self.description_chinese = f'计算该条形所代表的数据的频率。结果保留1位小数。'
         self.description_arabic = f'احسب تكرار البيانات الممثلة بهذا الشريط. أعطِ إجابتك مقربة إلى منزلة عشرية واحدة.'
         self.description_hindi = f'इस बार द्वारा दर्शाए गए डेटा की आवृत्ति की गणना करें। अपना उत्तर 1 दशमलव स्थान तक सही दें।'
@@ -1068,6 +1186,7 @@ class Mat118_multi(Mat118):
 class Mat119_multi(Mat119):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berapakah total frekuensi data yang direpresentasikan oleh ketiga batang ini?'
         self.description_chinese = f'这三个条形所代表的数据的总频率是多少？'
         self.description_arabic = f'ما التكرار الكلي للبيانات الممثلة بهذه الأشرطة الثلاثة؟'
         self.description_hindi = f'इन तीन बारों द्वारा दर्शाए गए डेटा की कुल आवृत्ति क्या है?'
@@ -1077,6 +1196,7 @@ class Mat119_multi(Mat119):
 class Mat120_multi(Mat120):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Jika kelompok-kelompok ini diplot pada histogram yang sama, berapakah selisih positif antara tinggi batang untuk Kelompok B dan Kelompok A?'
         self.description_chinese = f'如果将这些组绘制在同一个直方图上，B组和A组的条形高度之间的正差是多少？'
         self.description_arabic = f'إذا مُثلت هذه المجموعات على نفس المدرج التكراري، فما الفرق الموجب بين ارتفاع الشريط للمجموعة $B$ والمجموعة $A$؟'
         self.description_hindi = f'यदि इन समूहों को एक ही आयतचित्र पर आलेखित किया जाता है, तो Group B और Group A के लिए बार की ऊँचाई के बीच धनात्मक अंतर क्या है?'
@@ -1086,6 +1206,7 @@ class Mat120_multi(Mat120):
 class Mat121_multi(Mat121):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Menggunakan grafik yang terdapat pada gambar, evaluasilah fungsi komposisi $f(g({self.start_x}))$.'
         self.description_chinese = f'利用图中所描述的图像，计算复合函数$f(g({self.start_x}))$。'
         self.description_arabic = f'باستخدام الرسوم البيانية الموضحة في الشكل، أوجد قيمة الدالة المركبة $f(g({self.start_x}))$.'
         self.description_hindi = f'चित्र में वर्णित ग्राफों का उपयोग करते हुए, संयुक्त फलन (composite function) $f(g({self.start_x}))$ का मूल्यांकन करें।'
@@ -1095,6 +1216,7 @@ class Mat121_multi(Mat121):
 class Mat122_multi(Mat122):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Berdasarkan hubungan antara suatu fungsi dan inversnya yang ditunjukkan pada gambar, tentukan nilai $x$ sedemikian rupa sehingga $f^{{-1}}(x) = {self.a}$.'
         self.description_chinese = f'根据图中显示的函数与其反函数之间的关系，确定使得$f^{{-1}}(x) = {self.a}$的$x$的值。'
         self.description_arabic = f'بناءً على العلاقة بين الدالة ومعكوسها الموضحة في الشكل، أوجد قيمة $x$ بحيث $f^{{-1}}(x) = {self.a}$.'
         self.description_hindi = f'चित्र में दिखाए गए फलन और उसके प्रतिलोम के बीच के संबंध के आधार पर, $x$ का मान इस प्रकार निर्धारित करें कि $f^{{-1}}(x) = {self.a}$ हो।'
@@ -1104,6 +1226,7 @@ class Mat122_multi(Mat122):
 class Mat123_multi(Mat123):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut mengilustrasikan grafik fungsi kuadrat $y = f(x)$ yang memiliki titik balik minimum pada koordinat $({self.h}, {self.k})$. Gambar tersebut juga menunjukkan kurva kedua (garis putus-putus) yang merepresentasikan transformasi {self.label_g}. Hitunglah koordinat-$y$ dari titik minimum grafik hasil transformasi $g(x)$.'
         self.description_chinese = f'该图展示了二次函数$y = f(x)$的图像，它在坐标$({self.h}, {self.k})$处有一个最小转向点。该图还指示了代表变换{self.label_g}的第二条虚线曲线。计算变换后图像$g(x)$的最小点的$y$坐标。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة تربيعية $y = f(x)$ ولها نقطة صغرى عند الإحداثي $({self.h}, {self.k})$. كما يوضح منحنى متقطع يمثل التحويل {self.label_g}. احسب إحداثي $y$ للنقطة الصغرى للتمثيل البياني المحول $g(x)$.'
         self.description_hindi = f'चित्र एक द्विघात फलन (quadratic function) $y = f(x)$ के ग्राफ को दर्शाता है जिसका निर्देशांक $({self.h}, {self.k})$ पर एक न्यूनतम टर्निंग पॉइंट है। चित्र एक दूसरा खंडित वक्र भी इंगित करता है जो एक रूपांतरण {self.label_g} का प्रतिनिधित्व करता है। रूपांतरित ग्राफ $g(x)$ के न्यूनतम बिंदु के $y$-निर्देशांक की गणना करें।'
@@ -1113,15 +1236,17 @@ class Mat123_multi(Mat123):
 class Mat124_multi(Mat124):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan parabola penuh dari fungsi: ${self.equation_latex}$. Sumbu simetri dari $x = {self.h}$ ditandai dengan garis putus putus. Tentukan bilangan bulat terkecil untuk $k$ sedemikian rupa sehingga fungsi $f(x)$ adalah fungsi satu-satu untuk domain $x \\ge k$.'
         self.description_chinese = f'图中显示了函数 ${self.equation_latex}$ 的完整抛物线。对称轴 $x = {self.h}$ 用虚线标出。求最小整数 $k$，使得函数 $f(x)$ 在定义域 $x \\ge k$ 上是单射函数。'
         self.description_arabic = f'يوضح الشكل القطع المكافئ الكامل للدالة: ${self.equation_latex}$. محور التماثل $x = {self.h}$ ممثل بخط متقطع. أوجد أصغر قيمة صحيحة لـ $k$ بحيث تكون الدالة $f(x)$ متباينة على المجال $x \\ge k$.'
         self.description_hindi = f'चित्र फलन का पूर्ण परवलय दिखाता है: ${self.equation_latex}$। सबसे छोटा पूर्णांक मान निर्धारित करें ताकि फलन $f(x)$ डोमेन $x \\ge k$ के लिए एकैकी फलन हो।'
-        self.description_kazakh = f'Суретте ${self.equation_latex}$ функциясының толық параболасы көрсетілген. $x = {self.h}$ симметрия осі үзік сызықпен белгіленген. $x \ge k$ анықталу облысында $f(x)$ функциясы өзара бірмәнді (инъективті) болуы үшін, $k$-ның ең кіші бүтін мәнін анықтаңыз.'
+        self.description_kazakh = f'Суретте ${self.equation_latex}$ функциясының толық параболасы көрсетілген. $x = {self.h}$ симметрия осі үзік сызықпен белгіленген. $x \\ge k$ анықталу облысында $f(x)$ функциясы өзара бірмәнді (инъективті) болуы үшін, $k$-ның ең кіші бүтін мәнін анықтаңыз.'
         self.description_swahili = f'Kielelezo kinaonyesha parabola kamili ya fumbuo: ${self.equation_latex}$. Mhimili wa ulinganifu $x = {self.h}$ umewekewa alama ya mstari wa vitone. Bainisha thamani ndogo zaidi ya namba kamili kwa $k$ ili fumbuo $f(x)$ iwe fumbuo ya moja-kwa-moja (one-one function) kwa uga $x \\ge k$.'
 
 class Mat125_multi(Mat125):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Garis biru tebal pada gambar menampilkan grafik $y = h(x)$, yang memotong sumbu-x positif pada $x = {self.original_intercept}$. Garis merah putus-putus merepresentasikan transformasi $y = h({self.k}x)$. Temukan titik potong sumbu-x dari grafik hasil transformasi $y = h({self.k}x)$.'
         self.description_chinese = f'图中的蓝色实线显示了$y = h(x)$的图像，它在$x = {self.original_intercept}$处与正x轴相交。红色虚线代表变换$y = h({self.k}x)$。求变换后图像$y = h({self.k}x)$的x截距。'
         self.description_arabic = f'يعرض الخط الأزرق المتصل في الشكل التمثيل البياني لـ $y = h(x)$، والذي يقطع محور $x$ الموجب عند $x = {self.original_intercept}$. يمثل الخط الأحمر المتقطع التحويل $y = h({self.k}x)$. أوجد نقطة التقاطع مع محور $x$ للتمثيل البياني المحول.'
         self.description_hindi = f'चित्र में नीली ठोस रेखा $y = h(x)$ का ग्राफ प्रदर्शित करती है, जो धनात्मक x-अक्ष को $x = {self.original_intercept}$ पर प्रतिच्छेद करती है। लाल खंडित रेखा रूपांतरण $y = h({self.k}x)$ का प्रतिनिधित्व करती है। रूपांतरित ग्राफ $y = h({self.k}x)$ का x-अंतःखंड ज्ञात करें।'
@@ -1131,6 +1256,7 @@ class Mat125_multi(Mat125):
 class Mat126_multi(Mat126):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebuah lingkaran didefinisikan oleh persamaan $(x - {self.h})^2 + (y - {self.k})^2 = {self.r ** 2}$. Sebuah garis singgung menyentuh lingkaran ini pada titik $P({self.px}, {self.py})$. Tentukan titik potong sumbu-$y$ dari garis singgung ini. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'一个圆由方程$(x - {self.h})^2 + (y - {self.k})^2 = {self.r ** 2}$定义。一条切线在点$P({self.px}, {self.py})$处与该圆相切。确定这条切线的$y$截距。结果保留3位小数。'
         self.description_arabic = f'تُعرّف دائرة بالمعادلة $(x - {self.h})^2 + (y - {self.k})^2 = {self.r ** 2}$. يمس خط مماس هذه الدائرة عند النقطة $P({self.px}, {self.py})$. أوجد نقطة التقاطع مع محور $y$ لهذا المماس. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'एक वृत्त समीकरण $(x - {self.h})^2 + (y - {self.k})^2 = {self.r ** 2}$ द्वारा परिभाषित है। एक स्पर्श रेखा इस वृत्त को बिंदु $P({self.px}, {self.py})$ पर छूती है। इस स्पर्श रेखा का $y$-अंतःखंड निर्धारित करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1140,6 +1266,7 @@ class Mat126_multi(Mat126):
 class Mat127_multi(Mat127):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Garis lurus ${self.line_eq}$ memotong lingkaran ${self.circle_eq}$ pada dua titik yang berbeda, $A$ dan $B$. Hitunglah kuadrat panjang tali busur $AB$ (yakni, cari $AB^2$). Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'直线${self.line_eq}$与圆${self.circle_eq}$相交于两个不同的点$A$和$B$。计算弦$AB$的长度的平方（即求$AB^2$）。结果保留3位小数。'
         self.description_arabic = f'يتقاطع الخط المستقيم ${self.line_eq}$ مع الدائرة ${self.circle_eq}$ في نقطتين مختلفتين $A$ و $B$. احسب مربع طول الوتر $AB$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'सीधी रेखा ${self.line_eq}$ वृत्त ${self.circle_eq}$ को दो अलग-अलग बिंदुओं, $A$ और $B$ पर प्रतिच्छेद करती है। जीवा $AB$ की वर्गित लंबाई की गणना करें (अर्थात, $AB^2$ ज्ञात करें)। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1149,6 +1276,7 @@ class Mat127_multi(Mat127):
 class Mat128_multi(Mat128):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Diketahui segmen garis yang menghubungkan titik $A({self.x1}, {self.y1})$ dan $B({self.x2}, {self.y2})$. Garis bagi tegak lurus dari segmen garis $AB$ memotong sumbu-x di titik $P$. Tentukan koordinat-x dari titik $P$. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = f'考虑连接点 A({self.x1}, {self.y1}) 和 B({self.x2}, {self.y2}) 的线段 AB。线段 AB 的垂直平分线与 x 轴交于点 P。求点 P 的 x 坐标。答案精确到小数点后三位。'
         self.description_arabic = f'اعتبر القطعة المستقيمة الواصلة بين النقطتين $A({self.x1}, {self.y1})$ و $B({self.x2}, {self.y2})$. المنصف العمودي للقطعة $AB$ يقطع محور $x$ عند النقطة $P$. أوجد الإحداثي $x$ للنقطة $P$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'बिंदुओं $A({self.x1}, {self.y1})$ और $B({self.x2}, {self.y2})$ को जोड़ने वाले रेखाखंड पर विचार करें। रेखाखंड $AB$ का लंब समद्विभाजक (perpendicular bisector) x-अक्ष को बिंदु $P$ पर काटता है। बिंदु $P$ का x-निर्देशांक ज्ञात कीजिए। अपना उत्तर 3 दशमलव स्थानों तक सही दीजिए।'
@@ -1158,6 +1286,7 @@ class Mat128_multi(Mat128):
 class Mat129_multi(Mat129):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebuah lingkaran dengan persamaan $(x-k)^2 + (y-{self.y_c})^2 = {self.r_squared}$ sepenuhnya terletak di kuadran pertama dan menyentuh sumbu-y tepat di satu titik. Temukan nilai $k$.'
         self.description_chinese = f'方程为$(x-k)^2 + (y-{self.y_c})^2 = {self.r_squared}$的圆完全位于第一象限，且与y轴恰好相切于一点。求$k$的值。'
         self.description_arabic = f'تقع دائرة معادلتها $(x-k)^2 + (y-{self.y_c})^2 = {self.r_squared}$ بالكامل في الربع الأول وتمس محور $y$ عند نقطة واحدة فقط. أوجد قيمة $k$.'
         self.description_hindi = f'समीकरण $(x-k)^2 + (y-{self.y_c})^2 = {self.r_squared}$ वाला एक वृत्त पूरी तरह से प्रथम चतुर्थांश में स्थित है और y-अक्ष को ठीक एक बिंदु पर छूता है। $k$ का मान ज्ञात करें।'
@@ -1167,6 +1296,7 @@ class Mat129_multi(Mat129):
 class Mat130_multi(Mat130):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebuah segitiga dibentuk oleh titik-titik sudut $A({self.ax}, {self.ay})$, $B({self.bx}, {self.by})$, dan $C({self.cx}, {self.cy})$. Hitunglah luas eksak dari segitiga $ABC$.'
         self.description_chinese = f'一个三角形由顶点$A({self.ax}, {self.ay})$、$B({self.bx}, {self.by})$和$C({self.cx}, {self.cy})$构成。计算三角形$ABC$的精确面积。'
         self.description_arabic = f'يتكون مثلث من الرؤوس $A({self.ax}, {self.ay})$ و $B({self.bx}, {self.by})$ و $C({self.cx}, {self.cy})$. احسب المساحة الدقيقة للمثلث $ABC$.'
         self.description_hindi = f'शीर्षों $A({self.ax}, {self.ay})$, $B({self.bx}, {self.by})$, और $C({self.cx}, {self.cy})$ द्वारा एक त्रिभुज बनता है। त्रिभुज $ABC$ के सटीक क्षेत्रफल की गणना करें।'
@@ -1176,6 +1306,7 @@ class Mat130_multi(Mat130):
 class Mat131_multi(Mat131):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan juring sebuah lingkaran dan sebuah persegi. Persegi tersebut dibangun sedemikian rupa sehingga total kelilingnya sama persis dengan total keliling juring. Tentukan luas persegi tersebut dalam cm$^2$. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '该图显示了一个圆扇形和一个正方形。该正方形的构建使得其总周长完全等于扇形的总周长。确定正方形的面积（单位：cm$^2$）。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل قطاعًا دائريًا ومربعًا. صُمم المربع بحيث يكون محيطه مساويًا تمامًا لمحيط القطاع. أوجد مساحة المربع بوحدة $cm^2$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र एक वृत्त का एक त्रिज्यखंड और एक वर्ग दिखाता है। वर्ग इस प्रकार बनाया गया है कि इसका कुल परिमाप त्रिज्यखंड के कुल परिमाप के बिल्कुल बराबर है। वर्ग का क्षेत्रफल cm$^2$ में निर्धारित करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1185,6 +1316,7 @@ class Mat131_multi(Mat131):
 class Mat132_multi(Mat132):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Pembersih kaca (wiper) belakang mobil membersihkan daerah yang berbentuk seperti bagian dari anulus (cincin), seperti yang ditunjukkan pada area yang diarsir pada gambar. Daerah tersebut dibentuk oleh dua busur konsentris dengan sudut pusat yang sama $\\theta$. Jari-jari dalam dari daerah yang dibersihkan adalah $r$ cm. Menggunakan informasi yang diberikan pada gambar, hitunglah nilai dari jari-jari dalam $r$.'
         self.description_chinese = '汽车的后窗雨刷清理出一个形状像部分圆环的区域，如图中阴影区域所示。该区域由两个具有相同圆心角$\\theta$的同心圆弧组成。被清理区域的内半径为$r$ cm。利用图中提供的信息，计算内半径$r$的值。'
         self.description_arabic = 'تنظف ماسحة النافذة الخلفية لسيارة منطقة على شكل جزء من حلقة كما هو موضح. تتكون المنطقة من قوسين متحدي المركز لهما نفس الزاوية المركزية $\\theta$. نصف القطر الداخلي هو $r$ سم. احسب قيمة $r$.'
         self.description_hindi = 'कार के लिए एक रियर विंडो वाइपर एक क्षेत्र को साफ करता है जिसका आकार एक एनलस (एक वलय) के हिस्से जैसा होता है, जैसा कि चित्र के छायांकित क्षेत्र में दिखाया गया है। यह क्षेत्र समान केंद्रीय कोण $\\theta$ वाले दो संकेंद्रित चापों द्वारा बनता है। साफ किए गए क्षेत्र की आंतरिक त्रिज्या $r$ cm है। चित्र में दी गई जानकारी का उपयोग करते हुए, आंतरिक त्रिज्या $r$ के मान की गणना करें।'
@@ -1194,6 +1326,7 @@ class Mat132_multi(Mat132):
 class Mat133_multi(Mat133):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sebuah juring kertas dipotong seperti yang ditunjukkan pada gambar. Juring tersebut disatukan tanpa tumpang tindih untuk membentuk permukaan melengkung dari kerucut lingkaran tegak. Hitunglah jari-jari alas ($r$) dari kerucut yang dihasilkan dalam cm. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '如图所示剪下一个纸扇形。将该扇形的直边（半径）无重叠地连接在一起，形成直圆锥的曲面。计算所得圆锥的底面半径（$r$）（单位：cm）。结果保留3位小数。'
         self.description_arabic = 'قُطع قطاع ورقي كما هو موضح. تُجمع الحواف المستقيمة دون تداخل لتكوين السطح الجانبي لمخروط دائري قائم. احسب نصف قطر القاعدة $r$ بالسنتيمتر. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'कागज का एक त्रिज्यखंड काटा जाता है जैसा कि चित्र में दिखाया गया है। त्रिज्यखंड के सीधे किनारों (त्रिज्याओं) को बिना किसी ओवरलैप के एक साथ जोड़ा जाता है ताकि एक लंब वृत्तीय शंकु का घुमावदार पृष्ठ बन सके। परिणामी शंकु की आधार त्रिज्या ($r$) की cm में गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1203,6 +1336,7 @@ class Mat133_multi(Mat133):
 class Mat134_multi(Mat134):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menampilkan kurva $y = f(x)$ di kuadran pertama. Sebuah garis normal ditarik ke kurva pada titik $P$. Garis normal ini memotong sumbu-x di titik $A$ dan sumbu-y di titik $B$, membentuk segitiga $AOB$ dengan sumbu koordinat. Hitunglah luas segitiga $AOB$. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '该图显示了第一象限中的曲线$y = f(x)$。在点$P$处绘制了该曲线的一条法线。此法线与x轴交于点$A$，与y轴交于点$B$，与坐标轴形成三角形$AOB$。计算三角形$AOB$的面积。结果保留3位小数。'
         self.description_arabic = 'يعرض الشكل منحنى $y = f(x)$ في الربع الأول. رُسم عمود (ناظم) على المنحنى عند النقطة $P$، ويقطع المحورين عند $A$ و $B$ مكوِّنًا المثلث $AOB$. احسب مساحة المثلث $AOB$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र प्रथम चतुर्थांश में एक वक्र $y = f(x)$ प्रदर्शित करता है। बिंदु $P$ पर वक्र के लिए एक अभिलंब रेखा खींची जाती है। यह अभिलंब रेखा x-अक्ष को बिंदु $A$ पर और y-अक्ष को बिंदु $B$ पर प्रतिच्छेद करती है, जिससे समन्वय अक्षों के साथ एक त्रिभुज $AOB$ बनता है। त्रिभुज $AOB$ के क्षेत्रफल की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1212,6 +1346,7 @@ class Mat134_multi(Mat134):
 class Mat135_multi(Mat135):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut mengilustrasikan tumpahan minyak melingkar di permukaan laut. Tumpahan tersebut meluas sedemikian rupa sehingga jari-jarinya $r$ meningkat pada laju yang konstan. Menggunakan ukuran yang diberikan pada gambar, temukan laju pertambahan luas ($dA/dt$) dalam m$^2$/s pada saat ini. (Bagilah jawaban akhir Anda dengan $\\pi$). Berikan jawaban Anda dengan ketelitian 2 angka di belakang koma.'
         self.description_chinese = '该图展示了海面上的圆形漏油。漏油正在扩散，其半径$r$以恒定速率增加。利用图表中提供的测量值，求在这一瞬间面积的增加率（$dA/dt$）（单位：m$^2$/s）。（将最终答案除以$\\pi$）。结果保留2位小数。'
         self.description_arabic = 'يوضح الشكل بقعة زيت دائرية تتسع بحيث يزداد نصف قطرها $r$ بمعدل ثابت. باستخدام المعطيات، أوجد معدل تغير المساحة $dA/dt$ بوحدة m$^2$/s. (اقسم إجابتك على $\\pi$). أعطِ إجابتك مقربة إلى منزلتين عشريتين.'
         self.description_hindi = 'चित्र समुद्र की सतह पर एक गोलाकार तेल रिसाव को दर्शाता है। रिसाव इस प्रकार फैल रहा है कि इसकी त्रिज्या $r$ एक निरंतर दर से बढ़ रही है। चित्र में दिए गए मापों का उपयोग करते हुए, इस क्षण में क्षेत्रफल में वृद्धि की दर ($dA/dt$) m$^2$/s में ज्ञात करें। (अपने अंतिम उत्तर को $\\pi$ से विभाजित करें)। अपना उत्तर 2 दशमलव स्थानों तक सही दें।'
@@ -1221,6 +1356,7 @@ class Mat135_multi(Mat135):
 class Mat136_multi(Mat136):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan jaring-jaring untuk kotak tanpa tutup yang terbuat dari lembaran logam persegi dengan memotong persegi yang sama dengan sisi $x$ dari sudut-sudutnya dan melipat ke atas penutupnya. Berdasarkan dimensi yang diberikan pada gambar, temukan nilai $x$ yang membuat volume $V$ mencapai maksimum. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '该图显示了一个无盖盒子的展开图，该盒子由一块方形金属板制成，在其四个角切去边长为$x$的相等正方形并将折翼向上折叠而成。根据图中提供的尺寸，求使体积$V$最大时的$x$值。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل شبكة لصندوق مفتوح من الأعلى ناتج عن قطع مربعات ضلعها $x$ من الزوايا ثم طي الجوانب. أوجد قيمة $x$ التي تجعل الحجم أعظميًا. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र धातु की एक वर्गाकार शीट से कोनों से $x$ भुजा वाले समान वर्गों को काटकर और फ्लैप्स को ऊपर मोड़कर बनाए गए एक खुले शीर्ष वाले बॉक्स के लिए एक नेट दिखाता है। चित्र में दिए गए आयामों के आधार पर, $x$ का वह मान ज्ञात करें जिसके लिए आयतन $V$ अधिकतम हो। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1230,6 +1366,7 @@ class Mat136_multi(Mat136):
 class Mat137_multi(Mat137):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = "Gambar tersebut menampilkan dua fungsi linear, $f(x)$ dan $g(x)$. Misalkan $h(x) = f(g(x))$. Menggunakan koordinat dan titik yang ditunjukkan pada gambar, hitunglah nilai $h'(x)$ pada nilai-$x$ yang ditandai. Berikan jawaban Anda dengan ketelitian 3 angka di belakang koma."
         self.description_chinese = "该图显示了两个线性函数，$f(x)$和$g(x)$。令$h(x) = f(g(x))$。利用坐标和图中指示的点，计算在标记的$x$值处$h'(x)$的值。结果保留3位小数。"
         self.description_arabic = "يعرض الشكل دالتين $f(x)$ و $g(x)$. لتكن $h(x) = f(g(x))$. باستخدام المعطيات، احسب قيمة $h'(x)$ عند القيمة المحددة. أعطِ إجابتك مقربة إلى 3 منازل عشرية."
         self.description_hindi = "चित्र दो रैखिक फलन, $f(x)$ और $g(x)$ प्रदर्शित करता है। मान लीजिए $h(x) = f(g(x))$ है। चित्र में निर्देशांकों और इंगित बिंदु का उपयोग करते हुए, चिह्नित $x$-मान पर $h'(x)$ के मान की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।"
@@ -1239,6 +1376,7 @@ class Mat137_multi(Mat137):
 class Mat138_multi(Mat138):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan daerah terarsir di kuadran pertama yang dibatasi oleh fungsi parabola $f(x)$ di bagian atas dan sumbu-x di bagian bawah. Menggunakan informasi dan fungsi yang diberikan pada gambar, hitunglah total luas daerah yang diarsir. Berikan jawaban dengan ketelitian 3 angka di belakang koma.'
         self.description_chinese = '该图显示了第一象限内的一个阴影区域，上方由抛物线函数$f(x)$围成，下方由x轴围成。利用图中提供的信息和函数，计算阴影区域的总面积。结果保留3位小数。'
         self.description_arabic = 'يعرض الشكل منطقة مظللة في الربع الأول يحدها منحنى قطع مكافئ ومحور $x$. احسب المساحة الكلية للمنطقة. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र प्रथम चतुर्थांश में एक छायांकित क्षेत्र प्रदर्शित करता है जो ऊपर से एक परवलीय फलन $f(x)$ द्वारा और नीचे से x-अक्ष द्वारा परिबद्ध है। चित्र में दी गई जानकारी और फलन का उपयोग करते हुए, छायांकित क्षेत्र के कुल क्षेत्रफल की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1248,6 +1386,7 @@ class Mat138_multi(Mat138):
 class Mat139_multi(Mat139):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan grafik fungsi kecepatan $v(t)$ (dalam m/s) selama selang waktu tertentu. Menggunakan koordinat yang diberikan dalam grafik kecepatan-waktu, hitunglah total perpindahan benda selama seluruh durasi yang ditunjukkan.'
         self.description_chinese = '该图显示了一段时间内速度函数$v(t)$（单位：m/s）的图像。利用速度-时间图中提供的坐标，计算物体在显示的整个持续时间内的总位移。'
         self.description_arabic = 'يوضح الشكل التمثيل البياني لدالة السرعة $v(t)$. باستخدام مخطط السرعة-الزمن، احسب الإزاحة الكلية خلال الفترة المعطاة.'
         self.description_hindi = 'चित्र समय के एक अंतराल पर एक वेग फलन $v(t)$ (m/s में) का ग्राफ दिखाता है। वेग-समय ग्राफ में दिए गए निर्देशांकों का उपयोग करते हुए, दिखाई गई संपूर्ण अवधि में वस्तु के कुल विस्थापन की गणना करें।'
@@ -1257,6 +1396,7 @@ class Mat139_multi(Mat139):
 class Mat140_multi(Mat140):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut mengilustrasikan bangun ruang 3D yang dibentuk dengan memutar daerah 2D tertentu mengelilingi sumbu-x. Berdasarkan fungsi, garis vertikal, dan arah putaran pada gambar, hitunglah volume bangun ruang yang dihasilkan. Berikan jawaban Anda sebagai desimal yang dibulatkan hingga tiga tempat. (Gunakan $\\pi \\approx 3.14159$).'
         self.description_chinese = '该图说明了通过将特定的2D区域绕x轴旋转而形成的立体3D图形。根据图中指示的函数、垂直线和旋转，计算所得立体的体积。结果保留3位小数。（以$\\pi \\approx 3.14159$）。'
         self.description_arabic = 'يوضح الشكل مجسمًا ثلاثي الأبعاد ناتجًا عن دوران منطقة ثنائية الأبعاد حول محور $x$. بناءً على الدالة والخط العمودي والدوران الموضح في الشكل، احسب حجم المجسم الناتج. أعطِ إجابتك كعدد عشري مقرب إلى ثلاثة منازل. (استخدم $\\pi \\approx 3.14159$).'
         self.description_hindi = 'चित्र एक विशिष्ट 2D क्षेत्र को x-अक्ष के चारों ओर घुमाकर बनाए गए एक ठोस 3D आकार को दर्शाता है। चित्र में इंगित फलन, ऊर्ध्वाधर रेखा, और घूर्णन के आधार पर, परिणामी ठोस के आयतन की गणना करें। अपना उत्तर तीन स्थानों तक पूर्णांकित दशमलव के रूप में दें। ($\\pi \\approx 3.14159$ का उपयोग करें)।'
@@ -1266,6 +1406,7 @@ class Mat140_multi(Mat140):
 class Mat141_multi(Mat141):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Variabel $x$ dan $y$ memenuhi hubungan $y = k a^x$, di mana $k$ dan $a$ adalah konstanta. Seperti yang ditunjukkan pada gambar, grafik $\\ln y$ terhadap $x$ adalah garis lurus yang melewati titik $({self.x1}, {self.lny1})$ dan $({self.x2}, {self.lny2})$. Temukan nilai $a$.'
         self.description_chinese = f'变量$x$和$y$满足关系式$y = k a^x$，其中$k$和$a$是常数。如图所示，$\\ln y$对$x$的图像是一条经过点$({self.x1}, {self.lny1})$和$({self.x2}, {self.lny2})$的直线。求$a$的值。'
         self.description_arabic = f'المتغيران $x$ و $y$ يحققان العلاقة $y = k a^x$، حيث $k$ و $a$ ثابتان. كما هو موضح في الشكل، فإن التمثيل البياني لـ $\\ln y$ بدلالة $x$ خط مستقيم يمر بالنقطتين $({self.x1}, {self.lny1})$ و $({self.x2}, {self.lny2})$. أوجد قيمة $a$.'
         self.description_hindi = f'चर $x$ और $y$ संबंध $y = k a^x$ को संतुष्ट करते हैं, जहाँ $k$ और $a$ स्थिरांक हैं। जैसा कि चित्र में दिखाया गया है, $x$ के विरुद्ध $\\ln y$ का ग्राफ एक सीधी रेखा है जो बिंदुओं $({self.x1}, {self.lny1})$ और $({self.x2}, {self.lny2})$ से होकर गुजरती है। $a$ का मान ज्ञात करें।'
@@ -1275,6 +1416,7 @@ class Mat141_multi(Mat141):
 class Mat142_multi(Mat142):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Seperti yang ditunjukkan pada gambar, pertumbuhan kultur bakteri dimodelkan oleh $N = {self.n0} \\times {self.b}^{{{self.k}t}}$, di mana $N$ adalah jumlah bakteri setelah $t$ jam. Berdasarkan gambar, carilah nilai bilangan bulat terkecil dari $t$ agar populasinya melebihi {self.threshold}.'
         self.description_chinese = f'如图所示，细菌培养物的增长通过模型$N = {self.n0} \\times {self.b}^{{{self.k}t}}$表示，其中$N$是$t$小时后的细菌数量。根据该图，求出使种群数量超过{self.threshold}的最小整数值$t$。'
         self.description_arabic = f'كما هو موضح في الشكل، يُنمذج نمو مزرعة بكتيرية بواسطة $N = {self.n0} \\times {self.b}^{{{self.k}t}}$، حيث $N$ هو عدد البكتيريا بعد $t$ ساعة. بناءً على الشكل، أوجد أصغر قيمة صحيحة لـ $t$ يتجاوز عندها عدد البكتيريا {self.threshold}.'
         self.description_hindi = f'जैसा कि चित्र में दिखाया गया है, एक जीवाणु संवर्धन की वृद्धि को $N = {self.n0} \\times {self.b}^{{{self.k}t}}$ द्वारा प्रतिरूपित किया गया है, जहाँ $t$ घंटों के बाद बैक्टीरिया की संख्या $N$ है। चित्र के आधार पर, $t$ का सबसे छोटा पूर्णांक मान ज्ञात करें जिसके लिए जनसंख्या {self.threshold} से अधिक हो जाती है।'
@@ -1284,6 +1426,7 @@ class Mat142_multi(Mat142):
 class Mat143_multi(Mat143):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Seperti yang ditunjukkan pada gambar, sebuah zat radioaktif meluruh mengikuti model $N = 100e^{{-\\lambda t}}$, di mana $N$ adalah persentase zat yang tersisa setelah $t$ tahun. Berdasarkan koordinat dari titik yang diindikasikan pada kurva, tentukan nilai konstanta peluruhan $\\lambda$. Berikan jawaban Anda dengan ketelitian empat angka di belakang koma.'
         self.description_chinese = f'如图所示，放射性物质按照模型$N = 100e^{{-\\lambda t}}$衰变，其中$N$是$t$年后剩余物质的百分比。根据曲线上指示点的坐标，求衰变常数$\\lambda$的值。结果保留4位小数。'
         self.description_arabic = f'كما هو موضح في الشكل، تضمحل مادة مشعة وفقًا للنموذج $N = 100e^{{-\\lambda t}}$، حيث $N$ هي النسبة المئوية للمادة المتبقية بعد $t$ سنة. بناءً على إحداثي النقطة المشار إليها على المنحنى، أوجد قيمة ثابت الاضمحلال $\\lambda$. أعطِ إجابتك مقربة إلى أربعة منازل عشرية.'
         self.description_hindi = f'जैसा कि चित्र में दिखाया गया है, एक रेडियोधर्मी पदार्थ मॉडल $N = 100e^{{-\\lambda t}}$ के अनुसार क्षय होता है, जहाँ $t$ वर्षों के बाद शेष बचे पदार्थ का प्रतिशत $N$ है। वक्र पर इंगित बिंदु के निर्देशांक के आधार पर, क्षय नियतांक $\\lambda$ का मान ज्ञात करें। अपना उत्तर चार दशमलव स्थानों तक सही दें।'
@@ -1293,6 +1436,7 @@ class Mat143_multi(Mat143):
 class Mat144_multi(Mat144):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan daerah yang dibatasi oleh sebuah kurva, sumbu-$x$, dan dua garis vertikal. Tentukan luas eksak dari daerah yang diarsir ini.'
         self.description_chinese = '该图显示了一个由曲线、$x$轴和两条垂直线围成的区域。求这个阴影区域的精确面积。'
         self.description_arabic = 'يوضح الشكل منطقة يحدها منحنى ومحور $x$ وخطان عموديان. أوجد المساحة الدقيقة لهذه المنطقة المظللة.'
         self.description_hindi = 'चित्र एक वक्र, $x$-अक्ष, और दो ऊर्ध्वाधर रेखाओं द्वारा परिबद्ध एक क्षेत्र दिखाता है। इस छायांकित क्षेत्र का सटीक क्षेत्रफल ज्ञात करें।'
@@ -1302,6 +1446,7 @@ class Mat144_multi(Mat144):
 class Mat145_multi(Mat145):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan grafik fungsi polinomial $y = f(x)$ berderajat 3. Menggunakan koordinat titik-titik yang ditunjukkan pada grafik, gunakan aturan trapesium dengan {self.n} interval untuk memperkirakan nilai integral tentu $\\int_{{{self.x_start}}}^{{{self.x_end}}} f(x) \\, dx$.'
         self.description_chinese = f'该图显示了一个3次多项式函数$y = f(x)$的图像。利用图上显示的点的坐标，使用{self.n}个区间的梯形法则估计定积分$\\int_{{{self.x_start}}}^{{{self.x_end}}} f(x) \\, dx$的值。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة كثيرة الحدود $y = f(x)$ من الدرجة 3. باستخدام إحداثيات النقاط الموضحة، استخدم قاعدة شبه المنحرف مع {self.n} فترات لتقدير قيمة التكامل المحدود $\\int_{{{self.x_start}}}^{{{self.x_end}}} f(x) \\, dx$.'
         self.description_hindi = f'चित्र 3 डिग्री के एक बहुपद फलन $y = f(x)$ का ग्राफ दिखाता है। ग्राफ पर दिखाए गए बिंदुओं के निर्देशांकों का उपयोग करते हुए, निश्चित समाकलन $\\int_{{{self.x_start}}}^{{{self.x_end}}} f(x) \\, dx$ के मान का अनुमान लगाने के लिए {self.n} अंतरालों के साथ समलंब नियम का उपयोग करें।'
@@ -1311,6 +1456,7 @@ class Mat145_multi(Mat145):
 class Mat146_multi(Mat146):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan kurva $y = f(x)$. Daerah $R$ dibatasi oleh kurva tersebut, sumbu-x, serta garis $x=0$ dan $x=k$. Jika luas daerah $R$ adalah tepat $\\frac{{{self.k}}}{{{self.a}}} \\ln({self.ratio})$, tentukan nilai $k$.'
         self.description_chinese = f'图中所示曲线为 $y = f(x)$。区域 $R$ 由曲线 $y = f(x)$、$x$ 轴以及直线 $x=0$ 和 $x=k$ 所围成。若区域 $R$ 的面积恰好为 $\\frac{{{self.k}}}{{{self.a}}} \\ln({self.ratio})$，求 $k$ 的值。'
         self.description_arabic = f'يوضح الشكل المنحنى $y = f(x)$. المنطقة $R$ محصورة بين المنحنى ومحور $x$ والخطين $x = 0$ و $x = k$. إذا كانت مساحة المنطقة $R$ تساوي $\\frac{{{self.k}}}{{{self.a}}} \\ln({self.ratio})$، فأوجد قيمة $k$.'
         self.description_hindi = f'आकृति में वक्र $y = f(x)$ दर्शाया गया है। क्षेत्र $R$ वक्र, $x$-अक्ष और रेखाओं $x=0$ तथा $x=k$ से घिरा हुआ है। यदि क्षेत्र $R$ का क्षेत्रफल ठीक $\\frac{{{self.k}}}{{{self.a}}} \\ln({self.ratio})$ है, तो $k$ का मान ज्ञात करें।'
@@ -1320,6 +1466,7 @@ class Mat146_multi(Mat146):
 class Mat147_multi(Mat147):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan grafik fungsi periodik $y = f(x)$ untuk $x \\ge 0$. Hitunglah luas daerah yang diarsir yang dibatasi oleh kurva dan sumbu-$x$ dari $x = 0$ hingga batas yang ditentukan.'
         self.description_chinese = f'该图显示了当$x \\ge 0$时周期函数$y = f(x)$的图像。计算由曲线和$x$轴围成的从$x = 0$到指示上限的阴影区域的面积。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة دورية $y = f(x)$ حيث $x \\ge 0$. احسب مساحة المنطقة المظللة المحصورة بين المنحنى ومحور $x$ من $x = 0$ حتى الحد المشار إليه.'
         self.description_hindi = f'चित्र $x \\ge 0$ के लिए एक आवर्ती फलन $y = f(x)$ का ग्राफ दिखाता है। वक्र और $x = 0$ से इंगित सीमा तक $x$-अक्ष द्वारा परिबद्ध छायांकित क्षेत्र के क्षेत्रफल की गणना करें।'
@@ -1329,15 +1476,17 @@ class Mat147_multi(Mat147):
 class Mat148_multi(Mat148):
     def __init__(self):
         super().__init__()
-        self.description_chinese = f'图中显示了连续函数 $y = f(x)$ 在局部区域上的图像。确定图中所示的整数 $n$，使得方程 $f(x) = 0$ 的根存在于区间 $[n, n+1]$ 内。'
-        self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة متصلة $y = f(x)$ على مجال محدد. حدّد العدد الصحيح {self.extremum_type} $n$ بحيث يوجد جذر للمعادلة $f(x) = 0$ في الفترة $[n, n+1]$.'
+        self.description_indonesian = f'Gambar tersebut menunjukkan grafik fungsi kontinu $y = f(x)$ pada suatu domain lokal. Identifikasi bilangan bulat **{self.extremum_type}** $n$ pada gambar sedemikian rupa sehingga akar dari persamaan $f(x) = 0$ berada dalam interval $[n, n+1]$.'
+        self.description_chinese = f'图中显示了连续函数 $y = f(x)$ 在局部区域上的图像。确定图中所示的**{self.extremum_type}**整数 $n$，使得方程 $f(x) = 0$ 的根存在于区间 $[n, n+1]$ 内。'
+        self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة متصلة $y = f(x)$ على مجال محدد. حدّد العدد الصحيح **{self.extremum_type}** $n$ بحيث يوجد جذر للمعادلة $f(x) = 0$ في الفترة $[n, n+1]$.'
         self.description_hindi = f'चित्र में एक सतत फलन $y = f(x)$ का स्थानीय डोमेन पर ग्राफ दर्शाया गया है। चित्र में दिखाई देने वाले उस **{self.extremum_type}** पूर्णांक $n$ को पहचानिए जिसके लिए अंतराल $[n, n+1]$ में समीकरण $f(x) = 0$ का एक मूल मौजूद हो।'
-        self.description_kazakh = f'Сызбада $y = f(x)$ үздіксіз функциясының белгілі бір аралықтағы графигі көрсетілген. $f(x) = 0$ теңдеуінің түбірі $[n, n+1]$ аралығында жататындай сызбадағы {self.extremum_type} $n$ бүтін санын анықтаңыз.'
+        self.description_kazakh = f'Сызбада $y = f(x)$ үздіксіз функциясының белгілі бір аралықтағы графигі көрсетілген. $f(x) = 0$ теңдеуінің түбірі $[n, n+1]$ аралығында жататындай сызбадағы **{self.extremum_type}** $n$ бүтін санын анықтаңыз.'
         self.description_swahili = f'Kielelezo kinaonyesha grafu ya fumbuo endelevu $y = f(x)$ katika kikoa mahususi. Tambua namba nzima $n$ ya **{self.extremum_type}** inayoonekana kwenye kielelezo kiasi kwamba mzizi wa mlinganyo $f(x) = 0$ upo katika muda $[n, n+1]$.'
 
 class Mat149_multi(Mat149):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan diagram sarang laba-laba (cobweb diagram) untuk iterasi titik tetap guna mencari hampiran akar positif dari $x = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$. Dimulai dengan nilai $x_0$ yang ditunjukkan pada grafik, tentukan hampiran akar setelah {self.k_iterations} iterasi. Berikan jawaban Anda hingga 10 tempat desimal.'
         self.description_chinese = f'该图显示了不动点迭代的蛛网图，用于近似$x = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$的正根。从图中显示的$x_0$值开始，求{self.k_iterations}次迭代后的根的近似值。结果保留10位小数。'
         self.description_arabic = f'يوضح الشكل مخطط نسيج العنكبوت لتكرار نقطة ثابتة لتقريب الجذر الموجب للمعادلة $x = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$. بدءًا من القيمة $x_0$ الموضحة في الشكل، أوجد تقريب الجذر بعد {self.k_iterations} تكرار. أعطِ إجابتك مقربة إلى 10 منازل عشرية.'
         self.description_hindi = f'चित्र $x = \\frac{{{self.p}}}{{{self.q}x + {self.r}}}$ के धनात्मक मूल का अनुमान लगाने के लिए एक निश्चित-बिंदु पुनरावृत्ति के लिए एक कॉबवेब आरेख दिखाता है। ग्राफ में दिखाए गए मान $x_0$ से शुरू करते हुए, {self.k_iterations} पुनरावृत्तियों के बाद मूल का अनुमान ज्ञात करें। अपना उत्तर 10 दशमलव स्थानों तक दें।'
@@ -1347,6 +1496,7 @@ class Mat149_multi(Mat149):
 class Mat150_multi(Mat150):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebagaimana ditunjukkan pada diagram sarang laba-laba untuk iterasi $x_{{n+1}} = g(x_n)$ yang dimulai dari $x_0$, tentukan jumlah iterasi yang diperlukan agar barisan tersebut keluar dari rentang bilangan bulat $[{self.range_a}, {self.range_b}]$.'
         self.description_chinese = f'如图所示，对于从 $x_0$ 开始的迭代 $x_{{n+1}} = g(x_n)$，​​确定序列移出整数范围 $[{self.range_a}, {self.range_b}]$ 所需的迭代次数。'
         self.description_arabic = f'كما هو موضح في مخطط نسيج العنكبوت للتكرار $x_{{n+1}} = g(x_n)$ بدءًا من $x_0$، حدّد عدد التكرارات اللازمة لكي تخرج المتتالية من النطاق $[{self.range_a}, {self.range_b}]$.'
         self.description_hindi = f'जैसा कि $x_0$ से शुरू होने वाले पुनरावृति $x_{{n+1}} = g(x_n)$ के लिए कोबवेब आरेख में दिखाया गया है, अनुक्रम को पूर्णांक सीमा $[{self.range_a}, {self.range_b}]$ से बाहर जाने के लिए आवश्यक पुनरावृति की संख्या निर्धारित करें।'
@@ -1356,6 +1506,7 @@ class Mat150_multi(Mat150):
 class Mat151_multi(Mat151):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Variabel $x$ dan $y$ dihubungkan oleh persamaan $y = k e^{{ax}}$, dengan $k$ dan $a$ adalah konstanta. Sebuah grafik garis lurus digambarkan pada sumbu $x$ (horizontal) dan $\\ln y$ (vertikal). Menggunakan titik-titik yang terdapat pada grafik linear tersebut, tentukan nilai konstanta $a$.'
         self.description_chinese = f'变量$x$和$y$由方程$y = k e^{{ax}}$关联，其中$k$和$a$是常数。一条直线图像绘制在标记为$x$（水平）和$\\ln y$（垂直）的轴上。利用图中的线性图上标记的点，确定常数$a$的值。'
         self.description_arabic = f'يرتبط المتغيران $x$ و $y$ بالمعادلة $y = k e^{{ax}}$، حيث $k$ و $a$ ثابتان. يُرسم تمثيل بياني خطي على محاور مسماة $x$ (أفقي) و $\\ln y$ (رأسي). باستخدام النقاط الموضحة، أوجد قيمة $a$.'
         self.description_hindi = f'चर $x$ और $y$ समीकरण $y = k e^{{ax}}$ द्वारा संबंधित हैं, जहाँ $k$ और $a$ स्थिरांक हैं। लेबल किए गए $x$ (क्षैतिज) और $\\ln y$ (ऊर्ध्वाधर) अक्षों पर एक सीधी रेखा का ग्राफ आलेखित किया गया है। चित्र में रैखिक ग्राफ पर चिह्नित बिंदुओं का उपयोग करते हुए, स्थिरांक $a$ का मान निर्धारित करें।'
@@ -1365,6 +1516,7 @@ class Mat151_multi(Mat151):
 class Mat152_multi(Mat152):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Variabel $x$ dan $y$ memenuhi hubungan $y = Ax^n$. Gambar tersebut menunjukkan garis lurus yang diplot pada sumbu yang diberi label $\\lg x$ (horizontal) dan $\\lg y$ (vertikal), di mana $\\lg$ melambangkan $\\log_{{10}}$. Menggunakan titik-titik yang diindikasikan pada gambar, temukan nilai $n$. Berikan jawaban Anda dengan ketelitian hingga 3 angka desimal.'
         self.description_chinese = f'变量$x$和$y$满足关系式$y = Ax^n$。该图显示了一条绘制在标记为$\\lg x$（水平）和$\\lg y$（垂直）的轴上的直线，其中$\\lg$表示$\\log_{{10}}$。利用图中指示的点，求$n$的值。结果保留3位小数。'
         self.description_arabic = f'المتغيران $x$ و $y$ يحققان العلاقة $y = A x^n$. يوضح الشكل خطًا مستقيمًا مرسومًا على محاور مسماة $\\lg x$ (أفقي) و $\\lg y$ (رأسي)، حيث تشير $\\lg$ إلى $\\log_{{10}}$. باستخدام النقاط المشار إليها، أوجد قيمة $n$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = f'चर $x$ और $y$ संबंध $y = Ax^n$ को संतुष्ट करते हैं। चित्र $\\lg x$ (क्षैतिज) और $\\lg y$ (ऊर्ध्वाधर) लेबल वाले अक्षों पर आलेखित एक सीधी रेखा को दिखाता है, जहाँ $\\lg$, $\\log_{{10}}$ को दर्शाता है। चित्र में इंगित बिंदुओं का उपयोग करते हुए, $n$ का मान ज्ञात करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1374,6 +1526,7 @@ class Mat152_multi(Mat152):
 class Mat153_multi(Mat153):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sebuah persegi panjang ditunjukkan pada gambar dengan panjang, lebar, dan luasnya dinyatakan dalam variabel $x$. Berdasarkan label yang diberikan dalam diagram, hitunglah nilai numerik dari $x$.'
         self.description_chinese = '图中的矩形的长度、宽度和面积用$x$表示。根据图中提供的信息，计算$x$的数值。'
         self.description_arabic = 'يوضح الشكل مستطيلاً أبعاده ومساحته معبر عنها بدلالة $x$. بناءً على المعطيات في الشكل، أوجد القيمة العددية لـ $x$.'
         self.description_hindi = 'चित्र में एक आयत दिखाया गया है जिसकी लंबाई, चौड़ाई और क्षेत्रफल $x$ के पदों में व्यक्त किए गए हैं। आरेख में दिए गए लेबलों के आधार पर, $x$ के संख्यात्मक मान की गणना करें।'
@@ -1383,6 +1536,7 @@ class Mat153_multi(Mat153):
 class Mat154_multi(Mat154):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan grafik fungsi logaritma. Grafik tersebut memiliki asimtot vertikal yang ditunjukkan oleh garis putus-putus dan melewati sebuah titik yang tertera pada gambar. Menggunakan informasi yang diberikan pada gambar, tentukan nilai $k$.'
         self.description_chinese = f'图中所示为对数函数的图像。图像有一条用虚线表示的垂直渐近线，且渐近线经过图中标记的点。利用图中提供的信息，求$k$的值。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة لوغاريتمية لها مقارب عمودي ممثل بخط متقطع وتمر بنقطة معلّمة. باستخدام المعلومات في الشكل، أوجد قيمة $k$.'
         self.description_hindi = f'चित्र एक लघुगणकीय फलन का ग्राफ दिखाता है। ग्राफ में एक खंडि होकर गुजरता है। चित्र में दी गई जानकारी का उपयोग करते हुए, $k$ का मान निर्धारित करें।'
@@ -1392,6 +1546,7 @@ class Mat154_multi(Mat154):
 class Mat155_multi(Mat155):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menampilkan kurva eksponensial $y = e^{kx}$ dan daerah yang diarsir $R$. Daerah tersebut dibatasi oleh kurva, sumbu, dan garis vertikal yang tertera pada gambar. Hitunglah luas eksak dari daerah yang diarsir $R$. Berikan jawaban Anda dengan ketelitian hingga 3 angka desimal.'
         self.description_chinese = '该图显示了指数曲线$y = e^{kx}$和阴影区域$R$。该区域由曲线、坐标轴和图中标记的一条垂直线围成。计算阴影区域$R$的精确面积。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل منحنى أسيًا $y = e^{kx}$ ومنطقة مظللة $R$. المنطقة محصورة بين المنحنى والمحورين وخط رأسي. احسب المساحة الدقيقة للمنطقة $R$. أعطِ إجابتك مقربة إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र एक चरघातांकी वक्र $y = e^{kx}$ और एक छायांकित क्षेत्र $R$ प्रदर्शित करता है। यह क्षेत्र वक्र, अक्षों और चित्र में चिह्नित एक ऊर्ध्वाधर रेखा द्वारा परिबद्ध है। छायांकित क्षेत्र $R$ के सटीक क्षेत्रफल की गणना करें। अपना उत्तर 3 दशमलव स्थानों तक सही दें।'
@@ -1401,6 +1556,7 @@ class Mat155_multi(Mat155):
 class Mat156_multi(Mat156):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan sebuah kurva dan daerah yang diarsir di bawahnya. Area yang diarsir terletak di antara kurva dan sumbu-x, dari titik asal hingga batas atas yang tertera pada gambar. Menggunakan informasi pada gambar, temukan luas daerah yang diarsir. Berikan jawaban Anda dalam bentuk desimal dengan pembulatan tiga angka di belakang koma.'
         self.description_chinese = '该图显示了一条曲线及其下方的一个阴影区域。阴影区域位于曲线和x轴之间，从原点到标记的上限。利用图中的信息，求阴影区域的面积。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل منحنى ومنطقة مظللة تحته. تقع المنطقة بين المنحنى ومحور $x$ من نقطة الأصل حتى حد علوي محدد. أوجد مساحة المنطقة المظللة. أعطِ إجابتك كعدد عشري مقرب إلى ثلاثة منازل عشرية.'
         self.description_hindi = 'चित्र एक वक्र और उसके नीचे एक छायांकित क्षेत्र दिखाता है। छायांकित क्षेत्र वक्र और x-अक्ष के बीच, मूल बिंदु से एक चिह्नित ऊपरी सीमा तक स्थित है। चित्र में दी गई जानकारी का उपयोग करते हुए, छायांकित क्षेत्र का क्षेत्रफल ज्ञात करें। अपना उत्तर तीन दशमलव स्थानों तक पूर्णांकित दशमलव के रूप में दें।'
@@ -1410,6 +1566,7 @@ class Mat156_multi(Mat156):
 class Mat157_multi(Mat157):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan grafik fungsi rasional $f(x)$. Daerah yang dimaksud diarsir dan dibatasi oleh kurva, sumbu-x, serta dua garis vertikal. Berdasarkan informasi visual pada gambar, hitunglah integral tentu dari $f(x)$ pada interval yang diarsir. Bulatkan jawaban Anda hingga tiga angka di belakang koma.'
         self.description_chinese = '该图描绘了有理函数$f(x)$的图像。感兴趣的区域带有阴影，并由曲线、x轴和两条垂直线围成。根据图中的视觉信息，计算$f(x)$在阴影区间上的定积分。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل التمثيل البياني لدالة كسرية $f(x)$. المنطقة المظللة محصورة بين المنحنى ومحور $x$ وخطين عموديين. احسب التكامل المحدود للدالة على الفترة المظللة. قرّب إجابتك إلى ثلاثة منازل عشرية.'
         self.description_hindi = 'चित्र एक परिमेय फलन $f(x)$ का ग्राफ दर्शाता है। रुचि का क्षेत्र छायांकित है और वक्र, x-अक्ष और दो ऊर्ध्वाधर रेखाओं द्वारा परिबद्ध है। चित्र में दृश्य जानकारी के आधार पर, छायांकित अंतराल पर $f(x)$ के निश्चित समाकलन की गणना करें। अपने उत्तर को तीन दशमलव स्थानों तक पूर्णांकित करें।'
@@ -1419,6 +1576,7 @@ class Mat157_multi(Mat157):
 class Mat158_multi(Mat158):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan sebuah kurva di kuadran pertama dan daerah yang diarsir yang dibatasi oleh kurva, sumbu-x, dan batas vertikal. Menggunakan informasi yang diberikan pada gambar, tentukan luas daerah yang diarsir. Bulatkan jawaban Anda hingga 3 angka di belakang koma.'
         self.description_chinese = '该图显示了第一象限中的一条曲线以及一个由曲线、x轴和垂直上限围成的阴影区域。利用图中提供的信息，确定阴影区域的面积。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل منحنى في الربع الأول ومنطقة مظللة يحدها المنحنى ومحور $x$ وحد رأسي. أوجد مساحة المنطقة المظللة. قرّب إجابتك إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र प्रथम चतुर्थांश में एक वक्र और वक्र, x-अक्ष, और एक ऊर्ध्वाधर सीमा द्वारा परिबद्ध एक छायांकित क्षेत्र दिखाता है। चित्र में दी गई जानकारी का उपयोग करते हुए, छायांकित क्षेत्र का क्षेत्रफल निर्धारित करें। अपने उत्तर को 3 दशमलव स्थानों तक पूर्णांकित करें।'
@@ -1428,6 +1586,7 @@ class Mat158_multi(Mat158):
 class Mat159_multi(Mat159):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut mengilustrasikan kurva berbentuk lonceng dan daerah yang diarsir di bawahnya membentang dari sumbu-y hingga garis vertikal yang tertera pada gambar. Berdasarkan fungsi dan batas yang ditunjukkan dalam diagram, hitunglah luas daerah ini. Bulatkan jawaban Anda hingga 3 angka di belakang koma.'
         self.description_chinese = '该图展示了一条钟形曲线及其下方从y轴延伸到一条标记的垂直线的阴影区域。根据图表中显示的函数和限制，计算该区域的面积。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل منحنى على شكل جرس ومنطقة مظللة تحته تمتد من محور $y$ إلى خط رأسي محدد. احسب مساحة هذه المنطقة. قرّب إجابتك إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र एक घंटी के आकार का वक्र और उसके नीचे y-अक्ष से चिह्नित ऊर्ध्वाधर रेखा तक फैला हुआ एक छायांकित क्षेत्र दर्शाता है। आरेख में दिखाए गए फलन और सीमा के आधार पर, इस क्षेत्र के क्षेत्रफल की गणना करें। अपने उत्तर को 3 दशमलव स्थानों तक पूर्णांकित करें।'
@@ -1437,6 +1596,7 @@ class Mat159_multi(Mat159):
 class Mat160_multi(Mat160):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan grafik fungsi trigonometri $y = f(x)$ pada interval yang diarsir. Temukan luas daerah yang diarsir di bawah kurva tersebut. Bulatkan jawaban Anda hingga 3 angka di belakang koma.'
         self.description_chinese = f'该图显示了在一个阴影区间内三角函数$y = f(x)$的图像。求曲线下方阴影区域的面积。结果保留3位小数。'
         self.description_arabic = f'يوضح الشكل التمثيل البياني لدالة مثلثية $y = f(x)$ على فترة مظللة. أوجد مساحة المنطقة المظللة تحت المنحنى. قرّب إجابتك إلى 3 منازل عشرية.'
         self.description_hindi = f'चित्र एक छायांकित अंतराल पर एक त्रिकोणमितीय फलन (trigonometric function) $y = f(x)$ का ग्राफ दिखाता है। वक्र के नीचे छायांकित क्षेत्र का क्षेत्रफल ज्ञात करें। अपने उत्तर को 3 दशमलव स्थानों तक पूर्णांकित करें।'
@@ -1446,6 +1606,7 @@ class Mat160_multi(Mat160):
 class Mat161_multi(Mat161):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = "Diagram tersebut menunjukkan grafik $y = x$ dan $y = f(x)$ untuk $x > 0$. Sebuah barisan 'sarang laba-laba' mengilustrasikan konvergensi dari proses iteratif $x_{n+1} = f(x_n)$ yang dimulai dari nilai awal $x_1$ yang ditandai pada sumbu. Menggunakan rumus iteratif dan nilai awal yang ditunjukkan pada gambar, hitunglah nilai iterasi ketiga, $x_3$, dibulatkan hingga 3 angka di belakang koma."
         self.description_chinese = "该图显示了当$x > 0$时$y = x$和$y = f(x)$的图像。一个‘蛛网’序列说明了从轴上标记的初始值$x_1$开始的迭代过程$x_{n+1} = f(x_n)$的收敛性。利用图中显示的迭代公式和初始值，计算第三次迭代的值$x_3$，结果保留3位小数。"
         self.description_arabic = "يوضح الشكل التمثيلين البيانيين لـ $y = x$ و $y = f(x)$ حيث $x > 0$. توضح متتالية 'نسيج العنكبوت' تقارب عملية تكرارية $x_{n+1} = f(x_n)$ بدءًا من قيمة ابتدائية $x_1$. باستخدام الصيغة التكرارية والقيمة الابتدائية الموضحة في الشكل، احسب قيمة التكرار الثالث $x_3$، مقربًا إلى 3 منازل عشرية."
         self.description_hindi = "आरेख $x > 0$ के लिए $y = x$ और $y = f(x)$ के ग्राफ दिखाता है। एक 'कॉबवेब' अनुक्रम अक्ष पर चिह्नित प्रारंभिक मान $x_1$ से शुरू होने वाली पुनरावृत्तीय प्रक्रिया $x_{n+1} = f(x_n)$ के अभिसरण को दर्शाता है। चित्र में दिखाए गए पुनरावृत्तीय सूत्र और प्रारंभिक मान का उपयोग करते हुए, 3 दशमलव स्थानों तक पूर्णांकित करके तीसरी पुनरावृत्ति, $x_3$, के मान की गणना करें।"
@@ -1455,6 +1616,7 @@ class Mat161_multi(Mat161):
 class Mat162_multi(Mat162):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan sketsa kurva $y = a\\ln(x) - x + b$. Kurva tersebut memotong sumbu-x di dua titik. Akar yang lebih besar, $\\alpha$, terlihat berada di antara dua bilangan bulat berurutan pada sumbu-x yang memiliki interval satuan. Berdasarkan posisi akar tersebut pada gambar, tentukan bilangan bulat $n$ sedemikian sehingga $n < \\alpha < n+1$.'
         self.description_chinese = '该图显示了曲线$y = a\\ln(x) - x + b$的草图。该曲线在两点处与$x$轴相交。较大的根$\\alpha$显示位于以单位间隔标记的$x$轴网格上的两个连续整数之间。根据图中较大根的视觉位置，识别整数$n$，使得$n < \\alpha < n+1$。'
         self.description_arabic = 'يوضح الشكل رسمًا تقريبيًا للمنحنى $y = a\\ln(x) - x + b$. يتقاطع المنحنى مع محور $x$ في نقطتين. يقع الجذر الأكبر $\\alpha$ بين عددين صحيحين متتاليين على محور $x$. بناءً على الشكل، حدد العدد الصحيح $n$ بحيث $n < \\alpha < n+1$.'
         self.description_hindi = 'चित्र वक्र $y = a\\ln(x) - x + b$ का एक रेखाचित्र दिखाता है। वक्र $x$-अक्ष को दो बिंदुओं पर प्रतिच्छेद करता है। बड़ा मूल, $\\alpha$, $x$-अक्ष ग्रिड पर दो लगातार पूर्णांकों के बीच स्थित दिखाया गया है, जिसे इकाई अंतरालों के साथ चिह्नित किया गया है। चित्र में बड़े मूल के दृश्य स्थान के आधार पर, पूर्णांक $n$ की पहचान करें ताकि $n < \\alpha < n+1$ हो।'
@@ -1464,6 +1626,7 @@ class Mat162_multi(Mat162):
 class Mat163_multi(Mat163):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan dua vektor yang berpangkal di titik yang sama $O$ pada ruang 3D. Vektor $\\mathbf{a}$ dan vektor $\\mathbf{b}$ diberikan sesuai label pada diagram. Kedua vektor tersebut ditunjukkan saling tegak lurus oleh simbol sudut siku-siku. Berdasarkan informasi pada gambar, hitunglah nilai konstanta $p$.'
         self.description_chinese = '该图显示了源自3D空间中公共点$O$的两个向量。向量$\\mathbf{a}$和向量$\\mathbf{b}$如图中标注。这些向量由直角符号指示为垂直。利用图中的信息，计算常数$p$的值。'
         self.description_arabic = 'يعرض الشكل متجهين ينطلقان من نقطة مشتركة $O$ في فضاء ثلاثي الأبعاد. المتجهان $\\mathbf{a}$ و $\\mathbf{b}$ موضحان في الشكل، وهما متعامدان. باستخدام المعلومات المعطاة، احسب قيمة الثابت $p$.'
         self.description_hindi = 'चित्र 3D अंतरिक्ष में एक सामान्य बिंदु $O$ से उत्पन्न होने वाले दो सदिशों को प्रदर्शित करता है। सदिश $\\mathbf{a}$ और सदिश $\\mathbf{b}$ को आरेख में लेबल किया गया है। सदिशों को समकोण प्रतीक द्वारा लंबवत होने का संकेत दिया गया है। चित्र में दी गई जानकारी का उपयोग करते हुए, स्थिरांक $p$ के मान की गणना करें।'
@@ -1473,6 +1636,7 @@ class Mat163_multi(Mat163):
 class Mat164_multi(Mat164):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sebuah diagram menunjukkan dua garis lurus $L_1$ dan $L_2$ yang berpotongan di titik $X$ pada ruang 3D. Garis $L_1$ melewati titik $A$ dan sejajar dengan vektor $\\mathbf{d_1}$. Garis $L_2$ melewati titik $B$ dan sejajar dengan vektor $\\mathbf{d_2}$. Berdasarkan koordinat dan komponen yang tertera pada diagram, tentukan titik potong kedua garis tersebut untuk mencari nilai numerik dari konstanta $m$.'
         self.description_chinese = '图表显示了在3D空间中相交于点$X$的两条直线$L_1$和$L_2$。直线$L_1$经过点$A$且平行于向量$\\mathbf{d_1}$。直线$L_2$经过点$B$且平行于向量$\\mathbf{d_2}$。利用图中标注的坐标和分量，求解这些直线的交点以确定常数$m$的数值。'
         self.description_arabic = 'يوضح الشكل خطين مستقيمين $L_1$ و $L_2$ يتقاطعان عند النقطة $X$ في فضاء ثلاثي الأبعاد. يمر الخط $L_1$ بالنقطة $A$ ويوازي المتجه $\\mathbf{d_1}$، ويمر الخط $L_2$ بالنقطة $B$ ويوازي المتجه $\\mathbf{d_2}$. باستخدام المعطيات، أوجد قيمة الثابت $m$.'
         self.description_hindi = 'एक आरेख 3D अंतरिक्ष में बिंदु $X$ पर प्रतिच्छेद करने वाली दो सीधी रेखाएँ $L_1$ और $L_2$ दिखाता है। रेखा $L_1$ बिंदु $A$ से होकर गुजरती है और सदिश $\\mathbf{d_1}$ के समानांतर है। रेखा $L_2$ बिंदु $B$ से होकर गुजरती है और सदिश $\\mathbf{d_2}$ के समानांतर है। आरेख में लेबल किए गए निर्देशांकों और घटकों का उपयोग करते हुए, स्थिरांक $m$ का संख्यात्मक मान निर्धारित करने के लिए इन रेखाओं के प्रतिच्छेदन को हल करें।'
@@ -1482,6 +1646,7 @@ class Mat164_multi(Mat164):
 class Mat165_multi(Mat165):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sebuah limas segitiga $OABC$ ditunjukkan dengan titik asal di $O(0,0,0)$. Vektor posisi dari titik-titik sudut $A, B,$ dan $C$ adalah sesuai dengan yang tertera pada diagram. Titik $M$ adalah titik tengah dari rusuk $AB$. Sebuah vektor $\\vec{MC}$ menghubungkan $M$ ke titik sudut $C$. Hitunglah kuadrat magnitudo dari vektor $\\vec{MC}$ (yaitu, hitung $|\\vec{MC}|^2$).'
         self.description_chinese = '如图所示，三棱锥$OABC$的原点位于$O(0,0,0)$。顶点$A、B$和$C$的位置向量如图所示。点$M$是边$AB$的精确中点。向量$\\vec{MC}$将$M$连接到顶点$C$。计算向量$\\vec{MC}$的大小的平方（即计算$|\\vec{MC}|^2$）。'
         self.description_arabic = 'يوضح الشكل هرمًا ثلاثي الأبعاد $OABC$ حيث نقطة الأصل عند $O(0,0,0)$. متجهات الموضع للرؤوس $A$ و $B$ و $C$ موضحة. النقطة $M$ هي منتصف القطعة $AB$. احسب مربع مقدار المتجه $\\vec{MC}$.'
         self.description_hindi = 'एक त्रिकोणीय पिरामिड $OABC$ दिखाया गया है जिसका मूल बिंदु $O(0,0,0)$ पर है। शीर्षों $A, B,$ और $C$ के स्थिति सदिश आरेख में दिखाए गए अनुसार हैं। बिंदु $M$ किनारे $AB$ का सटीक मध्यबिंदु है। एक सदिश $\\vec{MC}$, $M$ को शीर्ष $C$ से जोड़ता है। सदिश $\\vec{MC}$ के वर्गित परिमाण की गणना करें (अर्थात, $|\\vec{MC}|^2$ की गणना करें)।'
@@ -1491,6 +1656,7 @@ class Mat165_multi(Mat165):
 class Mat166_multi(Mat166):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sebuah jajar genjang $ABCD$ digambarkan dalam sistem koordinat 3D. Koordinat untuk tiga titik sudut $A, B,$ dan $C$ tertera pada diagram. Titik sudut keempat $D$ memiliki koordinat $(x, y, z)$. Menggunakan sifat penjumlahan atau pengurangan vektor pada jajar genjang, tentukan jumlah dari koordinat titik sudut $D$ (yaitu, hitung $x + y + z$).'
         self.description_chinese = '在3D坐标系中绘制了平行四边形$ABCD$。其中三个顶点$A、B$和$C$的坐标在图中标注。第四个顶点$D$标注了未知坐标$(x, y, z)$。利用平行四边形的向量加减法性质，求顶点$D$的坐标之和（即计算$x + y + z$）。'
         self.description_arabic = 'يوضح الشكل متوازي الأضلاع $ABCD$ في نظام إحداثي ثلاثي الأبعاد. إحداثيات الرؤوس $A$ و $B$ و $C$ معطاة، بينما إحداثيات الرأس $D$ غير معروفة. باستخدام خواص المتجهات، أوجد قيمة $x + y + z$.'
         self.description_hindi = 'एक 3D समन्वय प्रणाली में एक समांतर चतुर्भुज $ABCD$ आलेखित किया गया है। तीन शीर्षों $A, B,$ और $C$ के निर्देशांक आरेख में लेबल किए गए हैं। चौथे शीर्ष $D$ को अज्ञात निर्देशांकों $(x, y, z)$ के साथ लेबल किया गया है। एक समांतर चतुर्भुज के लिए सदिश जोड़/घटाव गुणों का उपयोग करते हुए, शीर्ष $D$ के निर्देशांकों का योग ज्ञात करें (अर्थात, $x + y + z$ की गणना करें)।'
@@ -1500,6 +1666,7 @@ class Mat166_multi(Mat166):
 class Mat167_multi(Mat167):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan sebuah persegi pada diagram Argand dengan titik-titik sudut $O, P, Q,$ dan $R$ yang berurutan berlawanan arah jarum jam. $O$ adalah titik asal. Titik sudut $P$ merepresentasikan bilangan kompleks $z_1$ sesuai dengan label yang tertera.\n\nJika titik-titik tersebut membentuk persegi $OPQR$, tentukan bagian imajiner dari bilangan kompleks yang direpresentasikan oleh titik sudut $R$.'
         self.description_chinese = '该图显示了阿干图中的一个正方形，其顶点按逆时针顺序标记为$O$、$P$、$Q$和$R$。$O$是原点。如标签中规定，顶点$P$代表复数$z_1$。\n\n如果这些顶点构成正方形$OPQR$，确定由顶点$R$代表的复数的虚部。'
         self.description_arabic = 'يوضح الشكل مربعًا في مخطط أرجاند برؤوس $O$ و $P$ و $Q$ و $R$ بترتيب عكس اتجاه عقارب الساعة، حيث $O$ هي نقطة الأصل و $P$ يمثل العدد المركب $z_1$. أوجد الجزء التخيلي للعدد المركب الذي يمثله الرأس $R$.'
         self.description_hindi = 'आकृति में आर्गंड (Argand) आरेख में एक वर्ग दिखाया गया है जिसके शीर्षों को वामावर्त क्रम में $O$, $P$, $Q$ और $R$ से अंकित किया गया है। $O$ मूल बिंदु है। शीर्ष $P$ जटिल संख्या $z_1$ को दर्शाता है, जैसा कि लेबल में निर्दिष्ट है।\n\nयदि शीर्ष एक वर्ग $OPQR$ बनाते हैं, तो शीर्ष $R$ द्वारा दर्शाई गई जटिल संख्या का काल्पनिक भाग ज्ञात करें।'
@@ -1509,6 +1676,7 @@ class Mat167_multi(Mat167):
 class Mat168_multi(Mat168):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan diagram Argand dengan sebuah lingkaran dan garis vertikal. Lingkaran tersebut merepresentasikan lokus yang didefinisikan oleh $|z - c| = r$. Garis tersebut merupakan lokus titik-titik dengan $\\text{Re}(z) = k$. Garis tersebut menyinggung lingkaran di sisi kanannya. Berdasarkan label pada diagram, tentukan nilai $k$.'
         self.description_chinese = '该图显示了一个带有圆和垂直线的阿干图。该圆代表由$|z - c| = r$定义的轨迹。该直线代表$\\text{Re}(z) = k$的点的轨迹。该直线在圆的右侧与圆相切。根据图中的标签，确定$k$的值。'
         self.description_arabic = 'يوضح الشكل مخطط أرجاند يحتوي على دائرة وخط عمودي. تمثل الدائرة المحل الهندسي $|z - c| = r$، ويمثل الخط المحل الهندسي حيث $\\text{Re}(z) = k$. الخط مماس للدائرة من الجهة اليمنى. أوجد قيمة $k$.'
         self.description_hindi = 'चित्र एक वृत्त और एक ऊर्ध्वाधर रेखा के साथ एक आर्गंड (Argand) आरेख प्रदर्शित करता है। वृत्त $|z - c| = r$ द्वारा परिभाषित बिंदु पथ का प्रतिनिधित्व करता है। रेखा उन बिंदुओं के पथ का प्रतिनिधित्व करती है जहाँ $\\text{Re}(z) = k$ है। रेखा वृत्त के दाहिने हिस्से पर स्पर्श रेखा है। आरेख में लेबलों के आधार पर, $k$ का मान निर्धारित करें।'
@@ -1518,6 +1686,7 @@ class Mat168_multi(Mat168):
 class Mat169_multi(Mat169):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan diagram Argand dengan tiga titik: titik asal $O$, titik $A$ yang merepresentasikan bilangan kompleks $z$, dan titik $B$ yang merepresentasikan konjugatnya $\\bar{z}$. Terdapat segitiga terarsir yang menghubungkan titik-titik tersebut. Menggunakan nilai $z$ yang tertera pada gambar, hitunglah luas segitiga tersebut.'
         self.description_chinese = '该图显示了一个有三个点的阿干图：原点$O$、代表复数$z$的点$A$和代表其共轭复数$\\bar{z}$的点$B$。一个阴影三角形连接了这些点。利用图中标记的$z$值，计算阴影三角形的面积。'
         self.description_arabic = 'يوضح الشكل مخطط أرجاند بثلاث نقاط: $O$ نقطة الأصل، و $A$ تمثل العدد المركب $z$، و $B$ تمثل مرافقه $\\bar{z}$. احسب مساحة المثلث المحدد بهذه النقاط.'
         self.description_hindi = 'चित्र तीन बिंदुओं के साथ एक आर्गंड आरेख दिखाता है: मूल बिंदु $O$, सम्मिश्र संख्या $z$ का प्रतिनिधित्व करने वाला बिंदु $A$, और इसके संयुग्मी $\\bar{z}$ का प्रतिनिधित्व करने वाला बिंदु $B$। एक छायांकित त्रिभुज इन बिंदुओं को जोड़ता है। चित्र में लेबल किए गए $z$ के मान का उपयोग करते हुए, छायांकित त्रिभुज के क्षेत्रफल की गणना करें।'
@@ -1527,6 +1696,7 @@ class Mat169_multi(Mat169):
 class Mat170_multi(Mat170):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan sinar (setengah garis) yang merepresentasikan lokus pada bidang kompleks. Sinar tersebut berpangkal dari titik $A$ pada sumbu imajiner dan memiliki sudut argumen tertentu, sebagaimana ditunjukkan pada diagram. Tentukan nilai titik potong sumbu-x saat lokus tersebut melintasi sumbu riil. Bulatkan hingga 3 angka di belakang koma.'
         self.description_chinese = '该图显示了复平面中代表轨迹的射线（半直线）。该射线起源于虚轴上的点$A$，具有如图所示的特定辐角。求该轨迹穿过实轴的$x$截距的值。结果保留3位小数。'
         self.description_arabic = 'يوضح الشكل شعاعًا يمثل محلاً هندسيًا في المستوى المركب. ينطلق الشعاع من النقطة $A$ على المحور التخيلي وله زاوية محددة. أوجد نقطة تقاطعه مع محور $x$. قرّب إجابتك إلى 3 منازل عشرية.'
         self.description_hindi = 'चित्र सम्मिश्र तल में एक बिंदु पथ का प्रतिनिधित्व करने वाली एक किरण दिखाता है। किरण काल्पनिक अक्ष पर बिंदु $A$ से उत्पन्न होती है और इसका एक विशिष्ट कोणांक है, जैसा कि आरेख में दिखाया गया है। $x$-अंतःखंड का वह मान ज्ञात करें जहाँ यह बिंदु पथ वास्तविक अक्ष को पार करता है। 3 दशमलव स्थानों तक पूर्णांकित करें।'
@@ -1536,6 +1706,7 @@ class Mat170_multi(Mat170):
 class Mat171_multi(Mat171):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Tiga gaya sebidang bekerja pada suatu titik dengan arah seperti yang ditunjukkan pada diagram. Diketahui bahwa gaya-gaya tersebut berada dalam kesetimbangan, tentukan nilai $X$.'
         self.description_chinese = '三个共面力在如图所示的方向上作用于一点。已知力处于平衡状态，求$X$的值。'
         self.description_arabic = 'تؤثر ثلاث قوى في مستوى واحد عند نقطة في الاتجاهات الموضحة في الشكل. علمًا بأن القوى في حالة اتزان، أوجد قيمة $X$.'
         self.description_hindi = 'तीन समतलीय बल आरेख में दिखाई गई दिशाओं में एक बिंदु पर कार्य करते हैं। यह देखते हुए कि बल संतुलन में हैं, $X$ का मान ज्ञात करें।'
@@ -1545,6 +1716,7 @@ class Mat171_multi(Mat171):
 class Mat172_multi(Mat172):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram tersebut menunjukkan grafik kecepatan-waktu yang memodelkan gerak suatu partikel. Partikel tersebut meninggalkan titik $O$ dan kembali ke titik $O$ pada saat $T$. Berdasarkan gambar dan informasi yang tersedia, tentukan nilai $T$.'
         self.description_chinese = '该图显示了对粒子运动进行建模的速度-时间图。粒子离开$O$，并最终在时间$T$返回$O$。根据图表和提供的信息，求$T$的值。'
         self.description_arabic = 'يوضح الشكل تمثيلًا بيانيًا للسرعة-الزمن لنمذجة حركة جسيم. يغادر الجسيم النقطة $O$ ويعود إليها عند الزمن $T$. أوجد قيمة $T$.'
         self.description_hindi = 'आरेख एक वेग-समय ग्राफ दिखाता है जो एक कण की गति को प्रतिरूपित करता है। कण $O$ से निकलता है और अंततः समय $T$ पर $O$ पर वापस आ जाता है। चित्र और दी गई जानकारी के आधार पर, $T$ का मान ज्ञात करें।'
@@ -1554,6 +1726,7 @@ class Mat172_multi(Mat172):
 class Mat173_multi(Mat173):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Tiga partikel $P, Q,$ dan $R$ mula-mula diam pada satu garis lurus di atas bidang horizontal licin seperti yang ditunjukkan pada gambar. Massa masing-masing partikel adalah $m_P, m_Q,$ dan $m_R$. Partikel $P$ digerakkan langsung menuju $Q$ dengan kecepatan awal tertentu. Setelah $P$ dan $Q$ bertumbukan, $P$ terus bergerak ke arah yang sama dengan kecepatan yang lebih rendah. Pada tumbukan selanjutnya antara $Q$ dan $R$, kedua partikel tersebut menyatu. Tentukan kecepatan gabungan partikel setelah tumbukan kedua ini.'
         self.description_chinese = '如图所示，三个粒子$P、Q$和$R$在光滑水平面上同一直线处于静止状态。$P$的质量是$m_P$，$Q$是$m_Q$，$R$是$m_R$。$P$以初始速度直接向$Q$投射。$P$和$Q$碰撞后，$P$以减小的速度继续沿相同方向运动。在随后$Q$和$R$之间的碰撞中，这些粒子合并。求第二次碰撞后合并粒子的速度。'
         self.description_arabic = 'توجد ثلاثة جسيمات $P$ و $Q$ و $R$ على خط مستقيم على مستوى أفقي أملس. كتلتها $m_P$ و $m_Q$ و $m_R$. يُقذف $P$ نحو $Q$ بسرعة ابتدائية، وبعد التصادم الأول يستمر بحركة أبطأ. في التصادم الثاني بين $Q$ و $R$ يندمجان. أوجد سرعة الجسيم الناتج.'
         self.description_hindi = 'चित्र में दिखाए गए अनुसार एक चिकने क्षैतिज तल पर एक सीधी रेखा में तीन कण $P, Q$ और $R$ विरामावस्था में हैं। $P$ का द्रव्यमान $m_P$, $Q$ का $m_Q$, और $R$ का $m_R$ है। $P$ को एक प्रारंभिक गति के साथ सीधे $Q$ की ओर प्रक्षेपित किया जाता है। $P$ और $Q$ के टकराने के बाद, $P$ कम गति के साथ उसी दिशा में आगे बढ़ता रहता है। $Q$ और $R$ के बीच बाद की टक्कर में, ये कण आपस में मिल जाते हैं। इस दूसरी टक्कर के बाद संयुक्त कण की गति ज्ञात करें।'
@@ -1563,6 +1736,7 @@ class Mat173_multi(Mat173):
 class Mat174_multi(Mat174):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Berdasarkan gambar, sebuah balok diletakkan pada bidang miring kasar dengan sudut kemiringan $\\alpha$ terhadap horizontal. Sebuah gaya konstan diterapkan pada balok ke arah atas sejajar bidang. Tentukan waktu yang dibutuhkan balok tersebut untuk bergerak dari keadaan diam sejauh jarak yang ditentukan ke arah bawah bidang.'
         self.description_chinese = '根据该图，将一个木块放在与水平面成$\\alpha$角的粗糙斜面上。对木块施加一个沿斜面向上的恒力。求木块从静止开始沿斜面向下移动指定距离所需的时间。'
         self.description_arabic = 'توضع كتلة على مستوى خشن يميل بزاوية $\\alpha$ على الأفقي. تؤثر قوة ثابتة لأعلى المستوى. أوجد الزمن اللازم لقطع المسافة المحددة.'
         self.description_hindi = 'चित्र के आधार पर, एक ब्लॉक क्षैतिज से $\\alpha$ कोण पर झुके हुए एक खुरदरे तल पर रखा गया है। ब्लॉक पर सीधे तल के ऊपर की ओर एक निरंतर बल लगाया जाता है। वह समय ज्ञात करें जो ब्लॉक को विरामावस्था से तल के नीचे निर्दिष्ट दूरी तक जाने में लगता है।'
@@ -1572,6 +1746,7 @@ class Mat174_multi(Mat174):
 class Mat175_multi(Mat175):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram tersebut menunjukkan penampang vertikal $ABC$ dari sebuah seluncuran air yang kasar. Seseorang yang dimodelkan sebagai partikel meluncur turun dari keadaan diam di titik $A$. Berdasarkan informasi yang tertera pada gambar, tentukan usaha yang dilakukan untuk melawan gaya hambat saat orang tersebut bergerak dari $B$ ke $C$.'
         self.description_chinese = '该图显示了粗糙滑水道的垂直横截面$ABC$。一个被建模为粒子的人从$A$处静止开始向下滑动。根据图中提供的信息，求人从$B$移动到$C$时克服阻力所做的功。'
         self.description_arabic = 'يوضح الشكل المقطع العرضي الرأسي $ABC$ لمنزلق مائي خشن. ينزلق رجل من السكون عند $A$. أوجد الشغل المبذول ضد قوة المقاومة من $B$ إلى $C$.'
         self.description_hindi = 'आरेख एक खुरदरे वॉटरस्लाइड का ऊर्ध्वाधर क्रॉस-सेक्शन $ABC$ दिखाता है। एक कण के रूप में प्रतिरूपित एक व्यक्ति $A$ से विरामावस्था से नीचे खिसकता है। चित्र में दी गई जानकारी के आधार पर, व्यक्ति के $B$ से $C$ तक जाने पर प्रतिरोध बल के विरुद्ध किए गए कार्य को ज्ञात करें।'
@@ -1581,7 +1756,8 @@ class Mat175_multi(Mat175):
 class Mat176_multi(Mat176):
     def __init__(self):
         super().__init__()
-        self.description_chinese = '据该图，计算B班分数中位数与A班分数中位数之间的正差值。'
+        self.description_indonesian = 'Diagram batang-daun berhadapan menunjukkan nilai ujian siswa di Kelas A dan Kelas B. Berdasarkan gambar tersebut, hitunglah selisih positif antara median nilai Kelas B dan median nilai Kelas A.'
+        self.description_chinese = '背靠背茎叶图显示了A班和B班学生的考试成绩。根据该图，计算B班分数中位数与A班分数中位数之间的正差值。'
         self.description_arabic = 'يوضح مخطط الساق والورقة المزدوج درجات طلاب الفصلين $A$ و $B$. احسب الفرق الموجب بين الوسيطين.'
         self.description_hindi = 'बैक-टू-बैक स्टेम-एंड-लीफ़ आरेख Class A और Class B के  माध्यिका अंक और Class A के माध्यिका अंक के बीच धनात्मक अंतर की गणना करें।'
         self.description_kazakh = 'Сабақ-жапырақ диаграммасында А және В сыныптарындағы оқушылардың тест ұпайлары көрсетілген. Сызбаға сүйене отырып, В сыныбының медианалық ұпайы мен А сыныбының медианалық ұпайы арасындағы оң айырманы есептеңіз.'
@@ -1590,6 +1766,7 @@ class Mat176_multi(Mat176):
 class Mat177_multi(Mat177):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Diagram kotak-garis (box-and-whisker plot) merangkum data tinggi spesies tanaman tertentu. Berdasarkan gambar tersebut, hitunglah nilai numerik minimum agar tinggi tanaman dapat dianggap sebagai pencilan (outlier) sesuai dengan kriteria standar $Q_3 + 1,5 \\times (IQR)$.'
         self.description_chinese = '箱线图总结了特定植物物种的高度。根据该图，计算植物高度达到根据标准$Q_3 + 1.5 \\times (IQR)$准则被视为异常值所需的最小数值。'
         self.description_arabic = 'يوضح مخطط الصندوق والشاربين أطوال نباتات. احسب الحد الأدنى للقيمة المتطرفة وفقًا للمعيار $Q_3 + 1.5 \\times (IQR)$.'
         self.description_hindi = 'बॉक्स-एंड-विस्कर प्लॉट एक विशिष्ट पौधे की प्रजाति की ऊँचाइयों को सारांशित करता है। चित्र के आधार पर, मानक $Q_3 + 1.5 \\ (IQR)$ मानदंड के अनुसार एक आउटलायर माने जाने के लिए पौधे की ऊँचाई का न्यूनतम संख्यात्मक मान क्या होना चाहिए, इसकी गणना करें।'
@@ -1599,6 +1776,7 @@ class Mat177_multi(Mat177):
 class Mat178_multi(Mat178):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Grafik frekuensi kumulatif menunjukkan waktu yang dihabiskan oleh {self.total_students} siswa untuk mengerjakan tugas rumah. Berdasarkan gambar tersebut, tentukan estimasi waktu untuk persentil ke-{self.percentile_rank} dari distribusi ini.'
         self.description_chinese = f'累积频率图显示了{self.total_students}名学生在家庭作业上花费的时间。根据该图，估计此分布的第{self.percentile_rank}个百分位数时间。'
         self.description_arabic = f'يوضح المنحنى التكراري المتجمع الزمن الذي قضاه {self.total_students} طالبًا. قدّر زمن المئين {self.percentile_rank}.'
         self.description_hindi = f'संचयी आवृत्ति ग्राफ {self.total_students} छात्रों द्वारा एक होमवर्क असाइनमेंट पर बिताए गए समय को प्रदर्शित करता है। चित्र के आधार पर, इस वितरण के लिए {self.percentile_rank}वें पर्सेंटाइल समय का अनुमान लगाएँ।'
@@ -1608,6 +1786,7 @@ class Mat178_multi(Mat178):
 class Mat179_multi(Mat179):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Histogram tersebut menunjukkan distribusi massa dari {self.total_n} paket di sebuah gudang pengiriman. Berdasarkan gambar tersebut, hitunglah densitas frekuensi untuk interval kelas terakhir.'
         self.description_chinese = f'直方图说明了快递仓库中一组{self.total_n}个包裹的质量分布。根据该图，计算最后一个组距的频率密度。'
         self.description_arabic = f'يوضح المدرج التكراري توزيع الكتل لـ {self.total_n} طردًا. احسب الكثافة التكرارية للفئة الأخيرة.'
         self.description_hindi = f'आयतचित्र एक डिलीवरी वेयरहाउस में {self.total_n} पार्सल के सेट के लिए द्रव्यमान के वितरण को दर्शाता है। चित्र के आधार पर, अंतिम वर्ग अंतराल के आवृत्ति घनत्व की गणना करें।'
@@ -1617,6 +1796,7 @@ class Mat179_multi(Mat179):
 class Mat180_multi(Mat180):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sekelompok siswa akan duduk pada deretan kursi seperti yang ditunjukkan pada gambar. Di antara siswa tersebut terdapat sepasang saudara kembar yang tidak boleh duduk berdampingan. Tentukan total banyaknya cara berbeda seluruh siswa dapat duduk sedemikian sehingga si kembar duduk terpisah.'
         self.description_chinese = f'一组学生将坐在如图所示的一排椅子上。在这群学生中有一对双胞胎，他们不能挨着坐。求所有学生就座且双胞胎分开的不同排列方式总数。'
         self.description_arabic = f'ستجلس مجموعة من الطلاب في صف الكراسي الموضح في الشكل. من بين الطلاب توأمان يجب ألا يجلسا متجاورين. أوجد العدد الكلي للطرق المختلفة لترتيب جلوس الطلاب بحيث يكون التوأمان منفصلين.'
         self.description_hindi = f'छात्रों के एक समूह को चित्र में दिखाई गई कुर्सियों की पंक्ति में बैठाया जाना है। छात्रों में जुड़वा बच्चों की एक जोड़ी है जिन्हें एक दूसरे के बगल में नहीं बैठना चाहिए। जुड़वा बच्चों को अलग रखते हुए सभी छात्रों को बैठाए जा सकने वाले अलग-अलग तरीकों की कुल संख्या ज्ञात करें।'
@@ -1626,6 +1806,7 @@ class Mat180_multi(Mat180):
 class Mat181_multi(Mat181):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebuah komite akan dipilih dari sekelompok orang yang ditunjukkan pada gambar. Komite tersebut harus terdiri dari tepat {self.req_women} wanita dan {self.req_men} pria. Tentukan banyaknya cara berbeda untuk memilih komite ini.'
         self.description_chinese = f'从图中所示的人员中选出一个委员会。委员会必须恰好由{self.req_women}名女性和{self.req_men}名男性组成。确定选择该委员会的不同方式数。'
         self.description_arabic = f'سيتم اختيار لجنة من مجموعة الأشخاص الموضحة في الشكل. يجب أن تتكون اللجنة من {self.req_women} نساء و {self.req_men} رجال بالضبط. أوجد عدد الطرق المختلفة لاختيار هذه اللجنة.'
         self.description_hindi = f'चित्र में दर्शाए गए लोगों के समूह में से एक समिति का चयन किया जाना है। समिति में ठीक {self.req_women} महिलाएं और {self.req_men} पुरुष होने चाहिए। इस समिति के चयन के विभिन्न तरीकों की संख्या ज्ञात करें।'
@@ -1635,6 +1816,7 @@ class Mat181_multi(Mat181):
 class Mat182_multi(Mat182):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Sebanyak {self.n} ornamen unik disusun dalam satu baris pada rak pajangan. Dua ornamen tertentu, yang ditunjukkan oleh label berwarna pada gambar, harus selalu diletakkan berdampingan. Tentukan total banyaknya cara berbeda untuk menyusun ornamen-ornamen tersebut.'
         self.description_chinese = f'一组{self.n}个独特的装饰品正被排列在展示架的直线上。由图中彩色标签指示的两个特定装饰品必须始终并排放置。确定这些装饰品可以排列的不同方式总数。'
         self.description_arabic = f'يتم ترتيب مجموعة مكونة من {self.n} من الزخارف المختلفة في صف مستقيم على رف عرض. يجب أن توضع زخرفتان محددتان، كما هو موضح في الشكل، جنبًا إلى جنب دائمًا. أوجد عدد طرق الترتيب الممكنة.'
         self.description_hindi = f'एक डिस्प्ले शेल्फ पर एक सीधी रेखा में {self.n} अद्वितीय आभूषणों का एक सेट व्यवस्थित किया जा रहा है। चित्र में रंगीन लेबलों द्वारा इंगित दो विशिष्ट आभूषणों को हमेशा अगल-बगल रखा जाना चाहिए। आभूषणों को व्यवस्थित करने के अलग-अलग तरीकों की कुल संख्या निर्धारित करें।'
@@ -1644,6 +1826,7 @@ class Mat182_multi(Mat182):
 class Mat183_multi(Mat183):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Sekelompok anggota dewan, termasuk seorang Ketua dan Sekretaris, sedang mengadakan pertemuan di meja panjang seperti pada gambar. Untuk pertemuan ini, Ketua dan Sekretaris harus duduk di kursi yang berdampingan. Tentukan total banyaknya cara berbeda para anggota tersebut dapat duduk.'
         self.description_chinese = '一群董事会成员（包括一名主席和一名秘书）正在图中所示的长桌上开会。在这次特定的会议中，主席和秘书必须坐在相邻的座位上。计算成员就座的不同方式总数。'
         self.description_arabic = 'تجتمع مجموعة من أعضاء مجلس الإدارة، بمن فيهم رئيس وسكرتير، حول الطاولة الطويلة الموضحة في الشكل. يجب أن يجلس الرئيس والسكرتير في مقعدين متجاورين. أوجد عدد طرق الجلوس الممكنة.'
         self.description_hindi = 'एक अध्यक्ष और एक सचिव सहित बोर्ड के सदस्यों का एक समूह चित्र में दिखाई गई लंबी मेज पर बैठक कर रहा है। इस विशिष्ट बैठक के लिए, अध्यक्ष और सचिव को आसन्न सीटों पर बैठना चाहिए। सदस्यों को बैठाए जा सकने वाले अलग-अलग तरीकों की कुल संख्या की गणना करें।'
@@ -1653,6 +1836,7 @@ class Mat183_multi(Mat183):
 class Mat184_multi(Mat184):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan fungsi massa peluang dari variabel acak diskret $X$. Berdasarkan tinggi garis yang ditunjukkan pada gambar, tentukan varians $Var(X)$.'
         self.description_chinese = '该图显示了离散随机变量$X$的概率质量函数。根据显示的线段高度，计算方差$Var(X)$。'
         self.description_arabic = 'يوضح الشكل دالة الكتلة الاحتمالية لمتغير عشوائي منفصل $X$. بناءً على القيم الموضحة، احسب التباين $Var(X)$.'
         self.description_hindi = 'चित्र एक असतत यादृच्छिक चर $X$ के प्रायिकता द्रव्यमान फलन को प्रदर्शित करता है। दिखाए गए खंडों की ऊँचाई के आधार पर, प्रसरण $Var(X)$ की गणना करें।'
@@ -1662,6 +1846,7 @@ class Mat184_multi(Mat184):
 class Mat185_multi(Mat185):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Variabel acak diskret $X$ merepresentasikan skor pada spinner empat sisi berbobot yang ditunjukkan pada gambar. Jika spinner tersebut diputar satu kali, tentukan nilai harapan $E(X)$.'
         self.description_chinese = '离散随机变量 $X$ 表示图中所示的加权四面转盘的得分。如果转盘旋转一次，求期望值 $E(X)$。'
         self.description_arabic = 'يمثل المتغير العشوائي المنفصل $X$ النتيجة على قرص دوار كما هو موضح في الشكل. إذا تم تدوير القرص مرة واحدة، أوجد القيمة المتوقعة $E(X)$.'
         self.description_hindi = 'चित्र में दर्शाए गए भारित चार-पक्षीय स्पिनर पर प्राप्त अंक को एक असतत यादृच्छिक चर (discrete random variable) $X$ द्वारा दर्शाया गया है। यदि स्पिनर को एक बार घुमाया जाता है, तो अपेक्षित मान $E(X)$ ज्ञात करें।'
@@ -1671,6 +1856,7 @@ class Mat185_multi(Mat185):
 class Mat186_multi(Mat186):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Variabel acak diskret $X$ mengikuti distribusi geometrik $X \\sim \\text{{Geo}}(p)$. Gambar tersebut menunjukkan fungsi massa peluang untuk beberapa nilai pertama $x$. Berdasarkan gambar tersebut, tentukan nilai $p$ dalam bentuk desimal.'
         self.description_chinese = f'离散随机变量$X$服从几何分布$X \\sim \\text{{Geo}}(p)$。该图显示了前几个$x$值的概率质量函数。根据该图，确定$p$的小数值。'
         self.description_arabic = f'يتبع متغير عشوائي منفصل $X$ توزيعًا هندسيًا $X \\sim \\text{{Geo}}(p)$. يوضح الشكل دالة الكتلة الاحتمالية للقيم الأولى لـ $x$. بناءً على الشكل، أوجد قيمة $p$ كعدد عشري.'
         self.description_hindi = f'एक असतत यादृच्छिक चर (discrete random variable) $X$ एक ज्यामितीय वितरण $X \\sim \\text{{Geo}}(p)$ का अनुसरण करता है। चित्र $x$ के पहले कुछ मानों के लिए प्रायिकता द्रव्यमान फलन दिखाता है। चित्र के आधार पर, $p$ का मान दशमलव के रूप में निर्धारित करें।'
@@ -1680,6 +1866,7 @@ class Mat186_multi(Mat186):
 class Mat187_multi(Mat187):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Histogram tersebut menunjukkan distribusi peluang variabel acak diskret $W$ dengan $W \\sim B(n, p)$. Berdasarkan tinggi batang pada diagram yang ditunjukkan, tentukan nilai numerik dari peluang sukses $p$.'
         self.description_chinese = f'该直方图显示了离散随机变量 $W$ 的概率分布，其中 $W \\sim B(n, p)$。根据图中所示的柱状图高度，求出成功概率 $p$ 的数值。'
         self.description_arabic = f'يوضح المدرج التكراري التوزيع الاحتمالي لمتغير عشوائي منفصل $W$ حيث $W \\sim B(n, p)$. بناءً على ارتفاعات الأشرطة في الشكل، أوجد قيمة احتمال النجاح $p$.'
         self.description_hindi = f'हिस्टोग्राम असतत यादृच्छिक चर (discrete random variable) $W$ के प्रायिकता वितरण को दर्शाता है, जहाँ $W$, $W \\sim B(n, p)$ है। चित्र में दर्शाए गए बार की ऊँचाई के आधार पर, सफलता की प्रायिकता $p$ का संख्यात्मक मान ज्ञात करें।'
@@ -1689,6 +1876,7 @@ class Mat187_multi(Mat187):
 class Mat188_multi(Mat188):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan variabel acak kontinu $X$ yang mengikuti distribusi normal. Berdasarkan parameter dan daerah terarsir pada diagram, tentukan nilai peluang yang dimaksud.'
         self.description_chinese = '该图说明一个服从正态分布的连续随机变量$X$。根据图表中显示的参数和阴影区域，计算指示概率的值。'
         self.description_arabic = 'يوضح الشكل متغيرًا عشوائيًا متصلاً $X$ يتبع توزيعًا طبيعيًا. باستخدام المعلمات والمنطقة المظللة، احسب قيمة الاحتمال المشار إليه.'
         self.description_hindi = 'चित्र एक सतत यादृच्छिक चर $X$ को दर्शाता है जो एक सामान्य वितरण का अनुसरण करता है। आरेख में दिखाए गए मापदंडों और छायांकित क्षेत्र के आधार पर, इंगित प्रायिकता के मान की गणना करें।'
@@ -1698,6 +1886,7 @@ class Mat188_multi(Mat188):
 class Mat189_multi(Mat189):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Variabel acak $X$ mengikuti distribusi normal dengan rata-rata yang ditunjukkan pada gambar. Berdasarkan peluang yang direpresentasikan oleh daerah terarsir, tentukan nilai simpangan baku $\\sigma$.'
         self.description_chinese = '随机变量$X$服从均值如图所示的正态分布。已知阴影区域代表的概率，计算标准差$\\sigma$的值。'
         self.description_arabic = 'يتبع المتغير العشوائي $X$ توزيعًا طبيعيًا بمتوسط حسابي موضح في الشكل. باستخدام الاحتمال الممثل بالمنطقة المظللة، احسب قيمة الانحراف المعياري $\\sigma$.'
         self.description_hindi = 'एक यादृच्छिक चर (random variable) $X$ चित्र में दिखाए गए माध्य के साथ एक सामान्य वितरण का अनुसरण करता है। छायांकित क्षेत्र द्वारा दर्शाई गई प्रायिकता को देखते हुए, मानक विचलन $\\sigma$ के मान की गणना करें।'
@@ -1707,6 +1896,7 @@ class Mat189_multi(Mat189):
 class Mat190_multi(Mat190):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan distribusi normal di mana daerah terarsir merepresentasikan peluang tertentu. Berdasarkan nilai-nilai batas pada daerah terarsir dan varians distribusi tersebut, tentukan nilai rata-rata $\\mu$.'
         self.description_chinese = '该图显示了一个正态分布，其中阴影区域代表特定概率。根据阴影区域的边界值和分布的方差，求均值$\\mu$的值。'
         self.description_arabic = 'يوضح الشكل توزيعًا طبيعيًا حيث تمثل المنطقة المظللة احتمالًا معينًا. باستخدام حدود المنطقة وتباين التوزيع، أوجد قيمة المتوسط الحسابي $\\mu$.'
         self.description_hindi = 'चित्र एक सामान्य वितरण दिखाता है जहाँ छायांकित क्षेत्र एक विशिष्ट प्रायिकता का प्रतिनिधित्व करता है। छायांकित क्षेत्र के सीमा मानों और वितरण के प्रसरण के आधार पर, माध्य $\\mu$ का मान ज्ञात करें।'
@@ -1716,6 +1906,7 @@ class Mat190_multi(Mat190):
 class Mat191_multi(Mat191):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut mengilustrasikan fungsi densitas probabilitas dari rata-rata sampel $\\overline{{X}}$ untuk sampel berukuran $n = {self.n}$ yang diambil dari populasi berdistribusi normal dengan rata-rata $\\mu$ dan varians $\\sigma^2$. Berdasarkan parameter yang ditunjukkan pada gambar, hitunglah simpangan baku dari populasi, $\\sigma$.'
         self.description_chinese = f'该图说明了从均值为$\\mu$且方差为$\\sigma^2$的正态分布总体中抽取样本量为$n = {self.n}$的样本，其样本均值$\\overline{{X}}$的概率密度函数。根据图中显示的参数，计算总体的标准差$\\sigma$。'
         self.description_arabic = f'يوضح الشكل دالة الكثافة الاحتمالية لمتوسط العينة $\\overline{{X}}$ لعينات بحجم $n = {self.n}$ مأخوذة من مجتمع يتبع توزيعًا طبيعيًا بمتوسط $\\mu$ وتباين $\\sigma^2$. أوجد قيمة الانحراف المعياري $\\sigma$.'
         self.description_hindi = f'चित्र माध्य $\\mu$ और प्रसरण $\\sigma^2$ के साथ सामान्य रूप से वितरित जनसंख्या से लिए गए आकार $n = {self.n}$ के नमूनों के लिए नमूना माध्य $\\overline{{X}}$ के प्रायिकता घनत्व फलन को दर्शाता है। चित्र में दिखाए गए मापदंडों के आधार पर, जनसंख्या के मानक विचलन, $\\sigma$, की गणना करें।'
@@ -1725,6 +1916,7 @@ class Mat191_multi(Mat191):
 class Mat192_multi(Mat192):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Plot titik (dot plot) menunjukkan hasil pengukuran rentang sayap (dalam cm) dari sampel acak burung. Berdasarkan data visual yang tertera pada gambar, tentukan estimasi tak bias dari varians populasi ($s^2$).'
         self.description_chinese = '点图显示了鸟类随机样本的翼展测量值（单位：cm）。根据图中提供的视觉数据，计算总体方差的无偏估计值（$s^2$）。'
         self.description_arabic = 'يوضح المخطط النقطي قياسات باع الجناحين (بالسنتيمتر) لعينة عشوائية من الطيور. باستخدام البيانات، احسب التقدير غير المتحيز لتباين المجتمع $s^2$.'
         self.description_hindi = 'डॉट प्लॉट पक्षियों के एक यादृच्छिक नमूने के पंखों के फैलाव के माप (cm में) दिखाता है। चित्र में दिए गए दृश्य डेटा के आधार पर, जनसंख्या प्रसरण के निष्पक्ष अनुमान ($s^2$) की गणना करें।'
@@ -1734,6 +1926,7 @@ class Mat192_multi(Mat192):
 class Mat193_multi(Mat193):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan distribusi suatu populasi dan distribusi sampling rata-rata sampel $\\overline{{X}}$ yang bersesuaian untuk sampel berukuran $n$. Berdasarkan parameter statistik yang tertera pada gambar, tentukan nilai ukuran sampel $n$.'
         self.description_chinese = '该图显示了一个总体的分布以及相应的样本量为$n$的样本均值$\\overline{X}$的抽样分布。根据图中提供的统计参数，确定样本量$n$的值。'
         self.description_arabic = 'يوضح الشكل توزيع مجتمع إحصائي وتوزيع المعاينة المقابل لمتوسط العينة $\\overline{X}$ لعينات بحجم $n$. باستخدام المعطيات، أوجد قيمة $n$.'
         self.description_hindi = 'चित्र एक जनसंख्या के वितरण और नमूना आकार $n$ के लिए नमूना माध्य $\\overline{X}$ के संबंधित नमूनाकरण वितरण को दिखाता है। चित्र में दिए गए सांख्यिकीय मापदंडों के आधार पर, नमूना आकार $n$ का मान निर्धारित करें।'
@@ -1743,6 +1936,7 @@ class Mat193_multi(Mat193):
 class Mat194_multi(Mat194):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan distribusi normal standar yang digunakan untuk menentukan nilai kritis $z$ bagi selang kepercayaan. Berdasarkan luas daerah pada ekor terarsir yang ditunjukkan, tentukan tingkat kepercayaan selang tersebut dalam bentuk persentase.'
         self.description_chinese = '该图显示了用于确定置信区间的临界值$z$的标准正态分布。根据阴影尾部中指示的面积，计算区间的置信水平百分比。'
         self.description_arabic = 'يوضح الشكل توزيعًا طبيعيًا معياريًا لتحديد القيمة الحرجة $z$ لفترة ثقة. بناءً على المساحة المظللة في الأطراف، احسب مستوى الثقة كنسبة مئوية.'
         self.description_hindi = 'चित्र एक विश्वास अंतराल के लिए महत्वपूर्ण मान $z$ निर्धारित करने के लिए उपयोग किए जाने वाले मानक सामान्य वितरण को दिखाता है। छायांकित पुच्छों में इंगित क्षेत्र के आधार पर, अंतराल के विश्वास स्तर की प्रतिशत के रूप में गणना करें।'
@@ -1752,6 +1946,7 @@ class Mat194_multi(Mat194):
 class Mat195_multi(Mat195):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Interval kepercayaan untuk rata-rata tinggi spesies tanaman dihitung dari sampel besar. Berdasarkan kurva distribusi normal dan interval yang ditunjukkan pada gambar, temukan rata-rata sampel $\\overline{x}$ yang digunakan untuk menyusun interval ini.'
         self.description_chinese = '根据一个大样本计算出某种植物平均高度的置信区间。根据图中显示的正态分布曲线和区间，求用于构建该区间的样本均值$\\overline{x}$。'
         self.description_arabic = 'تم حساب فترة ثقة لمتوسط طول نوع من النباتات من عينة كبيرة. باستخدام الشكل، أوجد متوسط العينة $\\overline{x}$.'
         self.description_hindi = 'एक पौधे की प्रजाति की माध्य ऊँचाई के लिए एक विश्वास अंतराल एक बड़े नमूने से गणना की गई थी। सामान्य वितरण वक्र और चित्र में दिखाए गए अंतराल के आधार पर, इस अंतराल के निर्माण के लिए उपयोग किए गए नमूना माध्य $\\overline{x}$ को ज्ञात करें।'
@@ -1761,6 +1956,7 @@ class Mat195_multi(Mat195):
 class Mat196_multi(Mat196):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan luas daerah di bawah kurva normal standar yang digunakan untuk selang kepercayaan tertentu. Berdasarkan daerah terarsir dan galat baku (SE) yang diketahui, tentukan lebar selang kepercayaan untuk rata-rata populasi $\\mu$.'
         self.description_chinese = '该图显示了用于特定置信区间的标准正态曲线下的面积。根据阴影面积和给定的标准误（SE），计算总体均值$\\mu$的置信区间宽度。'
         self.description_arabic = 'يوضح الشكل المساحات تحت المنحنى الطبيعي المعياري لفترة ثقة معينة. باستخدام المساحة المظللة والخطأ المعياري، احسب عرض فترة الثقة لمتوسط المجتمع $\\mu$.'
         self.description_hindi = 'चित्र एक विशिष्ट विश्वास अंतराल के लिए मानक सामान्य वक्र के अंतर्गत क्षेत्रों को दिखाता है। छायांकित क्षेत्र और दी गई मानक त्रुटि (SE) के आधार पर, जनसंख्या माध्य $\\mu$ के लिए विश्वास अंतराल की चौड़ाई की गणना करें।'
@@ -1770,6 +1966,7 @@ class Mat196_multi(Mat196):
 class Mat197_multi(Mat197):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan dua distribusi sampling, $A$ dan $B$, untuk rata-rata populasi yang sama tetapi dengan ukuran sampel yang berbeda, $n_A$ dan $n_B$. Berdasarkan hubungan yang ditunjukkan dan parameter pada keterangan gambar, tentukan nilai $n_B$.'
         self.description_chinese = '该图显示了对于相同的总体均值但具有不同样本量$n_A$和$n_B$的两个抽样分布$A$和$B$。根据显示的关系和图例中的参数，计算$n_B$的值。'
         self.description_arabic = 'يوضح الشكل توزيعي معاينة $A$ و $B$ لنفس متوسط المجتمع ولكن بأحجام عينات مختلفة $n_A$ و $n_B$. أوجد قيمة $n_B$.'
         self.description_hindi = 'चित्र समान जनसंख्या माध्य के लिए दो नमूनाकरण वितरणों, $A$ और $B$ को दिखाता है, लेकिन अलग-अलग नमूना आकारों, $n_A$ और $n_B$ के साथ। दिखाए गए संबंध और लेजेंड में मापदंडों के आधार पर, $n_B$ के मान की गणना करें।'
@@ -1779,6 +1976,7 @@ class Mat197_multi(Mat197):
 class Mat198_multi(Mat198):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Gambar tersebut menunjukkan hubungan antara margin error ($E$) dan ukuran sampel ($n$) dari sebuah hasil survei. Berdasarkan parameter yang tertera pada keterangan gambar dan titik yang ditandai pada kurva, tentukan ukuran sampel $n$ yang diperlukan.'
         self.description_chinese = '该图说明了调查结果的误差幅度（$E$）与样本量（$n$）之间的关系。根据图例中提供的参数和曲线上的标记点，确定所需的样本量$n$。'
         self.description_arabic = 'يوضح الشكل العلاقة بين هامش الخطأ $E$ وحجم العينة $n$. باستخدام النقطة المحددة، أوجد حجم العينة المطلوب.'
         self.description_hindi = 'चित्र एक सर्वेक्षण परिणाम के लिए त्रुटि के मार्जिन ($E$) और नमूना आकार ($n$) के बीच संबंध को दर्शाता है। चित्र लेजेंड में दिए गए मापदंडों और वक्र पर चिह्नित बिंदु के आधार पर, आवश्यक नमूना आकार $n$ निर्धारित करें।'
@@ -1788,6 +1986,7 @@ class Mat198_multi(Mat198):
 class Mat199_multi(Mat199):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = 'Dua sampel independen diambil dari populasi yang sama. Berdasarkan diagram kotak (boxplot) dan ukuran sampel yang tertera pada keterangan gambar, tentukan estimasi tak bias dari rata-rata populasi dengan menggabungkan seluruh observasi.'
         self.description_chinese = '从同一总体中抽取了两个独立样本。根据图例中提供的箱线图和样本量，通过组合所有观测值来计算总体均值的无偏估计值。'
         self.description_arabic = 'تم أخذ عينتين مستقلتين من نفس المجتمع. باستخدام مخططات الصندوق وأحجام العينات، احسب التقدير غير المتحيز لمتوسط المجتمع.'
         self.description_hindi = 'समान जनसंख्या से दो स्वतंत्र नमूने लिए गए हैं। चित्र लेजेंड में दिए गए बॉक्सप्लॉट और नमूना आकारों के आधार पर, सभी अवलोकनों को मिलाकर जनसंख्या माध्य के निष्पक्ष अनुमान की गणना करें।'
@@ -1797,6 +1996,7 @@ class Mat199_multi(Mat199):
 class Mat200_multi(Mat200):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = "Sebuah survei dilakukan dengan ukuran sampel yang besar. Diagram batang frekuensi menunjukkan jumlah hasil 'sukses' dan 'gagal'. Berdasarkan gambar tersebut, tentukan estimasi titik tak bias untuk proporsi populasi $p$."
         self.description_chinese = "一项大样本量的调查已完成。频率条形图说明了‘成功’和‘失败’结果的计数。根据该图，计算总体比例$p$的无偏点估计值。"
         self.description_arabic = "تم إجراء مسح بعينة كبيرة. يوضح المخطط الشريطي عدد نتائج 'النجاح' و 'الفشل'. احسب التقدير النقطي لنسبة المجتمع $p$."
         self.description_hindi = "बड़े नमूने के आकार के साथ एक सर्वेक्षण किया गया था। आवृत्ति दंड आरेख 'success' और 'failure' परिणामों की गिनती को दर्शाता है। चित्र के आधार पर, जनसंख्या अनुपात $p$ के लिए निष्पक्ष बिंदु अनुमान की गणना करें।"
@@ -1806,6 +2006,7 @@ class Mat200_multi(Mat200):
 class Mat201_multi(Mat201):
     def __init__(self):
         super().__init__()
+        self.description_indonesian = f'Gambar tersebut menunjukkan distribusi populasi $X$ dan distribusi rata-rata sampel $\\bar{{X}}$ untuk ukuran sampel $n = {self.n}$. Berdasarkan sifat-sifat statistik yang ditunjukkan, tentukan nilai $E(\\bar{{X}})$.'
         self.description_chinese = '该图说明了总体$X$的分布以及样本量为$n = ' + str(self.n) + '$的样本均值$\\bar{X}$的分布。根据显示的统计属性，确定$E(\\bar{X})$的值。'
         self.description_arabic = 'يوضح الشكل توزيع مجتمع $X$ وتوزيع متوسط العينة $\\bar{X}$ لعينة بحجم $n = ' + str(self.n) + '$. أوجد قيمة $E(\\bar{X})$.'
         self.description_hindi = 'चित्र एक जनसंख्या $X$ के वितरण और नमूना आकार $n = ' + str(self.n) + '$ के लिए नमूना माध्य $\\bar{X}$ के वितरण को दर्शाता है। दिखाए गए सांख्यिकीय गुणों के आधार पर, $E(\\bar{X})$ का मान निर्धारित करें।'

@@ -228,7 +228,7 @@ class Mat103:
         # Draw "The Net" (A circular patch)
         net_circle = patches.Circle((5, 5.5), 4.8, linewidth=2, edgecolor='#555', facecolor='#e0f7fa', alpha=0.5)
         ax.add_patch(net_circle)
-        ax.text(5, 10.5, "The Second Catch (The Net)", ha='center', fontsize=14, fontweight='bold', color='#333')
+        # ax.text(5, 10.5, "The Second Catch (The Net)", ha='center', fontsize=14, fontweight='bold', color='#333')
 
         # 3. Generate Fish Positions in a Grid
         # We arrange the fish in a grid to make them easy to count and prevent overlapping.
@@ -264,14 +264,14 @@ class Mat103:
         # 4. Draw the Fish
         # Plot Unmarked Fish (Blue)
         ax.scatter(unmarked_positions[:, 0], unmarked_positions[:, 1], 
-                s=250, c='#1f77b4', marker='o', edgecolors='black', label=f'Unmarked Fish ({len(unmarked_positions)})', alpha=0.9)
+                s=250, c='#1f77b4', marker='o', edgecolors='black', label=f'Unmarked Fish', alpha=0.9)
         # Add a simple 'tail'
         ax.scatter(unmarked_positions[:, 0]-0.2, unmarked_positions[:, 1], 
                 s=100, c='#1f77b4', marker='<', alpha=0.9)
 
         # Plot Marked Fish (Orange with a "Tag")
         ax.scatter(marked_positions[:, 0], marked_positions[:, 1], 
-                s=250, c='#ff7f0e', marker='o', edgecolors='red', linewidth=2, label=f'Marked Fish ({self.m})', alpha=1.0)
+                s=250, c='#ff7f0e', marker='o', edgecolors='red', linewidth=2, label=f'Marked Fish', alpha=1.0)
         ax.scatter(marked_positions[:, 0]-0.2, marked_positions[:, 1], 
                 s=100, c='#ff7f0e', marker='<', alpha=1.0)
         
@@ -283,8 +283,8 @@ class Mat103:
         ax.legend(loc='lower center', ncol=2, frameon=True, bbox_to_anchor=(0.5, 0.0))
         
         # Add explicit count caption as recommended
-        ax.text(5, 0.5, f"Sample Note: {self.m} marked fish and {len(unmarked_positions)} unmarked fish found in the net.", 
-                ha='center', fontsize=11, fontweight='bold', color='#444')
+        # ax.text(5, 0.5, f"Sample Note: {self.m} marked fish and {len(unmarked_positions)} unmarked fish found in the net.", 
+        #         ha='center', fontsize=11, fontweight='bold', color='#444')
 
         plt.tight_layout()
 
@@ -2792,7 +2792,7 @@ class Mat131:
         offset_x = self.r_val * 2.5
         
         ax.text(self.r_val * 1.5, self.r_val/2, "=", ha='center', va='center', fontsize=30, fontweight='bold')
-        ax.text(self.r_val * 1.5, self.r_val/2 + self.r_val*0.2, "Equal Perimeters", ha='center', va='bottom', fontsize=10, style='italic')
+        # ax.text(self.r_val * 1.5, self.r_val/2 + self.r_val*0.2, "Equal Perimeters", ha='center', va='bottom', fontsize=10, style='italic')
 
         # --- Draw Square (Right Side) ---
         # Bottom left corner of the square
@@ -2810,7 +2810,7 @@ class Mat131:
         ax.add_patch(square)
         
         # Label the square
-        ax.text(sq_x + self.square_side/2, -0.15 * self.square_side, f"s = ?", ha='center', va='top', fontsize=12, color='#e76f51')
+        # ax.text(sq_x + self.square_side/2, -0.15 * self.square_side, f"s = ?", ha='center', va='top', fontsize=12, color='#e76f51')
         ax.text(sq_x + self.square_side/2, self.square_side/2, "Square", ha='center', va='center', fontsize=10, color='white', fontweight='bold')
 
         # Adjust Plot Limits to fit everything nicely
@@ -3002,7 +3002,7 @@ class Mat133:
         )
 
     def generate(self, num):
-        fig = plt.figure(figsize=(12, 6))
+        fig = plt.figure(figsize=(12, 7))
         
         # --- LEFT SUBPLOT: The 2D Sector ---
         ax1 = fig.add_subplot(1, 2, 1)
@@ -3073,7 +3073,7 @@ class Mat133:
 
         # Draw Radius r line
         ax2.plot([0, self.r], [0, 0], [0, 0], color='black', linewidth=2, linestyle='--')
-        ax2.text(self.r/2, 0, -self.h*0.05, "$r=?$", fontsize=12, color='black', fontweight='bold')
+        ax2.text(self.r/2, 0, -self.h*0.05, "$r$", fontsize=12, color='black', fontweight='bold')
         
         # Draw Height h line (optional, but good for context)
         ax2.plot([0, 0], [0, 0], [0, self.h], color='blue', linestyle='--')

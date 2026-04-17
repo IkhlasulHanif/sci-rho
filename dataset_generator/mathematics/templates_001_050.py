@@ -592,7 +592,7 @@ class Mat008:
         
     def generate(self, num):
         # Setup Figure
-        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+        fig, axs = plt.subplots(1, 2, figsize=(10, 6))
 
         # Draw Clocks
         self.draw_clock(axs[0], self.start_hour, self.start_minute, "Clock A (Start)")

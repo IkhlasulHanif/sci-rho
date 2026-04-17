@@ -161,7 +161,7 @@ class Mat152:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 4))
+        fig, ax = plt.subplots(figsize=(6, 5))
         
         # Plot the line
         ax.plot([self.x1, self.x2], [self.y1, self.y2], color='blue', marker='o', linestyle='-', linewidth=2, markersize=8)
@@ -1717,7 +1717,7 @@ class Mat167:
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(6, 6))
+        fig, ax = plt.subplots(figsize=(7, 7))
 
         # Order of vertices for drawing lines: O -> P -> Q -> R -> O
         vertices = [self.z_o, self.z_p, self.z_q, self.z_r, self.z_o]

@@ -494,7 +494,7 @@ class Mat054:
         # Remove axes (ticks and spines) for a clean geometry look
         ax.axis('off')
         
-        plt.title("Calculate the Area of the Composite Shape", fontsize=14, pad=20)
+        # plt.title("Calculate the Area of the Composite Shape", fontsize=14, pad=20)
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
@@ -5106,7 +5106,7 @@ class Mat094:
             f"Find x-component of $\\mathbf{{r}} = {self.a}\\mathbf{{u}} + {self.b}\\mathbf{{v}}$"
         )
         
-        ax.set_title(question_text, fontsize=14, pad=15)
+        # ax.set_title(question_text, fontsize=14, pad=15)
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         
@@ -5239,8 +5239,8 @@ class Mat095:
                 r'$\mathbf{q}$', color='red', fontsize=14, fontweight='bold')
 
         ax.legend(loc='upper left', fontsize=11)
-        ax.set_title('Find the value of $k$ (the $y$-component of $\\mathbf{q}$)',
-                     fontsize=12, pad=10)
+        # ax.set_title('Find the value of $k$ (the $y$-component of $\\mathbf{q}$)',
+        #              fontsize=12, pad=10)
         plt.tight_layout()
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
