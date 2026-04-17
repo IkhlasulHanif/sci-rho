@@ -1,40 +1,62 @@
 import os
 import json
 import math
+import shutil
 from argparse import ArgumentParser
 from PIL import Image
 from tqdm import tqdm
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
+from huggingface_hub import HfApi
 
 # --- USER CONFIGURATION ---
-GDRIVE_FOLDER_ID_PATH = os.path.join('secrets', 'gdrive_folder_id.txt')
-with open(GDRIVE_FOLDER_ID_PATH, 'r') as f:
-    GDRIVE_FOLDER_ID = f.readline().strip()
-
 IMAGE_TEMP_DIR = "image_temp"
 IMAGE_URLS_FILE = os.path.join(IMAGE_TEMP_DIR, "image_urls.json")
 
 # Resize Configuration
 TARGET_IMAGE_PIXELS = 640 * 640  # Reference target total pixels (adjustable)
-
-SCOPES = ['https://www.googleapis.com/auth/drive']
 # --------------------------
 
 os.makedirs(IMAGE_TEMP_DIR, exist_ok=True)
+os.makedirs('secrets', exist_ok=True)
 
 # ==========================================
-# 1. IMAGE RESIZING HELPERS
+# 1. HF SECRETS LOADER
 # ==========================================
-def resize_local_images(base_folder="sample", target_pixels=TARGET_IMAGE_PIXELS):
-    """Resizes all images in the given folder to maintain aspect ratio while matching target total pixels."""
+def get_hf_credentials():
+    """Loads HF token and repo ID from secrets to keep them hidden."""
+    token_path = os.path.join('secrets', 'hf_token.txt')
+    repo_path = os.path.join('secrets', 'hf_repo_id.txt')
+    
+    if not os.path.exists(token_path) or not os.path.exists(repo_path):
+        print("[!] Error: Missing Hugging Face credentials.")
+        print(f"    Please ensure '{token_path}' contains your HF Write Token.")
+        print(f"    Please ensure '{repo_path}' contains your target dataset repo (e.g. 'username/dataset-name').")
+        exit(1)
+        
+    with open(token_path, 'r') as f:
+        token = f.read().strip()
+    with open(repo_path, 'r') as f:
+        repo_id = f.read().strip()
+        
+    return token, repo_id
+
+# ==========================================
+# 2. IMAGE RESIZING HELPERS
+# ==========================================
+def resize_local_images(base_folder="sample", original_folder="sample_original", target_pixels=TARGET_IMAGE_PIXELS):
+    """Backs up the folder and resizes images to maintain aspect ratio while matching target total pixels."""
     if not os.path.exists(base_folder):
         print(f"[!] Error: The folder '{base_folder}' does not exist locally.")
         return
 
-    # Gather all image files first for tqdm
+    # 1. Safely duplicate to sample_original
+    if not os.path.exists(original_folder):
+        print(f"[*] Backing up '{base_folder}' to '{original_folder}'...")
+        shutil.copytree(base_folder, original_folder)
+        print("[SUCCESS] Backup complete.")
+    else:
+        print(f"[*] Backup folder '{original_folder}' already exists. Proceeding with resize...")
+
+    # 2. Gather all image files from the active 'sample' folder
     image_files = []
     for root, _, files in os.walk(base_folder):
         for file in files:
@@ -75,7 +97,7 @@ def resize_local_images(base_folder="sample", target_pixels=TARGET_IMAGE_PIXELS)
                 resample_filter = getattr(Image, 'Resampling', Image).LANCZOS
                 resized_img = img.resize((new_w, new_h), resample_filter)
                 
-            # Overwrite the original image in place
+            # Overwrite the active image in place (since we backed up original)
             resized_img.save(img_path)
             resized_count += 1
             
@@ -85,123 +107,83 @@ def resize_local_images(base_folder="sample", target_pixels=TARGET_IMAGE_PIXELS)
     print(f"\n[SUCCESS] Resize complete! Resized: {resized_count}, Skipped (already correct): {skipped_count}")
 
 # ==========================================
-# 2. GOOGLE DRIVE AUTH & HELPERS
+# 3. HUGGING FACE HELPERS
 # ==========================================
-def get_gdrive_service():
-    """Handles Google Drive Authentication with persistent token caching."""
-    creds = None
-    token_path = os.path.join("secrets", "token.json")
-    credentials_path = os.path.join("secrets", "credentials.json") # Ensure your downloaded secret is named this
-
-    # 1. Try to load previously saved credentials
-    if os.path.exists(token_path):
-        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
-
-    # 2. If no valid credentials available, login and save them
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            if not os.path.exists(credentials_path):
-                print(f"[!] Error: Missing '{credentials_path}'. Please place your Google Cloud OAuth client ID file here.")
-                exit(1)
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
-            creds = flow.run_local_server(port=0)
-            
-        # Save the credentials for the next run
-        with open(token_path, 'w') as token:
-            token.write(creds.to_json())
-
-    return build('drive', 'v3', credentials=creds)
-
-def find_folder_in_drive(service, parent_id, folder_name):
-    """Searches for a specific folder inside a parent folder."""
-    query = f"'{parent_id}' in parents and name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
-    results = service.files().list(q=query, fields="files(id, name)").execute()
-    files = results.get('files', [])
-    return files[0]['id'] if files else None
-
-def crawl_folder_recursive(service, folder_id, current_path, url_map, pbar):
-    """Recursively crawls Google Drive folders to map image URLs while updating TQDM."""
-    page_token = None
-    while True:
-        query = f"'{folder_id}' in parents and trashed = false"
-        results = service.files().list(
-            q=query, 
-            pageSize=1000, 
-            pageToken=page_token,
-            fields="nextPageToken, files(id, name, mimeType)"
-        ).execute()
+def upload_to_huggingface(local_folder="sample"):
+    """Uploads the local folder to a Hugging Face Dataset repository."""
+    token, repo_id = get_hf_credentials()
+    api = HfApi(token=token)
+    
+    print(f"[*] Uploading '{local_folder}' to Hugging Face repo '{repo_id}'...")
+    try:
+        # Check if repo exists, create if not (creates a Dataset repo)
+        api.create_repo(repo_id=repo_id, repo_type="dataset", exist_ok=True)
         
-        items = results.get('files', [])
-        for item in items:
-            # Construct the local path equivalent (e.g., "sample/00/physics/image/image1.png")
-            item_path = f"{current_path}/{item['name']}"
+        # Upload folder
+        api.upload_large_folder(
+            folder_path=local_folder,
+            repo_id=repo_id,
+            repo_type="dataset",
+        )
+        print("[SUCCESS] Folder successfully uploaded to Hugging Face!")
+    except Exception as e:
+        print(f"[!] Error uploading to Hugging Face: {e}")
+
+def get_huggingface_urls(target_folder="sample"):
+    """Crawls the Hugging Face repo to map direct image URLs."""
+    token, repo_id = get_hf_credentials()
+    api = HfApi(token=token)
+    
+    print(f"[*] Fetching file list from Hugging Face repo '{repo_id}'...")
+    try:
+        # List all files in the repository
+        files = api.list_repo_files(repo_id=repo_id, repo_type="dataset")
+    except Exception as e:
+        print(f"[!] Error fetching file list: {e}")
+        return
+
+    url_map = {}
+    
+    # Filter and construct direct resolve URLs
+    for file_path in tqdm(files, desc="Mapping URLs", unit="file"):
+        if file_path.startswith(target_folder + "/") and file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+            # Construct the direct raw download URL
+            direct_url = f"https://huggingface.co/datasets/{repo_id}/resolve/main/{file_path}"
+            url_map[file_path] = direct_url
             
-            if item['mimeType'] == 'application/vnd.google-apps.folder':
-                # If it's a folder, dive deeper
-                crawl_folder_recursive(service, item['id'], item_path, url_map, pbar)
-            elif item['mimeType'].startswith('image/'):
-                # If it's an image, map the direct download URL
-                url_map[item_path] = f"https://drive.google.com/uc?id={item['id']}"
-                pbar.update(1)  # Increment progress bar
-                pbar.set_postfix_str(f"Mapped: {item['name']}") # Show current file
+    with open(IMAGE_URLS_FILE, 'w') as f:
+        json.dump(url_map, f, indent=4)
         
-        page_token = results.get('nextPageToken', None)
-        if page_token is None:
-            break
+    print(f"\n[SUCCESS] Successfully mapped a total of {len(url_map)} images!")
+    print(f"[*] Saved to {IMAGE_URLS_FILE}. You can now run your eval scripts!")
+
 
 # ==========================================
-# 3. WORKFLOW PIPELINE
+# 4. WORKFLOW PIPELINE
 # ==========================================
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Manage Image Resizing and Google Drive Crawling")
-    parser.add_argument("--resize", action="store_true", help="Resize local images in the 'sample' folder")
-    parser.add_argument("--upload", action="store_true", help="Crawl and map uploaded GDrive folder")
+    parser = ArgumentParser(description="Manage Image Resizing and Hugging Face Syncing")
+    parser.add_argument("--resize", action="store_true", help="Backup and resize local images in the 'sample' folder")
+    parser.add_argument("--upload", action="store_true", help="Upload the 'sample' folder to Hugging Face")
+    parser.add_argument("--get", action="store_true", help="Get URLs from Hugging Face and map to json")
     args = parser.parse_args()
 
-    if not args.resize and not args.upload:
-        print("Please specify a flag: --resize AND/OR --upload")
+    if not args.resize and not args.upload and not args.get:
+        print("Please specify at least one flag: --resize, --upload, and/or --get")
         parser.print_help()
         exit(0)
 
-    # Execute Resize Block
+    # 1. Execute Resize Block
     if args.resize:
         print("\n--- STAGE 1: RESIZE LOCAL IMAGES ---")
         resize_local_images()
 
-    # Execute GDrive Map/Crawl Block
+    # 2. Execute HF Upload Block
     if args.upload:
-        print("\n--- STAGE 2: CRAWL & SAVE GOOGLE DRIVE URLS ---")
-        
-        service = get_gdrive_service()
-        
-        print(f"[*] Looking for 'sample' folder inside GDrive parent {GDRIVE_FOLDER_ID}...")
-        sample_folder_id = find_folder_in_drive(service, GDRIVE_FOLDER_ID, "sample")
-        
-        if not sample_folder_id:
-            print("[!] Error: Could not find the 'sample' folder in your Google Drive.")
-            print(f"[!] Please ensure you uploaded a folder named 'sample' inside the folder ID: {GDRIVE_FOLDER_ID}")
-            exit(1)
-            
-        print("[*] Found the 'sample' folder! Ensuring permissions are set to public reader...")
-        try:
-            # Applying read permissions to the parent folder so the images inherit it
-            permission = {'type': 'anyone', 'role': 'reader'}
-            service.permissions().create(fileId=sample_folder_id, body=permission).execute()
-        except Exception as e:
-            print(f"[!] Warning: Could not set public permissions automatically: {e}")
-            
-        print("[*] Crawling nested folders to map image URLs...")
-        url_map = {}
-        
-        # Start the crawl using "sample" as the base path so it perfectly matches local paths
-        # We wrap it in a tqdm context manager to handle the progress visualization
-        with tqdm(desc="Images Mapped", unit="img") as pbar:
-            crawl_folder_recursive(service, sample_folder_id, "sample", url_map, pbar)
-        
-        with open(IMAGE_URLS_FILE, 'w') as f:
-            json.dump(url_map, f, indent=4)
-            
-        print(f"\n[SUCCESS] Successfully mapped a total of {len(url_map)} images!")
-        print(f"[*] Saved to {IMAGE_URLS_FILE}. You can now run your eval scripts!")
+        print("\n--- STAGE 2: UPLOAD TO HUGGING FACE ---")
+        upload_to_huggingface()
+
+    # 3. Execute HF URL Mapping Block
+    if args.get:
+        print("\n--- STAGE 3: GET HUGGING FACE URLS ---")
+        get_huggingface_urls()
