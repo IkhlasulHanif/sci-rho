@@ -129,8 +129,8 @@ def upload_to_huggingface(local_folder="sample"):
     except Exception as e:
         print(f"[!] Error uploading to Hugging Face: {e}")
 
-def get_huggingface_urls(target_folder="sample"):
-    """Crawls the Hugging Face repo to map direct image URLs."""
+def get_huggingface_urls():
+    """Crawls the Hugging Face repo to map direct image URLs and deletes all non-image files."""
     token, repo_id = get_hf_credentials()
     api = HfApi(token=token)
     
@@ -143,19 +143,47 @@ def get_huggingface_urls(target_folder="sample"):
         return
 
     url_map = {}
+    files_to_delete = []
     
-    # Filter and construct direct resolve URLs
-    for file_path in tqdm(files, desc="Mapping URLs", unit="file"):
-        if file_path.startswith(target_folder + "/") and file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+    valid_extensions = ('.png', '.jpg', '.jpeg')
+    # Protected files that Hugging Face uses under the hood; safe to ignore during deletion
+    protected_files = ('.gitattributes', 'readme.md')
+
+    # Filter and construct direct resolve URLs, and collect non-image files
+    for file_path in tqdm(files, desc="Scanning files", unit="file"):
+        file_lower = file_path.lower()
+        
+        if file_lower.endswith(valid_extensions):
             # Construct the direct raw download URL
             direct_url = f"https://huggingface.co/datasets/{repo_id}/resolve/main/{file_path}"
             url_map[file_path] = direct_url
+        elif not file_lower.endswith(protected_files):
+            # If it is not an image and not a protected repo file, mark for deletion
+            files_to_delete.append(file_path)
+
+    # Process deletions if any non-image files were found
+    if files_to_delete:
+        print(f"\n[*] Found {len(files_to_delete)} non-image files (e.g., .xlsx, .json). Deleting from repository...")
+        for file_to_del in tqdm(files_to_delete, desc="Deleting files", unit="file"):
+            try:
+                api.delete_file(
+                    path_in_repo=file_to_del,
+                    repo_id=repo_id,
+                    repo_type="dataset",
+                    commit_message=f"Cleanup: Delete non-image file {file_to_del}"
+                )
+            except Exception as e:
+                print(f"\n[!] Error deleting {file_to_del}: {e}")
             
-    with open(IMAGE_URLS_FILE, 'w') as f:
-        json.dump(url_map, f, indent=4)
-        
-    print(f"\n[SUCCESS] Successfully mapped a total of {len(url_map)} images!")
-    print(f"[*] Saved to {IMAGE_URLS_FILE}. You can now run your eval scripts!")
+    # SAFETY MECHANISM: Check before replacing mapping file
+    if os.path.exists(IMAGE_URLS_FILE):
+        print(f"\n[!] Safety Check: '{IMAGE_URLS_FILE}' already exists. Skipping save to prevent overwrite.")
+        print("[INFO] If you want to update the URLs, please delete or rename the existing file first.")
+    else:
+        with open(IMAGE_URLS_FILE, 'w') as f:
+            json.dump(url_map, f, indent=4)
+        print(f"\n[SUCCESS] Successfully mapped a total of {len(url_map)} images!")
+        print(f"[*] Saved to {IMAGE_URLS_FILE}. You can now run your eval scripts!")
 
 
 # ==========================================
