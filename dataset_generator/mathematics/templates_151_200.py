@@ -4291,7 +4291,18 @@ class Mat194:
         self.curriculum = "A-Level"
         self.question_type = "Short Answer"
 
-        self.reasoning = ""
+        self.reasoning = (
+            "$$\\begin{aligned}\n"
+            "&\\text{Step 1: Identify the area of a single shaded tail from the diagram.}\\\\\n"
+            f"&\\quad \\text{{Area of one tail }} (\\alpha/2) = {self.alpha_half}\\\\\n"
+            "&\\text{Step 2: Calculate the total area of both shaded tails (}\\alpha\\text{).}\\\\\n"
+            f"&\\quad \\alpha = 2 \\times {self.alpha_half} = {alpha}\\\\\n"
+            "&\\text{Step 3: Calculate the area of the central region.}\\\\\n"
+            f"&\\quad \\text{{Central Area}} = 1 - \\alpha = 1 - {alpha} = {round(1 - alpha, 3)}\\\\\n"
+            "&\\text{Step 4: Convert the central area to a percentage.}\\\\\n"
+            f"&\\quad \\text{{Confidence Level}} = {round(1 - alpha, 3)} \\times 100\\% = {self.answer}\\%\\\\\n"
+            "\\end{aligned}$$"
+        )
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(8, 5))

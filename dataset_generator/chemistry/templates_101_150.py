@@ -5611,19 +5611,30 @@ class Chem149:
 
 class Chem150:
     def __init__(self):
+        
+        self.color_themes = [
+            {"box": "#ffffff", "edge": "#000000", "arrow": "#000000"},  # classic
+            {"box": "#e3f2fd", "edge": "#1e88e5", "arrow": "#1565c0"},  # blue
+            {"box": "#e8f5e9", "edge": "#43a047", "arrow": "#2e7d32"},  # green
+            {"box": "#fff3e0", "edge": "#fb8c00", "arrow": "#ef6c00"},  # orange
+            {"box": "#fce4ec", "edge": "#d81b60", "arrow": "#ad1457"},  # pink
+            {"box": "#f3e5f5", "edge": "#8e24aa", "arrow": "#6a1b9a"},  # purple
+        ]
+
+        self.theme = rnd.choice(self.color_themes)
 
         variations = [
-        ("1s² 2s² 2p⁶ 3s²", 2),
-        ("1s² 2s² 2p⁶ 3s¹", 1),
-        ("1s² 2s² 2p⁶ 3s² 3p¹", 3),
-        ("1s² 2s² 2p⁶ 3s² 3p²", 4),
-        ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹", 1),
-        ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s²", 2),
-        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s²", 2),
-        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s¹", 1),
-        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s²", 2),
-        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ 4s²", 2),
-    ]
+            ("1s² 2s² 2p⁶ 3s²", 2),
+            ("1s² 2s² 2p⁶ 3s¹", 1),
+            ("1s² 2s² 2p⁶ 3s² 3p¹", 3),
+            ("1s² 2s² 2p⁶ 3s² 3p²", 4),
+            ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹", 1),
+            ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s²", 2),
+            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s²", 2),
+            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s¹", 1),
+            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s²", 2),
+            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ 4s²", 2),
+        ]
 
         self.config, self.lost = rnd.choice(variations)
         self.answer = self.lost
@@ -5661,21 +5672,26 @@ class Chem150:
         box = Rectangle((x - width/2, y),
                         width,
                         height,
-                        facecolor="white",
-                        edgecolor="black",
+                        facecolor=self.theme["box"],
+                        edgecolor=self.theme["edge"],
                         linewidth=2)
         ax.add_patch(box)
 
-        ax.plot([x, x], [y, y + height], linewidth=2, color="black")
+        ax.plot([x, x], [y, y + height],
+                linewidth=2,
+                color=self.theme["edge"])
 
         up_y = y + height * 0.65
         down_y = y + height * 0.35
 
         if electrons == 1:
-            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center')
+            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center',
+                    color=self.theme["arrow"])
         elif electrons == 2:
-            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center')
-            ax.text(x + 0.35, down_y, "↓", fontsize=14, ha='center')
+            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center',
+                    color=self.theme["arrow"])
+            ax.text(x + 0.35, down_y, "↓", fontsize=14, ha='center',
+                    color=self.theme["arrow"])
 
         ax.text(x, y + height + 0.6,
                 label,
