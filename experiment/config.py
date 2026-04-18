@@ -14,7 +14,7 @@ class ModelConfig:
 # TODO: ADJUST. PLEASE REFER TO (https://arxiv.org/pdf/2411.00836)
 @dataclass
 class SamplingConfig:
-    max_tokens: int = 2048
+    max_tokens: int = 4096
     temperature: float = 0.0 # for deterministic result
 
 @dataclass
@@ -23,9 +23,9 @@ class ExperimentConfig:
         "Qwen/Qwen3.5-9B",
         "meta-llama/Llama-3.2-11B-Vision-Instruct",
         "google/gemma-3-12b-it",
-        "allenai/Molmo2-8B",
         "OpenGVLab/InternVL3_5-14B",
         "OpenGVLab/InternVL3_5-8B"
+        "allenai/Molmo2-8B",
     )
     subject_list: tuple[str] = (
         "mathematics", 
@@ -35,4 +35,4 @@ class ExperimentConfig:
         "compsci"
     )
     debug: bool = False
-    num_of_instance: int = 5 #TODO: ADJUST
+    num_of_instance: int = 10 #TODO: ADJUST

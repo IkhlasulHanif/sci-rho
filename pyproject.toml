@@ -1,0 +1,26 @@
+[project]
+name = "stem-vision"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.96.0",
+    "google-genai>=1.73.1",
+    "huggingface-hub>=1.11.0",
+    "matplotlib>=3.10.8",
+    "matplotlib-venn>=1.1.2",
+    "networkx>=3.6.1",
+    "numpy>=2.4.4",
+    "openai>=2.32.0",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.2",
+    "pillow>=12.2.0",
+    "requests>=2.33.1",
+    "scipy>=1.17.1",
+    "sympy>=1.14.0",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
+    "tqdm>=4.67.3",
+    "transformers>=5.5.4",
+]
