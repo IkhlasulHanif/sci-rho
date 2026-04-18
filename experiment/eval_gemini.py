@@ -30,8 +30,8 @@ DEFAULT_NUM_INSTANCES = 5
 
 # Sampling & Thinking Parameters
 TEMPERATURE = 0.0
-MAX_TOKENS = 8192  # Increased: Thinking models consume heavy output tokens
-ENABLE_THINKING = True  # Toggle to enable internal reasoning
+MAX_TOKENS = 8192
+ENABLE_THINKING = False
 
 os.makedirs(GEMINI_TEMP_DIR, exist_ok=True)
 
@@ -124,9 +124,8 @@ if args.prepare:
                             "max_output_tokens": MAX_TOKENS
                         }
                         
-                        # Inject thinking configuration if enabled
-                        if ENABLE_THINKING:
-                            generation_config["thinking_config"] = {"include_thoughts": True}
+                        # Inject thinking configuration
+                        generation_config["thinking_config"] = {"include_thoughts": ENABLE_THINKING}
 
                         # Gemini JSONL Schema
                         request = {
