@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import requests
+import time
 from tqdm import tqdm
 from argparse import ArgumentParser
 
@@ -69,6 +70,7 @@ def generate_openrouter_response(model_name, final_text, img_url):
     """
     Handles the synchronous OpenRouter API request.
     Returns the complete raw JSON response from the API.
+    Guarantees success with a sentinel while loop.
     """
     payload = {
         "model": model_name,
@@ -84,23 +86,50 @@ def generate_openrouter_response(model_name, final_text, img_url):
             }
         ],
         'provider': {
-            'order': ['6186825'],
+            'order': ['alibaba'],
             'allow_fallbacks': False,
         },
     }
 
-    # Execute request
-    response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=120)
-    
-    res_json = response.json()
-    
-    # Optional: Basic handling if finish_reason isn't stop
-    if 'choices' in res_json and len(res_json['choices']) > 0:
-        finish_reason = res_json['choices'][0].get('finish_reason')
-        if finish_reason != "stop":
-            pass # TODO: loop if not stop
+    # Sentinel loop to guarantee successful extraction
+    while True:
+        try:
+            response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=120)
             
-    return res_json # RETURN ALL JSON
+            if response.status_code != 200:
+                # API level error (e.g., 502 Bad Gateway)
+                print(f" [!] API Error {response.status_code}. Retrying in 2s...")
+                time.sleep(2)
+                continue
+                
+            res_json = response.json()
+            
+            if 'error' in res_json and res_json['error'] is not None:
+                # OpenRouter explicit error response
+                print(f" [!] OpenRouter Error: {res_json['error']}. Retrying in 2s...")
+                time.sleep(2)
+                continue
+                
+            if 'choices' in res_json and len(res_json['choices']) > 0:
+                finish_reason = res_json['choices'][0].get('finish_reason')
+                
+                if finish_reason == "stop":
+                    return res_json # RETURN ALL JSON ONLY ON SUCCESS
+                else:
+                    # e.g., "length" or "content_filter"
+                    print(f" [!] Bad finish_reason ({finish_reason}). Retrying in 2s...")
+                    time.sleep(2)
+                    continue
+            else:
+                print(" [!] Malformed response (no choices). Retrying in 2s...")
+                time.sleep(2)
+                continue
+                
+        except Exception as e:
+            # Network drops, timeouts, json decode errors
+            print(f" [!] Request Exception: {str(e)}. Retrying in 2s...")
+            time.sleep(2)
+            continue
 
 # ==========================================
 # 4. WORKFLOW PIPELINE
