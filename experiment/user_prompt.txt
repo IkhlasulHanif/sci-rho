@@ -1,5 +1,5 @@
-Solve the problem step-by-step. Your response must be valid JSON strictly adhering to this format. Do not output any text outside the JSON block.
+Solve the above problem step-by-step. You must write your mathematical or logical reasoning strictly in English within the 'solution' field. Format your reasoning neatly into explicitly numbered steps separated by newlines (e.g., "Step 1: ...\nStep 2: ..."). Then, extract your final answer into the 'short answer' field. Your response must be valid JSON and strictly adhere to the following format. Do not include any text outside of the JSON block.
 {
-    "solution": "[Detailed mathematical or logical reasoning]",
+    "solution": "[Step-by-step solution]",
     "short answer": "[Final numerical value only. Do not include units]"
 }
