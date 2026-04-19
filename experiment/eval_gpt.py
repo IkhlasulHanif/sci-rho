@@ -16,7 +16,7 @@ USER_PROMPT_PATH = "user_prompt.txt"
 
 # Experiment Scope
 MODELS = [
-    "gpt-5",
+    "gpt-5.4-2026-03-05",
     # "gpt-5-nano-2025-08-07" # for testing
 ]
 SUBJECTS = [
@@ -31,7 +31,7 @@ REASONING_EFFORT = "none"
 
 # Sampling Parameters
 TEMPERATURE = 1.0
-MAX_NEW_TOKENS = 8192
+MAX_NEW_TOKENS = 4096
 
 os.makedirs(GPT_TEMP_DIR, exist_ok=True)
 
@@ -267,6 +267,10 @@ if args.retrieve:
             print(f"\n[INFO] Detailed request logs saved to {log_path}")
             continue
             
+        # Set up directory to save individual raw JSON responses
+        raw_responses_dir = os.path.join(GPT_TEMP_DIR, safe_model_name)
+        os.makedirs(raw_responses_dir, exist_ok=True)
+            
         # Download the JSONL output from OpenAI
         result_content = client.files.content(job_status.output_file_id).text
         
@@ -281,6 +285,16 @@ if args.retrieve:
             # Handle potential missing custom_id safely
             custom_id = res.get('custom_id', 'UNKNOWN||UNKNOWN||UNKNOWN||UNKNOWN')
             subj, idx_str, row_id, lang = custom_id.split("||")
+            
+            # ---> Save individual raw JSON response
+            safe_custom_id = custom_id.replace("||", "_")
+            raw_filepath = os.path.join(raw_responses_dir, f"{safe_custom_id}.json")
+            try:
+                with open(raw_filepath, 'w', encoding='utf-8') as f:
+                    json.dump(res, f, indent=4, ensure_ascii=False)
+            except Exception as e:
+                print(f"[!] Warning: Failed to save raw JSON for {custom_id}: {e}")
+            # <---
             
             try:
                 # Check for top-level API errors inside the response payload
