@@ -187,6 +187,10 @@ experiment/secrets/**
 dataset/
 envlinux/
 envlinux2/
-tes.ipynb
 dataset_generator/**/extractor.ipynb
 prompt_template/
+experiment/gpt_temp/
+experiment/gemini_temp/
+experiment/claude_temp/
+experiment/openrouter_temp/
+extras/
