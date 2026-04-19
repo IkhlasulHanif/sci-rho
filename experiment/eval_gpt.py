@@ -26,7 +26,7 @@ SUBJECTS = [
     "biology", 
     "compsci"
 ]
-DEFAULT_NUM_INSTANCES = 5
+DEFAULT_NUM_INSTANCES = 10
 REASONING_EFFORT = "none"
 
 # Sampling Parameters
