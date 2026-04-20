@@ -31,7 +31,7 @@ os.makedirs(OPENROUTER_TEMP_DIR, exist_ok=True)
 provider_mapper = {
     'qwen/qwen3.5-122b-a10b': 'alibaba',
     'qwen/qwen3.5-27b': 'alibaba',
-    'meta-llama/llama-4-scout': 'groq',
+    'meta-llama/llama-4-scout': 'google-vertex',
     'google/gemma-3-27b-it': 'phala'
 }
 
@@ -150,6 +150,7 @@ def generate_openrouter_response(model_name, final_text, img_url):
 safe_model_name = args.model.replace("/", "_").replace(".", "_").replace(":", "_")
 model_temp_dir = os.path.join(OPENROUTER_TEMP_DIR, safe_model_name)
 status_file = os.path.join(OPENROUTER_TEMP_DIR, f"{safe_model_name}_status.json")
+responses_file = os.path.join(model_temp_dir, f"{safe_model_name}_responses.jsonl")
 
 # ------------------------------------------
 # STAGE: PROCESS
@@ -180,6 +181,8 @@ if args.process:
             status_tracker = json.load(f)
 
     error_logs = []
+    pending_responses = []
+    new_data_count = 0
 
     # 4. Main Inference Loop
     for subject in SUBJECTS:
@@ -208,10 +211,6 @@ if args.process:
                 for row_idx, row in tqdm(df.iterrows(), total=len(df), desc="Requests", leave=False):
                     row_id = row['id']
                     custom_id = f"{subject}||{idx_str}||{row_id}||{lang_key}"
-                    safe_custom_id = custom_id.replace("||", "_")
-                    
-                    # Changed to .json since we are storing the complete response
-                    response_filepath = os.path.join(model_temp_dir, f"{safe_custom_id}.json")
                     
                     img_rel_path = row["image"].replace("\\", "/")
                     full_local_path = f"{idx_str}/{subject}/{img_rel_path}" # Excludes 'sample/' prefix
@@ -222,7 +221,7 @@ if args.process:
                         continue
 
                     # Stateful Check: Skip API call if already completed successfully
-                    if status_tracker.get(custom_id) == "COMPLETED" and os.path.exists(response_filepath):
+                    if status_tracker.get(custom_id) == "COMPLETED":
                         continue
 
                     base_desc = str(row[desc_col])
@@ -236,18 +235,35 @@ if args.process:
                             img_url=img_url
                         )
                         
-                        # Save entire JSON response to file
-                        with open(response_filepath, 'w', encoding='utf-8') as f:
-                            json.dump(res_json, f, indent=4, ensure_ascii=False)
-                            
-                        # Update Checkpoint JSON
+                        # Add response to batch list 
+                        pending_responses.append({"custom_id": custom_id, "response": res_json})
                         status_tracker[custom_id] = "COMPLETED"
-                        with open(status_file, 'w', encoding='utf-8') as f:
-                            json.dump(status_tracker, f, indent=4)
+                        new_data_count += 1
+                        
+                        # Batch flush to JSONL every 10 rows to prevent overhead
+                        if new_data_count >= 10:
+                            with open(responses_file, 'a', encoding='utf-8') as f:
+                                for record in pending_responses:
+                                    f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                            
+                            with open(status_file, 'w', encoding='utf-8') as f:
+                                json.dump(status_tracker, f, indent=4)
+                                
+                            pending_responses = []
+                            new_data_count = 0
                             
                     except Exception as e:
                         error_msg = f"[REQUEST EXCEPTION] {str(e)}"
                         error_logs.append(f"[{args.model}] {custom_id}: {error_msg}")
+
+    # Flush remaining responses after all loops are finished
+    if pending_responses:
+        with open(responses_file, 'a', encoding='utf-8') as f:
+            for record in pending_responses:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        
+        with open(status_file, 'w', encoding='utf-8') as f:
+            json.dump(status_tracker, f, indent=4)
 
     # Write error recap if any occurred
     if error_logs:
@@ -268,6 +284,15 @@ if args.extract:
     if not os.path.exists(model_temp_dir):
         print(f"[!] Error: No saved responses found in {model_temp_dir}. Run --process first.")
         exit()
+
+    # Load all saved JSONL responses into memory for fast lookup
+    responses_dict = {}
+    if os.path.exists(responses_file):
+        with open(responses_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    record = json.loads(line)
+                    responses_dict[record['custom_id']] = record['response']
 
     for subject in SUBJECTS:
         for index in range(NUM_OF_INSTANCES):
@@ -293,13 +318,10 @@ if args.extract:
                 for row_idx, row in df.iterrows():
                     row_id = row['id']
                     custom_id = f"{subject}||{idx_str}||{row_id}||{lang_key}"
-                    safe_custom_id = custom_id.replace("||", "_")
-                    response_filepath = os.path.join(model_temp_dir, f"{safe_custom_id}.json")
                     
-                    if os.path.exists(response_filepath):
+                    if custom_id in responses_dict:
                         try:
-                            with open(response_filepath, 'r', encoding='utf-8') as f:
-                                res_json = json.load(f)
+                            res_json = responses_dict[custom_id]
                                 
                             # Safe extraction
                             if 'error' in res_json:
