@@ -23,13 +23,17 @@ SUBJECTS = [
     "biology", 
     "compsci"
 ]
-DEFAULT_NUM_INSTANCES = 5
-
-# Sampling Parameters
-TEMPERATURE = 0.0
-MAX_OUTPUT_TOKENS = 4096
+DEFAULT_NUM_INSTANCES = 10
 
 os.makedirs(OPENROUTER_TEMP_DIR, exist_ok=True)
+
+# MAPPING PROVIDER
+provider_mapper = {
+    'qwen/qwen3.5-122b-a10b': 'alibaba',
+    'qwen/qwen3.5-27b': 'alibaba',
+    'meta-llama/llama-4-scout': 'groq',
+    'google/gemma-3-27b-it': 'phala'
+}
 
 # ==========================================
 # 2. ARGUMENT PARSING
@@ -44,6 +48,15 @@ parser.add_argument("--model", type=str, required=True, help="Specific model to 
 args = parser.parse_args()
 
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
+
+# Sampling Parameters
+MAX_OUTPUT_TOKENS = 4096
+if args.model in ['qwen/qwen3.5-122b-a10b', 'qwen/qwen3.5-27b']:
+    TEMPERATURE = 1.0
+else:
+    TEMPERATURE = 0.0
+
+PROVIDER = provider_mapper.get(args.model, '')
 
 # Load API Key
 API_KEY_PATH = os.path.join('secrets', 'openrouter_api_key.txt')
@@ -86,7 +99,7 @@ def generate_openrouter_response(model_name, final_text, img_url):
             }
         ],
         'provider': {
-            'order': ['alibaba'],
+            'order': [PROVIDER],
             'allow_fallbacks': False,
         },
     }
