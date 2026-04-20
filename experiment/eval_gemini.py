@@ -9,8 +9,7 @@ from google import genai
 # ==========================================
 # Paths & Directories
 GEMINI_TEMP_DIR = "gemini_temp"
-IMAGE_TEMP_DIR = "image_temp"
-IMAGE_URLS_FILE = os.path.join(IMAGE_TEMP_DIR, "image_urls.json")
+GEMINI_UPLOADED_IMAGES_FILE = os.path.join(GEMINI_TEMP_DIR, "gemini_uploaded_images.json")
 BATCH_JOBS_FILE = os.path.join(GEMINI_TEMP_DIR, "batch_jobs.json")
 USER_PROMPT_PATH = "user_prompt.txt"
 
@@ -41,6 +40,7 @@ os.makedirs(GEMINI_TEMP_DIR, exist_ok=True)
 parser = ArgumentParser(description="Stateful Gemini Batch Inference Script")
 
 # Workflow Flags
+parser.add_argument("--upload_image", action="store_true", help="Upload local images to Gemini Files API")
 parser.add_argument("--prepare", action="store_true", help="Generate local .jsonl requests for Gemini")
 parser.add_argument("--debug", action="store_true", help="Process only instance 00 (Use with --prepare)")
 parser.add_argument("--send", action="store_true", help="Send prepared .jsonl requests to Gemini Batch API")
@@ -64,12 +64,64 @@ except:
 # 3. WORKFLOW PIPELINE
 # ==========================================
 
+if args.upload_image:
+    print(f"\n{'='*60}\n[INFO] STAGE 0: UPLOADING IMAGES TO GEMINI\n{'='*60}")
+    
+    uploaded_map = {}
+    if os.path.exists(GEMINI_UPLOADED_IMAGES_FILE):
+        with open(GEMINI_UPLOADED_IMAGES_FILE, 'r', encoding='utf-8') as f:
+            uploaded_map = json.load(f)
+            
+    upload_count = 0
+    for subject in SUBJECTS:
+        for index in range(NUM_OF_INSTANCES):
+            dataset_path = os.path.join("sample", f"0{index}", subject)
+            json_path = os.path.join(dataset_path, 'dataset.json')
+            
+            if not os.path.exists(json_path): continue
+            with open(json_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            
+            df = pd.DataFrame.from_dict(data, orient="index")
+            if len(df) == 0: continue
+            
+            for _, row in df.iterrows():
+                if "image" not in row or pd.isna(row["image"]): continue
+                
+                img_rel_path = str(row["image"]).replace("\\", "/")
+                full_local_path = f"sample/0{index}/{subject}/{img_rel_path}"
+                map_key = f"0{index}/{subject}/{img_rel_path}" # Excludes 'sample/' prefix
+                
+                # Skip if we've already uploaded this exact file
+                if map_key in uploaded_map:
+                    continue
+                    
+                if os.path.exists(full_local_path):
+                    print(f"[*] Uploading to Gemini: {full_local_path}")
+                    try:
+                        myfile = client.files.upload(file=full_local_path)
+                        # Save the Gemini URI as the identifier for the API
+                        uploaded_map[map_key] = myfile.uri
+                        upload_count += 1
+                    except Exception as e:
+                        print(f"[!] Failed to upload {full_local_path}: {e}")
+                else:
+                    print(f"[!] Image not found locally: {full_local_path}")
+                    
+    # Save the mapping file
+    with open(GEMINI_UPLOADED_IMAGES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(uploaded_map, f, indent=4)
+        
+    print(f"\n[INFO] Uploaded {upload_count} new images. Total mapped: {len(uploaded_map)}")
+    print(f"[*] Mapping safely saved to {GEMINI_UPLOADED_IMAGES_FILE}")
+
+
 if args.prepare:
     print(f"\n{'='*60}\n[INFO] STAGE 1: PREPARING BATCH REQUESTS\n{'='*60}")
     
-    if not os.path.exists(IMAGE_URLS_FILE):
-        raise FileNotFoundError(f"Image URLs map not found at {IMAGE_URLS_FILE}. Run your drive crawler first.")
-    with open(IMAGE_URLS_FILE, 'r', encoding='utf-8') as f:
+    if not os.path.exists(GEMINI_UPLOADED_IMAGES_FILE):
+        raise FileNotFoundError(f"Gemini image map not found at {GEMINI_UPLOADED_IMAGES_FILE}. Run --upload_image first.")
+    with open(GEMINI_UPLOADED_IMAGES_FILE, 'r', encoding='utf-8') as f:
         image_url_map = json.load(f)
 
     # Load User Prompt
@@ -114,9 +166,9 @@ if args.prepare:
                         # Create unique Custom ID
                         custom_id = f"{subject}||0{index}||{row['id']}||{lang_suffix}"
                         
-                        # Reconstruct the precise local path to match the image_urls.json key
+                        # Reconstruct the precise local path to match the new gemini uploaded map key
                         img_rel_path = row["image"].replace("\\", "/")
-                        # FIXED: Exclude "sample/" here so it maps to the Hugging Face dictionary key
+                        # FIXED: Exclude "sample/" here so it maps to the dictionary key
                         full_local_path = f"0{index}/{subject}/{img_rel_path}"
                         img_url = image_url_map.get(full_local_path)
                         
@@ -147,6 +199,7 @@ if args.prepare:
                                     {
                                         "role": "user",
                                         "parts": [
+                                            # img_url is now the Gemini File URI we recorded
                                             {"file_data": {"file_uri": img_url, "mime_type": "image/png"}},
                                             {"text": final_text}
                                         ]
