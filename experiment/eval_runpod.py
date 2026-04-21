@@ -22,15 +22,10 @@ def extract_config(args, cls, prefix):
     kwargs = {f.name: getattr(args, f"{prefix}{f.name}") for f in fields(cls)}
     return cls(**kwargs)
 
+# Define models that should use temp=1
+TEMP_ONE_MODELS = ["Qwen/Qwen3.5-9B","Qwen/Qwen3-VL-8B-Thinking"]  # customize this list
 
 def main():
-    hf_token = os.environ.get("HF_TOKEN")
-    if hf_token:
-        login(token=hf_token)
-        print("Hugging Face login succeeded.")
-    else:
-        print("HF_TOKEN is not set.")
-        
     parser = ArgumentParser()
     add_args_from_dataclass(parser, ModelConfig, prefix="model.")
     add_args_from_dataclass(parser, SamplingConfig, prefix="sampling.")
@@ -91,7 +86,13 @@ def main():
                         for desc in df[desc_col]
                     ]
 
-                    sampling_params = SamplingParams(**asdict(sampling_cfg))
+                    # ✅ Override temperature to 1 if model is in the list
+                    sampling_params_dict = asdict(sampling_cfg)
+                    if model_name in TEMP_ONE_MODELS:
+                        print(f"[INFO]      --> Model '{model_name}' is in TEMP_ONE_MODELS — overriding temperature to 1.")
+                        sampling_params_dict["temperature"] = 1
+                    sampling_params = SamplingParams(**sampling_params_dict)
+
                     prompts = tokenizer.apply_chat_template(messages, tokenize=False)
 
                     requests = [
@@ -102,8 +103,14 @@ def main():
                         for p, img in zip(prompts, df["image"])
                     ]
 
-                    outputs = llm.generate(requests, sampling_params)
-                    responses = [o.outputs[0].text for o in outputs]
+                    # ✅ Try/except: skip this variant on error, continue to the next
+                    try:
+                        outputs = llm.generate(requests, sampling_params)
+                        responses = [o.outputs[0].text for o in outputs]
+                    except Exception as e:
+                        print(f"[ERROR]      --> Generation failed for model '{model_name}' | variant '{variant_name}' | instance '0{index}': {e}")
+                        print(f"[INFO]       --> Skipping this variant and continuing...")
+                        continue
 
                     result_col_name = desc_col.replace("description", "response")
                     df_new[result_col_name] = responses
@@ -120,7 +127,6 @@ def main():
         gc.collect()
         torch.cuda.empty_cache()
         print("[INFO] VRAM cleared successfully.")
-
 
 if __name__ == '__main__':
     main()
