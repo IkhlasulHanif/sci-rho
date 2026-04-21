@@ -267,10 +267,6 @@ if args.retrieve:
             print(f"\n[INFO] Detailed request logs saved to {log_path}")
             continue
             
-        # Set up directory to save individual raw JSON responses
-        raw_responses_dir = os.path.join(GPT_TEMP_DIR, safe_model_name)
-        os.makedirs(raw_responses_dir, exist_ok=True)
-            
         # Download the JSONL output from OpenAI
         result_content = client.files.content(job_status.output_file_id).text
         
@@ -278,44 +274,45 @@ if args.retrieve:
         mapped_results = {}
         error_count = 0
         
-        for line in result_content.strip().split('\n'):
-            if not line: continue
-            res = json.loads(line)
-            
-            # Handle potential missing custom_id safely
-            custom_id = res.get('custom_id', 'UNKNOWN||UNKNOWN||UNKNOWN||UNKNOWN')
-            subj, idx_str, row_id, lang = custom_id.split("||")
-            
-            # ---> Save individual raw JSON response
-            safe_custom_id = custom_id.replace("||", "_")
-            raw_filepath = os.path.join(raw_responses_dir, f"{safe_custom_id}.json")
-            try:
-                with open(raw_filepath, 'w', encoding='utf-8') as f:
-                    json.dump(res, f, indent=4, ensure_ascii=False)
-            except Exception as e:
-                print(f"[!] Warning: Failed to save raw JSON for {custom_id}: {e}")
-            # <---
-            
-            try:
-                # Check for top-level API errors inside the response payload
-                if 'error' in res and res['error'] is not None:
-                    answer = f"[API ERROR] {res['error']}"
-                    error_count += 1
-                    request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | API Error: {res['error']}")
-                else:
-                    answer = res['response']['body']['choices'][0]['message']['content']
-                    request_logs.append(f"[{model_name}] SUCCESS | ID: {custom_id}")
-            except Exception as e:
-                answer = "[ERROR GENERATING RESPONSE]"
-                error_count += 1
-                error_details = res.get('error', str(e))
-                request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | Exception: {error_details}")
+        # Path for the single JSONL file storing all raw responses
+        raw_jsonl_path = os.path.join(GPT_TEMP_DIR, f"{safe_model_name}_raw_responses.jsonl")
+        
+        with open(raw_jsonl_path, 'a', encoding='utf-8') as raw_f:
+            for line in result_content.strip().split('\n'):
+                if not line: continue
+                res = json.loads(line)
                 
-            if subj not in mapped_results: mapped_results[subj] = {}
-            if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
-            if row_id not in mapped_results[subj][idx_str]: mapped_results[subj][idx_str][row_id] = {}
-            
-            mapped_results[subj][idx_str][row_id][lang] = answer
+                # Handle potential missing custom_id safely
+                custom_id = res.get('custom_id', 'UNKNOWN||UNKNOWN||UNKNOWN||UNKNOWN')
+                subj, idx_str, row_id, lang = custom_id.split("||")
+                
+                # ---> Save full response to the single JSONL file
+                try:
+                    raw_f.write(json.dumps(res, ensure_ascii=False) + "\n")
+                except Exception as e:
+                    print(f"[!] Warning: Failed to save raw JSON for {custom_id}: {e}")
+                # <---
+                
+                try:
+                    # Check for top-level API errors inside the response payload
+                    if 'error' in res and res['error'] is not None:
+                        answer = f"[API ERROR] {res['error']}"
+                        error_count += 1
+                        request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | API Error: {res['error']}")
+                    else:
+                        answer = res['response']['body']['choices'][0]['message']['content']
+                        request_logs.append(f"[{model_name}] SUCCESS | ID: {custom_id}")
+                except Exception as e:
+                    answer = "[ERROR GENERATING RESPONSE]"
+                    error_count += 1
+                    error_details = res.get('error', str(e))
+                    request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | Exception: {error_details}")
+                    
+                if subj not in mapped_results: mapped_results[subj] = {}
+                if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
+                if row_id not in mapped_results[subj][idx_str]: mapped_results[subj][idx_str][row_id] = {}
+                
+                mapped_results[subj][idx_str][row_id][lang] = answer
 
         if error_count > 0:
             print(f"[!] Warning: {error_count} responses failed to generate correctly.")
