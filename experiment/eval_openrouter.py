@@ -126,7 +126,8 @@ def generate_openrouter_response(model_name, final_text, img_url):
             if 'choices' in res_json and len(res_json['choices']) > 0:
                 finish_reason = res_json['choices'][0].get('finish_reason')
                 
-                if finish_reason == "stop":
+                # Added 'end_turn' and 'eos_token' to handle different provider standards
+                if finish_reason in ["stop", "end_turn", "eos_token"]:
                     return res_json # RETURN ALL JSON ONLY ON SUCCESS
                 else:
                     # e.g., "length" or "content_filter"
@@ -227,34 +228,39 @@ if args.process:
                     base_desc = str(row[desc_col])
                     final_text = f"{base_desc}\n\n{user_prompt_template}" if user_prompt_template else base_desc
 
-                    # Delegate to the decoupled API function
-                    try:
-                        res_json = generate_openrouter_response(
-                            model_name=args.model,
-                            final_text=final_text,
-                            img_url=img_url
-                        )
-                        
-                        # Add response to batch list 
-                        pending_responses.append({"custom_id": custom_id, "response": res_json})
-                        status_tracker[custom_id] = "COMPLETED"
-                        new_data_count += 1
-                        
-                        # Batch flush to JSONL every 10 rows to prevent overhead
-                        if new_data_count >= 10:
-                            with open(responses_file, 'a', encoding='utf-8') as f:
-                                for record in pending_responses:
-                                    f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                    # Retry loop guarantees that a failed row is re-attempted until successful
+                    while True:
+                        try:
+                            # Delegate to the decoupled API function
+                            res_json = generate_openrouter_response(
+                                model_name=args.model,
+                                final_text=final_text,
+                                img_url=img_url
+                            )
                             
-                            with open(status_file, 'w', encoding='utf-8') as f:
-                                json.dump(status_tracker, f, indent=4)
+                            # Add response to batch list 
+                            pending_responses.append({"custom_id": custom_id, "response": res_json})
+                            status_tracker[custom_id] = "COMPLETED"
+                            new_data_count += 1
+                            
+                            # Batch flush to JSONL every 10 rows to prevent overhead
+                            if new_data_count >= 10:
+                                with open(responses_file, 'a', encoding='utf-8') as f:
+                                    for record in pending_responses:
+                                        f.write(json.dumps(record, ensure_ascii=False) + "\n")
                                 
-                            pending_responses = []
-                            new_data_count = 0
+                                with open(status_file, 'w', encoding='utf-8') as f:
+                                    json.dump(status_tracker, f, indent=4)
+                                    
+                                pending_responses = []
+                                new_data_count = 0
                             
-                    except Exception as e:
-                        error_msg = f"[REQUEST EXCEPTION] {str(e)}"
-                        error_logs.append(f"[{args.model}] {custom_id}: {error_msg}")
+                            # Success! Break the retry loop and move to the next row
+                            break
+                                
+                        except Exception as e:
+                            print(f"\n[!] Pipeline Error for {custom_id}: {str(e)}. Retrying in 3s...")
+                            time.sleep(3)
 
     # Flush remaining responses after all loops are finished
     if pending_responses:
