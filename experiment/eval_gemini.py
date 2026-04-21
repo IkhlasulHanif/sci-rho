@@ -1,6 +1,8 @@
 import os
 import json
 import pandas as pd
+import time
+from tqdm import tqdm
 from argparse import ArgumentParser
 from google import genai
 
@@ -29,8 +31,11 @@ SUBJECTS = [
 DEFAULT_NUM_INSTANCES = 10
 
 # Sampling Parameters
-TEMPERATURE = 1.0
-MAX_TOKENS = 4096
+TEMPERATURE = 0.0
+MAX_TOKENS_FLASH = 4096
+MAX_TOKENS_PRO = 8192
+THINKING_BUDGET_FLASH = 0
+THINKING_BUDGET_PRO = 2048
 
 os.makedirs(GEMINI_TEMP_DIR, exist_ok=True)
 
@@ -73,6 +78,8 @@ if args.upload_image:
             uploaded_map = json.load(f)
             
     upload_count = 0
+    current_time = time.time()
+    
     for subject in SUBJECTS:
         for index in range(NUM_OF_INSTANCES):
             dataset_path = os.path.join("sample", f"0{index}", subject)
@@ -85,28 +92,37 @@ if args.upload_image:
             df = pd.DataFrame.from_dict(data, orient="index")
             if len(df) == 0: continue
             
-            for _, row in df.iterrows():
+            for _, row in tqdm(df.iterrows(), total=len(df), desc=f"Uploading {subject}-0{index}", leave=False):
                 if "image" not in row or pd.isna(row["image"]): continue
                 
                 img_rel_path = str(row["image"]).replace("\\", "/")
                 full_local_path = f"sample/0{index}/{subject}/{img_rel_path}"
                 map_key = f"0{index}/{subject}/{img_rel_path}" # Excludes 'sample/' prefix
                 
-                # Skip if we've already uploaded this exact file
+                # Skip if we've already uploaded this exact file and it hasn't expired (45h buffer)
+                skip_upload = False
                 if map_key in uploaded_map:
+                    val = uploaded_map[map_key]
+                    if isinstance(val, dict) and "timestamp" in val:
+                        if (current_time - val["timestamp"]) <= 45 * 3600:
+                            skip_upload = True
+                
+                if skip_upload:
                     continue
                     
                 if os.path.exists(full_local_path):
-                    print(f"[*] Uploading to Gemini: {full_local_path}")
                     try:
                         myfile = client.files.upload(file=full_local_path)
-                        # Save the Gemini URI as the identifier for the API
-                        uploaded_map[map_key] = myfile.uri
+                        # Save the Gemini URI and timestamp as the identifier for the API
+                        uploaded_map[map_key] = {
+                            "uri": myfile.uri,
+                            "timestamp": time.time()
+                        }
                         upload_count += 1
                     except Exception as e:
-                        print(f"[!] Failed to upload {full_local_path}: {e}")
+                        print(f"\n[!] Failed to upload {full_local_path}: {e}")
                 else:
-                    print(f"[!] Image not found locally: {full_local_path}")
+                    print(f"\n[!] Image not found locally: {full_local_path}")
                     
     # Save the mapping file
     with open(GEMINI_UPLOADED_IMAGES_FILE, 'w', encoding='utf-8') as f:
@@ -124,6 +140,16 @@ if args.prepare:
     with open(GEMINI_UPLOADED_IMAGES_FILE, 'r', encoding='utf-8') as f:
         image_url_map = json.load(f)
 
+    # Validate 45-hour expiration constraint
+    current_time = time.time()
+    for key, val in image_url_map.items():
+        if not isinstance(val, dict) or "timestamp" not in val or "uri" not in val:
+            print("[!] Error: Legacy image mapping detected without timestamps. Please re-run --upload_image.")
+            exit(1)
+        if current_time - val["timestamp"] > 45 * 3600:
+            print(f"[!] Error: Uploaded images are older than 45 hours. Gemini files expire in 48 hours. Please re-run --upload_image.")
+            exit(1)
+
     # Load User Prompt
     user_prompt_template = ""
     if os.path.exists(USER_PROMPT_PATH):
@@ -132,6 +158,12 @@ if args.prepare:
         print(f"[INFO] Loaded additional prompt template from {USER_PROMPT_PATH}")
 
     for model_name in MODELS:
+        if model=='gemini-2.5-flash':
+            MAX_TOKENS = MAX_TOKENS_FLASH
+            THINKING_BUDGET = THINKING_BUDGET_FLASH
+        else:
+            MAX_TOKENS = MAX_TOKENS_PRO
+            THINKING_BUDGET = THINKING_BUDGET_PRO
         safe_model_name = model_name.replace("/", "_").replace(".", "_")
         jsonl_filename = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}.jsonl")
         
@@ -162,7 +194,7 @@ if args.prepare:
                 for desc_col in desc_columns:
                     lang_suffix = desc_col.replace("description", "response")
                     
-                    for _, row in df.iterrows():
+                    for _, row in tqdm(df.iterrows(), total=len(df), desc=f"Preparing {subject}-0{index}", leave=False):
                         # Create unique Custom ID
                         custom_id = f"{subject}||0{index}||{row['id']}||{lang_suffix}"
                         
@@ -170,11 +202,13 @@ if args.prepare:
                         img_rel_path = row["image"].replace("\\", "/")
                         # FIXED: Exclude "sample/" here so it maps to the dictionary key
                         full_local_path = f"0{index}/{subject}/{img_rel_path}"
-                        img_url = image_url_map.get(full_local_path)
+                        img_data = image_url_map.get(full_local_path)
                         
-                        if not img_url:
-                            print(f"[!] Warning: No URL mapped for {full_local_path}. Skipping.")
+                        if not img_data:
+                            print(f"\n[!] Warning: No URL mapped for {full_local_path}. Skipping.")
                             continue
+
+                        img_url = img_data["uri"]
 
                         # Construct Final Text
                         base_desc = str(row[desc_col])
@@ -187,7 +221,10 @@ if args.prepare:
                         # Simplified Gemini Config
                         generation_config = {
                             "temperature": TEMPERATURE,
-                            "max_output_tokens": MAX_TOKENS
+                            "max_output_tokens": MAX_TOKENS,
+                            "thinkingConfig": {
+                                "thinkingBudget": THINKING_BUDGET
+                            }
                         }
 
                         # Gemini JSONL Schema
@@ -339,47 +376,54 @@ if args.retrieve:
         mapped_results = {}
         error_count = 0
         
-        for line in result_content.strip().split('\n'):
-            if not line: continue
-            res = json.loads(line)
-            
-            custom_id = res.get('custom_id', 'UNKNOWN||UNKNOWN||UNKNOWN||UNKNOWN')
-            subj, idx_str, row_id, lang = custom_id.split("||")
-            
-            # Simplified Gemini Extraction Logic (No Thinking Bypass)
-            if 'error' in res:
-                answer = f"[API ERROR] {res.get('error')}"
-                error_count += 1
-                request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | API Error: {res.get('error')}")
-            else:
-                try:
-                    candidates = res.get('response', {}).get('candidates', [])
-                    if candidates and 'content' in candidates[0]:
-                        parts = candidates[0]['content'].get('parts', [])
-                        # Grab all text parts safely
-                        answer_parts = [p['text'] for p in parts if 'text' in p]
-                        
-                        if answer_parts:
-                            answer = "\n".join(answer_parts).strip()
-                            request_logs.append(f"[{model_name}] SUCCESS | ID: {custom_id}")
-                        else:
-                            answer = "[NO TEXT IN RESPONSE]"
-                            error_count += 1
-                            request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | No text in response.")
-                    else:
-                        answer = "[NO CANDIDATES GENERATED]"
-                        error_count += 1
-                        request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | No candidates generated.")
-                except Exception as e:
-                    answer = "[ERROR EXTRACTING RESPONSE]"
-                    error_count += 1
-                    request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | Exception: {str(e)}")
+        raw_jsonl_path = os.path.join(GEMINI_TEMP_DIR, f"{safe_model_name}_raw_responses.jsonl")
+        
+        lines = result_content.strip().split('\n')
+        with open(raw_jsonl_path, 'a', encoding='utf-8') as raw_f:
+            for line in tqdm(lines, desc=f"Parsing {model_name}"):
+                if not line: continue
+                res = json.loads(line)
                 
-            if subj not in mapped_results: mapped_results[subj] = {}
-            if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
-            if row_id not in mapped_results[subj][idx_str]: mapped_results[subj][idx_str][row_id] = {}
-            
-            mapped_results[subj][idx_str][row_id][lang] = answer
+                # Dump the full JSON response into the aggregated JSONL file
+                raw_f.write(json.dumps(res, ensure_ascii=False) + '\n')
+                
+                custom_id = res.get('custom_id', 'UNKNOWN||UNKNOWN||UNKNOWN||UNKNOWN')
+                subj, idx_str, row_id, lang = custom_id.split("||")
+                
+                # Simplified Gemini Extraction Logic (No Thinking Bypass)
+                if 'error' in res:
+                    answer = f"[API ERROR] {res.get('error')}"
+                    error_count += 1
+                    request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | API Error: {res.get('error')}")
+                else:
+                    try:
+                        candidates = res.get('response', {}).get('candidates', [])
+                        if candidates and 'content' in candidates[0]:
+                            parts = candidates[0]['content'].get('parts', [])
+                            # Grab all text parts safely
+                            answer_parts = [p['text'] for p in parts if 'text' in p]
+                            
+                            if answer_parts:
+                                answer = "\n".join(answer_parts).strip()
+                                request_logs.append(f"[{model_name}] SUCCESS | ID: {custom_id}")
+                            else:
+                                answer = "[NO TEXT IN RESPONSE]"
+                                error_count += 1
+                                request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | No text in response.")
+                        else:
+                            answer = "[NO CANDIDATES GENERATED]"
+                            error_count += 1
+                            request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | No candidates generated.")
+                    except Exception as e:
+                        answer = "[ERROR EXTRACTING RESPONSE]"
+                        error_count += 1
+                        request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | Exception: {str(e)}")
+                    
+                if subj not in mapped_results: mapped_results[subj] = {}
+                if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
+                if row_id not in mapped_results[subj][idx_str]: mapped_results[subj][idx_str][row_id] = {}
+                
+                mapped_results[subj][idx_str][row_id][lang] = answer
 
         if error_count > 0:
             print(f"[!] Warning: {error_count} responses failed to generate correctly.")
