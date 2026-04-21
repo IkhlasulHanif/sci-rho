@@ -5,6 +5,7 @@ import requests
 import time
 from tqdm import tqdm
 from argparse import ArgumentParser
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ==========================================
 # 1. USER CONFIGURATION
@@ -105,6 +106,7 @@ def generate_openrouter_response(model_name, final_text, img_url):
     }
 
     # Sentinel loop to guarantee successful extraction
+    attempt = 0
     while True:
         try:
             response = requests.post(OPENROUTER_URL, headers=headers, json=payload, timeout=120)
@@ -140,9 +142,10 @@ def generate_openrouter_response(model_name, final_text, img_url):
                 continue
                 
         except Exception as e:
-            # Network drops, timeouts, json decode errors
-            print(f" [!] Request Exception: {str(e)}. Retrying in 2s...")
-            time.sleep(2)
+            attempt += 1
+            delay = min(60, 2 ** attempt) # Waits 2s, 4s, 8s, 16s... capped at 60s
+            print(f" [!] Request Exception: {str(e)}. Retrying in {delay}s...")
+            time.sleep(delay)
             continue
 
 # ==========================================
@@ -184,8 +187,10 @@ if args.process:
     error_logs = []
     pending_responses = []
     new_data_count = 0
+    tasks = []
 
-    # 4. Main Inference Loop
+    # 4. Gather All Tasks First
+    print("\n[*] Gathering tasks...")
     for subject in SUBJECTS:
         for index in range(NUM_OF_INSTANCES):
             idx_str = f"0{index}"
@@ -206,10 +211,7 @@ if args.process:
             for desc_col in desc_columns:
                 lang_key = desc_col.replace("description", "response")
                 
-                print(f"\n -> Subject: {subject.upper()} | Instance: {idx_str} | Lang: {lang_key}")
-                
-                # Iterate through rows with a progress bar
-                for row_idx, row in tqdm(df.iterrows(), total=len(df), desc="Requests", leave=False):
+                for row_idx, row in df.iterrows():
                     row_id = row['id']
                     custom_id = f"{subject}||{idx_str}||{row_id}||{lang_key}"
                     
@@ -221,46 +223,59 @@ if args.process:
                         error_logs.append(f"[{args.model}] {custom_id}: [ERROR: IMAGE URL NOT FOUND]")
                         continue
 
-                    # Stateful Check: Skip API call if already completed successfully
+                    # Stateful Check: Skip if already completed
                     if status_tracker.get(custom_id) == "COMPLETED":
                         continue
 
                     base_desc = str(row[desc_col])
                     final_text = f"{base_desc}\n\n{user_prompt_template}" if user_prompt_template else base_desc
 
-                    # Retry loop guarantees that a failed row is re-attempted until successful
-                    while True:
-                        try:
-                            # Delegate to the decoupled API function
-                            res_json = generate_openrouter_response(
-                                model_name=args.model,
-                                final_text=final_text,
-                                img_url=img_url
-                            )
+                    tasks.append({
+                        "custom_id": custom_id,
+                        "final_text": final_text,
+                        "img_url": img_url
+                    })
+
+    # 5. Execute Tasks in Parallel
+    print(f"[*] Total pending requests: {len(tasks)}")
+    MAX_WORKERS = 10 # Adjust based on OpenRouter's rate limits
+
+    if tasks:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            # Map futures to their original task data
+            future_to_task = {
+                executor.submit(generate_openrouter_response, args.model, t["final_text"], t["img_url"]): t
+                for t in tasks
+            }
+            
+            # as_completed yields on the main thread, avoiding race conditions for file I/O
+            for future in tqdm(as_completed(future_to_task), total=len(tasks), desc="Processing Requests"):
+                task = future_to_task[future]
+                custom_id = task["custom_id"]
+                
+                try:
+                    res_json = future.result()
+                    
+                    # Add response to batch list 
+                    pending_responses.append({"custom_id": custom_id, "response": res_json})
+                    status_tracker[custom_id] = "COMPLETED"
+                    new_data_count += 1
+                    
+                    # Batch flush to JSONL every 10 rows to prevent overhead
+                    if new_data_count >= 10:
+                        with open(responses_file, 'a', encoding='utf-8') as f:
+                            for record in pending_responses:
+                                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                        
+                        with open(status_file, 'w', encoding='utf-8') as f:
+                            json.dump(status_tracker, f, indent=4)
                             
-                            # Add response to batch list 
-                            pending_responses.append({"custom_id": custom_id, "response": res_json})
-                            status_tracker[custom_id] = "COMPLETED"
-                            new_data_count += 1
-                            
-                            # Batch flush to JSONL every 10 rows to prevent overhead
-                            if new_data_count >= 10:
-                                with open(responses_file, 'a', encoding='utf-8') as f:
-                                    for record in pending_responses:
-                                        f.write(json.dumps(record, ensure_ascii=False) + "\n")
-                                
-                                with open(status_file, 'w', encoding='utf-8') as f:
-                                    json.dump(status_tracker, f, indent=4)
-                                    
-                                pending_responses = []
-                                new_data_count = 0
-                            
-                            # Success! Break the retry loop and move to the next row
-                            break
-                                
-                        except Exception as e:
-                            print(f"\n[!] Pipeline Error for {custom_id}: {str(e)}. Retrying in 3s...")
-                            time.sleep(3)
+                        pending_responses = []
+                        new_data_count = 0
+                        
+                except Exception as e:
+                    error_msg = f"[THREAD EXCEPTION] {str(e)}"
+                    error_logs.append(f"[{args.model}] {custom_id}: {error_msg}")
 
     # Flush remaining responses after all loops are finished
     if pending_responses:
