@@ -181,7 +181,7 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-# experiment/result/
+experiment/result/process/
 experiment/sample_original/
 experiment/secrets/**
 dataset/
