@@ -13,6 +13,7 @@ from google import genai
 GEMINI_TEMP_DIR = "gemini_temp"
 GEMINI_UPLOADED_IMAGES_FILE = os.path.join(GEMINI_TEMP_DIR, "gemini_uploaded_images.json")
 BATCH_JOBS_FILE = os.path.join(GEMINI_TEMP_DIR, "batch_jobs.json")
+ERROR_BATCH_JOBS_FILE = os.path.join(GEMINI_TEMP_DIR, "error_batch_jobs.json")
 USER_PROMPT_PATH = "user_prompt.txt"
 
 # Experiment Scope
@@ -51,6 +52,12 @@ parser.add_argument("--debug", action="store_true", help="Process only instance 
 parser.add_argument("--send", action="store_true", help="Send prepared .jsonl requests to Gemini Batch API")
 parser.add_argument("--check", action="store_true", help="Check status of active batches")
 parser.add_argument("--retrieve", action="store_true", help="Download results and reconstruct Excel files")
+
+# Error Handling Flags
+parser.add_argument("--error_prepare", action="store_true", help="Parse request logs and prepare jsonl for failed instances")
+parser.add_argument("--error_send", action="store_true", help="Send the error-specific jsonl to Gemini Batch API")
+parser.add_argument("--error_check", action="store_true", help="Check status of error batches")
+parser.add_argument("--error_retrieve", action="store_true", help="Download error results and strictly patch Excel files")
 args = parser.parse_args()
 
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
@@ -158,7 +165,7 @@ if args.prepare:
         print(f"[INFO] Loaded additional prompt template from {USER_PROMPT_PATH}")
 
     for model_name in MODELS:
-        if model=='gemini-2.5-flash':
+        if model_name=='gemini-2.5-flash':
             MAX_TOKENS = MAX_TOKENS_FLASH
             THINKING_BUDGET = THINKING_BUDGET_FLASH
         else:
@@ -475,5 +482,210 @@ if args.retrieve:
                 for log_msg in request_logs:
                     f.write(log_msg + "\n")
             print(f"\n[INFO] Detailed request logs saved to {log_path}")
+
+# ==========================================
+# 4. ERROR HANDLING PIPELINE
+# ==========================================
+
+if args.error_prepare:
+    print(f"\n{'='*60}\n[INFO] ERROR STAGE 1: PREPARING FAILED REQUESTS\n{'='*60}")
+    for model_name in MODELS:
+        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        log_path = os.path.join(GEMINI_TEMP_DIR, f"{safe_model_name}_requests.log")
+        orig_jsonl = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}.jsonl")
+        error_jsonl = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}_error.jsonl")
+
+        if not os.path.exists(log_path) or not os.path.exists(orig_jsonl):
+            continue
+
+        failed_ids = set()
+        with open(log_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                # Target format: [model_name] FAILED  | ID: physics||00||12||response_indonesian | ...
+                if "FAILED" in line and "| ID: " in line:
+                    try:
+                        # Extract just the custom_id component
+                        cid = line.split("| ID: ")[1].split(" |")[0].strip()
+                        failed_ids.add(cid)
+                    except:
+                        pass
+
+        if not failed_ids:
+            print(f"[INFO] No failed requests found in logs for {model_name}.")
+            continue
+
+        error_reqs = []
+        with open(orig_jsonl, 'r', encoding='utf-8') as f:
+            for line in f:
+                if not line.strip(): continue
+                req = json.loads(line)
+                if req.get("custom_id") in failed_ids:
+                    error_reqs.append(req)
+
+        with open(error_jsonl, 'w', encoding='utf-8') as f:
+            for req in error_reqs:
+                f.write(json.dumps(req, ensure_ascii=False) + "\n")
+        
+        print(f"[INFO] Parsed {len(failed_ids)} failed IDs. Saved {len(error_reqs)} requests -> {error_jsonl}")
+
+if args.error_send:
+    print(f"\n{'='*60}\n[INFO] ERROR STAGE 2: SENDING FAILED BATCHES TO GEMINI\n{'='*60}")
+    
+    error_batch_jobs = {}
+    if os.path.exists(ERROR_BATCH_JOBS_FILE):
+        with open(ERROR_BATCH_JOBS_FILE, 'r') as f:
+            error_batch_jobs = json.load(f)
+
+    for model_name in MODELS:
+        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        error_jsonl = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}_error.jsonl")
+        
+        if not os.path.exists(error_jsonl):
+            print(f"[SKIP] No error jsonl file found for {model_name}.")
+            continue
+            
+        print(f"[INFO] Uploading ERROR file to Gemini API for {model_name}...")
+        uploaded_file = client.files.upload(
+            file=error_jsonl,
+            config={'mime_type': 'application/jsonl'}
+        )
+        
+        print(f"[INFO] Triggering ERROR Batch API for {model_name}...")
+        batch_job = client.batches.create(
+            model=model_name,
+            src=uploaded_file.name
+        )
+        
+        state_str = batch_job.state.name if hasattr(batch_job.state, 'name') else str(batch_job.state)
+        error_batch_jobs[model_name] = {
+            "batch_id": batch_job.name,
+            "input_file_id": uploaded_file.name,
+            "status": state_str
+        }
+        print(f"[SUCCESS] Submitted! Error Batch ID: {batch_job.name}")
+
+    with open(ERROR_BATCH_JOBS_FILE, 'w') as f:
+        json.dump(error_batch_jobs, f, indent=4)
+
+if args.error_check:
+    print(f"\n{'='*60}\n[INFO] ERROR STAGE 3: CHECKING ERROR BATCH STATUS\n{'='*60}")
+    
+    if not os.path.exists(ERROR_BATCH_JOBS_FILE):
+        print("[INFO] No active error batches found in tracking file.")
+        exit()
+        
+    with open(ERROR_BATCH_JOBS_FILE, 'r') as f:
+        error_batch_jobs = json.load(f)
+        
+    all_ready = True
+    for model_name, job_info in error_batch_jobs.items():
+        job_status = client.batches.get(name=job_info["batch_id"])
+        state_str = job_status.state.name if hasattr(job_status.state, 'name') else str(job_status.state)
+        error_batch_jobs[model_name]["status"] = state_str
+        
+        clean_status = state_str.replace("JOB_STATE_", "").upper()
+        print(f"Model: {model_name.ljust(30)} | Status: {clean_status}")
+        
+        if "SUCCEEDED" not in clean_status and "COMPLETED" not in clean_status:
+            all_ready = False
+            
+    with open(ERROR_BATCH_JOBS_FILE, 'w') as f:
+        json.dump(error_batch_jobs, f, indent=4)
+        
+    print("\n------------------------------------------------------------")
+    if all_ready:
+        print("[READY] All error batches are completed! You can now run with --error_retrieve")
+    else:
+        print("[WAIT] Error batches are still processing. Check again later.")
+
+if args.error_retrieve:
+    print(f"\n{'='*60}\n[INFO] ERROR STAGE 4: RETRIEVING & PATCHING RESULTS\n{'='*60}")
+    
+    if not os.path.exists(ERROR_BATCH_JOBS_FILE):
+        print("[!] No error batches tracking file found to retrieve.")
+        exit()
+        
+    with open(ERROR_BATCH_JOBS_FILE, 'r') as f:
+        error_batch_jobs = json.load(f)
+
+    for model_name, job_info in error_batch_jobs.items():
+        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        
+        if "SUCCEEDED" not in str(job_info["status"]).upper():
+            print(f"[SKIP] {model_name}: Status is '{job_info['status']}'")
+            continue
+            
+        print(f"\n[INFO] Retrieving error results for {model_name}...")
+        job_status = client.batches.get(name=job_info["batch_id"])
+        
+        try:
+            remote_filename = job_status.dest.file_name
+        except AttributeError:
+            print(f"[!] Warning: No output file generated for {model_name}")
+            continue
+            
+        # Download the JSONL output from Gemini
+        content_bytes = client.files.download(file=remote_filename)
+        result_content = content_bytes.decode('utf-8')
+        
+        mapped_results = {}
+        error_raw_jsonl = os.path.join(GEMINI_TEMP_DIR, f"{safe_model_name}_raw_responses_error.jsonl")
+        
+        lines = result_content.strip().split('\n')
+        with open(error_raw_jsonl, 'a', encoding='utf-8') as raw_f:
+            for line in tqdm(lines, desc=f"Parsing {model_name} Error Returns"):
+                if not line: continue
+                res = json.loads(line)
+                
+                raw_f.write(json.dumps(res, ensure_ascii=False) + '\n')
+                
+                custom_id = res.get('custom_id')
+                if not custom_id: continue
+                
+                subj, idx_str, row_id, lang = custom_id.split("||")
+                
+                # Check if it finally succeeded
+                if 'error' not in res:
+                    try:
+                        candidates = res.get('response', {}).get('candidates', [])
+                        if candidates and 'content' in candidates[0]:
+                            parts = candidates[0]['content'].get('parts', [])
+                            answer_parts = [p['text'] for p in parts if 'text' in p]
+                            
+                            if answer_parts:
+                                answer = "\n".join(answer_parts).strip()
+                                # Load into mapped_results to trigger patching
+                                if subj not in mapped_results: mapped_results[subj] = {}
+                                if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
+                                if row_id not in mapped_results[subj][idx_str]: mapped_results[subj][idx_str][row_id] = {}
+                                
+                                mapped_results[subj][idx_str][row_id][lang] = answer
+                    except:
+                        pass
+
+        # Perform the actual strict patching of the existing .xlsx files
+        patch_count = 0
+        for subj, subj_data in mapped_results.items():
+            for idx_str, idx_data in subj_data.items():
+                excel_path = os.path.join('result', 'raw', subj, idx_str, f"{safe_model_name}.xlsx")
+                if os.path.exists(excel_path):
+                    try:
+                        df = pd.read_excel(excel_path)
+                        patched = False
+                        
+                        for row_id_str, lang_data in idx_data.items():
+                            row_id_int = int(row_id_str)
+                            for lang, answer in lang_data.items():
+                                # Target the specific cell using boolean indexing
+                                df.loc[df['id'] == row_id_int, lang] = answer
+                                patched = True
+                                patch_count += 1
+                                
+                        if patched:
+                            df.to_excel(excel_path, index=False, engine="openpyxl")
+                    except Exception as e:
+                        print(f" [!] Failed to patch {excel_path}: {e}")
+                        
+        print(f" [SUCCESS] Safely patched {patch_count} cells into existing Excel files for {model_name}.")
 
 print("\n[INFO] Execution Finished.")
