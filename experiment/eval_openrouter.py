@@ -51,11 +51,12 @@ args = parser.parse_args()
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
 
 # Sampling Parameters
-MAX_OUTPUT_TOKENS = 4096
 if args.model in ['qwen/qwen3.5-122b-a10b', 'qwen/qwen3.5-27b']:
     TEMPERATURE = 1.0
+    MAX_OUTPUT_TOKENS = 8192
 else:
     TEMPERATURE = 0.0
+    MAX_OUTPUT_TOKENS = 4096
 
 PROVIDER = provider_mapper.get(args.model, '')
 
@@ -89,7 +90,7 @@ def generate_openrouter_response(model_name, final_text, img_url):
     payload = {
         "model": model_name,
         "temperature": TEMPERATURE,
-        "max_tokens": MAX_OUTPUT_TOKENS,
+        "max_completion_tokens": MAX_OUTPUT_TOKENS,
         "messages": [
             {
                 "role": "user",
@@ -102,6 +103,9 @@ def generate_openrouter_response(model_name, final_text, img_url):
         'provider': {
             'order': [PROVIDER],
             'allow_fallbacks': False,
+        },
+        "reasoning":{
+            "enabled" : False
         },
     }
 
@@ -129,7 +133,7 @@ def generate_openrouter_response(model_name, final_text, img_url):
                 finish_reason = res_json['choices'][0].get('finish_reason')
                 
                 # Added 'end_turn' and 'eos_token' to handle different provider standards
-                if finish_reason in ["stop", "end_turn", "eos_token"]:
+                if finish_reason in ["stop", "end_turn", "eos_token", "length"]:
                     return res_json # RETURN ALL JSON ONLY ON SUCCESS
                 else:
                     # e.g., "length" or "content_filter"
