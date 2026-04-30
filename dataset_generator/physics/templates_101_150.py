@@ -1690,8 +1690,8 @@ class Phy116:
 
 class Phy117:
     """
-    Kirchhoff’s laws: two-loop (mesh) circuit with shared resistor.
-    Solve two simultaneous equations for mesh currents.
+    Kirchhoff’s laws: two-loop circuit with a shared resistor R3.
+    FIX: compute I3 using node-voltage/KCL at the top junction (matches the diagram).
     Target: current in the shared resistor (magnitude + direction).
     """
 
@@ -1703,24 +1703,21 @@ class Phy117:
             self.E1 = rnd.choice([3, 4.5, 6, 9, 12, 15, 18])
             self.E2 = rnd.choice([1.5, 3, 4.5, 6, 9, 12])
 
-            # Solve:
-            # (R1+R3)I1 - R3 I2 = E1
-            # -R3 I1 + (R2+R3)I2 = E2
-            a = self.R1 + self.R3
-            b = -self.R3
-            c = -self.R3
-            d = self.R2 + self.R3
-            det = a * d - b * c
-            if abs(det) < 1e-9:
+            # Node-voltage method:
+            # Bottom node = 0 V, left top node = +E1, right top node = +E2 (as drawn).
+            # Let V be the central top junction voltage (top of R3).
+            # KCL: (V-E1)/R1 + (V-E2)/R2 + V/R3 = 0
+            denom = (1 / self.R1) + (1 / self.R2) + (1 / self.R3)
+            if denom <= 0:
                 continue
 
-            I1 = (self.E1 * d - b * self.E2) / det
-            I2 = (a * self.E2 - self.E1 * c) / det
+            self.Vj = (self.E1 / self.R1 + self.E2 / self.R2) / denom  # junction voltage
+            self.I3 = self.Vj / self.R3  # current through R3, positive means downwards (top -> bottom)
 
-            self.I1 = I1
-            self.I2 = I2
+            # Also compute branch currents (optional, helps reasoning/debug)
+            self.I1 = (self.E1 - self.Vj) / self.R1  # current from left source into junction through R1
+            self.I2 = (self.E2 - self.Vj) / self.R2  # current from right source into junction through R2
 
-            self.I3 = self.I1 - self.I2  # current through shared resistor (top -> bottom taken as positive)
             if 0.05 <= abs(self.I3) <= 3.0 and 0.05 <= abs(self.I1) <= 3.5 and 0.05 <= abs(self.I2) <= 3.5:
                 break
 
@@ -1738,25 +1735,25 @@ class Phy117:
         self.subtopic = "Kirchhoff’s laws"
         self.source = "Original"
         self.curriculum = "A-Level"
+
+        # Reasoning aligned to the diagram and KCL
         self.reasoning = (
-            f"\\begin{{aligned}}"
-            f"\\text{{Step 1: Define mesh currents }} I_1 \\text{{ (left loop) and }} I_2 \\text{{ (right loop).}} &\\\\"
-            f"\\text{{Let both }} I_1 \\text{{ and }} I_2 \\text{{ flow clockwise. The current }} I_3 \\text{{ (downwards) is }} I_1 - I_2. &\\\\"
-            f"\\text{{Step 2: Apply Kirchhoff's Second Law (Loop Rule) to both loops.}} &\\\\"
-            f"\\text{{Loop 1 (Left): }} E_1 - I_1 R_1 - (I_1 - I_2) R_3 &= 0 \\\\"
-            f"{self.E1} - {self.R1} I_1 - {self.R3} (I_1 - I_2) &= 0 \\\\"
-            f"({self.R1 + self.R3}) I_1 - {self.R3} I_2 &= {self.E1} \\quad \\text{{--- (Eq. 1)}} \\\\"
-            f"\\text{{Loop 2 (Right): }} -E_2 - I_2 R_2 - (I_2 - I_1) R_3 &= 0 \\\\"
-            f"-{self.E2} - {self.R2} I_2 - {self.R3} (I_2 - I_1) &= 0 \\\\"
-            f"-{self.R3} I_1 + ({self.R2 + self.R3}) I_2 &= -{self.E2} \\quad \\text{{--- (Eq. 2)}} \\\\"
-            f"\\text{{Step 3: Solve the simultaneous equations for }} I_1 \\text{{ and }} I_2. &\\\\"
-            f"I_1 &= {sig_figs(self.I1, 4)}\\,\\text{{A}}, \\quad I_2 = {sig_figs(self.I2, 4)}\\,\\text{{A}} \\\\"
-            f"\\text{{Step 4: Calculate the current through the shared resistor }} I_3. &\\\\"
-            f"I_3 &= I_1 - I_2 = {sig_figs(self.I1, 4)} - ({sig_figs(self.I2, 4)}) \\\\"
-            f"I_3 &= {sig_figs(self.I3, 4)}\\,\\text{{A}} \\\\"
-            f"\\text{{A positive result indicates downwards flow; negative indicates upwards.}} &\\\\"
-            f"\\\\\\text{{Final Answer}} &= {self.answer}"
-            f"\\end{{aligned}}"
+            "\\[\\begin{aligned}"
+            "\\text{Take the bottom wire as }0\\text{ V.}\\\\"
+            f"\\text{{Left top node}} &= +E_1 = {self.E1}\\text{{ V}},\\quad"
+            f"\\text{{Right top node}} = +E_2 = {self.E2}\\text{{ V}}\\\\"
+            "\\text{Let }V\\text{ be the potential at the top junction (top of }R_3\\text{).}\\\\"
+            "\\text{Apply KCL at the junction:}\\\\"
+            "\\frac{V-E_1}{R_1}+\\frac{V-E_2}{R_2}+\\frac{V}{R_3}=0\\\\[4pt]"
+            f"\\frac{{V-{self.E1}}}{{{self.R1}}}+\\frac{{V-{self.E2}}}{{{self.R2}}}+\\frac{{V}}{{{self.R3}}}=0\\\\[6pt]"
+            "\\Rightarrow V\\left(\\frac{1}{R_1}+\\frac{1}{R_2}+\\frac{1}{R_3}\\right)"
+            "=\\frac{E_1}{R_1}+\\frac{E_2}{R_2}\\\\[6pt]"
+            f"V &= {sig_figs(self.Vj,4)}\\text{{ V}}\\\\"
+            "\\text{Current in }R_3\\text{ (downwards reference): } I_3=\\frac{V}{R_3}\\\\"
+            f"I_3 &= \\frac{{{sig_figs(self.Vj,4)}}}{{{self.R3}}} = {sig_figs(self.I3,4)}\\text{{ A}}\\\\"
+            f"\\text{{Final Answer}} &= {self.answer}"
+            "\\end{aligned}\\]"
+            "\\]"
         )
 
 
@@ -4080,7 +4077,8 @@ class Phy141:
         self.Q = self.mass * self.latent_heat
         self.W = self.pressure * self.delta_volume
         self.delta_U = self.Q - self.W
-        self.answer = f"{self.delta_U}"
+        self.answer_value = int(round(self.delta_U))
+        self.answer = str(self.answer_value)
 
         self.topic = "Thermal physics"
         self.subtopic = "First law of thermodynamics"
@@ -4097,7 +4095,7 @@ class Phy141:
         self.description = (
             "Liquid water at 100°C is completely converted to steam at the same temperature. "
             "Based on the specific data provided in the diagram, calculate the increase in the "
-            "internal energy of the system. (_) J (Example format: 734566.9489778209097)"
+            "internal energy of the system. (_) J (Example format: 656870)"
         )
 
         self.reasoning = (
@@ -4795,8 +4793,8 @@ class Phy149:
         k_e = 8.99e9 
 
         while True:
-            self.separation_cm = rnd.uniform(10.0, 15.0)
-            self.offset_cm = rnd.uniform(2.0, self.separation_cm/2 - 1.5)
+            self.separation_cm = round(self.separation_cm, 1)
+            self.offset_cm = round(self.offset_cm, 1)
 
             self.separation = self.separation_cm / 100
             self.offset = self.offset_cm / 100
