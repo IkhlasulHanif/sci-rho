@@ -1391,89 +1391,134 @@ class Chem015:
 
 class Chem016:
     """
-    Topic: 3.6 Molecular polarity — net dipole moment of bent molecules
-    Visual: Bent molecule diagram with bond dipole arrows (centre→terminal) and bond angle labelled
-    Task: Calculate μ_net in Debye to 2 d.p. (numerical)
+    Chapter 3.6: Molecular polarity comparison
+    Visual: Two molecule diagrams with dipole arrows but NO polarity labels
+    Task: MC — identify which molecule is polar
+    Answer: A/B/C/D
     """
-
+    
     def __init__(self):
-        from math import cos, radians
-
-        bent_molecules = [
-            {'name': 'H₂O',  'bond_angle': 104.5, 'mu_bond': 1.51, 'center': 'O',  'terminal': 'H'},
-            {'name': 'H₂S',  'bond_angle': 92.0,  'mu_bond': 0.97, 'center': 'S',  'terminal': 'H'},
-            {'name': 'OF₂',  'bond_angle': 103.0, 'mu_bond': 0.94, 'center': 'O',  'terminal': 'F'},
-            {'name': 'SCl₂', 'bond_angle': 103.0, 'mu_bond': 1.20, 'center': 'S',  'terminal': 'Cl'},
-            {'name': 'SO₂',  'bond_angle': 119.0, 'mu_bond': 1.63, 'center': 'S',  'terminal': 'O'},
-            {'name': 'H₂Se', 'bond_angle': 91.0,  'mu_bond': 0.99, 'center': 'Se', 'terminal': 'H'},
+        # Each scenario: two molecules shown, one polar, one non-polar
+        scenarios = [
+            {'mol_a': 'CO₂', 'shape_a': 'linear',       'polar_a': False,
+             'mol_b': 'H₂O', 'shape_b': 'bent',          'polar_b': True,
+             'question': 'Which molecule is polar?',
+             'correct': 'H₂O', 'wrong': ['CO₂', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'BF₃', 'shape_a': 'trigonal planar','polar_a': False,
+             'mol_b': 'NH₃', 'shape_b': 'trigonal pyramidal','polar_b': True,
+             'question': 'Which molecule is polar?',
+             'correct': 'NH₃', 'wrong': ['BF₃', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'CCl₄', 'shape_a': 'tetrahedral',  'polar_a': False,
+             'mol_b': 'CHCl₃','shape_b': 'tetrahedral',  'polar_b': True,
+             'question': 'Which molecule has a net dipole moment?',
+             'correct': 'CHCl₃','wrong': ['CCl₄', 'Both', 'Neither']},
+            {'mol_a': 'SO₂', 'shape_a': 'bent',           'polar_a': True,
+             'mol_b': 'CO₂', 'shape_b': 'linear',         'polar_b': False,
+             'question': 'Which molecule is non-polar?',
+             'correct': 'CO₂','wrong': ['SO₂', 'Both are non-polar', 'Neither']},
+            {'mol_a': 'H₂O', 'shape_a': 'bent',           'polar_a': True,
+             'mol_b': 'BeCl₂','shape_b': 'linear',        'polar_b': False,
+             'question': 'Which molecule has dipoles that cancel?',
+             'correct': 'BeCl₂','wrong': ['H₂O', 'Both', 'Neither']},
+            {'mol_a': 'HCl', 'shape_a': 'diatomic',       'polar_a': True,
+             'mol_b': 'Cl₂', 'shape_b': 'diatomic',       'polar_b': False,
+             'question': 'Which molecule has a permanent dipole?',
+             'correct': 'HCl','wrong': ['Cl₂', 'Both', 'Neither']},
+            {'mol_a': 'PF₃', 'shape_a': 'trigonal pyramidal','polar_a': True,
+             'mol_b': 'BF₃', 'shape_b': 'trigonal planar','polar_b': False,
+             'question': 'Which molecule is polar?',
+             'correct': 'PF₃','wrong': ['BF₃', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'NF₃', 'shape_a': 'trigonal pyramidal','polar_a': True,
+             'mol_b': 'AlF₃','shape_b': 'trigonal planar','polar_b': False,
+             'question': 'Which molecule is polar?',
+             'correct': 'NF₃','wrong': ['AlF₃', 'Both are polar', 'Neither is polar']},
+            {'mol_a': 'H₂S','shape_a': 'bent',             'polar_a': True,
+             'mol_b': 'CS₂','shape_b': 'linear',           'polar_b': False,
+             'question': 'Which molecule has a net dipole moment?',
+             'correct': 'H₂S','wrong': ['CS₂', 'Both', 'Neither']},
+            {'mol_a': 'BCl₃','shape_a': 'trigonal planar', 'polar_a': False,
+             'mol_b': 'PCl₃','shape_b': 'trigonal pyramidal','polar_b': True,
+             'question': 'Which molecule is non-polar?',
+             'correct': 'BCl₃','wrong': ['PCl₃', 'Both are non-polar', 'Neither']},
         ]
-
+        
+        from math import cos, radians
+        # V-shaped (bent) polar molecules with labelled bond dipoles
+        bent_molecules = [
+            {'name': 'H₂O',  'bond_angle': 104.5, 'mu_bond': 1.51, 'center': 'O', 'terminal': 'H'},
+            {'name': 'H₂S',  'bond_angle': 92.0,  'mu_bond': 0.97, 'center': 'S', 'terminal': 'H'},
+            {'name': 'OF₂',  'bond_angle': 103.0, 'mu_bond': 0.94, 'center': 'O', 'terminal': 'F'},
+            {'name': 'SCl₂', 'bond_angle': 103.0, 'mu_bond': 1.20, 'center': 'S', 'terminal': 'Cl'},
+            {'name': 'SO₂',  'bond_angle': 119.0, 'mu_bond': 1.63, 'center': 'S', 'terminal': 'O'},
+            {'name': 'ClF',  'bond_angle': 180.0, 'mu_bond': 0.88, 'center': 'Cl', 'terminal': 'F'},
+        ]
         self.mol = rnd.choice(bent_molecules)
+        # Add small noise to bond dipole for numerical variance
         self.mu_bond = round(self.mol['mu_bond'] + rnd.uniform(-0.05, 0.05), 2)
         theta = self.mol['bond_angle']
-        half = theta / 2.0
-        self.mu_net = round(2 * self.mu_bond * cos(radians(half)), 2)
+        half_open = (180.0 - theta) / 2.0
+        self.mu_net = round(2 * self.mu_bond * cos(radians(half_open)), 2)
         self.answer = self.mu_net
-
+        
         self.description = (
-            f"A molecule of {self.mol['name']} is shown with bond dipole moments and bond angle labelled. "
-            f"Use the diagram to calculate the net (resultant) dipole moment, "
-            f"\u03bc_net, in Debye (D), to 2 d.p."
+            "A molecule is shown with bond dipole moments and bond angle labelled. "
+            "Use the diagram to calculate the net (resultant) dipole moment, μ_net, in Debye (D), to 2 d.p."
         )
-
+        
         self.topic = "Chemical bonding"
         self.subtopic = "Molecular polarity"
         self.source = "Adapted from Cambridge A-Level Chemistry"
         self.curriculum = "A-Level"
         self.question_type = "Short Answer"
-
+        
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\mu_{{\\text{{bond}}}} &= {self.mu_bond}\\,\\text{{D}}\\\\"
             f"\\theta &= {theta}°\\\\"
-            "&\\text{The two equal bond dipoles act at angle }\\theta\\text{ to each other.}\\\\"
-            f"\\mu_{{\\text{{net}}}} &= 2\\mu_{{\\text{{bond}}}}\\cos\\!\\left(\\frac{{\\theta}}{{2}}\\right)\\\\"
-            f"&= 2 \\times {self.mu_bond} \\times \\cos({half}°)\\\\"
+            f"\\mu_{{\\text{{net}}}} &= 2\\mu_{{\\text{{bond}}}}\\cos\\left(\\frac{{180°-\\theta}}{{2}}\\right)\\\\"
+            f"&= 2 \\times {self.mu_bond} \\times \\cos({half_open}°)\\\\"
             f"&= {self.answer}\\,\\text{{D}}"
             "\\end{aligned}\\]"
         )
-
+    
     def generate(self, num):
         from math import sin, cos, radians
         fig, ax = plt.subplots(figsize=(9, 8))
         ax.set_xlim(0, 9)
         ax.set_ylim(0, 8)
         ax.axis('off')
-
+        
         add_title_box(ax, 4.5, 7.5, f'Bond Dipole Moments in {self.mol["name"]}', fontsize=14)
-
+        
         theta = self.mol['bond_angle']
         half = radians(theta / 2)
         cx, cy = 4.5, 4.0
         r = 1.8
         x1 = cx - r * sin(half);  y1 = cy - r * cos(half)
         x2 = cx + r * sin(half);  y2 = cy - r * cos(half)
-
+        
         ax.plot([cx, x1], [cy, y1], 'k-', lw=3)
         ax.plot([cx, x2], [cy, y2], 'k-', lw=3)
-
-        draw_circle_atom(ax, cx, cy, self.mol['center'],   radius=0.4, color='lightcoral')
+        
+        draw_circle_atom(ax, cx, cy, self.mol['center'], radius=0.4, color='lightcoral')
         draw_circle_atom(ax, x1, y1, self.mol['terminal'], radius=0.3, color='lightblue')
         draw_circle_atom(ax, x2, y2, self.mol['terminal'], radius=0.3, color='lightblue')
-
-        mid1x, mid1y = (cx + x1) / 2, (cy + y1) / 2
-        mid2x, mid2y = (cx + x2) / 2, (cy + y2) / 2
-        ax.annotate('', xy=(x1, y1), xytext=(cx, cy),
-                    arrowprops=dict(arrowstyle='->', color='blue', lw=2))
-        ax.annotate('', xy=(x2, y2), xytext=(cx, cy),
-                    arrowprops=dict(arrowstyle='->', color='blue', lw=2))
-
-        ax.text(mid1x - 0.4, mid1y, f'{self.mu_bond} D', fontsize=11, color='blue', ha='center')
-        ax.text(mid2x + 0.4, mid2y, f'{self.mu_bond} D', fontsize=11, color='blue', ha='center')
-
-        ax.text(cx, cy - 0.6, f'{theta}°', fontsize=12, ha='center',
-                bbox=dict(boxstyle='round', facecolor='lightyellow'))
-
+        
+        # Bond dipole arrows
+        mid1x, mid1y = (cx+x1)/2, (cy+y1)/2
+        mid2x, mid2y = (cx+x2)/2, (cy+y2)/2
+        ax.annotate('', xy=(cx, cy), xytext=(x1, y1),
+                   arrowprops=dict(arrowstyle='->', color='blue', lw=2))
+        ax.annotate('', xy=(cx, cy), xytext=(x2, y2),
+                   arrowprops=dict(arrowstyle='->', color='blue', lw=2))
+        
+        ax.text(mid1x-0.4, mid1y, f'{self.mu_bond} D', fontsize=11, color='blue', ha='center')
+        ax.text(mid2x+0.4, mid2y, f'{self.mu_bond} D', fontsize=11, color='blue', ha='center')
+        
+        # Bond angle arc label
+        ax.text(cx, cy-0.6, f'{theta}°', fontsize=12, ha='center',
+               bbox=dict(boxstyle='round', facecolor='lightyellow'))
+        
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
