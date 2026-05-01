@@ -654,36 +654,18 @@ class Chem106:
         reactions = [
         {
             "name": "Magnesium and Hydrochloric Acid",
+            "equation": "Mg + 2HCl \u2192 MgCl\u2082 + H\u2082",
             "reactant_A": "Mg",
             "reactant_B": "HCl",
-            "product": "H2",
+            "product": "MgCl\u2082",
             "coeff_A": 1,
             "coeff_B": 2,
             "Ar_A": 24.3,
             "Ar_B": 36.5
         },
         {
-            "name": "Magnesium and Hydrochloric Acid",
-            "reactant_A": "Mg",
-            "reactant_B": "HCl",
-            "product": "H2",
-            "coeff_A": 2,
-            "coeff_B": 4,
-            "Ar_A": 24,
-            "Ar_B": 36.5
-        },
-        {
-            "name": "Magnesium and Hydrochloric Acid",
-            "reactant_A": "Mg",
-            "reactant_B": "HCl",
-            "product": "H2",
-            "coeff_A": 1,
-            "coeff_B": 3,
-            "Ar_A": 25,
-            "Ar_B": 37
-        },
-        {
             "name": "Iron and Sulfur",
+            "equation": "Fe + S \u2192 FeS",
             "reactant_A": "Fe",
             "reactant_B": "S",
             "product": "FeS",
@@ -693,64 +675,70 @@ class Chem106:
             "Ar_B": 32
         },
         {
-            "name": "Iron and Sulfur",
-            "reactant_A": "Fe",
-            "reactant_B": "S",
-            "product": "FeS",
-            "coeff_A": 2,
-            "coeff_B": 2,
-            "Ar_A": 55.8,
-            "Ar_B": 32.1
+            "name": "Aluminium and Oxygen",
+            "equation": "4Al + 3O\u2082 \u2192 2Al\u2082O\u2083",
+            "reactant_A": "Al",
+            "reactant_B": "O2",
+            "product": "Al\u2082O\u2083",
+            "coeff_A": 4,
+            "coeff_B": 3,
+            "Ar_A": 27,
+            "Ar_B": 32
         },
         {
-            "name": "Iron and Sulfur",
+            "name": "Calcium and Oxygen",
+            "equation": "2Ca + O\u2082 \u2192 2CaO",
+            "reactant_A": "Ca",
+            "reactant_B": "O2",
+            "product": "CaO",
+            "coeff_A": 2,
+            "coeff_B": 1,
+            "Ar_A": 40,
+            "Ar_B": 32
+        },
+        {
+            "name": "Hydrogen and Oxygen",
+            "equation": "2H\u2082 + O\u2082 \u2192 2H\u2082O",
+            "reactant_A": "H2",
+            "reactant_B": "O2",
+            "product": "H\u2082O",
+            "coeff_A": 2,
+            "coeff_B": 1,
+            "Ar_A": 2,
+            "Ar_B": 32
+        },
+        {
+            "name": "Sodium and Chlorine",
+            "equation": "2Na + Cl\u2082 \u2192 2NaCl",
+            "reactant_A": "Na",
+            "reactant_B": "Cl2",
+            "product": "NaCl",
+            "coeff_A": 2,
+            "coeff_B": 1,
+            "Ar_A": 23,
+            "Ar_B": 71
+        },
+        {
+            "name": "Iron and Oxygen",
+            "equation": "3Fe + 2O\u2082 \u2192 Fe\u2083O\u2084",
             "reactant_A": "Fe",
-            "reactant_B": "S",
-            "product": "FeS",
+            "reactant_B": "O2",
+            "product": "Fe\u2083O\u2084",
             "coeff_A": 3,
-            "coeff_B": 3,
-            "Ar_A": 57,
-            "Ar_B": 31
-        },
-        {
-            "name": "Aluminium and Oxygen",
-            "reactant_A": "Al",
-            "reactant_B": "O2",
-            "product": "Al2O3",
-            "coeff_A": 4,
-            "coeff_B": 3,
-            "Ar_A": 27,
+            "coeff_B": 2,
+            "Ar_A": 56,
             "Ar_B": 32
         },
         {
-            "name": "Aluminium and Oxygen",
-            "reactant_A": "Al",
+            "name": "Magnesium and Oxygen",
+            "equation": "2Mg + O\u2082 \u2192 2MgO",
+            "reactant_A": "Mg",
             "reactant_B": "O2",
-            "product": "Al2O3",
+            "product": "MgO",
             "coeff_A": 2,
-            "coeff_B": 3,
-            "Ar_A": 26.98,
+            "coeff_B": 1,
+            "Ar_A": 24.3,
             "Ar_B": 32
-        },
-        {
-            "name": "Aluminium and Oxygen",
-            "reactant_A": "Al",
-            "reactant_B": "O2",
-            "product": "Al2O3",
-            "coeff_A": 6,
-            "coeff_B": 5,
-            "Ar_A": 27,
-            "Ar_B": 31.5
-        },
-        {
-            "name": "Aluminium and Oxygen",
-            "reactant_A": "Al",
-            "reactant_B": "O2",
-            "product": "Al2O3",
-            "coeff_A": 4,
-            "coeff_B": 4,
-            "Ar_A": 28,
-            "Ar_B": 33
         }
     ]
 
@@ -787,6 +775,9 @@ class Chem106:
         self.description = (
             f"The graph tracks the mass of reactants during the reaction between "
             f"{self.reaction['reactant_A']} and {self.reaction['reactant_B']}.\n\n"
+            f"Equation: {self.reaction['equation']}\n"
+            f"Ar: {self.reaction['reactant_A']}={self.reaction['Ar_A']}, "
+            f"{self.reaction['reactant_B']}={self.reaction['Ar_B']}\n\n"
             f"Using stoichiometry and the initial data provided in the graph, "
             f"calculate the exact mass of the excess reactant remaining!"
         )
@@ -873,69 +864,75 @@ class Chem107:
 
         chains = [
         {
-            "name": "Calcium Carbonate Decomposition + Acid Reaction",
-            "stage1": "CaCO3 \u2192 CaO + CO2",
-            "stage2": "CaO + 2HCl \u2192 CaCl2 + H2O",
+            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+            "stage1": "CaCO3 → CaO + CO2",
+            "stage2": "CaO + 2HCl → CaCl2 + H2O",
             "Ar_start": 100,
-            "Ar_final": 111,
-            "ar_note": "Ar: Ca=40, C=12, O=16, Cl=35.5"
+            "Ar_final": 111
         },
         {
-            "name": "Magnesium Carbonate Decomposition + Acid Reaction",
-            "stage1": "MgCO3 \u2192 MgO + CO2",
-            "stage2": "MgO + 2HCl \u2192 MgCl2 + H2O",
-            "Ar_start": 84,
-            "Ar_final": 95,
-            "ar_note": "Ar: Mg=24, C=12, O=16, Cl=35.5"
+            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+            "stage1": "CaCO3 → CaO + CO2",
+            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "Ar_start": 102,
+            "Ar_final": 110
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 \u2192 ZnO + CO2",
-            "stage2": "ZnO + 2HCl \u2192 ZnCl2 + H2O",
-            "Ar_start": 125,
-            "Ar_final": 136,
-            "ar_note": "Ar: Zn=65, C=12, O=16, Cl=35.5"
+            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
+            "stage1": "CaCO3 → CaO + CO2",
+            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "Ar_start": 98,
+            "Ar_final": 112
         },
         {
             "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 \u2192 CuO + CO2",
-            "stage2": "CuO + H2 \u2192 Cu + H2O",
+            "stage1": "CuCO3 → CuO + CO2",
+            "stage2": "CuO + H2 → Cu + H2O",
             "Ar_start": 124,
-            "Ar_final": 64,
-            "ar_note": "Ar: Cu=64, C=12, O=16, H=1"
+            "Ar_final": 63.5
         },
         {
-            "name": "Iron(II) Carbonate Decomposition + Acid Reaction",
-            "stage1": "FeCO3 \u2192 FeO + CO2",
-            "stage2": "FeO + 2HCl \u2192 FeCl2 + H2O",
-            "Ar_start": 116,
-            "Ar_final": 127,
-            "ar_note": "Ar: Fe=56, C=12, O=16, Cl=35.5"
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 → CuO + CO2",
+            "stage2": "CuO + H2 → Cu + H2O",
+            "Ar_start": 123,
+            "Ar_final": 64
         },
         {
-            "name": "Manganese Carbonate Decomposition + Acid Reaction",
-            "stage1": "MnCO3 \u2192 MnO + CO2",
-            "stage2": "MnO + 2HCl \u2192 MnCl2 + H2O",
-            "Ar_start": 115,
-            "Ar_final": 126,
-            "ar_note": "Ar: Mn=55, C=12, O=16, Cl=35.5"
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 → CuO + CO2",
+            "stage2": "CuO + H2 → Cu + H2O",
+            "Ar_start": 125,
+            "Ar_final": 62
         },
         {
-            "name": "Lead Carbonate Decomposition + Acid Reaction",
-            "stage1": "PbCO3 \u2192 PbO + CO2",
-            "stage2": "PbO + 2HCl \u2192 PbCl2 + H2O",
-            "Ar_start": 267,
-            "Ar_final": 278,
-            "ar_note": "Ar: Pb=207, C=12, O=16, Cl=35.5"
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 125,
+            "Ar_final": 136
         },
         {
-            "name": "Calcium Carbonate Decomposition + Hydration",
-            "stage1": "CaCO3 \u2192 CaO + CO2",
-            "stage2": "CaO + H2O \u2192 Ca(OH)2",
-            "Ar_start": 100,
-            "Ar_final": 74,
-            "ar_note": "Ar: Ca=40, C=12, O=16, H=1"
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 124,
+            "Ar_final": 137
         },
+        {
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 126,
+            "Ar_final": 135
+        },
+        {
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 → ZnO + CO2",
+            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "Ar_start": 127,
+            "Ar_final": 138
+        }
     ]
 
         self.chain = rnd.choice(chains)
@@ -952,8 +949,7 @@ class Chem107:
             f"The graph tracks the mass of substances during a multi-stage reaction chain.\n\n"
             f"Stage 1: {self.chain['stage1']}\n"
             f"Stage 2: {self.chain['stage2']}\n\n"
-            f"Starting mass: {self.start_mass} g\n"
-            f"{self.chain['ar_note']}\n\n"
+            f"Starting mass: {self.start_mass} g\n\n"
             f"Using stoichiometry and the initial mass provided in the graph, "
             f"calculate the exact mass of the final product formed!"
         )
