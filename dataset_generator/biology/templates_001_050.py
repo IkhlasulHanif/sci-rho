@@ -423,9 +423,10 @@ class Bio008:
         self.species = ["Hydrocotyle vulgaris", "Plantago maritima", "Ranunculus acris", "Hieracium pilosella", "Calliergon cuspidatum", "Prunella vulgaris", "Pseudoscleropodium purum"]
         self.num_individuals = [rnd.randint(5, 22) for _ in self.species]
         self.N = sum(self.num_individuals)
-        self.n_n1 = [n*(n - 1) for n in self.num_individuals]
-        self.sum_n_n1 = sum(self.n_n1)
-        self.answer = round(self.N * (self.N - 1) / self.sum_n_n1, 2)
+        self.n_div_N = [n/self.N for n in self.num_individuals]
+        self.pow_n_div_N = [num**2 for num in self.n_div_N]
+        self.sum_n_div_N = sum(self.pow_n_div_N)
+        self.answer = round(1 - self.sum_n_div_N, 2)
 
         self.description = f"The table shows plant species recorded at one site, on one island, in 1975. Calculate the index of diversity for this site!"
         self.topic = "Classification, biodiversity and conservation"
@@ -435,13 +436,22 @@ class Bio008:
         self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Total number of individuals (N)}} &= {self.N}\\\\"
-            f"\\sum n(n-1) &= {self.sum_n_n1}\\\\"
-            f"\\text{{Simpson's Index of Diversity (D) is given by:}} &\\\\"
-            f"D &= \\frac{{N(N-1)}}{{\\sum n(n-1)}}\\\\"
-            f"&= \\frac{{{self.N}({self.N}-1)}}{{{self.sum_n_n1}}}\\\\"
-            f"&= \\frac{{{self.N * (self.N - 1)}}}{{{self.sum_n_n1}}}\\\\"
-            f"&= {round(self.N * (self.N - 1) / self.sum_n_n1, 10)}\\\\"
+            f"\\text{{Total number of individuals}}\\; (N) &= \\sum n_i \\\\"
+            f"&= {self.N} \\\\"
+            f"\\text{{Proportion of each species}} &= \\frac{{n_i}}{{N}} \\\\"
+            + "".join(
+                f"\\frac{{{self.num_individuals[i]}}}{{{self.N}}} = {round(self.n_div_N[i], 10)} \\\\"
+                for i in range(len(self.num_individuals))
+            )
+            + f"\\text{{Square of proportions}} &= \\left(\\frac{{n_i}}{{N}}\\right)^2 \\\\"
+            + "".join(
+                f"({round(self.n_div_N[i], 10)})^2 = {round(self.pow_n_div_N[i], 10)} \\\\"
+                for i in range(len(self.pow_n_div_N))
+            )
+            + f"\\text{{Sum of squared proportions}} &= \\sum \\left(\\frac{{n_i}}{{N}}\\right)^2 \\\\"
+            f"&= {round(self.sum_n_div_N, 10)} \\\\"
+            f"\\text{{Index of diversity (D)}} &= 1 - \\sum \\left(\\frac{{n_i}}{{N}}\\right)^2 \\\\"
+            f"&= 1 - {round(self.sum_n_div_N, 10)} \\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
@@ -543,8 +553,7 @@ class Bio010:
         self.diameter = round(rnd.uniform(1.0, 1.5), 1)
         self.radius = self.diameter / 2
         self.water_volume = np.pi * self.radius**2 * self.distance
-        self.hour = self.minute / 60
-        self.answer = round(self.water_volume / self.hour, 2)
+        self.answer = round(self.water_volume / self.minute, 2)
 
         self.description = f"This is an illustration of a potometer. In one experiment, the air bubble moved {self.distance} mm in {self.minute} minutes. Calculate the rate of water uptake by the shoot in this experiment by mm³."
         self.topic = "Transport in plants"
@@ -554,18 +563,16 @@ class Bio010:
         self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Distance bubble moved}} &= {self.distance}\\,\\text{{mm}}\\\\"
+            f"\\text{{Distance moved by air bubble}} &= {self.distance}\\,\\text{{mm}}\\\\"
             f"\\text{{Time taken}} &= {self.minute}\\,\\text{{min}}\\\\"
-            f"\\text{{Capillary tube diameter}} &= {self.diameter}\\,\\text{{mm}}\\\\"
-            f"\\text{{Capillary tube radius (r)}} &= \\frac{{d}}{{2}} = \\frac{{{self.diameter}}}{{2}} = {self.radius}\\,\\text{{mm}}\\\\"
-            f"\\text{{Volume of water uptake (V)}} &= \\pi \\times r^2 \\times \\text{{distance}}\\\\"
-            f"&= \\pi \\times ({self.radius})^2 \\times {self.distance}\\\\"
+            f"\\text{{Diameter of capillary tube}} &= {self.diameter}\\,\\text{{mm}}\\\\"
+            f"\\text{{Radius of capillary tube}} &= \\frac{{d}}{{2}} = \\frac{{{self.diameter}}}{{2}} = {round(self.radius, 10)}\\,\\text{{mm}}\\\\"
+            f"\\text{{Volume of water uptake}} &= \\pi r^2 \\times \\text{{distance}}\\\\"
+            f"&= \\pi \\times ({round(self.radius, 10)})^2 \\times {self.distance}\\\\"
             f"&= {round(self.water_volume, 10)}\\,\\text{{mm}}^3\\\\"
-            f"\\text{{Time in hours (t)}} &= \\frac{{\\text{{minutes}}}}{{60}}\\\\"
-            f"&= \\frac{{{self.minute}}}{{60}} = {round(self.hour, 10)}\\,\\text{{h}}\\\\"
-            f"\\text{{Rate of water uptake}} &= \\frac{{V}}{{t}}\\\\"
-            f"&= \\frac{{{round(self.water_volume, 10)}}}{{{round(self.hour, 10)}}}\\\\"
-            f"&= {self.answer}\\,\\text{{mm}}^3/\\text{{h}}"
+            f"\\text{{Rate of water uptake}} &= \\frac{{\\text{{Volume}}}}{{\\text{{Time}}}}\\\\"
+            f"&= \\frac{{{round(self.water_volume, 10)}}}{{{self.minute}}}\\\\"
+            f"&= {self.answer}\\,\\text{{mm}}^3/\\text{{min}}"
             "\\end{aligned}\\]"
         )
 
