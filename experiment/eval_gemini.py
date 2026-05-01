@@ -14,7 +14,6 @@ GEMINI_TEMP_DIR = "gemini_temp"
 GEMINI_UPLOADED_IMAGES_FILE = os.path.join(GEMINI_TEMP_DIR, "gemini_uploaded_images.json")
 BATCH_JOBS_FILE = os.path.join(GEMINI_TEMP_DIR, "batch_jobs.json")
 ERROR_BATCH_JOBS_FILE = os.path.join(GEMINI_TEMP_DIR, "error_batch_jobs.json")
-USER_PROMPT_PATH = "user_prompt.txt"
 
 # Experiment Scope
 MODELS = [
@@ -30,6 +29,17 @@ SUBJECTS = [
     "compsci"
 ]
 DEFAULT_NUM_INSTANCES = 10
+
+# Language Map for Native Prompt Injection
+LANGUAGE_MAP = {
+    "description": "English",
+    "description_indonesian": "Indonesian",
+    "description_chinese": "Chinese",
+    "description_arabic": "Arabic",
+    "description_hindi": "Hindi",
+    "description_kazakh": "Kazakh",
+    "description_swahili": "Swahili"
+}
 
 # Sampling Parameters
 TEMPERATURE = 0.0
@@ -53,6 +63,9 @@ parser.add_argument("--send", action="store_true", help="Send prepared .jsonl re
 parser.add_argument("--check", action="store_true", help="Check status of active batches")
 parser.add_argument("--retrieve", action="store_true", help="Download results and reconstruct Excel files")
 
+# Experiment Flags
+parser.add_argument("--native", action="store_true", help="Use native language prompt (user_prompt_native.txt) and NP_ prefix")
+
 # Error Handling Flags
 parser.add_argument("--error_prepare", action="store_true", help="Parse request logs and prepare jsonl for failed instances")
 parser.add_argument("--error_send", action="store_true", help="Send the error-specific jsonl to Gemini Batch API")
@@ -61,6 +74,10 @@ parser.add_argument("--error_retrieve", action="store_true", help="Download erro
 args = parser.parse_args()
 
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
+
+# Experiment Identifiers
+PREFIX = "NP_" if args.native else ""
+USER_PROMPT_PATH = "user_prompt_native.txt" if args.native else "user_prompt.txt"
 
 # put API key to `secrets/gemini_api_key.txt`
 # otherwise, use environment variables
@@ -162,7 +179,10 @@ if args.prepare:
     if os.path.exists(USER_PROMPT_PATH):
         with open(USER_PROMPT_PATH, "r", encoding="utf-8") as f:
             user_prompt_template = f.read().strip()
-        print(f"[INFO] Loaded additional prompt template from {USER_PROMPT_PATH}")
+        print(f"[INFO] Loaded prompt template from {USER_PROMPT_PATH}")
+    else:
+        print(f"[!] ERROR: Prompt template not found at {USER_PROMPT_PATH}")
+        exit()
 
     for model_name in MODELS:
         if model_name=='gemini-2.5-flash':
@@ -171,20 +191,22 @@ if args.prepare:
         else:
             MAX_TOKENS = MAX_TOKENS_PRO
             THINKING_BUDGET = THINKING_BUDGET_PRO
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+            
+        # Apply prefix for saving specific model runs
+        job_key = f"{PREFIX}{model_name}"
+        safe_model_name = job_key.replace("/", "_").replace(".", "_")
         jsonl_filename = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}.jsonl")
         
         # Safety Check: Do not overwrite existing preparation files
         if os.path.exists(jsonl_filename):
-            print(f"[!] Safety Check: '{jsonl_filename}' already exists. Skipping preparation for {model_name}.")
+            print(f"[!] Safety Check: '{jsonl_filename}' already exists. Skipping preparation for {job_key}.")
             continue
 
-        print(f"\n[INFO] Preparing Requests for Model: {model_name}")
+        print(f"\n[INFO] Preparing Requests for Model: {job_key}")
         batch_requests = []
         
         for subject in SUBJECTS:
             for index in range(NUM_OF_INSTANCES):
-                # FIXED: Added "sample" back so it reads the local hard drive correctly
                 dataset_path = os.path.join("sample", f"0{index}", subject)
                 json_path = os.path.join(dataset_path, 'dataset.json')
                 
@@ -200,6 +222,7 @@ if args.prepare:
                 
                 for desc_col in desc_columns:
                     lang_suffix = desc_col.replace("description", "response")
+                    target_language = LANGUAGE_MAP.get(desc_col, "English")
                     
                     for _, row in tqdm(df.iterrows(), total=len(df), desc=f"Preparing {subject}-0{index}", leave=False):
                         # Create unique Custom ID
@@ -207,7 +230,6 @@ if args.prepare:
                         
                         # Reconstruct the precise local path to match the new gemini uploaded map key
                         img_rel_path = row["image"].replace("\\", "/")
-                        # FIXED: Exclude "sample/" here so it maps to the dictionary key
                         full_local_path = f"0{index}/{subject}/{img_rel_path}"
                         img_data = image_url_map.get(full_local_path)
                         
@@ -219,11 +241,10 @@ if args.prepare:
 
                         # Construct Final Text
                         base_desc = str(row[desc_col])
-                        if user_prompt_template:
-                            final_text = f"{base_desc}\n\n{user_prompt_template}"
-                        else:
-                            print("[!] ERROR: PROMPT TEMPLATE NOT FOUND")
-                            exit()
+                        
+                        # Substitute the target language securely if [LANGUAGE] tag exists
+                        current_prompt = user_prompt_template.replace("[LANGUAGE]", target_language)
+                        final_text = f"{base_desc}\n\n{current_prompt}"
 
                         # Simplified Gemini Config
                         generation_config = {
@@ -243,7 +264,6 @@ if args.prepare:
                                     {
                                         "role": "user",
                                         "parts": [
-                                            # img_url is now the Gemini File URI we recorded
                                             {"file_data": {"file_uri": img_url, "mime_type": "image/png"}},
                                             {"text": final_text}
                                         ]
@@ -270,28 +290,29 @@ if args.send:
             batch_jobs = json.load(f)
 
     for model_name in MODELS:
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        job_key = f"{PREFIX}{model_name}"
+        safe_model_name = job_key.replace("/", "_").replace(".", "_")
         jsonl_filename = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}.jsonl")
         
         if not os.path.exists(jsonl_filename):
-            print(f"[SKIP] No jsonl file found for {model_name}.")
+            print(f"[SKIP] No jsonl file found for {job_key}.")
             continue
             
-        print(f"[INFO] Uploading file to Gemini API for {model_name}...")
+        print(f"[INFO] Uploading file to Gemini API for {job_key}...")
         uploaded_file = client.files.upload(
             file=jsonl_filename,
             config={'mime_type': 'application/jsonl'}
         )
         
-        print(f"[INFO] Triggering Batch API for {model_name}...")
+        print(f"[INFO] Triggering Batch API for {job_key}...")
         batch_job = client.batches.create(
-            model=model_name,
+            model=model_name, # Native Gemini model name required here
             src=uploaded_file.name
         )
         
         # Extract state cleanly
         state_str = batch_job.state.name if hasattr(batch_job.state, 'name') else str(batch_job.state)
-        batch_jobs[model_name] = {
+        batch_jobs[job_key] = {
             "batch_id": batch_job.name, # Gemini uses '.name' as the ID (e.g. 'batches/12345')
             "input_file_id": uploaded_file.name,
             "status": state_str
@@ -313,14 +334,14 @@ if args.check:
         batch_jobs = json.load(f)
         
     all_ready = True
-    for model_name, job_info in batch_jobs.items():
+    for job_key, job_info in batch_jobs.items():
         job_status = client.batches.get(name=job_info["batch_id"])
         state_str = job_status.state.name if hasattr(job_status.state, 'name') else str(job_status.state)
-        batch_jobs[model_name]["status"] = state_str
+        batch_jobs[job_key]["status"] = state_str
         
         # Strip "JOB_STATE_" if present for cleaner printing
         clean_status = state_str.replace("JOB_STATE_", "").upper()
-        print(f"Model: {model_name.ljust(30)} | Status: {clean_status}")
+        print(f"Model: {job_key.ljust(30)} | Status: {clean_status}")
         
         if "SUCCEEDED" not in clean_status and "COMPLETED" not in clean_status:
             all_ready = False
@@ -345,32 +366,32 @@ if args.retrieve:
     with open(BATCH_JOBS_FILE, 'r') as f:
         batch_jobs = json.load(f)
 
-    for model_name, job_info in batch_jobs.items():
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+    for job_key, job_info in batch_jobs.items():
+        safe_model_name = job_key.replace("/", "_").replace(".", "_")
         request_logs = []  # Detailed log for every individual request
         
         if "SUCCEEDED" not in str(job_info["status"]).upper():
-            log_msg = f"[SKIP] {model_name}: Status is '{job_info['status']}' (Needs to be 'SUCCEEDED')"
+            log_msg = f"[SKIP] {job_key}: Status is '{job_info['status']}' (Needs to be 'SUCCEEDED')"
             print(log_msg)
             continue
             
-        print(f"\n[INFO] Retrieving results for {model_name}...")
+        print(f"\n[INFO] Retrieving results for {job_key}...")
         job_status = client.batches.get(name=job_info["batch_id"])
         
         try:
             remote_filename = job_status.dest.file_name
         except AttributeError:
-            log_msg = f"[!] Warning: No output file generated for {model_name}"
+            log_msg = f"[!] Warning: No output file generated for {job_key}"
             print(log_msg)
             request_logs.append(log_msg)
             
             if hasattr(job_status, 'error'):
-                request_logs.append(f"[{model_name}] Error Details:\n{job_status.error}")
+                request_logs.append(f"[{job_key}] Error Details:\n{job_status.error}")
                 
             # Save logs before continuing to the next model (Safety check removed)
             log_path = os.path.join(GEMINI_TEMP_DIR, f"{safe_model_name}_requests.log")
             with open(log_path, 'w', encoding='utf-8') as f:
-                f.write(f"=== REQUEST LOGS FOR {model_name} ===\n")
+                f.write(f"=== REQUEST LOGS FOR {job_key} ===\n")
                 for msg in request_logs: f.write(msg + "\n")
             print(f"\n[INFO] Detailed request logs saved to {log_path}")
             continue
@@ -387,7 +408,7 @@ if args.retrieve:
         
         lines = result_content.strip().split('\n')
         with open(raw_jsonl_path, 'a', encoding='utf-8') as raw_f:
-            for line in tqdm(lines, desc=f"Parsing {model_name}"):
+            for line in tqdm(lines, desc=f"Parsing {job_key}"):
                 if not line: continue
                 res = json.loads(line)
                 
@@ -401,7 +422,7 @@ if args.retrieve:
                 if 'error' in res:
                     answer = f"[API ERROR] {res.get('error')}"
                     error_count += 1
-                    request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | API Error: {res.get('error')}")
+                    request_logs.append(f"[{job_key}] FAILED  | ID: {custom_id} | API Error: {res.get('error')}")
                 else:
                     try:
                         candidates = res.get('response', {}).get('candidates', [])
@@ -412,19 +433,19 @@ if args.retrieve:
                             
                             if answer_parts:
                                 answer = "\n".join(answer_parts).strip()
-                                request_logs.append(f"[{model_name}] SUCCESS | ID: {custom_id}")
+                                request_logs.append(f"[{job_key}] SUCCESS | ID: {custom_id}")
                             else:
                                 answer = "[NO TEXT IN RESPONSE]"
                                 error_count += 1
-                                request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | No text in response.")
+                                request_logs.append(f"[{job_key}] FAILED  | ID: {custom_id} | No text in response.")
                         else:
                             answer = "[NO CANDIDATES GENERATED]"
                             error_count += 1
-                            request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | No candidates generated.")
+                            request_logs.append(f"[{job_key}] FAILED  | ID: {custom_id} | No candidates generated.")
                     except Exception as e:
                         answer = "[ERROR EXTRACTING RESPONSE]"
                         error_count += 1
-                        request_logs.append(f"[{model_name}] FAILED  | ID: {custom_id} | Exception: {str(e)}")
+                        request_logs.append(f"[{job_key}] FAILED  | ID: {custom_id} | Exception: {str(e)}")
                     
                 if subj not in mapped_results: mapped_results[subj] = {}
                 if idx_str not in mapped_results[subj]: mapped_results[subj][idx_str] = {}
@@ -478,7 +499,7 @@ if args.retrieve:
         if request_logs:
             log_path = os.path.join(GEMINI_TEMP_DIR, f"{safe_model_name}_requests.log")
             with open(log_path, 'w', encoding='utf-8') as f:
-                f.write(f"=== REQUEST LOGS FOR {model_name} ===\n")
+                f.write(f"=== REQUEST LOGS FOR {job_key} ===\n")
                 for log_msg in request_logs:
                     f.write(log_msg + "\n")
             print(f"\n[INFO] Detailed request logs saved to {log_path}")
@@ -490,7 +511,8 @@ if args.retrieve:
 if args.error_prepare:
     print(f"\n{'='*60}\n[INFO] ERROR STAGE 1: PREPARING FAILED REQUESTS\n{'='*60}")
     for model_name in MODELS:
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        job_key = f"{PREFIX}{model_name}"
+        safe_model_name = job_key.replace("/", "_").replace(".", "_")
         log_path = os.path.join(GEMINI_TEMP_DIR, f"{safe_model_name}_requests.log")
         orig_jsonl = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}.jsonl")
         error_jsonl = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}_error.jsonl")
@@ -511,7 +533,7 @@ if args.error_prepare:
                         pass
 
         if not failed_ids:
-            print(f"[INFO] No failed requests found in logs for {model_name}.")
+            print(f"[INFO] No failed requests found in logs for {job_key}.")
             continue
 
         error_reqs = []
@@ -537,27 +559,28 @@ if args.error_send:
             error_batch_jobs = json.load(f)
 
     for model_name in MODELS:
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        job_key = f"{PREFIX}{model_name}"
+        safe_model_name = job_key.replace("/", "_").replace(".", "_")
         error_jsonl = os.path.join(GEMINI_TEMP_DIR, f"req_{safe_model_name}_error.jsonl")
         
         if not os.path.exists(error_jsonl):
-            print(f"[SKIP] No error jsonl file found for {model_name}.")
+            print(f"[SKIP] No error jsonl file found for {job_key}.")
             continue
             
-        print(f"[INFO] Uploading ERROR file to Gemini API for {model_name}...")
+        print(f"[INFO] Uploading ERROR file to Gemini API for {job_key}...")
         uploaded_file = client.files.upload(
             file=error_jsonl,
             config={'mime_type': 'application/jsonl'}
         )
         
-        print(f"[INFO] Triggering ERROR Batch API for {model_name}...")
+        print(f"[INFO] Triggering ERROR Batch API for {job_key}...")
         batch_job = client.batches.create(
-            model=model_name,
+            model=model_name, # Native Gemini model name required here
             src=uploaded_file.name
         )
         
         state_str = batch_job.state.name if hasattr(batch_job.state, 'name') else str(batch_job.state)
-        error_batch_jobs[model_name] = {
+        error_batch_jobs[job_key] = {
             "batch_id": batch_job.name,
             "input_file_id": uploaded_file.name,
             "status": state_str
@@ -578,13 +601,13 @@ if args.error_check:
         error_batch_jobs = json.load(f)
         
     all_ready = True
-    for model_name, job_info in error_batch_jobs.items():
+    for job_key, job_info in error_batch_jobs.items():
         job_status = client.batches.get(name=job_info["batch_id"])
         state_str = job_status.state.name if hasattr(job_status.state, 'name') else str(job_status.state)
-        error_batch_jobs[model_name]["status"] = state_str
+        error_batch_jobs[job_key]["status"] = state_str
         
         clean_status = state_str.replace("JOB_STATE_", "").upper()
-        print(f"Model: {model_name.ljust(30)} | Status: {clean_status}")
+        print(f"Model: {job_key.ljust(30)} | Status: {clean_status}")
         
         if "SUCCEEDED" not in clean_status and "COMPLETED" not in clean_status:
             all_ready = False
@@ -608,20 +631,20 @@ if args.error_retrieve:
     with open(ERROR_BATCH_JOBS_FILE, 'r') as f:
         error_batch_jobs = json.load(f)
 
-    for model_name, job_info in error_batch_jobs.items():
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+    for job_key, job_info in error_batch_jobs.items():
+        safe_model_name = job_key.replace("/", "_").replace(".", "_")
         
         if "SUCCEEDED" not in str(job_info["status"]).upper():
-            print(f"[SKIP] {model_name}: Status is '{job_info['status']}'")
+            print(f"[SKIP] {job_key}: Status is '{job_info['status']}'")
             continue
             
-        print(f"\n[INFO] Retrieving error results for {model_name}...")
+        print(f"\n[INFO] Retrieving error results for {job_key}...")
         job_status = client.batches.get(name=job_info["batch_id"])
         
         try:
             remote_filename = job_status.dest.file_name
         except AttributeError:
-            print(f"[!] Warning: No output file generated for {model_name}")
+            print(f"[!] Warning: No output file generated for {job_key}")
             continue
             
         # Download the JSONL output from Gemini
@@ -633,7 +656,7 @@ if args.error_retrieve:
         
         lines = result_content.strip().split('\n')
         with open(error_raw_jsonl, 'a', encoding='utf-8') as raw_f:
-            for line in tqdm(lines, desc=f"Parsing {model_name} Error Returns"):
+            for line in tqdm(lines, desc=f"Parsing {job_key} Error Returns"):
                 if not line: continue
                 res = json.loads(line)
                 
@@ -686,6 +709,6 @@ if args.error_retrieve:
                     except Exception as e:
                         print(f" [!] Failed to patch {excel_path}: {e}")
                         
-        print(f" [SUCCESS] Safely patched {patch_count} cells into existing Excel files for {model_name}.")
+        print(f" [SUCCESS] Safely patched {patch_count} cells into existing Excel files for {job_key}.")
 
 print("\n[INFO] Execution Finished.")
