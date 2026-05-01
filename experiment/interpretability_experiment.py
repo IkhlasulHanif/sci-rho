@@ -25,7 +25,7 @@ def main():
     
     # 1. Setup paths
     raw_data_dir = os.path.join("result", "raw", args.subject, args.instance)
-    out_dir = os.path.join("result", "process", "attention_timeseries", args.model_name.replace("/", "_"), args.subject, args.instance)
+    out_dir = os.path.join("result", "attention_timeseries", args.model_name.replace("/", "_"), args.subject, args.instance)
     os.makedirs(out_dir, exist_ok=True)
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
