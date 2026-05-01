@@ -873,75 +873,69 @@ class Chem107:
 
         chains = [
         {
-            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-            "stage1": "CaCO3 → CaO + CO2",
-            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "name": "Calcium Carbonate Decomposition + Acid Reaction",
+            "stage1": "CaCO3 \u2192 CaO + CO2",
+            "stage2": "CaO + 2HCl \u2192 CaCl2 + H2O",
             "Ar_start": 100,
-            "Ar_final": 111
+            "Ar_final": 111,
+            "ar_note": "Ar: Ca=40, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-            "stage1": "CaCO3 → CaO + CO2",
-            "stage2": "CaO + 2HCl → CaCl2 + H2O",
-            "Ar_start": 102,
-            "Ar_final": 110
+            "name": "Magnesium Carbonate Decomposition + Acid Reaction",
+            "stage1": "MgCO3 \u2192 MgO + CO2",
+            "stage2": "MgO + 2HCl \u2192 MgCl2 + H2O",
+            "Ar_start": 84,
+            "Ar_final": 95,
+            "ar_note": "Ar: Mg=24, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-            "stage1": "CaCO3 → CaO + CO2",
-            "stage2": "CaO + 2HCl → CaCl2 + H2O",
-            "Ar_start": 98,
-            "Ar_final": 112
-        },
-        {
-            "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 → CuO + CO2",
-            "stage2": "CuO + H2 → Cu + H2O",
-            "Ar_start": 124,
-            "Ar_final": 63.5
-        },
-        {
-            "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 → CuO + CO2",
-            "stage2": "CuO + H2 → Cu + H2O",
-            "Ar_start": 123,
-            "Ar_final": 64
-        },
-        {
-            "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 → CuO + CO2",
-            "stage2": "CuO + H2 → Cu + H2O",
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 \u2192 ZnO + CO2",
+            "stage2": "ZnO + 2HCl \u2192 ZnCl2 + H2O",
             "Ar_start": 125,
-            "Ar_final": 62
+            "Ar_final": 136,
+            "ar_note": "Ar: Zn=65, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-            "Ar_start": 125,
-            "Ar_final": 136
-        },
-        {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 \u2192 CuO + CO2",
+            "stage2": "CuO + H2 \u2192 Cu + H2O",
             "Ar_start": 124,
-            "Ar_final": 137
+            "Ar_final": 64,
+            "ar_note": "Ar: Cu=64, C=12, O=16, H=1"
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-            "Ar_start": 126,
-            "Ar_final": 135
+            "name": "Iron(II) Carbonate Decomposition + Acid Reaction",
+            "stage1": "FeCO3 \u2192 FeO + CO2",
+            "stage2": "FeO + 2HCl \u2192 FeCl2 + H2O",
+            "Ar_start": 116,
+            "Ar_final": 127,
+            "ar_note": "Ar: Fe=56, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-            "Ar_start": 127,
-            "Ar_final": 138
-        }
+            "name": "Manganese Carbonate Decomposition + Acid Reaction",
+            "stage1": "MnCO3 \u2192 MnO + CO2",
+            "stage2": "MnO + 2HCl \u2192 MnCl2 + H2O",
+            "Ar_start": 115,
+            "Ar_final": 126,
+            "ar_note": "Ar: Mn=55, C=12, O=16, Cl=35.5"
+        },
+        {
+            "name": "Lead Carbonate Decomposition + Acid Reaction",
+            "stage1": "PbCO3 \u2192 PbO + CO2",
+            "stage2": "PbO + 2HCl \u2192 PbCl2 + H2O",
+            "Ar_start": 267,
+            "Ar_final": 278,
+            "ar_note": "Ar: Pb=207, C=12, O=16, Cl=35.5"
+        },
+        {
+            "name": "Calcium Carbonate Decomposition + Hydration",
+            "stage1": "CaCO3 \u2192 CaO + CO2",
+            "stage2": "CaO + H2O \u2192 Ca(OH)2",
+            "Ar_start": 100,
+            "Ar_final": 74,
+            "ar_note": "Ar: Ca=40, C=12, O=16, H=1"
+        },
     ]
 
         self.chain = rnd.choice(chains)
@@ -958,7 +952,8 @@ class Chem107:
             f"The graph tracks the mass of substances during a multi-stage reaction chain.\n\n"
             f"Stage 1: {self.chain['stage1']}\n"
             f"Stage 2: {self.chain['stage2']}\n\n"
-            f"Starting mass: {self.start_mass} g\n\n"
+            f"Starting mass: {self.start_mass} g\n"
+            f"{self.chain['ar_note']}\n\n"
             f"Using stoichiometry and the initial mass provided in the graph, "
             f"calculate the exact mass of the final product formed!"
         )
@@ -2039,10 +2034,10 @@ class Chem113:
         # Volume labels
         if self.given_gas == "H2":
             h2_label = f"{self.volume_H2} cm³"
-            o2_label = ""
+            o2_label = "? cm³"
             h2_color, o2_color = "#1E8449", "#E74C3C"
         else:
-            h2_label = ""
+            h2_label = "? cm³"
             o2_label = f"{self.volume_O2} cm³"
             h2_color, o2_color = "#E74C3C", "#1E8449"
 
@@ -5154,6 +5149,13 @@ class Chem145:
                 va='center',
                 fontsize=14,
                 fontweight='bold')
+
+        ax.text(6, 2.0,
+                "Find the oxidation number of this species.",
+                ha='center',
+                fontsize=11,
+                style='italic')
+
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5604,6 +5606,12 @@ class Chem149:
                     self.draw_orbital(ax, x + i*0.7, 3, "" if i != 1 else orb, e)
             else:
                 self.draw_orbital(ax, x, 3, orb, electrons)
+
+        ax.text(7, 2.2,
+                f"Configuration: {self.config}",
+                ha='center',
+                fontsize=15)
+
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
@@ -5611,30 +5619,19 @@ class Chem149:
 
 class Chem150:
     def __init__(self):
-        
-        self.color_themes = [
-            {"box": "#ffffff", "edge": "#000000", "arrow": "#000000"},  # classic
-            {"box": "#e3f2fd", "edge": "#1e88e5", "arrow": "#1565c0"},  # blue
-            {"box": "#e8f5e9", "edge": "#43a047", "arrow": "#2e7d32"},  # green
-            {"box": "#fff3e0", "edge": "#fb8c00", "arrow": "#ef6c00"},  # orange
-            {"box": "#fce4ec", "edge": "#d81b60", "arrow": "#ad1457"},  # pink
-            {"box": "#f3e5f5", "edge": "#8e24aa", "arrow": "#6a1b9a"},  # purple
-        ]
-
-        self.theme = rnd.choice(self.color_themes)
 
         variations = [
-            ("1s² 2s² 2p⁶ 3s²", 2),
-            ("1s² 2s² 2p⁶ 3s¹", 1),
-            ("1s² 2s² 2p⁶ 3s² 3p¹", 3),
-            ("1s² 2s² 2p⁶ 3s² 3p²", 4),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹", 1),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s²", 2),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s²", 2),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s¹", 1),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s²", 2),
-            ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ 4s²", 2),
-        ]
+        ("1s² 2s² 2p⁶ 3s²", 2),
+        ("1s² 2s² 2p⁶ 3s¹", 1),
+        ("1s² 2s² 2p⁶ 3s² 3p¹", 3),
+        ("1s² 2s² 2p⁶ 3s² 3p²", 4),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s¹", 1),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 4s²", 2),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s²", 2),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s¹", 1),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 5s²", 2),
+        ("1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁶ 4s²", 2),
+    ]
 
         self.config, self.lost = rnd.choice(variations)
         self.answer = self.lost
@@ -5672,26 +5669,21 @@ class Chem150:
         box = Rectangle((x - width/2, y),
                         width,
                         height,
-                        facecolor=self.theme["box"],
-                        edgecolor=self.theme["edge"],
+                        facecolor="white",
+                        edgecolor="black",
                         linewidth=2)
         ax.add_patch(box)
 
-        ax.plot([x, x], [y, y + height],
-                linewidth=2,
-                color=self.theme["edge"])
+        ax.plot([x, x], [y, y + height], linewidth=2, color="black")
 
         up_y = y + height * 0.65
         down_y = y + height * 0.35
 
         if electrons == 1:
-            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center',
-                    color=self.theme["arrow"])
+            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center')
         elif electrons == 2:
-            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center',
-                    color=self.theme["arrow"])
-            ax.text(x + 0.35, down_y, "↓", fontsize=14, ha='center',
-                    color=self.theme["arrow"])
+            ax.text(x - 0.35, up_y, "↑", fontsize=14, ha='center')
+            ax.text(x + 0.35, down_y, "↓", fontsize=14, ha='center')
 
         ax.text(x, y + height + 0.6,
                 label,
@@ -5754,6 +5746,12 @@ class Chem150:
             else:
                 if electrons > 0:
                     self.draw_orbital(ax, x, 3, orb, electrons)
+
+        ax.text(7.5, 2.2,
+                f"Configuration: {self.config}",
+                ha='center',
+                fontsize=15)
+
         
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
