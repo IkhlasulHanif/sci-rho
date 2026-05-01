@@ -3522,143 +3522,180 @@ class Chem075:
 class Chem076:
     """
     Topic: 34.4 Amide formation
-    Visual: Reaction scheme for amide synthesis
-    Task: Identify reagents for amide formation (MCQ)
+    Visual: Reaction scheme showing specific derivative box + nitrogen source box → amide product box
+    Task: Identify the by-product of the reaction (MCQ)
+    Vision-essential: derivative formula and nitrogen source are only shown in the diagram
     """
 
     def __init__(self):
         methods = [
             {
-                "name": "acyl chloride + ammonia",
-                "reagents": "RCOCl + NH\u2083",
-                "product": "primary amide (RCONH\u2082) + HCl",
-                "conditions": "room temperature",
+                'derivative': 'CH\u2083COCl',
+                'derivative_name': 'ethanoyl chloride',
+                'nitrogen': 'NH\u2083',
+                'nitrogen_name': 'ammonia',
+                'product': 'CH\u2083CONH\u2082',
+                'product_name': 'ethanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'HCl',
             },
             {
-                "name": "acyl chloride + primary amine",
-                "reagents": "RCOCl + RNH\u2082",
-                "product": "N-substituted amide (RCONHR) + HCl",
-                "conditions": "room temperature",
+                'derivative': 'CH\u2083COCl',
+                'derivative_name': 'ethanoyl chloride',
+                'nitrogen': 'CH\u2083NH\u2082',
+                'nitrogen_name': 'methylamine',
+                'product': 'CH\u2083CONHCH\u2083',
+                'product_name': 'N-methylethanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'HCl',
             },
             {
-                "name": "acyl chloride + secondary amine",
-                "reagents": "RCOCl + R\u2082NH",
-                "product": "N,N-disubstituted amide + HCl",
-                "conditions": "room temperature",
+                'derivative': '(CH\u2083CO)\u2082O',
+                'derivative_name': 'ethanoic anhydride',
+                'nitrogen': 'NH\u2083',
+                'nitrogen_name': 'ammonia',
+                'product': 'CH\u2083CONH\u2082',
+                'product_name': 'ethanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'CH\u2083COOH',
             },
             {
-                "name": "carboxylic acid + amine + heat",
-                "reagents": "RCOOH + RNH\u2082, \u0394",
-                "product": "amide + H\u2082O",
-                "conditions": "strong heating",
+                'derivative': '(CH\u2083CO)\u2082O',
+                'derivative_name': 'ethanoic anhydride',
+                'nitrogen': 'C\u2082H\u2085NH\u2082',
+                'nitrogen_name': 'ethylamine',
+                'product': 'CH\u2083CONHC\u2082H\u2085',
+                'product_name': 'N-ethylethanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'CH\u2083COOH',
             },
             {
-                "name": "acid anhydride + ammonia",
-                "reagents": "(RCO)\u2082O + NH\u2083",
-                "product": "primary amide + carboxylate salt",
-                "conditions": "room temperature",
+                'derivative': 'CH\u2083COOC\u2082H\u2085',
+                'derivative_name': 'ethyl ethanoate',
+                'nitrogen': 'NH\u2083 (excess)',
+                'nitrogen_name': 'excess ammonia',
+                'product': 'CH\u2083CONH\u2082',
+                'product_name': 'ethanamide',
+                'conditions': 'excess NH\u2083, heat',
+                'byproduct': 'C\u2082H\u2085OH',
             },
             {
-                "name": "acid anhydride + primary amine",
-                "reagents": "(RCO)\u2082O + RNH\u2082",
-                "product": "N-substituted amide + RCOOH",
-                "conditions": "room temperature",
+                'derivative': 'CH\u2083COOH',
+                'derivative_name': 'ethanoic acid',
+                'nitrogen': 'NH\u2083',
+                'nitrogen_name': 'ammonia',
+                'product': 'CH\u2083CONH\u2082',
+                'product_name': 'ethanamide',
+                'conditions': 'strong heat (\u0394)',
+                'byproduct': 'H\u2082O',
             },
             {
-                "name": "ester + ammonia (ammonolysis)",
-                "reagents": "RCOOR + NH\u2083 (excess)",
-                "product": "primary amide + ROH",
-                "conditions": "excess ammonia, heat",
+                'derivative': 'C\u2082H\u2085COCl',
+                'derivative_name': 'propanoyl chloride',
+                'nitrogen': 'NH\u2083',
+                'nitrogen_name': 'ammonia',
+                'product': 'C\u2082H\u2085CONH\u2082',
+                'product_name': 'propanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'HCl',
             },
             {
-                "name": "nitrile + partial hydrolysis",
-                "reagents": "RCN + H\u2082O (limited), H\u207a cat.",
-                "product": "amide (intermediate)",
-                "conditions": "dilute acid, limited water, heat",
+                'derivative': '(C\u2082H\u2085CO)\u2082O',
+                'derivative_name': 'propanoic anhydride',
+                'nitrogen': 'NH\u2083',
+                'nitrogen_name': 'ammonia',
+                'product': 'C\u2082H\u2085CONH\u2082',
+                'product_name': 'propanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'C\u2082H\u2085COOH',
             },
             {
-                "name": "acyl chloride + aniline",
-                "reagents": "RCOCl + C\u2086H\u2085NH\u2082",
-                "product": "N-phenyl amide + HCl",
-                "conditions": "room temperature",
+                'derivative': 'C\u2083H\u2087COCl',
+                'derivative_name': 'butanoyl chloride',
+                'nitrogen': '(CH\u2083)\u2082NH',
+                'nitrogen_name': 'dimethylamine',
+                'product': 'C\u2083H\u2087CON(CH\u2083)\u2082',
+                'product_name': 'N,N-dimethylbutanamide',
+                'conditions': 'room temperature',
+                'byproduct': 'HCl',
             },
             {
-                "name": "acyl chloride + hydrazine",
-                "reagents": "RCOCl + H\u2082NNH\u2082",
-                "product": "acid hydrazide + HCl",
-                "conditions": "room temperature",
+                'derivative': 'C\u2086H\u2085COCl',
+                'derivative_name': 'benzoyl chloride',
+                'nitrogen': 'NH\u2083',
+                'nitrogen_name': 'ammonia',
+                'product': 'C\u2086H\u2085CONH\u2082',
+                'product_name': 'benzamide',
+                'conditions': 'room temperature',
+                'byproduct': 'HCl',
             },
         ]
 
-        all_names = [m["name"] for m in methods]
         self.method = rnd.choice(methods)
-        self.method_name = self.method["name"]
-
-        distractors = [m["name"] for m in methods if m["name"] != self.method_name]
+        correct = self.method['byproduct']
+        all_byproducts = list({m['byproduct'] for m in methods})
+        distractors = [b for b in all_byproducts if b != correct]
         rnd.shuffle(distractors)
-        options = [self.method_name] + distractors[:3]
+        options = [correct] + distractors[:3]
         rnd.shuffle(options)
         self.options = options
-        self.answer = chr(65 + options.index(self.method_name))
-
+        self.answer = chr(65 + options.index(correct))
         self.options_text = "\n".join(f"{chr(65+j)}. {opt}" for j, opt in enumerate(self.options))
 
         self.description = (
-            "The diagram shows a reaction scheme for amide formation. "
-            "Based on the conditions shown on the reaction arrow, which reagents are used in this method?\n\n"
+            "The diagram shows a specific amide formation reaction with both reactants labelled. "
+            "What is the by-product of this reaction?\n\n"
             f"{self.options_text}"
         )
         self.topic = "Nitrogen compounds"
         self.subtopic = "Amide formation"
         self.source = "Adapted from Cambridge A Level Chemistry 9701"
-        self.curriculum = "A-Level"
+        self.curriculum = "A Level"
         self.question_type = "MCQ"
 
-        # Safely convert Unicode subscripts to inline math for rendering inside \text{}
-        tex_map = str.maketrans({
-            '₀': '$_0$', '₁': '$_1$', '₂': '$_2$', '₃': '$_3$', '₄': '$_4$', 
-            '₅': '$_5$', '₆': '$_6$', '₇': '$_7$', '₈': '$_8$', '₉': '$_9$',
-            '⁺': '$^+$', '⁻': '$^-$', 'Δ': '$\\Delta$'
-        })
-        
-        name_tex = self.method_name.translate(tex_map)
-        cond_tex = self.method['conditions'].translate(tex_map)
-        reagents_tex = self.method['reagents'].translate(tex_map)
-        product_tex = self.method['product'].translate(tex_map)
-
         self.reasoning = (
-            "\\[\\begin{aligned}"
-            f"&\\text{{1. The diagram indicates an amide synthesis under these conditions:}} \\\\"
-            f"&\\quad \\text{{{cond_tex}.}} \\\\"
-            f"&\\text{{2. These specific conditions map directly to the method: {name_tex}.}} \\\\"
-            f"&\\text{{3. The required reagents are {reagents_tex}.}} \\\\"
-            f"&\\text{{4. The resulting product profile is {product_tex}.}} \\\\"
+            f"\\[\\begin{{aligned}}"
+            f"&\\text{{1. The diagram shows {self.method['derivative_name']} ({self.method['derivative']})"
+            f" reacting with {self.method['nitrogen_name']} ({self.method['nitrogen']}).}} \\\\"
+            f"&\\text{{2. Conditions: {self.method['conditions']}.}} \\\\"
+            f"&\\text{{3. The amide product formed is {self.method['product_name']} ({self.method['product']}).}} \\\\"
+            f"&\\text{{4. The by-product of this class of reaction is {correct}.}} \\\\"
             f"&\\text{{5. Therefore, the correct option is {self.answer}.}}"
-            "\\end{aligned}\\]"
+            f"\\end{{aligned}}\\]"
         )
 
     def generate(self, num):
-        fig, ax = plt.subplots(figsize=(12, 7))
-        ax.set_xlim(0, 12)
-        ax.set_ylim(0, 7)
+        fig, ax = plt.subplots(figsize=(14, 6))
+        ax.set_xlim(0, 14)
+        ax.set_ylim(0, 6)
         ax.axis('off')
 
-        add_title_box(ax, 6, 6.5, "Amide Formation", fontsize=16)
+        add_title_box(ax, 7, 5.5, "Amide Formation", fontsize=15)
 
-        draw_labeled_box(ax, 1, 3.5, 3, 1.2, "Carboxylic\nacid derivative",
-                         facecolor='lightblue')
+        draw_labeled_box(ax, 0.3, 2.2, 3.0, 1.6,
+                         self.method['derivative'],
+                         sublabel=self.method['derivative_name'],
+                         facecolor='lightblue', label_fontsize=12, sublabel_fontsize=9)
 
-        draw_arrow(ax, 4, 4.2, 8, 4.2, label=self.method["conditions"],
+        ax.text(3.8, 3.0, '+', fontsize=22, ha='center', va='center', fontweight='bold', color='#333333')
+
+        draw_labeled_box(ax, 4.3, 2.2, 3.0, 1.6,
+                         self.method['nitrogen'],
+                         sublabel=self.method['nitrogen_name'],
+                         facecolor='lightyellow', label_fontsize=12, sublabel_fontsize=9)
+
+        draw_arrow(ax, 7.6, 3.0, 10.0, 3.0,
+                   label=self.method['conditions'],
                    label_position='above', color='black', linewidth=2.5)
 
-        draw_labeled_box(ax, 9, 3.5, 2.5, 1.2, "Amide\nRCONH\u2082",
-                         facecolor='lightgreen')
-
+        draw_labeled_box(ax, 10.3, 2.2, 3.2, 1.6,
+                         self.method['product'],
+                         sublabel=self.method['product_name'],
+                         facecolor='lightgreen', label_fontsize=11, sublabel_fontsize=9)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=150, bbox_inches='tight')
         plt.close()
-
 
 
 
