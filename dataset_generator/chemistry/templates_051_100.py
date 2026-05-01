@@ -5495,14 +5495,13 @@ class Chem090:
         fig, ax = plt.subplots(figsize=(12, 7))
 
         draw_nmr_peak(ax, self.mol['shift'], self.mol['integration'],
-                      splitting=self.mol['splitting'], max_height=100,
-                      j_coupling=0.10, sigma=0.015)
+                      splitting=self.mol['splitting'], max_height=100)
 
         ax.set_title(f'\u00b9H NMR: {self.mol["name"]} \u2014 {self.mol["key_group"]} peak',
                      fontsize=16, fontweight='bold')
         ax.set_xlabel('Chemical shift \u03b4 (ppm)', fontsize=14, fontweight='bold')
         ax.set_ylabel('Intensity', fontsize=14, fontweight='bold')
-        ax.set_xlim(self.mol['shift'] + 0.8, self.mol['shift'] - 0.8)
+        ax.set_xlim(self.mol['shift'] + 1.5, self.mol['shift'] - 1.5)
         ax.set_ylim(0, 130)
 
         ax.text(self.mol['shift'], 110,
