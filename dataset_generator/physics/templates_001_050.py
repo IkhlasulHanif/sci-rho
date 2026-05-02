@@ -388,11 +388,14 @@ class Phy009:
         self.c = rnd.randint(1, 6)
         self.t1 = rnd.randint(0, 40) / 10
         self.t2 = rnd.randint(50, 100) / 10
-        delta_t = round(self.t2 - self.t1, 5)
-        self.answer = self.c * delta_t + (self.m * delta_t**2)/2 # v0 . t + 1/2 a . t^2 formula
+
+        self.answer = self.c * (self.t2 - self.t1) + (self.m / 2) * (self.t2**2 - self.t1**2)
         self.answer = round(self.answer, 2)
 
-        self.description = f"An object moves with a constant acceleration. The velocity-time graph below represents its motion. According to the graph, the displacement of the object between t={self.t1} and t={self.t2} is (_) m"
+        self.description = (
+            f"An object moves with a constant acceleration. The velocity-time graph below represents its motion. "
+            f"According to the graph, the displacement of the object between t={self.t1} and t={self.t2} is (_) m"
+        )
         self.topic = "Motion, forces and energy"
         self.subtopic = "Motion"
         self.source = "Original"
@@ -402,30 +405,30 @@ class Phy009:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Given:}} &\\\\"
-            f"a &= {self.m}\\,\\text{{m/s}}^2\\\\"
-            f"u &= {self.c}\\,\\text{{m/s}}\\\\"
+            f"m &= {self.m}\\,\\text{{m/s}}^2\\\\"
+            f"c &= {self.c}\\,\\text{{m/s}}\\\\"
             f"t_1 &= {self.t1}\\,\\text{{s}}\\\\"
             f"t_2 &= {self.t2}\\,\\text{{s}}\\\\"
-            f"\\text{{Change in time:}} &\\\\"
-            f"\\Delta t &= t_2 - t_1\\\\"
-            f"&= {self.t2} - {self.t1}\\\\"
-            f"&= {round(self.t2 - self.t1,10)}\\,\\text{{s}}\\\\"
-            f"\\text{{Displacement is given by:}} &\\\\"
-            f"s &= ut + \\tfrac{{1}}{{2}}at^2\\\\"
-            f"&= {self.c}\\times({round(self.t2 - self.t1,10)}) + \\tfrac{{1}}{{2}}\\times{self.m}\\times({round(self.t2 - self.t1,10)})^2\\\\"
-            f"&= {round(self.c * (self.t2 - self.t1),10)} + {round((self.m * (self.t2 - self.t1)**2)/2,10)}\\\\"
+            "\\text{{Velocity-time graph is a straight line:}} &\\\\"
+            f"v(t) &= c + mt = {self.c} + {self.m}t\\\\"
+            "\\text{{Displacement is area under }v(t)\\text{ from }t_1\\text{ to }t_2:}} &\\\\"
+            "s &= \\int_{t_1}^{t_2} (c+mt)\\,dt\\\\"
+            "&= \\left[ct + \\tfrac{1}{2}mt^2\\right]_{t_1}^{t_2}\\\\"
+            f"&= {self.c}({round(self.t2 - self.t1,10)}) + \\tfrac{{1}}{{2}}\\times{self.m}\\times({round(self.t2**2 - self.t1**2,10)})\\\\"
             f"&= {self.answer}\\,\\text{{m}}"
             "\\end{aligned}\\]"
         )
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 10))
-        draw_cartesian(ax, xmin=0, ymin=0, xmax=10, ymax=int(self.m*10+self.c)+1, tickrange=2, xlabel="time (s)", ylabel="velocity (m/s)")
+        draw_cartesian(ax, xmin=0, ymin=0, xmax=10, ymax=int(self.m*10+self.c)+1, tickrange=2,
+                       xlabel="time (s)", ylabel="velocity (m/s)")
         ax.plot([0, 10], [self.c, self.m*10 + self.c], color="blue", linewidth=2)
 
         dest_image_path = os.path.join(DESTINATION_FOLDER, f"image{num}.png")
         plt.savefig(dest_image_path, dpi=300, bbox_inches="tight")
         plt.close()
+
 
 class Phy010:
 
