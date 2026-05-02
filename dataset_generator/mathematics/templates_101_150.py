@@ -3324,7 +3324,7 @@ class Mat136:
         optimal_x = self.side_length / 6.0
         max_volume = optimal_x * (self.side_length - 2*optimal_x)**2
 
-        self.answer = round(max_volume, 3)
+        self.answer = round(optimal_x, 3)
 
         self.description = (
             "The figure shows a net for an open-topped box made from a square sheet of metal "
@@ -3355,10 +3355,9 @@ class Mat136:
             f"0 &= ({self.side_length} - 2x) ({self.side_length} - 6x)\\\\"
             f"\\text{{Possible values: }} x &= \\frac{{{self.side_length}}}{{2}} \\text{{ or }} x = \\frac{{{self.side_length}}}{{6}}\\\\"
             f"\\text{{Since }} x = S/2 \\text{{ gives }} V=0, \\text{{ we choose:}} &\\\\"
-            f"x &= \\frac{{{self.side_length}}}{{6}} \\approx {round(self.side_length/6.0, 10)}\\,\\text{{cm}}\\\\"
-            f"\\text{{Max Volume:}} &\\\\"
-            f"V_{{max}} &= {round(self.side_length/6.0, 10)} \\left({self.side_length} - 2({round(self.side_length/6.0, 10)})\\right)^2\\\\"
-            f"&= {self.answer}\\,\\text{{cm}}^3"
+            f"x &= \\frac{{{self.side_length}}}{{6}}\\\\"
+            f"\\text{{Hence, the value of }} x \\text{{ for maximum volume is:}} &\\\\"
+            f"x &\\approx {round(self.side_length/6.0, 3)}\\,\\text{{cm}}"
             "\\end{aligned}\\]"
         )
 
