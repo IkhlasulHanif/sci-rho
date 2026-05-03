@@ -4870,6 +4870,8 @@ class Phy149:
         k_e = 8.99e9 
 
         while True:
+            self.separation_cm = rnd.uniform(10.0, 15.0)
+            self.offset_cm = rnd.uniform(2.0, self.separation_cm/2 - 1.5)
             self.separation_cm = round(self.separation_cm, 1)
             self.offset_cm = round(self.offset_cm, 1)
 
