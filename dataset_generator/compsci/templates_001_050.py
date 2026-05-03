@@ -898,7 +898,7 @@ class Com013:
         for i in range(self.length):
             char = self.text[i]
             total_before = count
-            if char == self.ch or char == "a":
+            if char == self.ch:
                 change = 6
                 is_match = True
             else:
@@ -916,15 +916,15 @@ class Com013:
         self.question_type = "Short Answer"
         self.reasoning = (
             "\\[\\begin{aligned}"
-            f"\\text{{Original Input: }} s &= \"{self.input_text}\",\\, c = '{self.input_ch}'\\\\"
-            f"\\text{{Processed (Lowercase): }} s &= \"{self.text}\",\\, c = '{self.ch}'\\\\"
+            f"\\text{{Original Input: }} s &= \"{self.text}\",\\, c = '{self.ch}'\\\\"
+            # f"\\text{{Processed (Lowercase): }} s &= \"{self.text}\",\\, c = '{self.ch}'\\\\"
             f"\\text{{Initial count}} &= 0\\\\"
-            "\\text{{Condition: }} (\\text{{char}} == '{self.ch}') \\lor (\\text{{char}} == 'a')\\\\"
+            "\\text{{Condition: }} (\\text{{char}} == 'ch') \\\\"
             "\\text{{Iterating through the string:}}\\\\"
             + "\\\\".join(
                 [
                     f"\\text{{Step }} {idx+1}: \\text{{ char }} '{char}' \\\\"
-                    f"('{char}' == '{self.ch}') \\lor ('{char}' == 'a') &\\rightarrow "
+                    f"('{char}' == '{self.ch}') &\\rightarrow "
                     + ("\\text{{True (+6)}}" if match else "\\text{{False (-2)}}") + "\\\\"
                     f"\\text{{count}} &= {t_before} + ({change}) = {t_after}"
                     for idx, char, match, t_before, change, t_after in self.steps
@@ -1710,7 +1710,7 @@ class Com028:
         self.input_3 = rnd.choice([0, 1])
         self.input_4 = rnd.choice([0, 1])
         self.input_5 = rnd.choice([0, 1])
-        self.answer = (self.input_1 ^ self.input_3) or (not(self.input_2 and (not(self.input_3)))) or (self.input_4 and self.input_5)
+        self.answer = int((self.input_1 ^ self.input_3) or (not(self.input_2 and (not(self.input_3)))) or (self.input_4 and self.input_5))
 
         self.description = f"Here is an image of a logic circuit where input A = {self.input_1}, input B = {self.input_2}, input C = {self.input_3}, input D = {self.input_4}, and input E = {self.input_5}. Based on the circuit shown, what is the final output X?"
         self.topic = "Hardware"

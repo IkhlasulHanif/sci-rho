@@ -332,7 +332,7 @@ class Mat005:
         self.subtopic = "Ratio and proportion"
         self.source = "Common question type in IGCSE Mathematics 0580 Past Papers"
         self.curriculum = "IGCSE"
-        self.question_type = "MCQ"
+        self.question_type = "Free-form"
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{To determine the better value, we calculate the unit rate (ml per dollar) for each bottle.}} &\\\\"
@@ -684,11 +684,19 @@ class Mat009:
         self.time_at_d = round(self.time_leave_c + randrange_float(self.min_travel_time, self.max_travel_time + unit, unit), 2)
         self.arrival_time = self.time_at_d
 
+        # --- DISTANCES ---
         dist_ab = round(self.town_b_pos - self.town_a_pos, 10)
-        time_ab = round(self.time_at_b - self.departure_time, 10)
-        speed_ab = round(dist_ab / time_ab, 10)
         dist_cd = round(self.town_d_pos - self.town_c_pos, 10)
-        time_cd = round(self.time_at_d - self.time_leave_c, 10)
+
+        # --- TIME (convert properly via minutes to avoid decimal confusion) ---
+        time_ab_minutes = int(round((self.time_at_b - self.departure_time) * 60))
+        time_cd_minutes = int(round((self.time_at_d - self.time_leave_c) * 60))
+
+        time_ab = time_ab_minutes / 60
+        time_cd = time_cd_minutes / 60
+
+        # --- SPEEDS ---
+        speed_ab = round(dist_ab / time_ab, 10)
         speed_cd = round(dist_cd / time_cd, 10)
 
         self.answer = round(abs(speed_ab - speed_cd), 10)
@@ -705,19 +713,17 @@ class Mat009:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{1. Average Speed from A to B:}} & \\\\"
-            f"v_{{AB}} &= \\frac{{\\text{{Distance}}}}{{\\text{{Time}}}} \\\\"
-            f"&= \\frac{{{self.town_b_pos} - {self.town_a_pos}}}{{{self.time_at_b} - {self.departure_time}}} \\\\"
-            f"&= \\frac{{{dist_ab}}}{{{time_ab}}} \\\\"
-            f"&= {speed_ab}\\,\\text{{km/h}} \\\\"
+            f"\\text{{Distance}} &= {dist_ab} \\\\"
+            f"\\text{{Time}} &= {time_ab_minutes}\\text{{ minutes}} = \\frac{{{time_ab_minutes}}}{{60}} \\text{{ hours}} \\\\"
+            f"v_{{AB}} &= \\frac{{{dist_ab}}}{{{time_ab_minutes}/60}} = {speed_ab}\\,\\text{{km/h}} \\\\"
+
             f"\\text{{2. Average Speed from C to D:}} & \\\\"
-            f"v_{{CD}} &= \\frac{{\\text{{Distance}}}}{{\\text{{Time}}}} \\\\"
-            f"&= \\frac{{{self.town_d_pos} - {self.town_c_pos}}}{{{self.time_at_d} - {self.time_leave_c}}} \\\\"
-            f"&= \\frac{{{dist_cd}}}{{{time_cd}}} \\\\"
-            f"&= {speed_cd}\\,\\text{{km/h}} \\\\"
+            f"\\text{{Distance}} &= {dist_cd} \\\\"
+            f"\\text{{Time}} &= {time_cd_minutes}\\text{{ minutes}} = \\frac{{{time_cd_minutes}}}{{60}} \\text{{ hours}} \\\\"
+            f"v_{{CD}} &= \\frac{{{dist_cd}}}{{{time_cd_minutes}/60}} = {speed_cd}\\,\\text{{km/h}} \\\\"
+
             f"\\text{{3. Difference in Speeds:}} & \\\\"
-            f"\\text{{Difference}} &= |v_{{AB}} - v_{{CD}}| \\\\"
-            f"&= |{speed_ab} - {speed_cd}| \\\\"
-            f"&= {self.answer}\\,\\text{{km/h}}"
+            f"\\text{{Difference}} &= |{speed_ab} - {speed_cd}| = {self.answer}\\,\\text{{km/h}}"
             "\\end{aligned}\\]"
         )
         

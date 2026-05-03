@@ -873,75 +873,69 @@ class Chem107:
 
         chains = [
         {
-            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-            "stage1": "CaCO3 → CaO + CO2",
-            "stage2": "CaO + 2HCl → CaCl2 + H2O",
+            "name": "Calcium Carbonate Decomposition + Acid Reaction",
+            "stage1": "CaCO3 \u2192 CaO + CO2",
+            "stage2": "CaO + 2HCl \u2192 CaCl2 + H2O",
             "Ar_start": 100,
-            "Ar_final": 111
+            "Ar_final": 111,
+            "ar_note": "Ar: Ca=40, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-            "stage1": "CaCO3 → CaO + CO2",
-            "stage2": "CaO + 2HCl → CaCl2 + H2O",
-            "Ar_start": 102,
-            "Ar_final": 110
+            "name": "Magnesium Carbonate Decomposition + Acid Reaction",
+            "stage1": "MgCO3 \u2192 MgO + CO2",
+            "stage2": "MgO + 2HCl \u2192 MgCl2 + H2O",
+            "Ar_start": 84,
+            "Ar_final": 95,
+            "ar_note": "Ar: Mg=24, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Calcium Carbonate Thermal Decomposition + Acid Reaction",
-            "stage1": "CaCO3 → CaO + CO2",
-            "stage2": "CaO + 2HCl → CaCl2 + H2O",
-            "Ar_start": 98,
-            "Ar_final": 112
-        },
-        {
-            "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 → CuO + CO2",
-            "stage2": "CuO + H2 → Cu + H2O",
-            "Ar_start": 124,
-            "Ar_final": 63.5
-        },
-        {
-            "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 → CuO + CO2",
-            "stage2": "CuO + H2 → Cu + H2O",
-            "Ar_start": 123,
-            "Ar_final": 64
-        },
-        {
-            "name": "Copper Carbonate Decomposition + Reduction",
-            "stage1": "CuCO3 → CuO + CO2",
-            "stage2": "CuO + H2 → Cu + H2O",
+            "name": "Zinc Carbonate Decomposition + Acid Reaction",
+            "stage1": "ZnCO3 \u2192 ZnO + CO2",
+            "stage2": "ZnO + 2HCl \u2192 ZnCl2 + H2O",
             "Ar_start": 125,
-            "Ar_final": 62
+            "Ar_final": 136,
+            "ar_note": "Ar: Zn=65, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-            "Ar_start": 125,
-            "Ar_final": 136
-        },
-        {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
+            "name": "Copper Carbonate Decomposition + Reduction",
+            "stage1": "CuCO3 \u2192 CuO + CO2",
+            "stage2": "CuO + H2 \u2192 Cu + H2O",
             "Ar_start": 124,
-            "Ar_final": 137
+            "Ar_final": 64,
+            "ar_note": "Ar: Cu=64, C=12, O=16, H=1"
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-            "Ar_start": 126,
-            "Ar_final": 135
+            "name": "Iron(II) Carbonate Decomposition + Acid Reaction",
+            "stage1": "FeCO3 \u2192 FeO + CO2",
+            "stage2": "FeO + 2HCl \u2192 FeCl2 + H2O",
+            "Ar_start": 116,
+            "Ar_final": 127,
+            "ar_note": "Ar: Fe=56, C=12, O=16, Cl=35.5"
         },
         {
-            "name": "Zinc Carbonate Decomposition + Acid Reaction",
-            "stage1": "ZnCO3 → ZnO + CO2",
-            "stage2": "ZnO + 2HCl → ZnCl2 + H2O",
-            "Ar_start": 127,
-            "Ar_final": 138
-        }
+            "name": "Manganese Carbonate Decomposition + Acid Reaction",
+            "stage1": "MnCO3 \u2192 MnO + CO2",
+            "stage2": "MnO + 2HCl \u2192 MnCl2 + H2O",
+            "Ar_start": 115,
+            "Ar_final": 126,
+            "ar_note": "Ar: Mn=55, C=12, O=16, Cl=35.5"
+        },
+        {
+            "name": "Lead Carbonate Decomposition + Acid Reaction",
+            "stage1": "PbCO3 \u2192 PbO + CO2",
+            "stage2": "PbO + 2HCl \u2192 PbCl2 + H2O",
+            "Ar_start": 267,
+            "Ar_final": 278,
+            "ar_note": "Ar: Pb=207, C=12, O=16, Cl=35.5"
+        },
+        {
+            "name": "Calcium Carbonate Decomposition + Hydration",
+            "stage1": "CaCO3 \u2192 CaO + CO2",
+            "stage2": "CaO + H2O \u2192 Ca(OH)2",
+            "Ar_start": 100,
+            "Ar_final": 74,
+            "ar_note": "Ar: Ca=40, C=12, O=16, H=1"
+        },
     ]
 
         self.chain = rnd.choice(chains)
@@ -958,7 +952,8 @@ class Chem107:
             f"The graph tracks the mass of substances during a multi-stage reaction chain.\n\n"
             f"Stage 1: {self.chain['stage1']}\n"
             f"Stage 2: {self.chain['stage2']}\n\n"
-            f"Starting mass: {self.start_mass} g\n\n"
+            f"Starting mass: {self.start_mass} g\n"
+            f"{self.chain['ar_note']}\n\n"
             f"Using stoichiometry and the initial mass provided in the graph, "
             f"calculate the exact mass of the final product formed!"
         )

@@ -502,7 +502,8 @@ class Phy154:
             if 1e-18 < self.force < 1e-6:
                 break
 
-        self.answer = "{:.2E}".format(self.force)
+        self.force_sf3 = float(f"{self.force:.3g}")
+        self.answer = f"{self.force_sf3:.2E}"  # e.g. 1.77E-15
         self.description = "Two point charges A and B are separated in a vacuum as shown in the image. " "Calculate the magnitude of the electric force acting on each charge. " f"Provide your answer in scientific notation  (Example Format: 3.54E-05). " 
         self.topic = "Electric fields" 
         self.subtopic = "Electric force between point charges" 
@@ -1820,7 +1821,11 @@ class Phy169:
         self.width = self.width_cm / 100
         self.length = self.length_cm / 100
 
-        self.force = self.B * self.I * self.length
+        dx = 6.0 - 4.0   # from A(4.0,1.5) to B(6.0,5.5)
+        dy = 5.5 - 1.5
+        sin_theta = abs(dy) / ((dx**2 + dy**2) ** 0.5)  # field is horizontal
+
+        self.force = self.B * self.I * self.length * sin_theta
         self.answer = f"{self.force:.4f}"
 
         self.description = (
@@ -1837,18 +1842,20 @@ class Phy169:
 
         self.reasoning = (
             "\\[\\begin{aligned}"
-            "&\\mathbf{Step\ 1:\ Convert\ units\ to\ SI} \\\\"
-            "&L_{AB} = " + str(self.length_cm) + "\\,\\text{cm} = " + f"{self.length:.3f}" + "\\,\\text{m} \\\\[8pt]"
-            "&\\mathbf{Step\ 2:\ Identify\ relevant\ values} \\\\"
-            "&B = " + f"{self.B:.2f}" + "\\,\\text{T}, \\quad I = " + f"{self.I:.2f}" + "\\,\\text{A} \\\\[8pt]"
-            "&\\mathbf{Step\ 3:\ Apply\ the\ magnetic\ force\ formula} \\\\"
-            "&\\text{Force on AB is perpendicular to the field:} \\\\"
-            "&F = B I L \\\\[8pt]"
-            "&\\mathbf{Step\ 4:\ Calculation} \\\\"
-            "&F = (" + f"{self.B:.2f}" + ") \\times (" + f"{self.I:.2f}" + ") \\times (" + f"{self.length:.3f}" + ") \\\\"
-            "&F = \\mathbf{" + f"{float(self.answer):.3f}" + "\\,N} \\\\[8pt]"
-            "&\\mathbf{Final\ Answer:} \\\\"
-            "&F = " + self.answer + "\\,\\text{N}"
+            "&\\mathbf{Step\\ 1:\\ Convert\\ units\\ to\\ SI} \\\\"
+            f"&L_{{AB}} = {self.length_cm}\\,\\text{{cm}} = {self.length:.3f}\\,\\text{{m}} \\\\[8pt]"
+            "&\\mathbf{Step\\ 2:\\ Identify\\ relevant\\ values} \\\\"
+            f"&B = {self.B:.2f}\\,\\text{{T}}, \\quad I = {self.I:.2f}\\,\\text{{A}} \\\\[8pt]"
+            "&\\mathbf{Step\\ 3:\\ Find\\ angle\\ } \\theta \\text{{ between wire AB and the horizontal field}} \\\\"
+            "&\\text{{From the diagram coordinates for A(4.0, 1.5) and B(6.0, 5.5):}} \\\\"
+            "&\\Delta x = 6.0 - 4.0 = 2.0 \\\\"
+            "&\\Delta y = 5.5 - 1.5 = 4.0 \\\\"
+            f"&\\sin \\theta = \\frac{{\\Delta y}}{{\\sqrt{{\\Delta x^2 + \\Delta y^2}}}} = \\frac{{4.0}}{{\\sqrt{{20}}}} \\approx {sin_theta:.4f} \\\\[8pt]"
+            "&\\mathbf{Step\\ 4:\\ Apply\\ the\\ magnetic\\ force\\ formula} \\\\"
+            "&F = B I L \\sin \\theta \\\\[8pt]"
+            "&\\mathbf{Step\\ 5:\\ Calculation} \\\\"
+            f"&F = ({self.B:.2f}) \\times ({self.I:.2f}) \\times ({self.length:.3f}) \\times ({sin_theta:.4f}) \\\\"
+            f"&F = \\mathbf{{{self.answer}\\,\\text{{N}}}}"
             "\\end{aligned}\\]"
         )
 
@@ -2562,6 +2569,7 @@ class Phy178:
         )
         plt.close()
 
+
 class Phy179:
     def __init__(self):
         self.I = rnd.randint(1, 5)
@@ -2569,7 +2577,7 @@ class Phy179:
         self.C_micro = rnd.randint(200, 1000)
         self.C = self.C_micro * 1e-6
 
-        self.V_ripple = self.I / (self.f * self.C)
+        self.V_ripple = self.I / (2 * self.f * self.C)
         self.answer = f"{self.V_ripple:.2f}"
 
         self.description = (
@@ -2590,10 +2598,12 @@ class Phy179:
             f"I &= {self.I}\\,\\text{{A}} \\\\"
             f"f &= {self.f}\\,\\text{{Hz}} \\\\"
             f"C &= {self.C_micro} \\times 10^{{-6}}\\,\\text{{F}} \\\\"
-            f"\\text{{Step 2: Use the ripple voltage formula}} &\\\\"
-            f"V_{{\\text{{ripple}}}} &= \\frac{{I}}{{fC}} \\\\"
-            f"\\text{{Step 3: Substitute and calculate}} &\\\\"
-            f"V_{{\\text{{ripple}}}} &= \\frac{{{self.I}}}{{{self.f} \\times {round(self.C, 10)}}} \\\\"
+            f"\\text{{Step 2: Bridge rectifier gives full-wave ripple frequency}} &\\\\"
+            f"f_r &= 2f = {2*self.f}\\,\\text{{Hz}} \\\\"
+            f"\\text{{Step 3: Use ripple voltage approximation}} &\\\\"
+            f"V_{{\\text{{ripple}}}} &= \\frac{{I}}{{f_r C}} = \\frac{{I}}{{2fC}} \\\\"
+            f"\\text{{Step 4: Substitute and calculate}} &\\\\"
+            f"V_{{\\text{{ripple}}}} &= \\frac{{{self.I}}}{{2\\times{self.f} \\times {round(self.C, 10)}}} \\\\"
             f"V_{{\\text{{ripple}}}} &= {round(self.V_ripple, 10)}\\,\\text{{V}} \\\\"
             f"\\text{{Final Answer:}} &\\\\"
             f"V_{{\\text{{ripple}}}} &= {self.answer}\\,\\text{{V}}"
@@ -2601,23 +2611,24 @@ class Phy179:
         )
 
     def generate(self, num):
+        # unchanged
         fig = plt.figure(figsize=(12, 6), dpi=300)
-        
         ax1 = fig.add_subplot(121)
         ax1.axis('off')
-        
+
         ax1.plot([0.5, 1.5], [4, 4], 'k-', lw=2)
         ax1.plot([0.5, 1.5], [1, 1], 'k-', lw=2)
-        
+
         ax1.plot([1.5, 2.5], [4, 2.5], 'k-', lw=2)
         ax1.plot([1.5, 2.5], [1, 2.5], 'k-', lw=2)
         ax1.plot([2.5, 3.5], [2.5, 4], 'k-', lw=2)
         ax1.plot([2.5, 3.5], [2.5, 1], 'k-', lw=2)
-        ax1.text(2.5, 2.5, "BRIDGE\nRECTIFIER", ha='center', va='center', fontweight='bold', bbox=dict(facecolor='white', lw=2))
-        
+        ax1.text(2.5, 2.5, "BRIDGE\nRECTIFIER", ha='center', va='center', fontweight='bold',
+                 bbox=dict(facecolor='white', lw=2))
+
         ax1.plot([3.5, 5.5], [4, 4], 'k-', lw=2)
         ax1.plot([3.5, 5.5], [1, 1], 'k-', lw=2)
-        
+
         ax1.plot([4.5, 4.5], [4, 3.1], 'k-', lw=2)
         ax1.plot([4.5, 4.5], [1, 1.9], 'k-', lw=2)
         ax1.plot([4.2, 4.8], [3.1, 3.1], 'k-', lw=3)
@@ -2626,49 +2637,50 @@ class Phy179:
             4.9, 2.5,
             f"Capacitor\n$C = {self.C_micro}\\,\\mu F$\n$I = {self.I}\\,A$",
             va='center'
-        )        
+        )
         ax1.plot([6, 6], [4, 1], 'k-', lw=2)
         ax1.plot([5.5, 6], [4, 4], 'k-', lw=2)
         ax1.plot([5.5, 6], [1, 1], 'k-', lw=2)
-        
+
         ax1.text(0.5, 2.5, f"AC Input\n$f = {self.f}\\ \\text{{Hz}}$", ha='center', fontweight='bold')
 
         ax2 = fig.add_subplot(122)
-        
+
         f_vis = 50
         t = np.linspace(0, 0.04, 1000)
         dt = t[1] - t[0]
         v_rect = np.abs(np.sin(2 * np.pi * f_vis * t))
-        
+
         v_smooth = []
         curr = 0.0
         tau = 0.015
-        
+
         for target in v_rect:
             if target > curr:
                 curr = target
             else:
                 curr = curr * np.exp(-dt / tau)
             v_smooth.append(curr)
-            
+
         v_smooth = np.array(v_smooth)
-        
+
         idx_start = int(0.006 / 0.04 * 1000)
         idx_end = int(0.014 / 0.04 * 1000)
         trough_val = np.min(v_smooth[idx_start:idx_end])
         trough_idx = idx_start + np.argmin(v_smooth[idx_start:idx_end])
         trough_x_ms = t[trough_idx] * 1000
-        
+
         ax2.plot(t * 1000, v_rect, '--', color='gray', alpha=0.3, label='Full-wave Rectified')
         ax2.plot(t * 1000, v_smooth, color='#d35400', lw=2.5, label='Smoothed Output')
-        
-        ax2.annotate('', xy=(trough_x_ms, trough_val), xytext=(trough_x_ms, 1.0), 
+
+        ax2.annotate('', xy=(trough_x_ms, trough_val), xytext=(trough_x_ms, 1.0),
                      arrowprops=dict(arrowstyle='<->', color='black', lw=2))
-        ax2.text(trough_x_ms + 0.5, (1.0 + trough_val) / 2, '$V_{ripple}$', fontweight='bold', fontsize=12)
-        
+        ax2.text(trough_x_ms + 0.5, (1.0 + trough_val) / 2, '$V_{ripple}$',
+                 fontweight='bold', fontsize=12)
+
         ax2.axhline(1.0, color='black', lw=1, ls=':', alpha=0.5)
         ax2.axhline(trough_val, color='black', lw=1, ls=':', alpha=0.5)
-        
+
         ax2.set_xlabel("Time (ms)", fontsize=10)
         ax2.set_ylabel("Potential Difference (V)", fontsize=10)
         ax2.grid(True, linestyle=':', alpha=0.6)

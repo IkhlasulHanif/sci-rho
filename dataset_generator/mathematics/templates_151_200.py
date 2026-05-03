@@ -470,7 +470,7 @@ class Mat156:
 
         area = numerator / denominator
 
-        self.answer = round(area, 3)
+        self.answer = round(abs(area), 3)
 
         self.description = (
             "The figure shows a curve and a shaded region under it. "
@@ -491,7 +491,9 @@ class Mat156:
             f"&= \\left[ -\\frac{{{self.a}x}}{{{self.b}}} \\cos({self.b}x) + \\frac{{{self.a}}}{{{self.b**2}}} \\sin({self.b}x) \\right]_{{0}}^{{{self.limit_str}}} \\\\"
             f"&= \\left( -\\frac{{{self.a}}}{{{self.b}}} \\left({self.limit_str}\\right) \\cos\\left({self.b} \\cdot {self.limit_str}\\right) + \\frac{{{self.a}}}{{{self.b**2}}} \\sin\\left({self.b} \\cdot {self.limit_str}\\right) \\right) - 0 \\\\"
             f"&= {round(-self.a * self.limit_val / self.b, 10)} \\cdot {round(np.cos(self.b * self.limit_val), 10)} + {round(self.a / self.b**2, 10)} \\cdot {round(np.sin(self.b * self.limit_val), 10)} \\\\"
-            f"&= {self.answer}"
+            f"&= {round(area, 10)} \\\\"
+            "\\text{Area is the magnitude:} &\\\\"
+            f"\\text{{Area}} = |{round(area, 10)}| = {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -588,7 +590,7 @@ class Mat157:
         # Since answer form is ln(k), k = (ratio)^C
         k_fraction = ratio ** self.C
 
-        self.answer = round(abs(np.log(k_fraction)), 3)
+        self.answer = round(self.C * np.log(ratio), 3)
 
         self.description = (
             "The figure depicts the graph of a rational function $f(x)$. "
@@ -622,8 +624,8 @@ class Mat157:
             f"&= {self.C} \\left( \\ln\\left( \\frac{{{self.x2 + self.a}}}{{{self.x2 + self.b}}} \\right) - \\ln\\left( \\frac{{{self.x1 + self.a}}}{{{self.x1 + self.b}}} \\right) \\right)\\\\"
             f"&= {self.C} \\ln\\left( \\frac{{{self.x2 + self.a}}}{{{self.x2 + self.b}}} \\cdot \\frac{{{self.x1 + self.b}}}{{{self.x1 + self.a}}} \\right)\\\\"
             f"&= {self.C} \\ln\\left( {round(((self.x2 + self.a) * (self.x1 + self.b)) / ((self.x2 + self.b) * (self.x1 + self.a)), 10)} \\right)\\\\"
-            f"\\text{{Since we calculate the area (magnitude):}} &\\\\"
-            f"I &= |{self.answer}| = {self.answer}"
+            f"\\text{{Evaluate numerically:}} &\\\\"
+            f"I &\\approx {self.answer}"
             "\\end{aligned}\\]"
         )
 
@@ -2385,7 +2387,7 @@ class Mat174:
         self.distance = round(randrange_float(1.5, 5.0, 0.01), 2)
         
         # Solving for time t
-        g = 10
+        g = 9.81
         rad = math.atan(self.slope)
         normal = self.mass * g * math.cos(rad)
         friction = self.mu * normal
@@ -2422,26 +2424,26 @@ class Mat174:
             "\\[\\begin{aligned}"
             f"\\text{{Normal force (}} R \\text{{) perpendicular to the plane:}} &\\\\"
             f"R &= m g \\cos \\alpha\\\\"
-            f"&= {self.mass} \\times 10 \\times \\cos(\\arctan({self.slope}))\\\\"
-            f"&= {round(self.mass * 10 * math.cos(math.atan(self.slope)), 10)}\\,\\text{{N}}\\\\"
+            f"&= {self.mass} \\times {g} \\times \\cos(\\arctan({self.slope}))\\\\"
+            f"&= {round(self.mass * g * math.cos(math.atan(self.slope)), 10)}\\,\\text{{N}}\\\\"
             f"\\text{{Frictional force (}} F \\text{{) opposing the motion:}} &\\\\"
             f"F &= \\mu R\\\\"
-            f"&= {self.mu} \\times {round(self.mass * 10 * math.cos(math.atan(self.slope)), 10)}\\\\"
-            f"&= {round(self.mu * self.mass * 10 * math.cos(math.atan(self.slope)), 10)}\\,\\text{{N}}\\\\"
+            f"&= {self.mu} \\times {round(self.mass * g * math.cos(math.atan(self.slope)), 10)}\\\\"
+            f"&= {round(self.mu * self.mass * g * math.cos(math.atan(self.slope)), 10)}\\,\\text{{N}}\\\\"
             f"\\text{{Net force down the plane:}} &\\\\"
             f"F_{{net}} &= m g \\sin \\alpha - F - F_{{up}}\\\\"
-            f"&= ({self.mass} \\times 10 \\times \\sin(\\arctan({self.slope}))) - {round(self.mu * self.mass * 10 * math.cos(math.atan(self.slope)), 10)} - {self.force_up}\\\\"
-            f"&= {round(self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up, 10)}\\,\\text{{N}}\\\\"
+            f"&= ({self.mass} \\times {g} \\times \\sin(\\arctan({self.slope}))) - {round(self.mu * self.mass * g * math.cos(math.atan(self.slope)), 10)} - {self.force_up}\\\\"
+            f"&= {round(self.mass * g * math.sin(math.atan(self.slope)) - (self.mu * self.mass * g * math.cos(math.atan(self.slope))) - self.force_up, 10)}\\,\\text{{N}}\\\\"
             f"\\text{{Acceleration (}} a \\text{{) down the plane:}} &\\\\"
             f"a &= \\frac{{F_{{net}}}}{{m}}\\\\"
-            f"&= \\frac{{{round(self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up, 10)}}}{{{self.mass}}}\\\\"
-            f"&= {round((self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}\\,\\text{{m s}}^{{-2}}\\\\"
+            f"&= \\frac{{{round(self.mass * g * math.sin(math.atan(self.slope)) - (self.mu * self.mass * g * math.cos(math.atan(self.slope))) - self.force_up, 10)}}}{{{self.mass}}}\\\\"
+            f"&= {round((self.mass * g * math.sin(math.atan(self.slope)) - (self.mu * self.mass * g * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}\\,\\text{{m s}}^{{-2}}\\\\"
             f"\\text{{Using }} s = ut + \\frac{{1}}{{2}}at^2 \\text{{ where }} u = 0: &\\\\"
             f"t &= \\sqrt{{\\frac{{2s}}{{a}}}}\\\\"
-            f"&= \\sqrt{{\\frac{{2 \\times {self.distance}}}{{{round((self.mass * 10 * math.sin(math.atan(self.slope)) - (self.mu * self.mass * 10 * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}}}}}\\\\"
+            f"&= \\sqrt{{\\frac{{2 \\times {self.distance}}}{{{round((self.mass * g * math.sin(math.atan(self.slope)) - (self.mu * self.mass * g * math.cos(math.atan(self.slope))) - self.force_up) / self.mass, 10)}}}}}\\\\"
             f"&= {self.answer}\\,\\text{{s}}"
             "\\end{aligned}\\]"
-    )
+        )
 
     def generate(self, num):
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -2509,7 +2511,7 @@ class Mat175:
         self.l_ab = randrange_float(4.5, 6.5, 0.1) 
         self.sin_theta = round(randrange_float(0.6, 0.85, 0.05), 2)
         self.mu = round(randrange_float(0.08, 0.15, 0.01), 2)
-        self.g = 10 # G value standard for A-level mechanics
+        self.g = 9.81
 
         # Derived physics values
         self.theta_rad = math.asin(self.sin_theta)
@@ -3321,11 +3323,11 @@ class Mat183:
         # Range set to provide problem variations as per instructions
         self.num_members = rnd.randint(6, 25)
         
-        # Logic for linear permutation with 2 specific members together:
-        # 1. Treat the 2 specific members as 1 block.
-        # 2. Arrange (n - 1) items in a row: (n-1)!
-        # 3. Multiply by 2! for internal arrangement of the block.
-        self.answer = math.factorial(self.num_members - 1) * 2
+        # Logic based on fixed seating with adjacency on the same side:
+        # 1. Count adjacent seat pairs: (n - 2)
+        # 2. Choose one pair and arrange Chairperson and Secretary: 2 ways
+        # 3. Arrange remaining (n - 2) members in remaining seats: (n - 2)!
+        self.answer = 2 * (self.num_members - 2) * math.factorial(self.num_members - 2)
 
         self.description = (
             "A group of board members, including a Chairperson and a Secretary, are meeting at the long table "
@@ -3342,17 +3344,22 @@ class Mat183:
         self.reasoning = (
             "\\[\\begin{aligned}"
             f"\\text{{Total number of board members, }} n &= {self.num_members}\\\\"
-            "\\text{{Treat Chairperson and Secretary as 1 single block.}} &\\\\"
-            f"\\text{{Number of items to arrange in a row, }} n' &= n - 1 = {self.num_members - 1}\\\\"
-            "\\text{{Ways to arrange }} n' \\text{{ items in a row:}} &\\\\"
-            "P_{\\text{row}} &= n'!\\\\"
-            f"&= {self.num_members - 1}!\\\\"
-            f"&= {math.factorial(self.num_members - 1)}\\\\"
-            "\\text{{Ways to arrange Chairperson and Secretary within the block:}} &\\\\"
-            "P_{\\text{internal}} &= 2! = 2\\\\"
+            "\\text{{Seats are arranged on two sides of the table.}} &\\\\"
+            "\\text{{Adjacent seats are neighboring seats on the same side.}} &\\\\"
+            "\\text{{Total number of adjacent seat pairs:}} &\\\\"
+            "P_{\\text{pairs}} &= n - 2\\\\"
+            f"&= {self.num_members - 2}\\\\"
+            "\\text{{Ways to arrange Chairperson and Secretary in a pair:}} &\\\\"
+            "P_{\\text{CS}} &= 2\\\\"
+            "\\text{{Remaining members to be seated:}} &\\\\"
+            "n - 2\\\\"
+            "\\text{{Ways to arrange remaining members:}} &\\\\"
+            "P_{\\text{remaining}} &= (n - 2)!\\\\"
+            f"&= {self.num_members - 2}!\\\\"
+            f"&= {math.factorial(self.num_members - 2)}\\\\"
             "\\text{{Total number of arrangements:}} &\\\\"
-            "\\text{{Total}} &= P_{\\text{row}} \\times P_{\\text{internal}}\\\\"
-            f"&= {math.factorial(self.num_members - 1)} \\times 2\\\\"
+            "\\text{{Total}} &= P_{\\text{pairs}} \\times P_{\\text{CS}} \\times P_{\\text{remaining}}\\\\"
+            f"&= {self.num_members - 2} \\times 2 \\times {math.factorial(self.num_members - 2)}\\\\"
             f"&= {self.answer}"
             "\\end{aligned}\\]"
         )
