@@ -49,7 +49,7 @@ def main():
     # Load Model & Processor
     # =========================================================================
     print(f"[INFO] Loading model: {args.model_name}")
-    processor = AutoProcessor.from_pretrained(args.model_name)
+    processor = AutoProcessor.from_pretrained(args.model_name, trust_remote_code=True)
     model = AutoModelForImageTextToText.from_pretrained(
         args.model_name, 
         dtype=torch.bfloat16, 
@@ -202,7 +202,10 @@ def main():
                     text_start_idx = image_indices[-1].item() + 1
                 else:
                     # Fallback if an image failed to load but text somehow persisted
-                    print("[ERROR] FAILED TO LOAD IMAGE INDICES")
+                    print(f"\n[ERROR] FAILED TO LOAD IMAGE INDICES for Problem: {problem_id} | Variant: {variant}")
+                    print(f"[DEBUG] Target image_pad_id: {image_pad_id}")
+                    print(f"[DEBUG] input_ids_1d length: {len(input_ids_1d)}")
+                    print(f"[DEBUG] Stitched text content:\n{stitched_text}\n")
                     exit()
                     
                 # 4. BUILD THE PERFECT TEXT MASK
