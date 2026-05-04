@@ -169,24 +169,46 @@ def main():
                 # Define basic masks
                 is_image_token = (input_ids_1d == image_pad_id)
                 
-                assistant_token_id = processor.tokenizer.convert_tokens_to_ids("assistant")
-                try:
-                    assistant_start_idx = (input_ids_1d == assistant_token_id).nonzero(as_tuple=True)[0][-1].item()
-                except:
-                    tqdm.write(f"  [WARNING] Could not find assistant start for {variant}. Skipping.")
-                    continue
-
-                # Advanced Masking to Fix Bias & Sinks
-                is_prompt_token = torch.arange(seq_len, device=device) < assistant_start_idx
-                is_prompt_token[:3] = False 
+                # =========================================================================
+                # NEW ROBUST MASKING: Differential Tokenization
+                # =========================================================================
                 
+                # 1. FIND EXACT ASSISTANT START
+                # By applying the template with `add_generation_prompt=True` and NO response,
+                # the length of this array is the absolute index where the assistant begins.
+                prompt_only_msgs = [{"role": "user", "content": [{"type": "image"}, {"type": "text", "text": final_text}]}]
+                prompt_str = processor.apply_chat_template(prompt_only_msgs, tokenize=False, add_generation_prompt=True)
+                prompt_tokens = processor(images=raw_image, text=prompt_str, return_tensors="pt").input_ids[0]
+                
+                assistant_start_idx = len(prompt_tokens)
+                
+                # 2. FIND EXACT TEMPLATE START (To exclude bias)
                 if user_prompt_template:
-                    template_tokens = processor.tokenizer(f"\n\n{user_prompt_template}", return_tensors="pt", add_special_tokens=False).input_ids[0]
-                    num_template_tokens = len(template_tokens)
-                    template_start_idx = max(3, assistant_start_idx - num_template_tokens - 5)
-                    is_prompt_token[template_start_idx:assistant_start_idx] = False
+                    # Tokenize the description without the template
+                    no_temp_msgs = [{"role": "user", "content": [{"type": "image"}, {"type": "text", "text": desc_text}]}]
+                    no_temp_str = processor.apply_chat_template(no_temp_msgs, tokenize=False, add_generation_prompt=True)
+                    no_temp_tokens = processor(images=raw_image, text=no_temp_str, return_tensors="pt").input_ids[0]
+                    
+                    template_start_idx = len(no_temp_tokens)
+                else:
+                    template_start_idx = assistant_start_idx
+
+                # 3. FIND EXACT TEXT START (To bypass sinks and system prompts)
+                is_image_token = (input_ids_1d == image_pad_id)
+                image_indices = is_image_token.nonzero(as_tuple=True)[0]
                 
-                is_text_token = is_prompt_token & ~is_image_token
+                if len(image_indices) > 0:
+                    # The actual math question text always begins immediately after the last image token
+                    text_start_idx = image_indices[-1].item() + 1
+                else:
+                    # Fallback if an image failed to load but text somehow persisted
+                    print("[ERROR] FAILED TO LOAD IMAGE INDICES")
+                    exit()
+                    
+                # 4. BUILD THE PERFECT TEXT MASK
+                # We create a blank mask of all Falses, then turn on ONLY the exact span of our pure text
+                is_text_token = torch.zeros(seq_len, dtype=torch.bool, device=device)
+                is_text_token[text_start_idx:template_start_idx] = True
 
                 N_image = is_image_token.sum().item()
                 N_text = is_text_token.sum().item()
