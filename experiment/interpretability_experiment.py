@@ -58,11 +58,20 @@ def main():
         trust_remote_code=True,
     )
     
-    try:
-        image_pad_id = processor.tokenizer.convert_tokens_to_ids("<|image_pad|>")
-    except:
-        image_pad_id = None
-        print("[ERROR] Could not find <|image_pad|> token ID.")
+    # NEW: Dynamically hunt for the correct image token
+    image_token_candidates = ["<|image_pad|>", "<image>", "<image_placeholder>"]
+    image_pad_id = None
+    
+    for candidate in image_token_candidates:
+        token_id = processor.tokenizer.convert_tokens_to_ids(candidate)
+        # Ensure it actually found the token and didn't just return the <unk> token ID
+        if token_id is not None and token_id != processor.tokenizer.unk_token_id:
+            image_pad_id = token_id
+            print(f"[INFO] Identified image token for this model: '{candidate}' (ID: {image_pad_id})")
+            break
+            
+    if image_pad_id is None:
+        print("[ERROR] Could not find a valid image token ID in the tokenizer.")
         exit()
 
     for current_subject in subjects_to_process:
