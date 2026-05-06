@@ -1,4 +1,4 @@
-# STEM-VISION
+# Sci-ρ 
 
 This repository is organized into two main parts:
 
