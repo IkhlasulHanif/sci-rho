@@ -46,9 +46,74 @@ parser.add_argument("--debug", action="store_true", help="Process only instance 
 parser.add_argument("--send", action="store_true", help="Send prepared .jsonl requests to OpenAI Batch API")
 parser.add_argument("--check", action="store_true", help="Check status of active batches")
 parser.add_argument("--retrieve", action="store_true", help="Download results and reconstruct Excel files")
+parser.add_argument("--mode", choices=["sample", "sample_disprop"], default="sample",
+                    help="Select which experiment folder to evaluate")
+parser.add_argument("--retry-missing", action="store_true",
+                    help="Prepare/send/retrieve only rows with blank existing responses, and merge them back into existing result sheets")
 args = parser.parse_args()
 
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
+
+
+def get_mode_config(mode: str):
+    if mode == "sample_disprop":
+        return {
+            "base_folder": "sample_disprop",
+            "subjects": ["math_disprop", "math_original"],
+            "image_urls_file": os.path.join(IMAGE_TEMP_DIR, "image_urls_disprop.json"),
+            "batch_jobs_file": os.path.join(GPT_TEMP_DIR, "batch_jobs_disprop.json"),
+            "request_suffix": "_sample_disprop",
+        }
+    return {
+        "base_folder": "sample",
+        "subjects": SUBJECTS,
+        "image_urls_file": IMAGE_URLS_FILE,
+        "batch_jobs_file": BATCH_JOBS_FILE,
+        "request_suffix": "",
+    }
+
+
+MODE_CONFIG = get_mode_config(args.mode)
+ACTIVE_BASE_FOLDER = MODE_CONFIG["base_folder"]
+ACTIVE_SUBJECTS = MODE_CONFIG["subjects"]
+ACTIVE_IMAGE_URLS_FILE = MODE_CONFIG["image_urls_file"]
+ACTIVE_REQUEST_SUFFIX = MODE_CONFIG["request_suffix"]
+
+
+def get_safe_model_name(model_name: str) -> str:
+    return model_name.replace("/", "_").replace(".", "_")
+
+
+def get_request_filename(model_name: str) -> str:
+    retry_suffix = "_retry_missing" if args.retry_missing else ""
+    return os.path.join(GPT_TEMP_DIR, f"req_{get_safe_model_name(model_name)}{ACTIVE_REQUEST_SUFFIX}{retry_suffix}.jsonl")
+
+
+def get_raw_response_filename(model_name: str) -> str:
+    retry_suffix = "_retry_missing" if args.retry_missing else ""
+    return os.path.join(GPT_TEMP_DIR, f"{get_safe_model_name(model_name)}{ACTIVE_REQUEST_SUFFIX}{retry_suffix}_raw_responses.jsonl")
+
+
+def get_requests_log_filename(model_name: str) -> str:
+    retry_suffix = "_retry_missing" if args.retry_missing else ""
+    return os.path.join(GPT_TEMP_DIR, f"{get_safe_model_name(model_name)}{ACTIVE_REQUEST_SUFFIX}{retry_suffix}_requests.log")
+
+
+def get_batch_jobs_filename() -> str:
+    retry_suffix = "_retry_missing" if args.retry_missing else ""
+    base_path = MODE_CONFIG["batch_jobs_file"]
+    if not retry_suffix:
+        return base_path
+    root, ext = os.path.splitext(base_path)
+    return f"{root}{retry_suffix}{ext}"
+
+
+def is_blank_response(value) -> bool:
+    if pd.isna(value):
+        return True
+    if isinstance(value, str) and not value.strip():
+        return True
+    return False
 
 # put API key to `secrets/openai_api_key.txt`
 # otherwise, use environment variables
@@ -67,9 +132,9 @@ except:
 if args.prepare:
     print(f"\n{'='*60}\n[INFO] STAGE 1: PREPARING BATCH REQUESTS\n{'='*60}")
     
-    if not os.path.exists(IMAGE_URLS_FILE):
-        raise FileNotFoundError(f"Image URLs map not found at {IMAGE_URLS_FILE}. Run your crawler first.")
-    with open(IMAGE_URLS_FILE, 'r') as f:
+    if not os.path.exists(ACTIVE_IMAGE_URLS_FILE):
+        raise FileNotFoundError(f"Image URLs map not found at {ACTIVE_IMAGE_URLS_FILE}. Run your crawler first.")
+    with open(ACTIVE_IMAGE_URLS_FILE, 'r') as f:
         image_url_map = json.load(f)
 
     # Load User Prompt
@@ -80,8 +145,8 @@ if args.prepare:
         print(f"[INFO] Loaded additional prompt template from {USER_PROMPT_PATH}")
 
     for model_name in MODELS:
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
-        jsonl_filename = os.path.join(GPT_TEMP_DIR, f"req_{safe_model_name}.jsonl")
+        safe_model_name = get_safe_model_name(model_name)
+        jsonl_filename = get_request_filename(model_name)
         
         # Safety Check: Do not overwrite existing preparation files
         if os.path.exists(jsonl_filename):
@@ -91,10 +156,9 @@ if args.prepare:
         print(f"\n[INFO] Preparing Requests for Model: {model_name}")
         batch_requests = []
         
-        for subject in SUBJECTS:
+        for subject in ACTIVE_SUBJECTS:
             for index in range(NUM_OF_INSTANCES):
-                # Physical files are still inside 'sample/'
-                dataset_path = os.path.join("sample", f"0{index}", subject)
+                dataset_path = os.path.join(ACTIVE_BASE_FOLDER, f"0{index}", subject)
                 json_path = os.path.join(dataset_path, 'dataset.json')
                 
                 if not os.path.exists(json_path): continue
@@ -104,6 +168,14 @@ if args.prepare:
                 df = pd.DataFrame.from_dict(data, orient="index")
                 if len(df) == 0: continue
                 df.insert(0, "id", range(1, len(df) + 1))
+                existing_results = None
+                existing_output_path = os.path.join(
+                    'result', 'raw', subject, f"0{index}", f"{safe_model_name}.xlsx"
+                )
+                if args.retry_missing and os.path.exists(existing_output_path):
+                    existing_results = pd.read_excel(existing_output_path)
+                    if "id" not in existing_results.columns:
+                        existing_results.insert(0, "id", range(1, len(existing_results) + 1))
                 
                 desc_columns = [col for col in df.columns if col.startswith("description")]
                 
@@ -111,6 +183,11 @@ if args.prepare:
                     lang_suffix = desc_col.replace("description", "response")
                     
                     for _, row in df.iterrows():
+                        if existing_results is not None and lang_suffix in existing_results.columns:
+                            existing_row = existing_results.loc[existing_results["id"] == row["id"]]
+                            if not existing_row.empty and not is_blank_response(existing_row.iloc[0][lang_suffix]):
+                                continue
+
                         # Create unique Custom ID -> "physics||00||12||response_indonesian"
                         custom_id = f"{subject}||0{index}||{row['id']}||{lang_suffix}"
                         
@@ -162,13 +239,13 @@ if args.send:
     print(f"\n{'='*60}\n[INFO] STAGE 2: SENDING BATCHES TO OPENAI\n{'='*60}")
     
     batch_jobs = {}
-    if os.path.exists(BATCH_JOBS_FILE):
-        with open(BATCH_JOBS_FILE, 'r') as f:
+    batch_jobs_file = get_batch_jobs_filename()
+    if os.path.exists(batch_jobs_file):
+        with open(batch_jobs_file, 'r') as f:
             batch_jobs = json.load(f)
 
     for model_name in MODELS:
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
-        jsonl_filename = os.path.join(GPT_TEMP_DIR, f"req_{safe_model_name}.jsonl")
+        jsonl_filename = get_request_filename(model_name)
         
         if not os.path.exists(jsonl_filename):
             print(f"[SKIP] No jsonl file found for {model_name}.")
@@ -192,18 +269,19 @@ if args.send:
         }
         print(f"[SUCCESS] Submitted! Batch ID: {batch_job.id}")
 
-    with open(BATCH_JOBS_FILE, 'w') as f:
+    with open(batch_jobs_file, 'w') as f:
         json.dump(batch_jobs, f, indent=4)
 
 
 if args.check:
     print(f"\n{'='*60}\n[INFO] STAGE 3: CHECKING BATCH STATUS\n{'='*60}")
     
-    if not os.path.exists(BATCH_JOBS_FILE):
+    batch_jobs_file = get_batch_jobs_filename()
+    if not os.path.exists(batch_jobs_file):
         print("[INFO] No active batches found in tracking file.")
         exit()
         
-    with open(BATCH_JOBS_FILE, 'r') as f:
+    with open(batch_jobs_file, 'r') as f:
         batch_jobs = json.load(f)
         
     all_ready = True
@@ -217,7 +295,7 @@ if args.check:
         if status_str != "COMPLETED":
             all_ready = False
             
-    with open(BATCH_JOBS_FILE, 'w') as f:
+    with open(batch_jobs_file, 'w') as f:
         json.dump(batch_jobs, f, indent=4)
         
     print("\n------------------------------------------------------------")
@@ -230,15 +308,16 @@ if args.check:
 if args.retrieve:
     print(f"\n{'='*60}\n[INFO] STAGE 4: RETRIEVING & SAVING RESULTS\n{'='*60}")
     
-    if not os.path.exists(BATCH_JOBS_FILE):
+    batch_jobs_file = get_batch_jobs_filename()
+    if not os.path.exists(batch_jobs_file):
         print("[!] No batches tracking file found to retrieve.")
         exit()
         
-    with open(BATCH_JOBS_FILE, 'r') as f:
+    with open(batch_jobs_file, 'r') as f:
         batch_jobs = json.load(f)
 
     for model_name, job_info in batch_jobs.items():
-        safe_model_name = model_name.replace("/", "_").replace(".", "_")
+        safe_model_name = get_safe_model_name(model_name)
         request_logs = []  # Detailed log for every individual request
         
         if job_info["status"] != "completed":
@@ -260,7 +339,7 @@ if args.retrieve:
                 request_logs.append(f"[{model_name}] Error File Content:\n{error_content}")
             
             # Save logs before continuing to the next model (Safety check removed per previous request)
-            log_path = os.path.join(GPT_TEMP_DIR, f"{safe_model_name}_requests.log")
+            log_path = get_requests_log_filename(model_name)
             with open(log_path, 'w', encoding='utf-8') as f:
                 f.write(f"=== REQUEST LOGS FOR {model_name} ===\n")
                 for msg in request_logs: f.write(msg + "\n")
@@ -275,7 +354,7 @@ if args.retrieve:
         error_count = 0
         
         # Path for the single JSONL file storing all raw responses
-        raw_jsonl_path = os.path.join(GPT_TEMP_DIR, f"{safe_model_name}_raw_responses.jsonl")
+        raw_jsonl_path = get_raw_response_filename(model_name)
         
         with open(raw_jsonl_path, 'a', encoding='utf-8') as raw_f:
             for line in result_content.strip().split('\n'):
@@ -318,7 +397,7 @@ if args.retrieve:
             print(f"[!] Warning: {error_count} responses failed to generate correctly.")
 
         # Reconstruct DataFrames & Export to Excel
-        for subject in SUBJECTS:
+        for subject in ACTIVE_SUBJECTS:
             for index in range(NUM_OF_INSTANCES):
                 idx_str = f"0{index}"
                 
@@ -326,8 +405,7 @@ if args.retrieve:
                 if subject not in mapped_results or idx_str not in mapped_results[subject]:
                     continue
                     
-                # Physical files are still inside 'sample/'
-                dataset_path = os.path.join("sample", idx_str, subject)
+                dataset_path = os.path.join(ACTIVE_BASE_FOLDER, idx_str, subject)
                 json_path = os.path.join(dataset_path, 'dataset.json')
                 
                 if not os.path.exists(json_path): continue
@@ -350,17 +428,33 @@ if args.retrieve:
                 output_path = os.path.join('result', 'raw', subject, idx_str)
                 os.makedirs(output_path, exist_ok=True)
                 full_output_path = os.path.join(output_path, f"{safe_model_name}.xlsx")
-                
-                # Safety Check: Do not overwrite existing Excel results
+
                 if os.path.exists(full_output_path):
-                    print(f"[!] Safety Check: '{full_output_path}' already exists. Skipping Excel save.")
+                    existing_df = pd.read_excel(full_output_path)
+                    if "id" not in existing_df.columns:
+                        existing_df.insert(0, "id", range(1, len(existing_df) + 1))
+
+                    for col in [c for c in df.columns if c.startswith("response")]:
+                        if col not in existing_df.columns:
+                            existing_df[col] = ""
+
+                        response_map = dict(zip(df["id"], df[col]))
+                        existing_df[col] = existing_df.apply(
+                            lambda row: response_map.get(row["id"], row[col])
+                            if not is_blank_response(response_map.get(row["id"], ""))
+                            else row[col],
+                            axis=1
+                        )
+
+                    existing_df.to_excel(full_output_path, index=False, engine="openpyxl")
+                    print(f"[SUCCESS] Merged Excel -> {full_output_path}")
                 else:
                     df.to_excel(full_output_path, index=False, engine="openpyxl")
                     print(f"[SUCCESS] Saved Excel -> {full_output_path}")
 
         # Write detailed request logs for this model (Always overwrites per previous request)
         if request_logs:
-            log_path = os.path.join(GPT_TEMP_DIR, f"{safe_model_name}_requests.log")
+            log_path = get_requests_log_filename(model_name)
             with open(log_path, 'w', encoding='utf-8') as f:
                 f.write(f"=== REQUEST LOGS FOR {model_name} ===\n")
                 for log_msg in request_logs:

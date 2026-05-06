@@ -173,6 +173,63 @@ def lang_avg(data: dict, lang: str) -> float:
     return float(np.nanmean([mla(data, m, lang) for m in MODELS]))
 
 
+def save_worst_case_penalty_figure(wc_matrix: np.ndarray) -> None:
+    eng_idx = LANGS.index("English")
+    wc_penalty_matrix = wc_matrix - wc_matrix[:, eng_idx : eng_idx + 1]
+
+    fig, ax = plt.subplots(figsize=(16, 8), facecolor="white")
+    ax.set_facecolor("white")
+    for spine in ax.spines.values():
+        spine.set_color("#cfcfcf")
+    ax.tick_params(colors="#333333")
+
+    non_english_indices = [i for i, lang in enumerate(LANGS) if lang != "English"]
+    langs = [LANGS[i] for i in non_english_indices]
+    penalty_by_lang = wc_penalty_matrix[:, non_english_indices]
+
+    n_langs = len(langs)
+    group_w = 0.75
+    bar_w = group_w / n_langs
+    xs = np.arange(len(MODELS))
+
+    lang_palette = ["#d1495b", "#edae49", "#66a182", "#2e86ab", "#7b6d8d", "#3d5a80"]
+    for i, (lang, color) in enumerate(zip(langs, lang_palette)):
+        offsets = xs + (i - n_langs / 2 + 0.5) * bar_w
+        vals = penalty_by_lang[:, i] * 100
+        ax.bar(offsets, vals, width=bar_w * 0.88, color=color, alpha=0.92, label=lang, zorder=3)
+
+    ax.axhline(0, color="#999999", linewidth=1, zorder=2)
+    ax.set_xticks(xs)
+    ax.set_xticklabels(MSHORT, rotation=20, ha="right", color="#333333")
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda val, _: f"{val:+.0f}%"))
+    ax.set_title(
+        "Worst-Case Other-Language Penalty vs. English\nnegative values = worse than English under worst-case conditions",
+        fontsize=13,
+        color="#111111",
+    )
+    ax.grid(axis="y", zorder=0)
+    ax.legend(frameon=False, labelcolor="#333333", fontsize=9, ncol=3, loc="lower left")
+    ax.set_ylabel("Accuracy delta vs. English", color="#333333")
+
+    non_english_penalty = np.nanmean(penalty_by_lang) * 100
+    fig.text(
+        0.125,
+        0.93,
+        f"Mean non-English worst-case delta across all models: {non_english_penalty:+.1f}%",
+        fontsize=10,
+        color="#555555",
+        ha="left",
+    )
+
+    out_png = OUT_DIR / "multilingual_worst_case_penalty.png"
+    out_png_hires = OUT_DIR / "multilingual_worst_case_penalty_hires.png"
+    plt.savefig(out_png, dpi=150, bbox_inches="tight", facecolor="white", edgecolor="none")
+    plt.savefig(out_png_hires, dpi=300, bbox_inches="tight", facecolor="white", edgecolor="none")
+    plt.close(fig)
+    print(f"Saved: {out_png.name} (150 dpi)")
+    print(f"Saved: {out_png_hires.name} (300 dpi — print-ready)")
+
+
 def main() -> None:
     avg_pivot = load_metric_pivot(AVG_XLSX_PATH)
     wc_pivot = load_metric_pivot(WC_XLSX_PATH)
@@ -367,8 +424,11 @@ def main() -> None:
     out_png_hires = OUT_DIR / "multilingual_analysis_hires.png"
     plt.savefig(out_png, dpi=150, bbox_inches="tight", facecolor=BG, edgecolor="none")
     plt.savefig(out_png_hires, dpi=300, bbox_inches="tight", facecolor=BG, edgecolor="none")
+    plt.close(fig)
     print(f"Saved: {out_png.name} (150 dpi)")
     print(f"Saved: {out_png_hires.name} (300 dpi — print-ready)")
+
+    save_worst_case_penalty_figure(wc_matrix)
 
 
 if __name__ == "__main__":
