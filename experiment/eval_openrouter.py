@@ -12,11 +12,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # ==========================================
 # Paths & Directories
 IMAGE_TEMP_DIR = "image_temp"
-IMAGE_URLS_FILE = os.path.join(IMAGE_TEMP_DIR, "image_urls.json")
+IMAGE_URLS_FILE = os.path.join(IMAGE_TEMP_DIR, "image_urls.json") # Default
 USER_PROMPT_PATH = "user_prompt.txt"
 OPENROUTER_TEMP_DIR = "openrouter_temp"
 
-# Experiment Scope
+# Experiment Scope (Default)
 SUBJECTS = [
     "mathematics", 
     "physics", 
@@ -46,9 +46,19 @@ parser.add_argument("--process", action="store_true", help="Run the synchronous 
 parser.add_argument("--extract", action="store_true", help="Extract text from saved JSONs and build Excel files")
 parser.add_argument("--debug", action="store_true", help="Process only instance 00")
 parser.add_argument("--model", type=str, required=True, help="Specific model to run (e.g., qwen/qwen-vl-plus:free)")
+parser.add_argument("--disprop", action="store_true", help="Run the disproportionality robustness test")
 args = parser.parse_args()
 
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
+# --- DYNAMIC EXPERIMENT ROUTING ---
+if args.disprop:
+    SUBJECTS = ["math_original", "math_disprop"]
+    IMAGE_URLS_FILE = os.path.join(IMAGE_TEMP_DIR, "image_urls_disprop.json")
+    BASE_SAMPLE_DIR = "sample_disprop"
+    PREFIX = "DP_" # Isolates tracking files from standard runs
+else:
+    BASE_SAMPLE_DIR = "sample"
+    PREFIX = ""
 
 # Sampling Parameters
 if args.model in ['qwen/qwen3.5-122b-a10b', 'qwen/qwen3.5-27b']:
@@ -155,7 +165,8 @@ def generate_openrouter_response(model_name, final_text, img_url):
 # ==========================================
 # 4. WORKFLOW PIPELINE
 # ==========================================
-safe_model_name = args.model.replace("/", "_").replace(".", "_").replace(":", "_")
+job_key = f"{PREFIX}{args.model}"
+safe_model_name = job_key.replace("/", "_").replace(".", "_").replace(":", "_")
 model_temp_dir = os.path.join(OPENROUTER_TEMP_DIR, safe_model_name)
 status_file = os.path.join(OPENROUTER_TEMP_DIR, f"{safe_model_name}_status.json")
 responses_file = os.path.join(model_temp_dir, f"{safe_model_name}_responses.jsonl")
@@ -166,6 +177,7 @@ responses_file = os.path.join(model_temp_dir, f"{safe_model_name}_responses.json
 if args.process:
     print(f"\n{'='*60}\n[INFO] STARTING SYNCHRONOUS OPENROUTER INFERENCE\n{'='*60}")
     print(f"[INFO] Target Model: {args.model}")
+    if args.disprop: print(f"[INFO] Mode: DISPROPORTIONALITY ROBUSTNESS TEST")
     
     # 1. Load Image Map
     if not os.path.exists(IMAGE_URLS_FILE):
@@ -198,7 +210,7 @@ if args.process:
     for subject in SUBJECTS:
         for index in range(NUM_OF_INSTANCES):
             idx_str = f"0{index}"
-            dataset_path = os.path.join("sample", idx_str, subject)
+            dataset_path = os.path.join(BASE_SAMPLE_DIR, idx_str, subject)
             json_path = os.path.join(dataset_path, 'dataset.json')
             
             if not os.path.exists(json_path): continue
@@ -220,7 +232,7 @@ if args.process:
                     custom_id = f"{subject}||{idx_str}||{row_id}||{lang_key}"
                     
                     img_rel_path = row["image"].replace("\\", "/")
-                    full_local_path = f"{idx_str}/{subject}/{img_rel_path}" # Excludes 'sample/' prefix
+                    full_local_path = f"{idx_str}/{subject}/{img_rel_path}" # Excludes base sample dir prefix
                     img_url = image_url_map.get(full_local_path)
                     
                     if not img_url:
@@ -322,7 +334,7 @@ if args.extract:
     for subject in SUBJECTS:
         for index in range(NUM_OF_INSTANCES):
             idx_str = f"0{index}"
-            dataset_path = os.path.join("sample", idx_str, subject)
+            dataset_path = os.path.join(BASE_SAMPLE_DIR, idx_str, subject)
             json_path = os.path.join(dataset_path, 'dataset.json')
             
             if not os.path.exists(json_path): continue
@@ -363,7 +375,9 @@ if args.extract:
             # Export reconstructed DataFrame to Excel
             output_path = os.path.join('result', 'raw', subject, idx_str)
             os.makedirs(output_path, exist_ok=True)
-            full_output_path = os.path.join(output_path, f"{safe_model_name}.xlsx")
+            # Use original model name for excel file so it matches downstream scripts
+            excel_name = args.model.replace("/", "_").replace(".", "_").replace(":", "_")
+            full_output_path = os.path.join(output_path, f"{excel_name}.xlsx")
             
             df.to_excel(full_output_path, index=False, engine="openpyxl")
             print(f" [SUCCESS] Extracted and Saved -> {full_output_path}")
