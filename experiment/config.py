@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 @dataclass
-#TODO: ADJUST (https://docs.vllm.ai/en/latest/api/vllm/#vllm.LLM)
 class ModelConfig:
     dtype: str = "bfloat16"
     max_model_len: int = 2**14 # 16384
@@ -12,7 +11,6 @@ class ModelConfig:
     enforce_eager: bool = False
     trust_remote_code: bool = True
 
-# TODO: ADJUST. PLEASE REFER TO (https://arxiv.org/pdf/2411.00836)
 @dataclass
 class SamplingConfig:
     max_tokens: int = 4096
@@ -30,7 +28,6 @@ class ExperimentConfig:
         # "OpenGVLab/InternVL3_5-8B",
         "allenai/Molmo2-8B",
         "aisingapore/Qwen-SEA-LION-v4-8B-VL",
-        
     )
     subject_list: tuple[str] = (
         "mathematics", 
@@ -40,4 +37,4 @@ class ExperimentConfig:
         "compsci"
     )
     debug: bool = False
-    num_of_instance: int = 10 #TODO: ADJUST
+    num_of_instance: int = 10

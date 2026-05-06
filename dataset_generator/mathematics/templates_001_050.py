@@ -90,7 +90,7 @@ class Mat002:
 
         self.topic = "Number"
         self.subtopic = "Sets"
-        self.source = "Original" # TODO: REMOVED
+        self.source = "Original"
         self.curriculum = "IGCSE"
         self.question_type = "Short Answer"
 
