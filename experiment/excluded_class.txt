@@ -6,3 +6,16 @@ Phy139_multi
 Phy173_multi
 Phy073_multi
 Phy117_multi
+Chem129_multi
+Chem016_multi
+Chem076_multi
+Chem107_multi
+Chem090_multi
+Chem106_multi
+Chem046_multi
+Chem112_multi
+Chem127_multi
+Chem108_multi
+Chem091_multi
+Chem045_multi
+Chem083_multi
