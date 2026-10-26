@@ -206,3 +206,4 @@ experiment/image_temp/
 experiment/error_analysis/
 *.xlsx
 *.jsonl
+.claude/
