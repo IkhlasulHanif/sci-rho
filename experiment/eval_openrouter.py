@@ -75,8 +75,8 @@ except FileNotFoundError:
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 headers = {
     "Authorization": f"Bearer {API_KEY}",
-    "HTTP-Referer": "https://github.com/falensiazmi/stem-vision", # Optional
-    "X-OpenRouter-Title": "STEM-Vision Eval", # Optional
+    "HTTP-Referer": "https://github.com/falensiazmi/sci-rho", # Optional
+    "X-OpenRouter-Title": "Sci-Rho Eval", # Optional
     "Content-Type": "application/json",
 }
 

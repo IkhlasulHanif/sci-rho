@@ -2006,7 +2006,7 @@ wheels = [
 ]
 
 [[package]]
-name = "stem-vision"
+name = "sci-rho"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

@@ -744,7 +744,7 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
             )
             metric_description = ""
             overall_metric = "overall accuracy"
-            metric_intro = f"{metric_title} on STEM-Vision with {total_questions:,} generated question instances."
+            metric_intro = f"{metric_title} on Sci-Rho with {total_questions:,} generated question instances."
             caption = (
                 f"{metric_intro}{metric_description} "
                 f'"ALL" denotes the {overall_metric}. The remaining columns report scores by '
@@ -766,7 +766,7 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
     wc_pivot = _metric_df_to_subject_language_pivot(wc_metric_df)
 
     robustness_caption = (
-        r"Selected-model multilingual robustness on STEM-Vision. "
+        r"Selected-model multilingual robustness on Sci-Rho. "
         r"$A_{avg}$ and $A_{wst}$ denote average-case and worst-case accuracy ($\times 100$), "
         r"$\Delta=A_{wst}-A_{avg}$ ($\times 100$), and $\mathcal{R}=A_{wst}/A_{avg}$ ($\times 100$), "
         r"all averaged over subjects for each model-language pair."
@@ -782,7 +782,7 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
     saved_paths.append(robustness_path)
 
     multilingual_caption = (
-        'Multilingual results on STEM-Vision. For each language, '
+        'Multilingual results on Sci-Rho. For each language, '
         r'$A_{avg}$ denotes average-case accuracy ($\times 100$), '
         r'$A_{wst}$ denotes worst-case accuracy ($\times 100$), and '
         r'$\Delta$ denotes the reduction $A_{wst} - A_{avg}$ ($\times 100$), '
@@ -799,7 +799,7 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
     saved_paths.append(multilingual_path)
 
     combined_caption = (
-        'English-only results on STEM-Vision. For each subject, '
+        'English-only results on Sci-Rho. For each subject, '
         r'$A_{avg}$ denotes average-case accuracy ($\times 100$) and '
         r'$A_{wst}$ denotes worst-case accuracy ($\times 100$). '
         r'$\Delta$ denotes the reduction $A_{wst} - A_{avg}$ ($\times 100$).'
@@ -814,7 +814,7 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
     saved_paths.append(combined_path)
 
     perturbation_caption = (
-        r"Perturbation-type breakdown on STEM-Vision for selected models. "
+        r"Perturbation-type breakdown on Sci-Rho for selected models. "
         r"Each row reports average-case correctness and error rates over the full set "
         r"of evaluated model-language-instance samples assigned to the perturbation type."
     )
@@ -872,7 +872,7 @@ def export_latex_tables_from_metric_files(
             )
             metric_description = ""
             overall_metric = "overall accuracy"
-            metric_intro = f"{metric_title} on STEM-Vision."
+            metric_intro = f"{metric_title} on Sci-Rho."
             caption = (
                 f"{metric_intro}{metric_description} "
                 f'"ALL" denotes the {overall_metric}. The remaining columns report scores by '
@@ -891,7 +891,7 @@ def export_latex_tables_from_metric_files(
             saved_paths.append(file_path)
 
     robustness_caption = (
-        r"Selected-model multilingual robustness on STEM-Vision. "
+        r"Selected-model multilingual robustness on Sci-Rho. "
         r"$A_{avg}$ and $A_{wst}$ denote average-case and worst-case accuracy ($\times 100$), "
         r"$\Delta=A_{wst}-A_{avg}$ ($\times 100$), and $\mathcal{R}=A_{wst}/A_{avg}$ ($\times 100$), "
         r"all averaged over subjects for each model-language pair."
@@ -907,7 +907,7 @@ def export_latex_tables_from_metric_files(
     saved_paths.append(robustness_path)
 
     multilingual_caption = (
-        'Multilingual results on STEM-Vision. For each language, '
+        'Multilingual results on Sci-Rho. For each language, '
         r'$A_{avg}$ denotes average-case accuracy ($\times 100$), '
         r'$A_{wst}$ denotes worst-case accuracy ($\times 100$), and '
         r'$\Delta$ denotes the reduction $A_{wst} - A_{avg}$ ($\times 100$), '
@@ -941,7 +941,7 @@ def export_latex_tables_from_metric_files(
         r"\begin{table}[h]",
         r"\centering",
         (
-            r"\caption{English-only results on STEM-Vision. For each subject, "
+            r"\caption{English-only results on Sci-Rho. For each subject, "
             r"$A_{avg}$ denotes average-case accuracy ($\times 100$) and "
             r"$A_{wst}$ denotes worst-case accuracy ($\times 100$). "
             r"$\Delta$ denotes the reduction $A_{wst} - A_{avg}$ ($\times 100$).}"
@@ -1001,7 +1001,7 @@ def export_latex_tables_from_metric_files(
     if EVAL_CACHE_PATH.exists():
         eval_df = pd.read_pickle(EVAL_CACHE_PATH)
         perturbation_caption = (
-            r"Perturbation-type breakdown on STEM-Vision for selected models. "
+            r"Perturbation-type breakdown on Sci-Rho for selected models. "
             r"Each row reports average-case correctness and error rates over the full set "
             r"of evaluated model-language-instance samples assigned to the perturbation type."
         )
