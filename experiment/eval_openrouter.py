@@ -75,7 +75,7 @@ except FileNotFoundError:
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 headers = {
     "Authorization": f"Bearer {API_KEY}",
-    "HTTP-Referer": "https://github.com/falensiazmi/sci-rho", # Optional
+    "HTTP-Referer": "https://github.com/IkhlasulHanif/sci-rho", # Optional
     "X-OpenRouter-Title": "Sci-Rho Eval", # Optional
     "Content-Type": "application/json",
 }
