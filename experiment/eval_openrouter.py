@@ -46,19 +46,11 @@ parser.add_argument("--process", action="store_true", help="Run the synchronous 
 parser.add_argument("--extract", action="store_true", help="Extract text from saved JSONs and build Excel files")
 parser.add_argument("--debug", action="store_true", help="Process only instance 00")
 parser.add_argument("--model", type=str, required=True, help="Specific model to run (e.g., qwen/qwen-vl-plus:free)")
-parser.add_argument("--disprop", action="store_true", help="Run the disproportionality robustness test")
 args = parser.parse_args()
 
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
-# --- DYNAMIC EXPERIMENT ROUTING ---
-if args.disprop:
-    SUBJECTS = ["math_original", "math_disprop"]
-    IMAGE_URLS_FILE = os.path.join(IMAGE_TEMP_DIR, "image_urls_disprop.json")
-    BASE_SAMPLE_DIR = "sample_disprop"
-    PREFIX = "DP_" # Isolates tracking files from standard runs
-else:
-    BASE_SAMPLE_DIR = "sample"
-    PREFIX = ""
+BASE_SAMPLE_DIR = "sample"
+PREFIX = ""
 
 # Sampling Parameters
 if args.model in ['qwen/qwen3.5-122b-a10b', 'qwen/qwen3.5-27b']:
@@ -177,7 +169,6 @@ responses_file = os.path.join(model_temp_dir, f"{safe_model_name}_responses.json
 if args.process:
     print(f"\n{'='*60}\n[INFO] STARTING SYNCHRONOUS OPENROUTER INFERENCE\n{'='*60}")
     print(f"[INFO] Target Model: {args.model}")
-    if args.disprop: print(f"[INFO] Mode: DISPROPORTIONALITY ROBUSTNESS TEST")
     
     # 1. Load Image Map
     if not os.path.exists(IMAGE_URLS_FILE):

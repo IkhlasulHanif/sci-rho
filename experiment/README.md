@@ -96,11 +96,6 @@ Before running, make sure these are available:
 - `image_temp/image_urls.json`
 - experiment data under `sample/0x/<subject>/dataset.json`
 
-For `sample_disprop` mode, the script uses:
-
-- `image_temp/image_urls_disprop.json`
-- subjects `math_disprop` and `math_original`
-
 API credentials are loaded from:
 
 - `secrets/openai_api_key.txt`
@@ -117,7 +112,6 @@ The script is stateful and split into stages:
 - `--retrieve`: download outputs and reconstruct Excel result files
 - `--debug`: prepare only instance `00`
 - `--retry-missing`: only regenerate missing blank responses and merge them back
-- `--mode sample|sample_disprop`: choose which dataset folder to evaluate
 
 ### Typical Usage
 
@@ -149,12 +143,6 @@ Retrieve outputs:
 
 ```bash
 uv run experiment/eval_gpt.py --retrieve
-```
-
-Run on `sample_disprop`:
-
-```bash
-uv run experiment/eval_gpt.py --prepare --mode sample_disprop
 ```
 
 Results are written to:
@@ -296,12 +284,6 @@ Before running, make sure these are available:
 - experiment data under `sample/0x/<subject>/dataset.json`
 - `secrets/openrouter_api_key.txt`
 
-For disproportionality mode, the script uses:
-
-- `image_temp/image_urls_disprop.json`
-- `sample_disprop/`
-- subjects `math_original` and `math_disprop`
-
 ### Workflow
 
 The OpenRouter pipeline has two stages:
@@ -309,7 +291,6 @@ The OpenRouter pipeline has two stages:
 - `--process`: run inference and save raw JSON responses
 - `--extract`: parse saved responses and build Excel files
 - `--debug`: process only instance `00`
-- `--disprop`: run on the disproportionality dataset
 
 ### Typical Usage
 
@@ -323,12 +304,6 @@ Extract Excel outputs:
 
 ```bash
 uv run experiment/eval_openrouter.py --model qwen/qwen3.5-27b --extract
-```
-
-Run in disproportionality mode:
-
-```bash
-uv run experiment/eval_openrouter.py --model qwen/qwen3.5-27b --process --disprop
 ```
 
 ### Output

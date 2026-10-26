@@ -1,4 +1,8 @@
-# Sci-ρ 
+# Sci-ρ
+
+Code for **Sci-Rho: A Multilingual Visually-Grounded Symbolic Benchmark for STEM Problems** ([arXiv:2606.08034](https://arxiv.org/abs/2606.08034)).
+
+This repository contains code only. Generated benchmark instances and model outputs are not included.
 
 This repository is organized into two main parts:
 
@@ -8,13 +12,13 @@ This repository is organized into two main parts:
 ## Repository Structure
 
 ### `dataset_generator/`
-Contains the dataset creation pipeline for STEM-VISION.
+Contains the dataset creation pipeline for Sci-ρ.
 
 See the full guide here:
 [dataset_generator/README.md](./dataset_generator/README.md)
 
 ### `experiment/`
-Contains experiment datasets, evaluation scripts, prompts, result folders, and analysis utilities.
+Contains evaluation scripts, prompts, and analysis utilities.
 
 See the full guide here:
 [experiment/README.md](./experiment/README.md)
@@ -60,3 +64,14 @@ If you want to:
 - run model evaluations, start with [experiment/README.md](./experiment/README.md)
 
 The root README is only a short entry point. The detailed operational documentation lives in the subdirectory READMEs.
+
+## Citation
+
+```bibtex
+@article{azmi2026scirho,
+  title   = {Sci-Rho: A Multilingual Visually-Grounded Symbolic Benchmark for STEM Problems},
+  author  = {Azmi, Muhammad Falensi and Hanif, Ikhlasul Akmal and Putra, Vallerie Alexandra and Yeltay, Adi and Mubarak, Abdullah and Koto, Fajri},
+  journal = {arXiv preprint arXiv:2606.08034},
+  year    = {2026}
+}
+```

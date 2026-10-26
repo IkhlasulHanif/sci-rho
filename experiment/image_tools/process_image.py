@@ -20,13 +20,7 @@ os.makedirs(IMAGE_TEMP_DIR, exist_ok=True)
 os.makedirs(EXPERIMENT_ROOT / 'secrets', exist_ok=True)
 
 
-def get_mode_paths(mode: str):
-    if mode == "sample_disprop":
-        return {
-            "base_folder": "sample_disprop",
-            "original_folder": "sample_disprop_original",
-            "image_urls_file": os.path.join(IMAGE_TEMP_DIR, "image_urls_disprop.json"),
-        }
+def get_mode_paths():
     return {
         "base_folder": "sample",
         "original_folder": "sample_original",
@@ -213,10 +207,8 @@ def main():
     parser.add_argument("--resize", action="store_true", help="Backup and resize local images in the selected sample folder")
     parser.add_argument("--upload", action="store_true", help="Upload the selected sample folder to Hugging Face")
     parser.add_argument("--get", action="store_true", help="Get URLs from Hugging Face and map to json")
-    parser.add_argument("--mode", choices=["sample", "sample_disprop"], default="sample",
-                        help="Select which experiment folder to process")
     args = parser.parse_args()
-    paths = get_mode_paths(args.mode)
+    paths = get_mode_paths()
 
     if not args.resize and not args.upload and not args.get:
         print("Please specify at least one flag: --resize, --upload, and/or --get")

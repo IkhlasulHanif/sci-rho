@@ -10,6 +10,9 @@ EXPERIMENT_ROOT = Path(__file__).resolve().parents[1]
 PROCESS_DIR = EXPERIMENT_ROOT / "result" / "process"
 AVG_XLSX_PATH = PROCESS_DIR / "average_accuracy.xlsx"
 WC_XLSX_PATH = PROCESS_DIR / "worst_case_accuracy.xlsx"
+EVAL_CACHE_PATH = PROCESS_DIR / "eval_df_cache.pkl"
+PERTURBATION_LABELS_PATH = PROCESS_DIR / "perturbation_type_all_labels.tsv"
+EXCLUDED_CLASSES_PATH = EXPERIMENT_ROOT / "excluded_class.txt"
 DEFAULT_LATEX_OUT_DIR = EXPERIMENT_ROOT / "result" / "tables" / "latex"
 
 
@@ -31,6 +34,22 @@ SUBJECT_ORDER = [
     "Compsci",
 ]
 
+PERTURBATION_TYPE_ORDER = [
+    "color",
+    "function_type",
+    "numerical",
+    "pattern",
+    "shape",
+]
+
+PERTURBATION_TYPE_DISPLAY_NAMES = {
+    "color": "Color",
+    "function_type": "Function type",
+    "numerical": "Numerical",
+    "pattern": "Pattern",
+    "shape": "Shape",
+}
+
 MODEL_DISPLAY_NAMES = {
     "OpenGVLab_InternVL3_5-14B": "InternVL3.5-14B",
     "OpenGVLab_InternVL3_5-8B": "InternVL3.5-8B",
@@ -49,6 +68,7 @@ MODEL_DISPLAY_NAMES = {
     "gpt-5_4-2026-03-05": "GPT-5.4",
     "meta-llama_llama-4-scout": "Llama-4-Scout",
     "qwen_qwen3_5-122b-a10b": "Qwen3.5-122B-A10B",
+    "qwen_qwen3_5-27b": "Qwen3.5-27B",
 }
 
 MODEL_GROUPS = {
@@ -59,6 +79,7 @@ MODEL_GROUPS = {
     ],
     "open_source": [
         "qwen_qwen3_5-122b-a10b",
+        "qwen_qwen3_5-27b",
         "meta-llama_llama-4-scout",
         "OpenGVLab_InternVL3_5-14B",
         "OpenGVLab_InternVL3_5-8B",
@@ -85,6 +106,13 @@ EXCLUDED_MODELS = {
     "NP_gemini-2_5-pro",
 }
 
+ROBUSTNESS_SUMMARY_MODELS = [
+    "gpt-5_4-2026-03-05",
+    "gemini-2_5-pro",
+    "OpenGVLab_InternVL3_5-8B",
+    "aisingapore_Qwen-SEA-LION-v4-8B-VL",
+]
+
 
 def _escape_latex(text: str) -> str:
     replacements = {
@@ -109,8 +137,47 @@ def _format_metric_value(value: float | int | None, decimals: int = 1) -> str:
     return f"{float(value) * 100:.{decimals}f}"
 
 
+def _safe_accuracy_ratio(
+    numerator: pd.DataFrame | pd.Series,
+    denominator: pd.DataFrame | pd.Series,
+) -> pd.DataFrame | pd.Series:
+    ratio = numerator.divide(denominator)
+    return ratio.replace([float("inf"), float("-inf")], pd.NA).fillna(0)
+
+
 def _display_model_name(model_name: str) -> str:
     return MODEL_DISPLAY_NAMES.get(model_name, model_name.replace("_", "-"))
+
+
+def _load_excluded_problem_ids(
+    path: Path | str = EXCLUDED_CLASSES_PATH,
+) -> set[str]:
+    excluded_path = Path(path)
+    if not excluded_path.exists():
+        return set()
+    return {
+        line.strip()
+        for line in excluded_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+
+
+def _filter_eval_df_to_stem_subjects(eval_df: pd.DataFrame) -> pd.DataFrame:
+    filtered_df = eval_df[eval_df["Subject"].isin(SUBJECT_ORDER)].copy()
+    excluded_problem_ids = _load_excluded_problem_ids()
+    if excluded_problem_ids:
+        filtered_df = filtered_df[
+            ~filtered_df["Problem_ID"].isin(excluded_problem_ids)
+        ].copy()
+    return filtered_df
+
+
+def _filter_pivot_to_stem_subjects(metric_pivot: pd.DataFrame) -> pd.DataFrame:
+    if isinstance(metric_pivot.columns, pd.MultiIndex):
+        keep_columns = metric_pivot.columns.get_level_values(0).isin(SUBJECT_ORDER)
+        return metric_pivot.loc[:, keep_columns]
+    keep_columns = [column for column in SUBJECT_ORDER if column in metric_pivot.columns]
+    return metric_pivot.reindex(columns=keep_columns)
 
 
 def _compute_average_accuracy(eval_df: pd.DataFrame) -> pd.DataFrame:
@@ -143,10 +210,7 @@ def _compute_reasoning_robustness(eval_df: pd.DataFrame) -> pd.DataFrame:
         suffixes=("_avg", "_wc"),
         how="outer",
     )
-    merged["Accuracy"] = (
-        merged["Accuracy_wc"] / merged["Accuracy_avg"]
-    ).replace([float("inf"), float("-inf")], pd.NA)
-    merged["Accuracy"] = merged["Accuracy"].fillna(0)
+    merged["Accuracy"] = _safe_accuracy_ratio(merged["Accuracy_wc"], merged["Accuracy_avg"])
     return merged[["Model", "Subject", "Language", "Accuracy"]]
 
 
@@ -177,7 +241,41 @@ def _load_metric_pivot(path: Path) -> pd.DataFrame:
     pivot = pd.read_excel(path, header=[0, 1], index_col=0)
     pivot.index = pivot.index.astype(str)
     pivot = pivot.loc[~pivot.index.isin(EXCLUDED_MODELS)]
-    return pivot
+    return _filter_pivot_to_stem_subjects(pivot)
+
+
+def _load_perturbation_labels(path: Path | str = PERTURBATION_LABELS_PATH) -> pd.DataFrame:
+    labels_path = Path(path)
+    if not labels_path.exists():
+        raise FileNotFoundError(f"Missing perturbation label file: {labels_path}")
+
+    labels_df = pd.read_csv(labels_path, sep="\t")
+    required_columns = {"Subject", "Problem_ID", "Perturbation_Type"}
+    missing_columns = required_columns - set(labels_df.columns)
+    if missing_columns:
+        raise ValueError(
+            f"Perturbation label file is missing columns: {sorted(missing_columns)}"
+        )
+
+    duplicate_count = labels_df.duplicated(["Subject", "Problem_ID"]).sum()
+    if duplicate_count:
+        raise ValueError(
+            f"Perturbation label file has {duplicate_count} duplicate template labels."
+        )
+
+    unknown_types = set(labels_df["Perturbation_Type"]) - set(PERTURBATION_TYPE_ORDER)
+    if unknown_types:
+        raise ValueError(
+            f"Perturbation label file has unknown types: {sorted(unknown_types)}"
+        )
+
+    labels_df = labels_df[["Subject", "Problem_ID", "Perturbation_Type"]].copy()
+    excluded_problem_ids = _load_excluded_problem_ids()
+    if excluded_problem_ids:
+        labels_df = labels_df[
+            ~labels_df["Problem_ID"].isin(excluded_problem_ids)
+        ].copy()
+    return labels_df
 
 
 def _summarize_pivot_for_dimension(
@@ -198,6 +296,37 @@ def _summarize_pivot_for_dimension(
 
     summary.insert(0, "ALL", metric_pivot.mean(axis=1))
     return summary.sort_index()
+
+
+def _ordered_models(model_index: pd.Index) -> list[str]:
+    ordered_models: list[str] = []
+    seen: set[str] = set()
+
+    for group_name in MODEL_GROUPS:
+        for model_name in MODEL_GROUPS[group_name]:
+            if model_name in model_index and model_name not in seen:
+                ordered_models.append(model_name)
+                seen.add(model_name)
+
+    ordered_models.extend(model_name for model_name in model_index if model_name not in seen)
+    return ordered_models
+
+
+def _metric_df_to_subject_language_pivot(metric_df: pd.DataFrame) -> pd.DataFrame:
+    metric_df = metric_df[metric_df["Subject"].isin(SUBJECT_ORDER)].copy()
+    pivot = metric_df.pivot(
+        index="Model",
+        columns=["Subject", "Language"],
+        values="Accuracy",
+    )
+    pivot = pivot.loc[~pivot.index.isin(EXCLUDED_MODELS)]
+    return pivot.sort_index()
+
+
+def _language_columns(metric_pivot: pd.DataFrame, language: str | None) -> pd.Index:
+    if language is None:
+        return metric_pivot.columns
+    return metric_pivot.columns[metric_pivot.columns.get_level_values(1) == language]
 
 
 def build_latex_table(
@@ -260,6 +389,218 @@ def build_latex_table(
             values = [_escape_latex(_display_model_name(model_name))]
             values.extend(_format_metric_value(row[col], decimals=decimals) for col in summary_df.columns)
             lines.append(" & ".join(values) + r" \\")
+
+    lines.extend(
+        [
+            r"\hline",
+            r"\end{tabular}%",
+            r"}",
+            r"\end{table}",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def build_selected_model_language_robustness_table(
+    avg_pivot: pd.DataFrame,
+    wc_pivot: pd.DataFrame,
+    caption: str,
+    label: str,
+    decimals: int = 1,
+) -> str:
+    common_models = avg_pivot.index.intersection(wc_pivot.index)
+    common_columns = avg_pivot.columns.intersection(wc_pivot.columns)
+    selected_models = [
+        model_name
+        for model_name in ROBUSTNESS_SUMMARY_MODELS
+        if model_name in common_models
+    ]
+    if not selected_models:
+        raise ValueError("None of the selected robustness-summary models were found.")
+    avg_common = avg_pivot.loc[selected_models, common_columns]
+    wc_common = wc_pivot.loc[selected_models, common_columns]
+
+    languages = ["ALL"] + [
+        language
+        for language in LANGUAGE_ORDER
+        if language in avg_common.columns.get_level_values(1)
+    ]
+
+    lines = [
+        r"\begin{table}[h]",
+        r"\centering",
+        rf"\caption{{{caption}}}",
+        rf"\label{{{label}}}",
+        r"\begin{tabular}{lrrrr}",
+        r"\hline",
+        r"\textbf{Language} & $A_{avg}$ & $A_{wst}$ & $\Delta$ & $\mathcal{R}$ \\",
+        r"\hline",
+    ]
+
+    for model_idx, model_name in enumerate(selected_models):
+        if model_idx > 0:
+            lines.append(r"\hline")
+        lines.append(
+            rf"\multicolumn{{5}}{{c}}{{\textit{{{_escape_latex(_display_model_name(model_name))}}}}} \\"
+        )
+        lines.append(r"\hline")
+        for language in languages:
+            selected_language = None if language == "ALL" else language
+            columns = _language_columns(avg_common, selected_language)
+            avg_value = avg_common.loc[model_name, columns].mean()
+            wc_value = wc_common.loc[model_name, columns].mean()
+            delta_value = wc_value - avg_value
+            robustness_value = 0.0 if avg_value == 0 else wc_value / avg_value
+            row = [
+                _escape_latex(language),
+                _format_metric_value(avg_value, decimals=decimals),
+                _format_metric_value(wc_value, decimals=decimals),
+                _format_metric_value(delta_value, decimals=decimals),
+                _format_metric_value(robustness_value, decimals=decimals),
+            ]
+            lines.append(" & ".join(row) + r" \\")
+
+    lines.extend(
+        [
+            r"\hline",
+            r"\end{tabular}",
+            r"\end{table}",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def build_multilingual_avg_wc_by_language_table(
+    avg_pivot: pd.DataFrame,
+    wc_pivot: pd.DataFrame,
+    caption: str,
+    label: str,
+    decimals: int = 1,
+) -> str:
+    avg_summary = _summarize_pivot_for_dimension(avg_pivot, "Language", LANGUAGE_ORDER)
+    wc_summary = _summarize_pivot_for_dimension(wc_pivot, "Language", LANGUAGE_ORDER)
+    delta_summary = wc_summary - avg_summary
+
+    languages = [language for language in LANGUAGE_ORDER if language in avg_summary.columns]
+    model_names = _ordered_models(avg_summary.index)
+
+    headers_top = ["Language"]
+    headers_bottom = [""]
+    for model_name in model_names:
+        headers_top.append(
+            rf"\multicolumn{{3}}{{c}}{{\textbf{{{_escape_latex(_display_model_name(model_name))}}}}}"
+        )
+        headers_bottom.extend([r"$A_{avg}$", r"$A_{wst}$", r"$\Delta$"])
+
+    col_spec = "l|" + "|".join("rrc" for _ in model_names)
+    lines = [
+        r"\begin{table}[h]",
+        r"\centering",
+        rf"\caption{{{caption}}}",
+        rf"\label{{{label}}}",
+        r"\resizebox{\textwidth}{!}{%",
+        rf"\begin{{tabular}}{{{col_spec}}}",
+        r"\hline",
+        r"\textbf{Language} & " + " & ".join(headers_top[1:]) + r" \\",
+        " & ".join(headers_bottom) + r" \\",
+        r"\hline",
+    ]
+
+    for language in languages:
+        row = [_escape_latex(language)]
+        for model_name in model_names:
+            row.append(_format_metric_value(avg_summary.loc[model_name, language], decimals=decimals))
+            row.append(_format_metric_value(wc_summary.loc[model_name, language], decimals=decimals))
+            row.append(_format_metric_value(delta_summary.loc[model_name, language], decimals=decimals))
+        lines.append(" & ".join(row) + r" \\")
+
+    lines.extend(
+        [
+            r"\hline",
+            r"\end{tabular}%",
+            r"}",
+            r"\end{table}",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def build_selected_model_perturbation_breakdown_table(
+    eval_df: pd.DataFrame,
+    perturbation_labels_df: pd.DataFrame,
+    caption: str,
+    label: str,
+    decimals: int = 1,
+) -> str:
+    eval_df = _filter_eval_df_to_stem_subjects(eval_df)
+    selected_models = [
+        model_name
+        for model_name in ROBUSTNESS_SUMMARY_MODELS
+        if model_name in set(eval_df["Model"])
+    ]
+    if not selected_models:
+        raise ValueError("None of the selected perturbation-breakdown models were found.")
+
+    labeled_df = eval_df.merge(
+        perturbation_labels_df,
+        on=["Subject", "Problem_ID"],
+        how="left",
+    )
+    missing_labels = labeled_df[labeled_df["Perturbation_Type"].isna()]
+    if not missing_labels.empty:
+        missing_templates = (
+            missing_labels[["Subject", "Problem_ID"]]
+            .drop_duplicates()
+            .head(10)
+            .to_dict("records")
+        )
+        raise ValueError(f"Missing perturbation labels for templates: {missing_templates}")
+
+    lines = [
+        r"\begin{table}[h]",
+        r"\centering",
+        rf"\caption{{{caption}}}",
+        rf"\label{{{label}}}",
+        r"\resizebox{\textwidth}{!}{%",
+        r"\begin{tabular}{lrrrrrr}",
+        r"\hline",
+        (
+            r"\textbf{Perturbation} & \textbf{Templates} & \textbf{Samples} & "
+            r"\textbf{Correct} & \textbf{Error} & \textbf{Correct \%} & \textbf{Error \%} \\"
+        ),
+        r"\hline",
+    ]
+
+    for model_idx, model_name in enumerate(selected_models):
+        if model_idx > 0:
+            lines.append(r"\hline")
+        lines.append(
+            rf"\multicolumn{{7}}{{c}}{{\textit{{{_escape_latex(_display_model_name(model_name))}}}}} \\"
+        )
+        lines.append(r"\hline")
+        model_df = labeled_df[labeled_df["Model"] == model_name]
+        for perturbation_type in PERTURBATION_TYPE_ORDER:
+            type_df = model_df[model_df["Perturbation_Type"] == perturbation_type]
+            sample_count = len(type_df)
+            template_count = (
+                type_df[["Subject", "Problem_ID"]]
+                .drop_duplicates()
+                .shape[0]
+            )
+            correct_count = int(type_df["Accuracy"].sum())
+            error_count = sample_count - correct_count
+            correct_rate = correct_count / sample_count if sample_count else pd.NA
+            error_rate = error_count / sample_count if sample_count else pd.NA
+            row = [
+                _escape_latex(PERTURBATION_TYPE_DISPLAY_NAMES[perturbation_type]),
+                f"{template_count:,}",
+                f"{sample_count:,}",
+                f"{correct_count:,}",
+                f"{error_count:,}",
+                _format_metric_value(correct_rate, decimals=decimals),
+                _format_metric_value(error_rate, decimals=decimals),
+            ]
+            lines.append(" & ".join(row) + r" \\")
 
     lines.extend(
         [
@@ -365,19 +706,23 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
     for legacy_file in out_path.glob("*.tex"):
         legacy_file.unlink()
 
+    eval_df = _filter_eval_df_to_stem_subjects(eval_df)
     total_questions = (
         eval_df[["Subject", "Problem_ID", "Instance"]]
         .drop_duplicates()
         .shape[0]
     )
 
+    avg_metric_df = _compute_average_accuracy(eval_df)
+    wc_metric_df = _compute_worst_case_accuracy(eval_df)
+
     metric_builders = {
         "average_case_accuracy": (
-            _compute_average_accuracy(eval_df),
+            avg_metric_df,
             r"Average-case accuracy ($\times 100$)",
         ),
         "worst_case_accuracy": (
-            _compute_worst_case_accuracy(eval_df),
+            wc_metric_df,
             r"Worst-case accuracy ($\times 100$)",
         ),
     }
@@ -397,9 +742,12 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
                 if dimension_name == "Language"
                 else "averaged over all languages"
             )
+            metric_description = ""
+            overall_metric = "overall accuracy"
+            metric_intro = f"{metric_title} on STEM-Vision with {total_questions:,} generated question instances."
             caption = (
-                f"{metric_title} on STEM-Vision with {total_questions:,} generated question instances. "
-                f'"ALL" denotes the overall accuracy. The remaining columns report scores by '
+                f"{metric_intro}{metric_description} "
+                f'"ALL" denotes the {overall_metric}. The remaining columns report scores by '
                 f"{dimension_name.lower()}, {grouping_phrase}."
             )
             label = f"tab:stem_vision_{metric_slug}_{dimension_slug}"
@@ -413,6 +761,42 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
             file_path = out_path / f"stem_vision_{metric_slug}_by_{dimension_slug}.tex"
             file_path.write_text(latex + "\n", encoding="utf-8")
             saved_paths.append(file_path)
+
+    avg_pivot = _metric_df_to_subject_language_pivot(avg_metric_df)
+    wc_pivot = _metric_df_to_subject_language_pivot(wc_metric_df)
+
+    robustness_caption = (
+        r"Selected-model multilingual robustness on STEM-Vision. "
+        r"$A_{avg}$ and $A_{wst}$ denote average-case and worst-case accuracy ($\times 100$), "
+        r"$\Delta=A_{wst}-A_{avg}$ ($\times 100$), and $\mathcal{R}=A_{wst}/A_{avg}$ ($\times 100$), "
+        r"all averaged over subjects for each model-language pair."
+    )
+    robustness_latex = build_selected_model_language_robustness_table(
+        avg_pivot=avg_pivot,
+        wc_pivot=wc_pivot,
+        caption=robustness_caption,
+        label="tab:stem_vision_reasoning_robustness_language",
+    )
+    robustness_path = out_path / "stem_vision_reasoning_robustness_by_language.tex"
+    robustness_path.write_text(robustness_latex + "\n", encoding="utf-8")
+    saved_paths.append(robustness_path)
+
+    multilingual_caption = (
+        'Multilingual results on STEM-Vision. For each language, '
+        r'$A_{avg}$ denotes average-case accuracy ($\times 100$), '
+        r'$A_{wst}$ denotes worst-case accuracy ($\times 100$), and '
+        r'$\Delta$ denotes the reduction $A_{wst} - A_{avg}$ ($\times 100$), '
+        'all averaged over subjects.'
+    )
+    multilingual_latex = build_multilingual_avg_wc_by_language_table(
+        avg_pivot=avg_pivot,
+        wc_pivot=wc_pivot,
+        caption=multilingual_caption,
+        label="tab:stem_vision_multilingual_avg_wc_by_language",
+    )
+    multilingual_path = out_path / "stem_vision_multilingual_avg_wc_by_language.tex"
+    multilingual_path.write_text(multilingual_latex + "\n", encoding="utf-8")
+    saved_paths.append(multilingual_path)
 
     combined_caption = (
         'English-only results on STEM-Vision. For each subject, '
@@ -428,6 +812,21 @@ def export_latex_tables(eval_df: pd.DataFrame, out_dir: Path | str) -> list[Path
     combined_path = out_path / "stem_vision_english_avg_wc_by_subject.tex"
     combined_path.write_text(combined_latex + "\n", encoding="utf-8")
     saved_paths.append(combined_path)
+
+    perturbation_caption = (
+        r"Perturbation-type breakdown on STEM-Vision for selected models. "
+        r"Each row reports average-case correctness and error rates over the full set "
+        r"of evaluated model-language-instance samples assigned to the perturbation type."
+    )
+    perturbation_latex = build_selected_model_perturbation_breakdown_table(
+        eval_df=eval_df,
+        perturbation_labels_df=_load_perturbation_labels(),
+        caption=perturbation_caption,
+        label="tab:stem_vision_perturbation_type_breakdown",
+    )
+    perturbation_path = out_path / "stem_vision_perturbation_type_breakdown_selected_models.tex"
+    perturbation_path.write_text(perturbation_latex + "\n", encoding="utf-8")
+    saved_paths.append(perturbation_path)
 
     return saved_paths
 
@@ -471,9 +870,12 @@ def export_latex_tables_from_metric_files(
                 if dimension_name == "Language"
                 else "averaged over all languages"
             )
+            metric_description = ""
+            overall_metric = "overall accuracy"
+            metric_intro = f"{metric_title} on STEM-Vision."
             caption = (
-                f"{metric_title} on STEM-Vision. "
-                f'"ALL" denotes the overall accuracy. The remaining columns report scores by '
+                f"{metric_intro}{metric_description} "
+                f'"ALL" denotes the {overall_metric}. The remaining columns report scores by '
                 f"{dimension_name.lower()}, {grouping_phrase}."
             )
             label = f"tab:stem_vision_{metric_slug}_{dimension_slug}"
@@ -487,6 +889,39 @@ def export_latex_tables_from_metric_files(
             file_path = out_path / f"stem_vision_{metric_slug}_by_{dimension_slug}.tex"
             file_path.write_text(latex + "\n", encoding="utf-8")
             saved_paths.append(file_path)
+
+    robustness_caption = (
+        r"Selected-model multilingual robustness on STEM-Vision. "
+        r"$A_{avg}$ and $A_{wst}$ denote average-case and worst-case accuracy ($\times 100$), "
+        r"$\Delta=A_{wst}-A_{avg}$ ($\times 100$), and $\mathcal{R}=A_{wst}/A_{avg}$ ($\times 100$), "
+        r"all averaged over subjects for each model-language pair."
+    )
+    robustness_latex = build_selected_model_language_robustness_table(
+        avg_pivot=avg_pivot,
+        wc_pivot=wc_pivot,
+        caption=robustness_caption,
+        label="tab:stem_vision_reasoning_robustness_language",
+    )
+    robustness_path = out_path / "stem_vision_reasoning_robustness_by_language.tex"
+    robustness_path.write_text(robustness_latex + "\n", encoding="utf-8")
+    saved_paths.append(robustness_path)
+
+    multilingual_caption = (
+        'Multilingual results on STEM-Vision. For each language, '
+        r'$A_{avg}$ denotes average-case accuracy ($\times 100$), '
+        r'$A_{wst}$ denotes worst-case accuracy ($\times 100$), and '
+        r'$\Delta$ denotes the reduction $A_{wst} - A_{avg}$ ($\times 100$), '
+        'all averaged over subjects.'
+    )
+    multilingual_latex = build_multilingual_avg_wc_by_language_table(
+        avg_pivot=avg_pivot,
+        wc_pivot=wc_pivot,
+        caption=multilingual_caption,
+        label="tab:stem_vision_multilingual_avg_wc_by_language",
+    )
+    multilingual_path = out_path / "stem_vision_multilingual_avg_wc_by_language.tex"
+    multilingual_path.write_text(multilingual_latex + "\n", encoding="utf-8")
+    saved_paths.append(multilingual_path)
 
     english_avg = avg_pivot.xs("English", level=1, axis=1, drop_level=True)
     english_wc = wc_pivot.xs("English", level=1, axis=1, drop_level=True)
@@ -563,11 +998,32 @@ def export_latex_tables_from_metric_files(
     combined_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     saved_paths.append(combined_path)
 
+    if EVAL_CACHE_PATH.exists():
+        eval_df = pd.read_pickle(EVAL_CACHE_PATH)
+        perturbation_caption = (
+            r"Perturbation-type breakdown on STEM-Vision for selected models. "
+            r"Each row reports average-case correctness and error rates over the full set "
+            r"of evaluated model-language-instance samples assigned to the perturbation type."
+        )
+        perturbation_latex = build_selected_model_perturbation_breakdown_table(
+            eval_df=eval_df,
+            perturbation_labels_df=_load_perturbation_labels(),
+            caption=perturbation_caption,
+            label="tab:stem_vision_perturbation_type_breakdown",
+        )
+        perturbation_path = out_path / "stem_vision_perturbation_type_breakdown_selected_models.tex"
+        perturbation_path.write_text(perturbation_latex + "\n", encoding="utf-8")
+        saved_paths.append(perturbation_path)
+
     return saved_paths
 
 
 def main() -> None:
-    saved_paths = export_latex_tables_from_metric_files()
+    if EVAL_CACHE_PATH.exists():
+        eval_df = pd.read_pickle(EVAL_CACHE_PATH)
+        saved_paths = export_latex_tables(eval_df, DEFAULT_LATEX_OUT_DIR)
+    else:
+        saved_paths = export_latex_tables_from_metric_files()
     for path in saved_paths:
         print(path)
 

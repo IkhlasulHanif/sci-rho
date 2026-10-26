@@ -46,8 +46,6 @@ parser.add_argument("--debug", action="store_true", help="Process only instance 
 parser.add_argument("--send", action="store_true", help="Send prepared .jsonl requests to OpenAI Batch API")
 parser.add_argument("--check", action="store_true", help="Check status of active batches")
 parser.add_argument("--retrieve", action="store_true", help="Download results and reconstruct Excel files")
-parser.add_argument("--mode", choices=["sample", "sample_disprop"], default="sample",
-                    help="Select which experiment folder to evaluate")
 parser.add_argument("--retry-missing", action="store_true",
                     help="Prepare/send/retrieve only rows with blank existing responses, and merge them back into existing result sheets")
 args = parser.parse_args()
@@ -55,25 +53,13 @@ args = parser.parse_args()
 NUM_OF_INSTANCES = 1 if args.debug else DEFAULT_NUM_INSTANCES
 
 
-def get_mode_config(mode: str):
-    if mode == "sample_disprop":
-        return {
-            "base_folder": "sample_disprop",
-            "subjects": ["math_disprop", "math_original"],
-            "image_urls_file": os.path.join(IMAGE_TEMP_DIR, "image_urls_disprop.json"),
-            "batch_jobs_file": os.path.join(GPT_TEMP_DIR, "batch_jobs_disprop.json"),
-            "request_suffix": "_sample_disprop",
-        }
-    return {
-        "base_folder": "sample",
-        "subjects": SUBJECTS,
-        "image_urls_file": IMAGE_URLS_FILE,
-        "batch_jobs_file": BATCH_JOBS_FILE,
-        "request_suffix": "",
-    }
-
-
-MODE_CONFIG = get_mode_config(args.mode)
+MODE_CONFIG = {
+    "base_folder": "sample",
+    "subjects": SUBJECTS,
+    "image_urls_file": IMAGE_URLS_FILE,
+    "batch_jobs_file": BATCH_JOBS_FILE,
+    "request_suffix": "",
+}
 ACTIVE_BASE_FOLDER = MODE_CONFIG["base_folder"]
 ACTIVE_SUBJECTS = MODE_CONFIG["subjects"]
 ACTIVE_IMAGE_URLS_FILE = MODE_CONFIG["image_urls_file"]

@@ -186,7 +186,6 @@ cython_debug/
 experiment/reasoning_judge/
 experiment/result/process/
 experiment/sample_original/
-experiment/sample_disprop_original/
 experiment/secrets/**
 dataset/
 envlinux/
@@ -199,3 +198,11 @@ experiment/claude_temp/
 experiment/openrouter_temp/
 extras/
 backup/
+
+# Data and results are distributed separately (not in this repo)
+experiment/sample/
+experiment/result/
+experiment/image_temp/
+experiment/error_analysis/
+*.xlsx
+*.jsonl
